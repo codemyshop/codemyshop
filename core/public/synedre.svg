@@ -1,0 +1,48 @@
+<!-- @author Alexandre Carette <contact@alexandrecarette.fr> | @copyright 2026 Alexandre Carette | @license Propriétaire et Confidentiel -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-labelledby="synedre-title synedre-desc">
+  <title id="synedre-title">Le Synedre</title>
+  <desc id="synedre-desc">Pictogramme du Synedre CodeMyShop : 20 agents IA orchestres depuis un centre unique, representes par 20 points disposes en orbites concentriques autour d'un noyau lumineux.</desc>
+
+  <defs>
+    <radialGradient id="s-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ec4899" stop-opacity="0.6"/>
+      <stop offset="70%" stop-color="#ec4899" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#ec4899" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Anneaux orbitaux (cercles fins) -->
+  <circle cx="256" cy="256" r="100" fill="none" stroke="#4F46E5" stroke-width="0.7" opacity="0.25"/>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#4F46E5" stroke-width="0.5" opacity="0.2"/>
+  <circle cx="256" cy="256" r="210" fill="none" stroke="#4F46E5" stroke-width="0.4" opacity="0.15"/>
+
+  <!-- Anneau 3 : Validation — 8 agents (rayon 210, decales 22.5deg) -->
+  <circle cx="404" cy="108" r="5" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="466" cy="208" r="5" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="466" cy="304" r="5" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="404" cy="404" r="5" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="108" cy="404" r="5" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="46" cy="304" r="5" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="46" cy="208" r="5" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="108" cy="108" r="5" fill="#4F46E5" opacity="0.75"/>
+
+  <!-- Anneau 2 : Cadrage + Execution — 8 agents (rayon 160, decales 22.5deg) -->
+  <circle cx="369" cy="143" r="6" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="416" cy="226" r="6" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="416" cy="286" r="6" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="369" cy="369" r="6" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="143" cy="369" r="6" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="96" cy="286" r="6" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="96" cy="226" r="6" fill="#4F46E5" opacity="0.75"/>
+  <circle cx="143" cy="143" r="6" fill="#4F46E5" opacity="0.75"/>
+
+  <!-- Anneau 1 : Direction — 4 agents (rayon 100, axes cardinaux) -->
+  <circle cx="256" cy="156" r="7.5" fill="#4F46E5" opacity="0.9"/>
+  <circle cx="356" cy="256" r="7.5" fill="#4F46E5" opacity="0.9"/>
+  <circle cx="256" cy="356" r="7.5" fill="#4F46E5" opacity="0.9"/>
+  <circle cx="156" cy="256" r="7.5" fill="#4F46E5" opacity="0.9"/>
+
+  <!-- Centre — le fondateur qui orchestre -->
+  <circle cx="256" cy="256" r="40" fill="url(#s-glow)"/>
+  <circle cx="256" cy="256" r="10" fill="#ec4899"/>
+</svg>

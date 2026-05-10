@@ -1,0 +1,40 @@
+/**
+ * Build resolution stub for AGPL distribution.
+ * No-op exports — runtime code paths are gated by feature flags.
+ */
+
+export async function CreateTaskInput(...args: any[]): Promise<any> { return undefined }
+export async function SmartProjectUpdateSet(...args: any[]): Promise<any> { return undefined }
+export async function UpdateProjectDetailInput(...args: any[]): Promise<any> { return undefined }
+export async function UpdateProjectTaskInput(...args: any[]): Promise<any> { return undefined }
+export async function UpsertAutomationRuleInput(...args: any[]): Promise<any> { return undefined }
+export async function addProjectDocument(...args: any[]): Promise<any> { return undefined }
+export async function addTeamMember(...args: any[]): Promise<any> { return undefined }
+export async function createProjectTasks(...args: any[]): Promise<any> { return undefined }
+export async function createSmartProject(...args: any[]): Promise<any> { return undefined }
+export async function deleteAutomationRule(...args: any[]): Promise<any> { return undefined }
+export async function deleteProjectDocument(...args: any[]): Promise<any> { return undefined }
+export async function deleteProjectTask(...args: any[]): Promise<any> { return undefined }
+export async function deleteSmartProject(...args: any[]): Promise<any> { return undefined }
+export async function deleteTaskTemplate(...args: any[]): Promise<any> { return undefined }
+export async function deleteTeamMember(...args: any[]): Promise<any> { return undefined }
+export async function deleteWaTemplate(...args: any[]): Promise<any> { return undefined }
+export async function getProjectDetail(...args: any[]): Promise<any> { return undefined }
+export async function listActiveSmartProjects(...args: any[]): Promise<any> { return undefined }
+export async function listAutomationRules(...args: any[]): Promise<any> { return undefined }
+export async function listProjectDocuments(...args: any[]): Promise<any> { return undefined }
+export async function listProjectLogs(...args: any[]): Promise<any> { return undefined }
+export async function listProjectMails(...args: any[]): Promise<any> { return undefined }
+export async function listProjectTasks(...args: any[]): Promise<any> { return undefined }
+export async function listTaskTemplates(...args: any[]): Promise<any> { return undefined }
+export async function listTeamMembers(...args: any[]): Promise<any> { return undefined }
+export async function listWaTemplates(...args: any[]): Promise<any> { return undefined }
+export async function searchSmartleadContacts(...args: any[]): Promise<any> { return undefined }
+export async function sendProjectEmail(...args: any[]): Promise<any> { return undefined }
+export async function updateProjectDetail(...args: any[]): Promise<any> { return undefined }
+export async function updateProjectTask(...args: any[]): Promise<any> { return undefined }
+export async function updateSmartProject(...args: any[]): Promise<any> { return undefined }
+export async function updateSmartProjectStatus(...args: any[]): Promise<any> { return undefined }
+export async function upsertAutomationRule(...args: any[]): Promise<any> { return undefined }
+export async function upsertTaskTemplate(...args: any[]): Promise<any> { return undefined }
+export async function upsertWaTemplate(...args: any[]): Promise<any> { return undefined }

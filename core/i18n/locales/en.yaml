@@ -1,0 +1,444 @@
+# English locale pack — see fr.yaml for the format and conventions.
+
+common:
+  cta_book_call: Book a call
+  preview_label: "Preview:"
+  exit_preview_btn: Exit
+  exit_preview_aria: Exit preview
+  loading: Loading...
+  item_ref: "Ref. {ref}"
+  price_ht_suffix: excl. VAT
+  main_navigation: Main navigation
+  back_home: Back to home
+  open_menu: Open menu
+  preview_mode_label: "Preview mode — client: {client}"
+  preview_exit_link: Exit preview
+  close: Close
+  common_error_generic: An error occurred.
+  common_cancel: Cancel
+  common_error_server: Server error
+  open_quote: Open quote
+  open_cart: Open cart
+  my_favorites: My favorites
+
+cart:
+  loyalty:
+    title: Loyalty program
+    points_balance: "{points} points available"
+    earn_estimate: "You will earn {points} points on this order"
+    cta_account: View my account
+    balance_label: "Balance:"
+    points_with_unit: "{points} pts"
+    earn_here_short: "+{points} pts on this order"
+    next_tier: "{points} pts left for a {value} voucher."
+    tier_reached: "You can redeem {points} pts for a {value} voucher."
+    cta_view_points: "View my points →"
+  first_order:
+    title: First order with us?
+    subtitle_html: 'Get <span class="font-bold">5% off</span> with code <span class="font-mono font-bold">PROMO5</span>.'
+    cta_apply: Apply
+    error_unavailable: PROMO5 code unavailable
+  article: item
+  articles: items
+  drawer:
+    title: My cart
+    items_count_one: "({count} item)"
+    items_count_other: "({count} items)"
+    close_aria: Close cart
+    empty_title: Your cart is empty
+    empty_subtitle: Add products to find them here
+    item_quantity_decrease_aria: "Decrease quantity of {name}"
+    item_quantity_increase_aria: "Increase quantity of {name}"
+    item_remove_aria: "Remove {name} from cart"
+    box_one: one package
+    box_other: "{count} packages"
+    tax_line_html: 'VAT at {rate} %, i.e. for {qtyLabel}: <span class="font-semibold text-gray-700 dark:text-gray-200">{amount} excl. VAT</span>'
+    promo_code_label: "Code «{code}»"
+    promo_remove_aria: Remove promo code
+    promo_placeholder: Promo code
+    promo_apply: Apply
+    promo_invalid: Invalid promo code
+    subtotal_ht: Subtotal excl. VAT
+    discount_label: "Discount «{code}»"
+    total_ht: Total excl. VAT
+    tax_estimated: Estimated VAT
+    total_ttc: Total incl. VAT
+    cta_checkout: Checkout
+    cta_full_cart: View full cart
+
+header:
+  blog_link: Blog
+  contact_link: Contact
+  giftcard_link: Gift cards
+  stores_link: Skateshops
+
+footer:
+  opening_hours: Opening hours
+  contact: Contact
+  signature_prefix: Made in France and maintained with
+  signature_love: love
+  signature_by: by
+  newsletter:
+    title: Newsletter
+    placeholder: Your email address
+    aria_email: Email address for the newsletter
+    cta: Subscribe
+    consent_default: I agree to receive the newsletter and confirm I have read the privacy policy.
+    success: Thank you! Your subscription is confirmed.
+    error: An error occurred. Please try again later.
+
+academy:
+  academy_qa_section_title: Questions & Answers
+  academy_qa_ai_answer_label: AI answer
+  academy_qa_hint_text: A question about this lesson? The AI replies automatically.
+  academy_qa_textarea_placeholder: "Your question about this lesson..."
+  academy_qa_email_placeholder: Your email
+  academy_qa_submit_button_default: Ask my question
+  academy_qa_submit_button_loading: "..."
+  academy_qa_privacy_notice: 'Your questions and the AI''s answers are public and enrich the course for everyone. Your email is used only for authentication (legal basis: legitimate interest, retention: 3 years). <a href="/privacy" class="underline hover:text-primary-500">Privacy policy</a>.'
+  academy_qa_password_hint: This account already exists. Confirm your password to publish.
+  password_placeholder: Password
+  academy_qa_password_button_default: Confirm
+  academy_qa_password_button_loading: "..."
+  academy_qa_back_to_email: ← Change email
+  academy_qa_success_title: Question published!
+  academy_qa_success_message: The AI will reply in the next few minutes.
+  academy_qa_ask_another: Ask another question
+  auth_error_credentials: Invalid credentials
+  academy_register_modal_title: Join the Academy
+  academy_register_modal_subtitle: Ask your questions and get AI answers.
+  academy_label_pseudo: Username
+  register_pseudo_placeholder: YourUsername
+  register_password_placeholder: 8 chars minimum
+  academy_register_button_default: Create my account
+  academy_register_button_loading: "Signing up..."
+
+chatbot:
+  chatbot_close_button_aria: Close chat
+  chatbot_open_button_aria: Open chat
+  chatbot_restart_button: Start a new conversation
+  chatbot_subtitle_default: How can we help?
+  chatbot_subtitle_human: You're writing to Aude
+  chatbot_subtitle_order: Order question
+  chatbot_subtitle_product: Product question
+  chatbot_subtitle_takeover: Live with a sales rep
+  chatbot_subtitle_terminal: Conversation ended
+  chatbot_text_input_placeholder: Type your reply…
+  chatbot_user_qty_msg: "Target qty: {qty}"
+  takeover_banner: A sales rep is replying live.
+  takeover_input_placeholder: Write your message…
+
+blogcomments:
+  comments_section_title: Discussion
+  comments_form_subtitle: Your opinion on this article
+  comments_form_hint: Comments are moderated and answered by an AI. Your email will never be displayed.
+  comments_label_author: Your name
+  comments_placeholder_author: Jane Doe
+  comments_label_email: Your email
+  comments_email_not_displayed: "(not displayed)"
+  comments_placeholder_email: jane@example.com
+  comments_label_content: Your comment
+  comments_placeholder_content: "Your thoughts, question or feedback..."
+  comments_submit_button_default: Publish my comment
+  comments_submit_button_loading: Sending...
+  comments_submit_success_message: Your comment has been submitted. It will be reviewed and published in a few minutes.
+  comments_privacy_notice: 'By publishing, you agree that your name and comment will be displayed publicly. Your email is used only for moderation (legal basis: legitimate interest, retention: 3 years). <a href="/privacy" class="underline">Privacy policy</a>.'
+
+reviews:
+  heading: What our clients say
+  customer_reviews: client reviews
+  avg_rating: Average rating
+  out_of: out of
+  stars_out_of_5: stars out of 5
+  review_by: Review by
+  verified_badge: Verified reviews
+  source_verified: Verified
+  cta_google: See all our reviews on Google
+
+auth:
+  login_page_title: Log in
+  login_subtitle: Access your pro account.
+  label_email: Email
+  placeholder_email: you@example.com
+  label_password: Password
+  login_button: Log in
+  login_loading: Logging in…
+  login_error_invalid: Invalid email or password.
+  login_forgot_password: Forgot password?
+  login_no_account: Don't have an account yet?
+  login_create_account: Create an account
+  logout: Log out
+
+account:
+  account_title: My account
+  menu_label: Customer account menu
+
+cms:
+  contact_question_title: Got a question?
+  contact_question_lede: Our team replies Monday through Friday.
+  contact_form_cta: Contact form
+
+testimonials:
+  heading: 119 PrestaShop & e-commerce client reviews
+  subheading: 5 stars on Malt · 193+ projects delivered
+
+investissement:
+  kicker: Premium partnership
+  heading: What's your current situation?
+  lede: Pick the profile that fits you. We adapt our support to your reality.
+  starter_title: Solopreneur & Creator
+  starter_desc: I want to launch a sovereign, automated shop without breaking the bank.
+  starter_cta: Discover the Starter plan
+  premium_title: SMB & Established Brand
+  premium_desc: I need a custom Headless architecture to grow my existing catalog.
+  premium_cta: Discover the Premium plan
+
+ctafinal:
+  heading: Ready to take back control?
+  lede: A 30-minute call. No sales pitch. A clear diagnosis of your e-commerce situation, your SEO blockers, and concrete AI opportunities for your business.
+  cta_book: Book my free strategic call
+  cta_full: Booked out this month
+  signature: Alexandre Carette · CodeMyShop founder · Metz, France
+
+probleme:
+  kicker: The reality
+  heading: You're paying for a system that isn't yours.
+  lede: Six realities French e-commerce merchants face in 2026.
+  pain1_title: Commissions that keep climbing
+  pain1_desc: SaaS platforms take 0.5 to 2% commission on every sale, on top of third-party app subscriptions. As your revenue grows, these costs scale proportionally.
+  pain2_title: Platform-throttled SEO
+  pain2_desc: Forced URLs, mediocre speed, Core Web Vitals in the red. Google penalizes you and you can't do anything about it.
+  pain3_title: Data outside France
+  pain3_desc: Your customers, orders, and catalog sit on US servers. One ToS change and you lose access to your own business.
+  pain4_title: Your data fuels your competitors' AI
+  pain4_desc: "On shared platforms, your customers' behavior improves the global algorithm — which benefits everyone but you. Your business intelligence feeds your competitors' machine."
+  pain5_title: Lean team, too many tools
+  pain5_desc: One tool for SEO, one for email, one for social, one for CRM. Nothing talks to each other. You manage your tools instead of selling.
+  pain6_title: Total dependency
+  pain6_desc: A decision made in San Francisco can shut down your shop overnight. You're a tenant of your own storefront.
+
+navpages:
+  heading: Go further
+  lede: Four pages to understand who I am and why this is different.
+  page1_title: Why digital sovereignty is urgent
+  page1_desc: In 2026, depending on a US platform for your e-commerce means accepting you control nothing. I wrote why — and what I'm doing to change it.
+  page1_cta: Read the manifesto
+  page2_title: From my dad's Macintosh to CodeMyShop
+  page2_desc: Computers at 5, AOL hacker rooms at 13, skateboard brand at 24, PrestaShop expert at 35. The story behind 10 years of e-commerce obsession.
+  page2_cta: Discover my journey
+  page3_title: Distribute our infrastructure to your network
+  page3_desc: "Become a CodeMyShop ambassador. 20% commission on every deal — €3,000 per signed client."
+  page3_cta: Become an ambassador
+  page4_title: From The Hobbit at 12 to a council of 20 AI agents
+  page4_desc: Lead figurines, high-school philosophy, French luxury, human betrayal — and the birth of the Synedre. The real story.
+  page4_cta: Read the Synedre story
+  page5_title: Why this system grows exponential each loop
+  page5_desc: Sovereign data, headless architecture, learning AI — the hidden feedback loops that make loop 4 cheaper than loop 1.
+  page5_cta: Understand the theory
+
+instagram:
+  heading: Follow us on Instagram
+  subheading: Discover our latest selections and behind-the-scenes from our wholesale operations.
+  view_on_ig: View on Instagram
+  alt_post: Instagram post
+  media_video: Video
+  media_album: Album
+  see_all_cta: See all our posts
+
+cartes_cadeaux:
+  kicker: Gift cards
+
+silo:
+  related_categories: Related categories
+  toc_title: Table of contents
+  breadcrumb_aria: Breadcrumb
+  breadcrumb_home: Home
+  silo_not_found: Category not found
+  silo_back_home: Back to home
+  presentation_title: About this category
+  articles_title: Related articles
+  shipping_title: Shipping & pickup
+  shipping_rungis: Rungis pickup
+  shipping_rungis_detail: "Pick up your order at our Rungis market depot.\nBy appointment Monday through Friday."
+  shipping_bordeaux: Nationwide delivery
+  shipping_bordeaux_detail: "Delivery within mainland France and major European cities.\nIndicative lead time 24-48h."
+  shipping_packaging: Careful packaging
+  shipping_packaging_detail: Reinforced cardboard, anti-shock padding, traceability labels.
+  toc_products: Products
+  toc_shipping: Shipping
+  toc_faq: FAQ
+  toc_presentation: About
+  toc_articles: Articles
+  intro_fallback_root: ""
+  intro_fallback_template: "${label}"
+  rdv:
+    title: Let's talk about your project
+    cta: Book a meeting
+
+catalogue:
+  pagination_products: Products pagination
+  pagination_top: Products pagination (top)
+  pagination_bottom: Products pagination (bottom)
+  prev: ← Previous
+  next: Next →
+  references_singular: reference
+  references_plural: references
+  available_products: Available products
+  page: page
+  sort_by: Sort by
+  per_page: Per page
+  sort_relevance: Relevance
+  sort_price_asc: Price ↑
+  sort_price_desc: Price ↓
+  sort_price_kg_asc: "Price /kg ↑"
+  sort_price_kg_desc: "Price /kg ↓"
+  sort_weight_asc: Weight ↑
+  sort_weight_desc: Weight ↓
+  view_grid: Grid view
+  view_list: List view
+  col_image: Image
+  col_ref: Ref.
+  col_product: Product
+  col_ean13: EAN13
+  col_format: Format
+  col_format_title: Sort by net weight
+  col_weight: Weight
+  col_order: Order
+  col_price_ht: Price excl. VAT
+  col_price_kg: "Price /kg"
+  empty_filtered_title: No product matches your selection
+  empty_filtered_body: Try removing a filter or going back to the first page.
+  empty_indexing_title: Catalog being indexed
+  empty_indexing_body: This category is being validated by our team. Contact us for more details.
+  add_to_cart: Add to cart
+  add_to_quote: Add to quote
+  added_to_cart: Added to cart
+  added_to_quote: Added to quote
+  add_short: Add
+  added_short: ✓
+  quote_short: Quote
+  qty_decrease: Decrease
+  qty_increase: Increase
+  breadcrumb_home: Home
+  product_breadcrumb: Product
+  description: Description
+  features: Features
+  datasheets: Datasheets
+  drive_collect: Drive & Collect
+  free_shipping: Free shipping
+  secure_payment: Secure payment
+  quality_premium: Premium quality
+  image_close: Close image
+  image_zoom: Zoom image
+  label_ht: excl. VAT
+  label_ref: Ref.
+  price_pro_only: Pro pricing only
+  product_view_cart: View cart
+  product_view_quote: View quote
+  product_weight: Weight
+
+product:
+  ref: Ref.
+  price_on_quote: Price on request
+  add_to_cart: Buy
+  add_to_quote: Add to quote
+  zoom_image: Zoom image
+  on_quote: On request
+  add_short: Add
+  to_quote_short: Quote
+  ean13: EAN-13
+  origin: Origin
+  shelf_life: BBD
+  months: months
+  humidity: humidity
+  ingredients: Ingredients
+  storage: Storage
+  process: Process
+  in_stock: In stock
+  in_stock_short: in stock
+  low_stock: Low stock
+  out_of_stock: Out of stock
+  related_title: You may also like
+  specs_heading: Product specifications
+  pack_heading: Logistics packaging
+  pack_container: Container
+  pack_material: Packaging material
+  pack_unit_weight: Unit weight
+  pack_units_per_carton: Units / carton
+  pack_carton_weight: Carton weight
+  pack_cartons_per_pallet: Cartons / pallet
+  nutri_heading: Nutritional values
+  nutri_per_100g: per 100 g
+  nutri_energy: Energy
+  nutri_fat: Fat
+  nutri_satfat: of which saturated fats
+  nutri_carbs: Carbs
+  nutri_sugars: of which sugars
+  nutri_proteins: Proteins
+  nutri_salt: Salt
+  allergens: Allergens
+  allergens_inco: mandatory INCO declaration
+  compliance_heading: Regulatory compliance
+  compliance_no_nano: No nanomaterials
+  compliance_non_gmo: Non-GMO
+  compliance_non_ionised: Non-ionized
+
+home_giftcard:
+  preview_amount: "Starting from €25"
+  kicker: Gift idea
+  title: Offer a gift card
+  body: Pick the amount, add a personal message. Print or send by email. 1-year validity.
+  bullet_amounts: "Amounts from €10 to €500"
+  bullet_delivery: Printable PDF + email delivery
+  bullet_validity: 1-year validity, unique secure code
+  cta: Offer a gift card
+
+search:
+  placeholder: Search for a product…
+  aria_search: Search for a product
+  aria_clear: Clear search
+  aria_submit: Run search
+  loading: Searching…
+  section_products: Products
+  section_categories: Categories
+  section_dictionary: Dictionary
+  section_pages: Pages
+  empty: "No results for «{query}»"
+  view_all: "See all results for «{query}» →"
+
+wishlist:
+  in_favorites: In your favorites
+  add_to_favorites: Add to favorites
+  picker_title: Add to a list
+  login_required: Log in to manage your favorite lists.
+  cta_login: Log in
+  default_badge: default
+  new_list_placeholder: List name
+  cta_create: Create
+  cta_new_list: + New list
+  cta_manage: Manage my lists
+  cta_close: Close
+
+blog:
+  search:
+    placeholder: Search articles...
+    clear_aria: Clear search
+    loading: Searching...
+    empty: No article found for "{query}"
+  categories:
+    prestashop: Headless PrestaShop
+    strategie: Strategy
+    seo: SEO & AI
+    devops: DevOps
+    securite: Security
+  subcategories:
+    architecture: Architecture
+    performance: Performance
+    developpement: Development
+    automatisation: Automation
+    referencement: SEO
+    flywheel: Flywheel
+    positionnement: Positioning
+    docker: Docker
+    intelligence-artificielle: Artificial Intelligence
+    cybersecurite: Cybersecurity

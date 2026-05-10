@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Client DNA Configuration — Triptyque Souverain",
+  "description": "Schéma de référence pour le Triptyque Souverain (Fondateur + Média + Boutique). Utilisé par le pipeline IA pour adapter le ton, le territoire et l'expertise des contenus générés.",
+  "type": "object",
+  "required": ["clientId", "geolocation", "persona_target", "brand_voice", "focus_keywords", "founder"],
+  "properties": {
+    "clientId": {
+      "type": "string",
+      "description": "Identifiant unique du client (ex: julie-immo-metz)"
+    },
+    "founder": {
+      "type": "object",
+      "description": "Couche 1 du Triptyque — ADN du fondateur/dirigeant. Figure d'autorité humaine qui incarne la marque.",
+      "required": ["name", "title", "expertise_domain", "personal_tone"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Nom complet du fondateur (ex: Sophie Carette)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Titre / fonction (ex: Fondateur & Architecte SaaS)"
+        },
+        "bio_short": {
+          "type": "string",
+          "description": "Bio courte 1-2 phrases pour les cards auteur et JSON-LD"
+        },
+        "bio_long": {
+          "type": "string",
+          "description": "Bio longue pour la page à propos — parcours complet"
+        },
+        "story": {
+          "type": "string",
+          "description": "Histoire personnelle / storytelling — ce qui rend le fondateur incopiable"
+        },
+        "expertise_domain": {
+          "type": "string",
+          "description": "Domaine d'expertise principal (ex: transaction immobilière)"
+        },
+        "years_experience": {
+          "type": "number",
+          "description": "Années d'expérience dans le domaine"
+        },
+        "personal_tone": {
+          "type": "string",
+          "enum": ["expert", "accessible", "brutaliste", "inspirant", "technique"],
+          "description": "Ton personnel du fondateur — distinct du ton de la marque boutique"
+        },
+        "personal_values": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Valeurs personnelles (ex: transparence, souveraineté, excellence)"
+        },
+        "photo_url": {
+          "type": "string",
+          "description": "URL photo portrait du fondateur"
+        },
+        "channels": {
+          "type": "object",
+          "description": "Canaux d'autorité du fondateur",
+          "properties": {
+            "linkedin": { "type": "string", "description": "URL profil LinkedIn" },
+            "youtube": { "type": "string", "description": "URL chaîne YouTube" },
+            "twitter": { "type": "string", "description": "URL profil X/Twitter" },
+            "podcast": { "type": "string", "description": "URL podcast ou chaîne audio" },
+            "website": { "type": "string", "description": "Site personnel si distinct du site client" }
+          }
+        },
+        "authority_signals": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Certifications, prix, presse, réalisations qui fondent la crédibilité"
+        },
+        "speaking_topics": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Sujets d'expertise publique / conférences"
+        },
+        "quote_signature": {
+          "type": "string",
+          "description": "Citation signature du fondateur (ex: 'Votre boutique mérite mieux qu'un template.')"
+        }
+      }
+    },
+    "geolocation": {
+      "type": "object",
+      "description": "Territoire géographique du client — l'IA cible ces zones dans les contenus SEO",
+      "required": ["city"],
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "Ville principale (ex: Metz)"
+        },
+        "neighborhoods": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Quartiers ou zones ciblées (ex: Sablon, Plantières, Queuleu)"
+        },
+        "region": {
+          "type": "string",
+          "description": "Région ou département (ex: Moselle, Grand Est)"
+        },
+        "radius_km": {
+          "type": "number",
+          "description": "Rayon de chalandise en km (ex: 30)"
+        }
+      }
+    },
+    "persona_target": {
+      "type": "string",
+      "description": "Description du client idéal en une phrase (ex: Propriétaires 35-55 ans qui vendent leur bien immobilier)"
+    },
+    "brand_voice": {
+      "type": "string",
+      "enum": ["expert", "friendly", "technical"],
+      "description": "Ton de la marque boutique — expert (autorité posée), friendly (accessible et chaleureux), technical (précis et analytique). Distinct du ton personnel du fondateur."
+    },
+    "authority_sources": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "URLs ou flux RSS que l'IA utilise comme sources d'autorité pour enrichir les contenus (ex: SeLoger, MeilleursAgents, LeBonCoin)"
+    },
+    "focus_keywords": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Mots-clés SEO prioritaires — l'IA cible ces requêtes en priorité (ex: estimation immobilière metz, prix m2 moselle)"
+    },
+    "expertise_description": {
+      "type": "string",
+      "description": "Description libre de l'expertise du client — injectée dans le prompt IA pour personnaliser le ton (ex: 15 ans d'expérience en transaction immobilière sur le secteur de Metz)"
+    },
+    "competitors": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "URLs des concurrents directs — l'IA analyse leur positionnement SEO pour trouver des angles différenciants"
+    },
+    "content_rules": {
+      "type": "object",
+      "description": "Règles éditoriales spécifiques au client",
+      "properties": {
+        "forbidden_words": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Mots ou expressions interdits dans les contenus (ex: pas cher, discount, low cost)"
+        },
+        "mandatory_cta": {
+          "type": "string",
+          "description": "Call-to-action obligatoire en fin d'article (ex: Demandez votre estimation gratuite)"
+        },
+        "publish_frequency": {
+          "type": "string",
+          "enum": ["daily", "3x_week", "weekly", "biweekly"],
+          "description": "Fréquence de publication souhaitée"
+        }
+      }
+    }
+  }
+}

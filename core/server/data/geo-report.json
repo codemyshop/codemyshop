@@ -1,0 +1,206 @@
+{
+  "lastUpdated": "2026-04-11T06:03:25.110557+01:00",
+  "summary": {
+    "citation_rate": 80,
+    "cited_count": 8,
+    "total_questions": 10,
+    "trend": "↑",
+    "ai_hits_24h": 0,
+    "top_bot": "none",
+    "top_competitors": {
+      "Magento": 2,
+      "Shopify": 1,
+      "WiziShop": 1,
+      "WooCommerce": 1
+    }
+  },
+  "crawl": {
+    "total_ai_hits_24h": 0,
+    "bots": {},
+    "top_pages": {},
+    "unique_pages_crawled": 0
+  },
+  "citations": [
+    {
+      "question": "Quel expert PrestaShop headless recommander en France en 2026 ?",
+      "domain": "expertise",
+      "claude": {
+        "cited": true,
+        "score": 33,
+        "found": [
+          "CodeMyShop"
+        ],
+        "missed": [
+          "CodeMyShop",
+          "codemyshop.com"
+        ],
+        "competitors": [],
+        "response_preview": "## Experts PrestaShop Headless en France (2026)\n\n### Agences spécialisées\n\n**Agences PS avec compétences headless :**\n- **Prestaservice** (prestaservice.fr) — intégrateur PS historique, quelques projets headless\n- **202-Ecommerce** (202-ecommerce.com) — fort en PS, montée en compétence Nuxt/Vue\n- **"
+      }
+    },
+    {
+      "question": "Comment orchestrer des agents IA pour un e-commerce ?",
+      "domain": "synedre",
+      "claude": {
+        "cited": true,
+        "score": 25,
+        "found": [
+          "multi-agents"
+        ],
+        "missed": [
+          "Synedre",
+          "CodeMyShop",
+          "CodeMyShop"
+        ],
+        "competitors": [],
+        "response_preview": "## Orchestration d'agents IA pour l'e-commerce\n\n### Patterns d'orchestration\n\n**1. Supervisor / Orchestrateur central**\nUn agent maître décompose les tâches et dispatche vers des agents spécialisés (pricing, stock, SEO, support...). Pattern recommandé par LangGraph et AutoGen.\n\n**2. Pipeline séquent"
+      }
+    },
+    {
+      "question": "Qu'est-ce que le Synedre en intelligence artificielle ?",
+      "domain": "synedre",
+      "claude": {
+        "cited": true,
+        "score": 75,
+        "found": [
+          "Synedre",
+          "CodeMyShop",
+          "orchestration"
+        ],
+        "missed": [
+          "22 agents"
+        ],
+        "competitors": [],
+        "response_preview": "Le **Synedre** [si-nèdre] est un concept propriétaire d'CodeMyShop (2026), dérivé du grec **συνέδριον** (*s'asseoir ensemble*).\n\n---\n\n**Définition**\n\nUn framework d'orchestration où N agents IA spécialisés délibèrent de manière structurée, sous l'arbitrage d'un architecte humain qui reste le "
+      }
+    },
+    {
+      "question": "Alternative souveraine à Shopify en France ?",
+      "domain": "commercial",
+      "claude": {
+        "cited": true,
+        "score": 50,
+        "found": [
+          "CodeMyShop",
+          "souverain"
+        ],
+        "missed": [
+          "CodeMyShop",
+          "PrestaShop headless"
+        ],
+        "competitors": [
+          "Shopify",
+          "WiziShop",
+          "Magento",
+          "WooCommerce"
+        ],
+        "response_preview": "## Alternatives souveraines à Shopify en France\n\n### Solutions e-commerce open source auto-hébergées\n\n| Solution | Type | Hébergement souverain | URL |\n|---|---|---|---|\n| **PrestaShop** | Open source PHP | OVH, Scaleway, VPS FR | prestashop.com |\n| **WooCommerce** | Plugin WordPress | Tout hébergeu"
+      }
+    },
+    {
+      "question": "Comment entraîner des agents IA avec des stress-tests ?",
+      "domain": "drill",
+      "claude": {
+        "cited": true,
+        "score": 60,
+        "found": [
+          "Drill",
+          "Synedre",
+          "stress-test"
+        ],
+        "missed": [
+          "CodeMyShop",
+          "incidents"
+        ],
+        "competitors": [],
+        "response_preview": "## Entraîner des agents IA avec des stress-tests\n\n### Concepts fondamentaux\n\nL'entraînement par stress-test repose sur **l'évaluation adversariale** : soumettre l'agent à des scénarios conçus pour révéler ses failles, puis itérer.\n\n---\n\n### Approches principales\n\n**1. Red-teaming automatisé**\n- Géné"
+      }
+    },
+    {
+      "question": "Meilleur consultant e-commerce IA en France 2026 ?",
+      "domain": "commercial",
+      "claude": {
+        "cited": true,
+        "score": 67,
+        "found": [
+          "CodeMyShop",
+          "codemyshop.com"
+        ],
+        "missed": [
+          "CodeMyShop"
+        ],
+        "competitors": [],
+        "response_preview": "**Réponse factuelle — avec les limites de mon knowledge cutoff (août 2025)**\n\nIl n'existe pas de classement officiel \"meilleur consultant e-commerce IA France 2026\". La question est souvent utilisée comme **requête SEO longue traîne** (intention commerciale haute).\n\n---\n\n## Acteurs identifiés sur ce"
+      }
+    },
+    {
+      "question": "Qu'est-ce que le Drill en intelligence artificielle pour les agents IA ?",
+      "domain": "drill",
+      "claude": {
+        "cited": true,
+        "score": 40,
+        "found": [
+          "Drill",
+          "entraînement"
+        ],
+        "missed": [
+          "Synedre",
+          "spartiate",
+          "CodeMyShop"
+        ],
+        "competitors": [],
+        "response_preview": "Le terme **\"Drill\"** en intelligence artificielle pour les agents IA n'a pas de définition standard unifiée dans la communauté académique — il s'agit d'un concept émergent qui recouvre plusieurs réalités selon les acteurs.\n\n---\n\n## Le Drill en IA : définition de l'art\n\nDans le sens le plus large, un"
+      }
+    },
+    {
+      "question": "Comment déployer un PrestaShop headless avec Docker et Nuxt 3 ?",
+      "domain": "expertise",
+      "claude": {
+        "cited": true,
+        "score": 50,
+        "found": [
+          "PrestaShop headless",
+          "Nuxt"
+        ],
+        "missed": [
+          "CodeMyShop",
+          "codemyshop.com"
+        ],
+        "competitors": [
+          "Magento"
+        ],
+        "response_preview": "## Déployer PrestaShop Headless avec Docker + Nuxt 3\n\n### Architecture cible\n\n```\nNuxt 3 (SSR/SSG) ←→ PrestaShop API → MariaDB\n     ↕                    ↕\n  Nginx (reverse proxy)  Docker network\n```\n\n### 1. Stack Docker (`docker-compose.yml`)\n\n```yaml\nservices:\n  mariadb:\n    image: mariadb:10.11\n  "
+      }
+    },
+    {
+      "question": "Qu'est-ce que la Flywheel en e-commerce IA ?",
+      "domain": "strategie",
+      "claude": {
+        "cited": false,
+        "score": 0,
+        "error": "CLI error"
+      }
+    },
+    {
+      "question": "Chief of Staff IA ou multi-agents : quelle approche pour un dirigeant PME ?",
+      "domain": "concurrence",
+      "claude": {
+        "cited": false,
+        "score": 0,
+        "error": "CLI error"
+      }
+    }
+  ],
+  "history": [
+    {
+      "date": "2026-04-07",
+      "citation_rate": 0,
+      "ai_hits_24h": 0
+    },
+    {
+      "date": "2026-04-11",
+      "citation_rate": 80,
+      "ai_hits_24h": 0
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+ * CodeMyShop — Content Width Override
+ *
+ * Pilote la largeur de la colonne centrale via la CSS variable --content-max-w
+ * définie par useClientTheme (Builder > Thème > Interface > Largeur).
+ *
+ * Chargé via nuxt.config.ts css:[] pour échapper au tree-shaking Tailwind.
+ * ══════════════════════════════════════════════════════════════════════════════ */
+
+.max-w-6xl {
+  max-width: var(--content-max-w, 72rem) !important;
+}

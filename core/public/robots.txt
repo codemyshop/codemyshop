@@ -1,0 +1,57 @@
+# codemyshop.com — robots.txt
+# Bots utiles : Google, ChatGPT/GPTBot, Anthropic, Bing, Facebook, Apple
+# Bots bloqués : crawlers sans valeur trafic/SEO
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /api/
+Disallow: /__nuxt_error
+
+# Bots IA — autorisés sur le contenu, bloqués sur les endpoints techniques
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /__nuxt_error
+Disallow: /module/
+Disallow: /panier
+Disallow: /commander
+Disallow: /connexion
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+Disallow: /__nuxt_error
+Disallow: /module/
+Disallow: /panier
+Disallow: /commander
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /__nuxt_error
+Disallow: /module/
+Disallow: /panier
+Disallow: /commander
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+Disallow: /__nuxt_error
+Disallow: /module/
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /__nuxt_error
+Sitemap: https://codemyshop.com/sitemap.xml

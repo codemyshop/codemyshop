@@ -1,0 +1,396 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+ * CodeMyShop — Deep Dark Mode Overrides
+ *
+ * Ce fichier est importé SÉPARÉMENT de Tailwind (via nuxt.config.ts css:[])
+ * pour éviter le tree-shaking par PostCSS/PurgeCSS.
+ *
+ * Toutes les règles utilisent html.dark + !important pour écraser
+ * les classes Tailwind et les styles scoped des composants Vue.
+ * ══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Font-family global (Teleport-safe) ───────────────────────────────────── */
+*, *::before, *::after {
+  font-family: var(--font-family, 'Inter', system-ui, sans-serif);
+}
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* ── CSS Variables dark mode ───────────────────────────────────────────────── */
+html.dark {
+  --color-background: #0f172a;
+  --color-foreground: #f1f5f9;
+  --color-muted:      #64748b;
+  --color-header-bg:  #0f172a;
+  --color-footer-bg:  #0f172a;
+}
+
+/* ── Surfaces ──────────────────────────────────────────────────────────────── */
+html.dark .bg-white          { background-color: #0f172a !important; }
+html.dark .bg-gray-50        { background-color: #0f172a !important; }
+html.dark .bg-gray-100       { background-color: #1e293b !important; }
+html.dark .bg-background     { background-color: #0f172a !important; }
+
+/* ── Gradients (from-*) ────────────────────────────────────────────────────── */
+html.dark .from-gray-50        { --tw-gradient-from: #0f172a !important; }
+html.dark .from-white          { --tw-gradient-from: #0f172a !important; }
+
+/* ── Testimonial carousel fade — doit matcher le fond dark ────────────────── */
+html.dark .testimonial-fade.bg-gradient-to-r {
+  background: linear-gradient(to right, #0f172a, transparent) !important;
+}
+html.dark .testimonial-fade.bg-gradient-to-l {
+  background: linear-gradient(to left, #0f172a, transparent) !important;
+}
+
+/* ── Bordures ──────────────────────────────────────────────────────────────── */
+html.dark .border-gray-50    { border-color: #1e293b !important; }
+html.dark .border-gray-100   { border-color: #1e293b !important; }
+html.dark .border-gray-200   { border-color: #334155 !important; }
+html.dark .border-gray-300   { border-color: #475569 !important; }
+
+/* ── Textes ────────────────────────────────────────────────────────────────── */
+html.dark .text-gray-900     { color: #f1f5f9 !important; }
+html.dark .text-gray-800     { color: #e2e8f0 !important; }
+html.dark .text-gray-700     { color: #cbd5e1 !important; }
+html.dark .text-gray-600     { color: #94a3b8 !important; }
+html.dark .text-gray-500     { color: #64748b !important; }
+html.dark .text-gray-400     { color: #475569 !important; }
+
+/* ── Dividers ──────────────────────────────────────────────────────────────── */
+html.dark .divide-gray-50 > * + *  { border-color: #1e293b !important; }
+html.dark .divide-gray-100 > * + * { border-color: #1e293b !important; }
+html.dark .divide-gray-200 > * + * { border-color: #334155 !important; }
+html.dark hr                       { border-color: #1e293b !important; }
+
+/* ── Hover ─────────────────────────────────────────────────────────────────── */
+html.dark .hover\:bg-gray-50:hover   { background-color: #1e293b !important; }
+html.dark .hover\:bg-gray-100:hover  { background-color: #334155 !important; }
+html.dark .hover\:bg-primary-50:hover { background-color: rgba(79, 70, 229, 0.12) !important; }
+
+/* ── Badges ────────────────────────────────────────────────────────────────── */
+html.dark .bg-primary-50     { background-color: rgba(79, 70, 229, 0.12) !important; }
+html.dark .bg-primary-100    { background-color: rgba(79, 70, 229, 0.18) !important; }
+html.dark .bg-green-50       { background-color: rgba(34, 197, 94, 0.12) !important; }
+html.dark .bg-success-50     { background-color: rgba(34, 197, 94, 0.12) !important; }
+html.dark .bg-red-50         { background-color: rgba(239, 68, 68, 0.12) !important; }
+html.dark .bg-danger-50      { background-color: rgba(239, 68, 68, 0.12) !important; }
+html.dark .bg-amber-50       { background-color: rgba(245, 158, 11, 0.1) !important; }
+html.dark .bg-warning-50     { background-color: rgba(245, 158, 11, 0.1) !important; }
+html.dark .bg-violet-50      { background-color: rgba(139, 92, 246, 0.12) !important; }
+html.dark .bg-blue-50        { background-color: rgba(59, 130, 246, 0.12) !important; }
+html.dark .bg-sky-50         { background-color: rgba(14, 165, 233, 0.12) !important; }
+html.dark .bg-orange-50      { background-color: rgba(249, 115, 22, 0.1) !important; }
+html.dark .bg-indigo-50      { background-color: rgba(99, 102, 241, 0.12) !important; }
+html.dark .bg-indigo-100     { background-color: rgba(99, 102, 241, 0.18) !important; }
+
+html.dark .border-primary-100 { border-color: rgba(79, 70, 229, 0.2) !important; }
+html.dark .border-primary-200 { border-color: rgba(79, 70, 229, 0.25) !important; }
+html.dark .border-success-100 { border-color: rgba(34, 197, 94, 0.2) !important; }
+html.dark .border-success-200 { border-color: rgba(34, 197, 94, 0.25) !important; }
+html.dark .border-danger-100  { border-color: rgba(239, 68, 68, 0.2) !important; }
+html.dark .border-amber-100   { border-color: rgba(245, 158, 11, 0.2) !important; }
+html.dark .border-violet-100  { border-color: rgba(139, 92, 246, 0.2) !important; }
+
+/* ── Tables ────────────────────────────────────────────────────────────────── */
+html.dark thead tr            { background-color: #1e293b !important; }
+html.dark tbody tr:hover      { background-color: rgba(30, 41, 59, 0.4) !important; }
+
+/* ── Inputs ────────────────────────────────────────────────────────────────── */
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #475569 !important;
+}
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  border-color: var(--color-primary-500, #4F46E5) !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15) !important;
+}
+html.dark select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+  background-position: right 0.5rem center !important;
+  background-repeat: no-repeat !important;
+  background-size: 1.5em 1.5em !important;
+}
+
+/* ── Shadows ───────────────────────────────────────────────────────────────── */
+html.dark .shadow-sm  { box-shadow: 0 1px 2px rgba(0,0,0,0.3) !important; }
+html.dark .shadow-lg  { box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important; }
+html.dark .shadow-2xl { box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important; }
+
+/* ── Header background — utilise la variable client ── */
+/* sticky headers : le fond est piloté par le JS inline (transparent → opaque au scroll) */
+html.dark header:not(.sticky) {
+  background-color: var(--color-header-bg, #0f172a) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+html.dark header.sticky {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ── Code/Pre ──────────────────────────────────────────────────────────────── */
+html.dark pre,
+html.dark code {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+/* ── Modales backdrop ──────────────────────────────────────────────────────── */
+html.dark .bg-black\/40 { background-color: rgba(0,0,0,0.6) !important; }
+html.dark .bg-black\/30 { background-color: rgba(0,0,0,0.5) !important; }
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+html.dark ::-webkit-scrollbar { width: 6px; height: 6px; }
+html.dark ::-webkit-scrollbar-track { background: #0f172a; }
+html.dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+html.dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* ── Skeleton ──────────────────────────────────────────────────────────────── */
+html.dark .animate-pulse { background-color: #1e293b !important; }
+
+/* ── Tokens sémantiques ───────────────────────────────────────────────────── */
+html.dark .text-foreground   { color: #f1f5f9 !important; }
+html.dark .text-muted        { color: #64748b !important; }
+html.dark .bg-background     { background-color: #0f172a !important; }
+
+/* ── Contenu v-html (strong, a, etc. dans les textes dynamiques) ──────────── */
+html.dark strong             { color: #e2e8f0; }
+html.dark .text-gray-800 strong { color: #e2e8f0 !important; }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+ * DARK MODE CINÉMATIQUE — Effet premium noir & blanc avec accents de couleur
+ * Les images passent en quasi-monochrome, le hover révèle les couleurs.
+ * Les boutons/CTA gardent une touche de couleur pour guider l'œil.
+ * ══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Images — quasi noir & blanc, révélation au hover ────────────────────── */
+html.dark img:not([data-no-filter]) {
+  filter: grayscale(0.85) brightness(0.75) contrast(1.15);
+  transition: filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+html.dark img:not([data-no-filter]):hover {
+  filter: grayscale(0) brightness(0.9) contrast(1.05);
+}
+
+/* Photo portrait hero — légèrement plus visible */
+html.dark img[class*="rounded-full"] {
+  filter: grayscale(0.6) brightness(0.8) contrast(1.1) !important;
+}
+html.dark img[class*="rounded-full"]:hover {
+  filter: grayscale(0) brightness(0.95) contrast(1) !important;
+}
+
+/* Logos header/footer — monochrome élégant (sauf data-no-filter) */
+html.dark footer img:not([data-no-filter]),
+html.dark header img:not([data-no-filter]) {
+  filter: grayscale(1) brightness(0.8) contrast(1.2) !important;
+}
+
+/* ── Google Maps & iframes — thème sombre intégré ────────────────────────── */
+html.dark iframe {
+  filter: grayscale(0.9) brightness(0.7) contrast(1.2) invert(0.92) hue-rotate(180deg);
+  transition: filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+html.dark iframe:hover {
+  filter: grayscale(0.7) brightness(0.75) contrast(1.1) invert(0.92) hue-rotate(180deg);
+}
+
+/* ── SVG icônes — adoucies ───────────────────────────────────────────────── */
+html.dark svg[fill="currentColor"] {
+  opacity: 0.75;
+  transition: opacity 0.3s ease;
+}
+html.dark svg[fill="currentColor"]:hover {
+  opacity: 1;
+}
+
+/* Icônes dans les features (pastilles colorées) */
+html.dark [class*="bg-primary-50"] svg,
+html.dark [class*="bg-primary-100"] svg {
+  filter: grayscale(0.3) brightness(1.1);
+}
+
+/* ── Vidéos — cinématique ────────────────────────────────────────────────── */
+html.dark video {
+  filter: grayscale(0.7) brightness(0.75) contrast(1.1);
+  transition: filter 0.5s ease;
+}
+html.dark video:hover {
+  filter: grayscale(0) brightness(0.85) contrast(1.05);
+}
+
+/* ── Boutons primaires — couleur vivante (override dans section 2026 Tech) ── */
+
+/* ── Cards & surfaces élevées — ombre subtile bleutée ────────────────────── */
+html.dark .shadow-sm  { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.04) !important; }
+html.dark .shadow-lg  { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.06) !important; }
+html.dark .shadow-2xl { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.08) !important; }
+
+/* ── Glow subtil sur les éléments interactifs hover ──────────────────────── */
+html.dark a:hover,
+html.dark button:hover {
+  text-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+ * 2026 TECH DARK MODE — Effet Waouh
+ * Mesh gradients, grid patterns, glass morphism, glow effects, section depth
+ * ══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Hero: grid pattern technique ─────────────────────────────────────────── */
+html.dark .hero-grid-pattern {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 1) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* ── Hero: animations orbes ───────────────────────────────────────────────── */
+@keyframes hero-orb-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(30px, -20px) scale(1.05); }
+  66%      { transform: translate(-20px, 15px) scale(0.95); }
+}
+@keyframes hero-orb-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-25px, 25px) scale(0.95); }
+  66%      { transform: translate(20px, -15px) scale(1.05); }
+}
+@keyframes hero-glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.05); }
+}
+html.dark .animate-hero-orb-1 { animation: hero-orb-1 12s ease-in-out infinite; }
+html.dark .animate-hero-orb-2 { animation: hero-orb-2 15s ease-in-out infinite; }
+html.dark .animate-hero-glow  { animation: hero-glow 4s ease-in-out infinite; }
+
+/* Section separators supprimés — créaient des lignes parasites entre sections */
+
+/* ── Malt card — glass morphism premium ───────────────────────────────────── */
+html.dark .shadow-lg.rounded-2xl.bg-white {
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(99, 102, 241, 0.1) !important;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(99, 102, 241, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+html.dark .shadow-lg.rounded-2xl.bg-white:hover {
+  border-color: rgba(99, 102, 241, 0.2) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(99, 102, 241, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ── Blog cards — glass morphism ──────────────────────────────────────────── */
+html.dark .rounded-2xl.shadow-sm.border.border-gray-100,
+html.dark .rounded-2xl.shadow-sm.border.border-gray-100.bg-white {
+  background: rgba(30, 41, 59, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(99, 102, 241, 0.08) !important;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+html.dark .rounded-2xl.shadow-sm.border.border-gray-100:hover {
+  border-color: rgba(99, 102, 241, 0.2) !important;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(99, 102, 241, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ── Testimonial cards — glass morphism ───────────────────────────────────── */
+html.dark .marquee-track > div {
+  background: rgba(30, 41, 59, 0.5) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(99, 102, 241, 0.08) !important;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+/* ── FAQ items — glass morphism ───────────────────────────────────────────── */
+html.dark .space-y-3 > div.bg-white {
+  background: rgba(30, 41, 59, 0.3) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(99, 102, 241, 0.06) !important;
+  transition: all 0.2s ease !important;
+}
+html.dark .space-y-3 > div.bg-white:hover {
+  border-color: rgba(99, 102, 241, 0.15) !important;
+  background: rgba(30, 41, 59, 0.5) !important;
+}
+
+/* ── FAQ container bg — subtle gradient ───────────────────────────────────── */
+html.dark .bg-gray-50.rounded-2xl {
+  background: linear-gradient(135deg,
+    rgba(30, 41, 59, 0.3) 0%,
+    rgba(15, 23, 42, 0.8) 100%
+  ) !important;
+  border: 1px solid rgba(99, 102, 241, 0.06) !important;
+}
+
+/* ── About section map — glow border ──────────────────────────────────────── */
+html.dark .rounded-2xl.overflow-hidden.shadow-sm iframe {
+  border-radius: 1rem;
+}
+html.dark .rounded-2xl.overflow-hidden.shadow-sm {
+  border: 1px solid rgba(99, 102, 241, 0.1) !important;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.06) !important;
+}
+
+/* ── CTA buttons — glow effect on hover ───────────────────────────────────── */
+html.dark .bg-primary-600 {
+  filter: none !important;
+  box-shadow: 0 0 20px rgba(79, 70, 229, 0.15);
+  transition: all 0.3s ease !important;
+}
+html.dark .bg-primary-600:hover {
+  filter: none !important;
+  box-shadow: 0 0 30px rgba(79, 70, 229, 0.3), 0 0 60px rgba(79, 70, 229, 0.1) !important;
+}
+
+/* ── Section titles — subtle glow ─────────────────────────────────────────── */
+html.dark h2 {
+  text-shadow: 0 0 40px rgba(99, 102, 241, 0.08);
+}
+
+/* ── Tags/badges — subtle border glow ─────────────────────────────────────── */
+html.dark .rounded-full.bg-primary-50,
+html.dark .rounded-full[class*="bg-primary"] {
+  border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+ * TYPOGRAPHIE PREMIUM — Serif sur les titres (chargé APRÈS Tailwind)
+ * Ce fichier est importé via css:[] dans nuxt.config, donc ces règles
+ * ont la priorité sur le reset Tailwind et les @layer base.
+ * ══════════════════════════════════════════════════════════════════════════════ */
+h1, h2 {
+  font-family: var(--font-family, 'Playfair Display'), Georgia, serif !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+ * HERO — Pulse ring (light mode, identique au glow dark mode)
+ * Placé ici car main.css est purgé par Tailwind/PostCSS.
+ * ══════════════════════════════════════════════════════════════════════════════ */
+.animate-hero-pulse {
+  animation: hero-pulse 4s ease-in-out infinite;
+}
+@keyframes hero-pulse {
+  0%, 100% { transform: scale(0.95); opacity: 0.6; }
+  50%      { transform: scale(1.15); opacity: 1; }
+}

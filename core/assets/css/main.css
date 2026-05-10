@@ -1,0 +1,264 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    @apply font-sans;
+  }
+}
+/* ══════════════════════════════════════════════════════════════════════════════
+ * CodeMyShop — Design System (Variables & Base)
+ * Les overrides Dark Mode sont dans dark-overrides.css (chargé séparément).
+ * ══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --color-primary:     #4F46E5;
+  --color-primary-50:  hsl(239, 14%, 93%);
+  --color-primary-100: hsl(239, 22%, 87%);
+  --color-primary-200: hsl(239, 34%, 79%);
+  --color-primary-300: hsl(239, 48%, 69%);
+  --color-primary-400: hsl(239, 57%, 60%);
+  --color-primary-500: hsl(239, 64%, 52%);
+  --color-primary-600: #4F46E5;
+  --color-primary-700: hsl(243, 64%, 41%);
+  --color-primary-800: hsl(243, 56%, 30%);
+  --color-primary-900: hsl(243, 48%, 20%);
+
+  --color-secondary:     #0D9488;
+  --color-secondary-50:  hsl(175, 14%, 93%);
+  --color-secondary-100: hsl(175, 22%, 87%);
+  --color-secondary-200: hsl(175, 34%, 79%);
+  --color-secondary-300: hsl(175, 48%, 69%);
+  --color-secondary-400: hsl(175, 57%, 55%);
+  --color-secondary-500: hsl(175, 67%, 43%);
+  --color-secondary-600: #0D9488;
+  --color-secondary-700: hsl(175, 84%, 26%);
+  --color-secondary-800: hsl(175, 73%, 18%);
+  --color-secondary-900: hsl(175, 62%, 12%);
+
+  --color-background: #F9FAFB;
+  --color-foreground: #111827;
+  --color-topbar-bg:   #111827;
+  --color-topbar-text: #ffffff;
+  --color-muted: #6B7280;
+  --color-header-bg: #ffffff;
+  --color-footer-bg: #ffffff;
+
+  --color-accent:    #ec4899;
+
+  --radius-btn:   0.5rem;
+  --radius-card:  0.75rem;
+  --radius-input: 0.5rem;
+  --font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Typographie Premium : serif pour les titres (si la font client est serif) ── */
+h1, h2 {
+  font-family: var(--font-family, 'Playfair Display'), Georgia, serif;
+}
+h3, h4, h5, h6 {
+  font-family: var(--font-family, 'Inter'), system-ui, sans-serif;
+}
+
+.theme-no-shadow *, .theme-no-shadow *::before, .theme-no-shadow *::after {
+  box-shadow: none !important;
+}
+
+/* ── Edit Mode ──────────────────────────────────────────────────────────────── */
+.edit-mode .edit-section {
+  position: relative;
+  outline: 2px dashed transparent;
+  outline-offset: 4px;
+  transition: outline-color 0.15s, background-color 0.15s;
+  cursor: pointer;
+}
+.edit-mode .edit-section:hover {
+  outline-color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.02);
+}
+.edit-section-label {
+  position: absolute; top: 8px; right: 12px;
+  font-size: 10px; font-weight: 700; color: #3b82f6;
+  background: rgba(255,255,255,0.92);
+  border: 1px dashed #93c5fd; border-radius: 6px;
+  padding: 2px 8px; pointer-events: none; opacity: 0;
+  transition: opacity 0.15s; z-index: 10;
+}
+.edit-mode .edit-section:hover .edit-section-label { opacity: 1; }
+
+
+/* ══════════════════════════════════════════════════════════════════════════════
+ * 2026 LIGHT MODE — Effet premium : mesh gradients, refined depth, soft glow
+ * ══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Animations shared (hero glow — used by both light & dark) ────────────── */
+.animate-hero-glow  { animation: hero-glow 4s ease-in-out infinite; }
+
+@keyframes hero-glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.05); }
+}
+
+/* ── Hero: energy flow animations (light mode — flux multicolore) ─────────── */
+.animate-energy-flow-1 {
+  animation: energy-flow-1 10s ease-in-out infinite;
+}
+.animate-energy-flow-2 {
+  animation: energy-flow-2 13s ease-in-out infinite;
+}
+.animate-energy-flow-3 {
+  animation: energy-flow-3 11s ease-in-out infinite;
+}
+.animate-energy-flow-4 {
+  animation: energy-flow-4 9s ease-in-out infinite;
+}
+.animate-energy-flow-5 {
+  animation: energy-flow-5 8s ease-in-out infinite;
+}
+
+@keyframes energy-flow-1 {
+  0%   { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.8; }
+  25%  { transform: translate(40px, -30px) scale(1.1) rotate(5deg); opacity: 1; }
+  50%  { transform: translate(80px, 10px) scale(0.95) rotate(-3deg); opacity: 0.7; }
+  75%  { transform: translate(20px, 30px) scale(1.08) rotate(4deg); opacity: 0.9; }
+  100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.8; }
+}
+@keyframes energy-flow-2 {
+  0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
+  30%  { transform: translate(-50px, 40px) scale(1.15) rotate(-6deg); }
+  60%  { transform: translate(-20px, -30px) scale(0.9) rotate(4deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+}
+@keyframes energy-flow-3 {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0.7; }
+  35%  { transform: translate(60px, -20px) scale(1.12); opacity: 1; }
+  70%  { transform: translate(-30px, 25px) scale(0.92); opacity: 0.6; }
+  100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+}
+@keyframes energy-flow-4 {
+  0%   { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.6; }
+  40%  { transform: translate(-40px, -35px) scale(1.2) rotate(8deg); opacity: 0.9; }
+  80%  { transform: translate(30px, 20px) scale(0.85) rotate(-5deg); opacity: 0.5; }
+  100% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.6; }
+}
+@keyframes energy-flow-5 {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0.7; }
+  20%  { transform: translate(35px, 25px) scale(1.1); opacity: 1; }
+  50%  { transform: translate(-45px, -15px) scale(0.88); opacity: 0.5; }
+  80%  { transform: translate(20px, -30px) scale(1.15); opacity: 0.85; }
+  100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+}
+
+/* ── Hero: gloss overlay — reflet lumineux qui traverse ───────────────────── */
+.hero-gloss-overlay {
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.12) 40%,
+    rgba(255, 255, 255, 0.06) 45%,
+    transparent 50%,
+    transparent 100%
+  );
+  background-size: 250% 250%;
+  animation: gloss-sweep 6s ease-in-out infinite;
+}
+
+@keyframes gloss-sweep {
+  0%   { background-position: 200% 200%; }
+  50%  { background-position: -50% -50%; }
+  100% { background-position: 200% 200%; }
+}
+
+/* Section separators supprimés — créaient des lignes parasites entre sections */
+
+/* ── Cards — refined shadows with rose/purple tint ────────────────────────── */
+html:not(.dark) .rounded-2xl.shadow-sm.border.border-gray-100 {
+  box-shadow:
+    0 1px 3px rgba(244, 63, 94, 0.03),
+    0 4px 12px rgba(168, 85, 247, 0.03),
+    0 2px 8px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+html:not(.dark) .rounded-2xl.shadow-sm.border.border-gray-100:hover {
+  border-color: rgba(244, 63, 94, 0.12) !important;
+  box-shadow:
+    0 4px 16px rgba(244, 63, 94, 0.06),
+    0 8px 24px rgba(168, 85, 247, 0.04),
+    0 4px 12px rgba(0, 0, 0, 0.03) !important;
+  transform: translateY(-2px);
+}
+
+/* ── Malt card — elevated with rose glow ──────────────────────────────────── */
+html:not(.dark) .shadow-lg.rounded-2xl.bg-white {
+  box-shadow:
+    0 4px 20px rgba(244, 63, 94, 0.05),
+    0 8px 32px rgba(168, 85, 247, 0.04),
+    0 4px 16px rgba(0, 0, 0, 0.03) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+html:not(.dark) .shadow-lg.rounded-2xl.bg-white:hover {
+  border-color: rgba(244, 63, 94, 0.1) !important;
+  box-shadow:
+    0 8px 28px rgba(244, 63, 94, 0.08),
+    0 12px 40px rgba(168, 85, 247, 0.05),
+    0 8px 20px rgba(0, 0, 0, 0.04) !important;
+  transform: translateY(-2px);
+}
+
+/* ── Testimonial cards — subtle rose depth ────────────────────────────────── */
+html:not(.dark) .marquee-track > div {
+  box-shadow:
+    0 1px 4px rgba(244, 63, 94, 0.03),
+    0 4px 12px rgba(0, 0, 0, 0.03);
+  border-color: rgba(244, 63, 94, 0.05) !important;
+  transition: all 0.3s ease;
+}
+html:not(.dark) .marquee-track > div:hover {
+  box-shadow:
+    0 4px 16px rgba(244, 63, 94, 0.06),
+    0 8px 24px rgba(168, 85, 247, 0.03);
+  border-color: rgba(244, 63, 94, 0.1) !important;
+}
+
+/* ── FAQ items — rose hover ───────────────────────────────────────────────── */
+html:not(.dark) .space-y-3 > div.bg-white {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+html:not(.dark) .space-y-3 > div.bg-white:hover {
+  border-color: rgba(244, 63, 94, 0.1) !important;
+  box-shadow:
+    0 2px 8px rgba(244, 63, 94, 0.05),
+    0 4px 12px rgba(168, 85, 247, 0.03);
+}
+
+/* ── FAQ container — soft rose gradient bg ────────────────────────────────── */
+html:not(.dark) .bg-gray-50.rounded-2xl {
+  background: linear-gradient(135deg,
+    rgba(254, 242, 242, 0.3) 0%,
+    rgba(245, 243, 255, 0.3) 50%,
+    rgba(249, 250, 251, 1) 100%
+  ) !important;
+  border: 1px solid rgba(244, 63, 94, 0.04);
+}
+
+/* ── Map container — refined rose border ──────────────────────────────────── */
+html:not(.dark) .rounded-2xl.overflow-hidden.shadow-sm {
+  box-shadow:
+    0 2px 8px rgba(244, 63, 94, 0.03),
+    0 4px 16px rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(244, 63, 94, 0.06) !important;
+}
+
+/* ── Tags/badges — soft rose border ───────────────────────────────────────── */
+html:not(.dark) .rounded-full.bg-primary-50 {
+  border: 1px solid rgba(244, 63, 94, 0.06);
+  box-shadow: 0 1px 3px rgba(244, 63, 94, 0.03);
+}
+
+/* ── Section titles — subtle depth ────────────────────────────────────────── */
+html:not(.dark) h2 {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}

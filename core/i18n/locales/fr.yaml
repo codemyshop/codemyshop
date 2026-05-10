@@ -1,0 +1,455 @@
+# French locale pack — source of truth for the OSS storefront UI strings.
+#
+# Format: nested namespaces. Final values are interpolated via `{name}`
+# placeholders (resolved by useT() at render time).
+#
+# Convention:
+#   - lower-snake_case for keys
+#   - logical grouping by feature (cart.*, blog.*, account.*, etc.)
+#   - keep keys stable; rename = breaking change for translators
+#
+# To contribute another language: copy this file to `<locale>.yaml` and
+# translate the values. Keys must stay identical.
+
+common:
+  cta_book_call: Réserver un appel
+  preview_label: "Preview :"
+  exit_preview_btn: Quitter
+  exit_preview_aria: Quitter la preview
+  loading: Chargement...
+  item_ref: "Réf. {ref}"
+  price_ht_suffix: HT
+  main_navigation: Navigation principale
+  back_home: Retour à l'accueil
+  open_menu: Ouvrir le menu
+  preview_mode_label: "Mode preview — client : {client}"
+  preview_exit_link: Quitter le preview
+  close: Fermer
+  common_error_generic: Une erreur est survenue.
+  common_cancel: Annuler
+  common_error_server: Erreur serveur
+  open_quote: Ouvrir le devis
+  open_cart: Ouvrir le panier
+  my_favorites: Mes favoris
+
+cart:
+  loyalty:
+    title: Programme fidélité
+    points_balance: "{points} points disponibles"
+    earn_estimate: "Vous gagnerez {points} points sur cette commande"
+    cta_account: Voir mon compte
+    balance_label: "Solde :"
+    points_with_unit: "{points} pts"
+    earn_here_short: "+{points} pts avec cette commande"
+    next_tier: "Plus que {points} pts pour un bon de {value}."
+    tier_reached: "Vous pouvez convertir {points} pts en bon {value}."
+    cta_view_points: "Voir mes points →"
+  first_order:
+    title: Première commande chez nous ?
+    subtitle_html: 'Profitez de <span class="font-bold">5% de remise</span> avec le code <span class="font-mono font-bold">PROMO5</span>.'
+    cta_apply: Appliquer
+    error_unavailable: Code PROMO5 indisponible
+  article: article
+  articles: articles
+  drawer:
+    title: Mon panier
+    items_count_one: "({count} article)"
+    items_count_other: "({count} articles)"
+    close_aria: Fermer le panier
+    empty_title: Votre panier est vide
+    empty_subtitle: Ajoutez des produits pour les retrouver ici
+    item_quantity_decrease_aria: "Diminuer la quantité de {name}"
+    item_quantity_increase_aria: "Augmenter la quantité de {name}"
+    item_remove_aria: "Retirer {name} du panier"
+    box_one: un colis
+    box_other: "{count} colis"
+    tax_line_html: 'TVA à {rate} %, soit pour {qtyLabel} : <span class="font-semibold text-gray-700 dark:text-gray-200">{amount} HT</span>'
+    promo_code_label: "Code « {code} »"
+    promo_remove_aria: Retirer le code promo
+    promo_placeholder: Code promo
+    promo_apply: Appliquer
+    promo_invalid: Code promo invalide
+    subtotal_ht: Sous-total HT
+    discount_label: "Remise « {code} »"
+    total_ht: Total HT
+    tax_estimated: TVA estimée
+    total_ttc: Total TTC
+    cta_checkout: Commander
+    cta_full_cart: Voir le panier complet
+
+header:
+  blog_link: Blog
+  contact_link: Contact
+  giftcard_link: Cartes cadeaux
+  stores_link: Skateshops
+
+footer:
+  opening_hours: Horaires
+  contact: Contact
+  signature_prefix: Réalisé en France et maintenu avec
+  signature_love: amour
+  signature_by: par
+  newsletter:
+    title: Newsletter
+    placeholder: Votre adresse email
+    aria_email: Adresse email pour la newsletter
+    cta: S'inscrire
+    consent_default: J'accepte de recevoir la newsletter et confirme avoir pris connaissance de la politique de confidentialité.
+    success: Merci ! Votre inscription est bien enregistrée.
+    error: Une erreur est survenue. Réessayez plus tard.
+
+academy:
+  academy_qa_section_title: Questions & Réponses
+  academy_qa_ai_answer_label: Réponse IA
+  academy_qa_hint_text: Une question sur cette leçon ? L'IA répond automatiquement.
+  academy_qa_textarea_placeholder: "Votre question sur cette leçon..."
+  academy_qa_email_placeholder: Votre email
+  academy_qa_submit_button_default: Poser ma question
+  academy_qa_submit_button_loading: "..."
+  academy_qa_privacy_notice: 'Vos questions et les réponses IA sont publiques et enrichissent le cours pour tous. Votre email est utilisé uniquement pour l''authentification (base légale : intérêt légitime, durée : 3 ans). <a href="/confidentialite" class="underline hover:text-primary-500">Politique de confidentialité</a>.'
+  academy_qa_password_hint: Ce compte existe déjà. Confirmez votre mot de passe pour publier.
+  password_placeholder: Mot de passe
+  academy_qa_password_button_default: Confirmer
+  academy_qa_password_button_loading: "..."
+  academy_qa_back_to_email: ← Changer d'email
+  academy_qa_success_title: Question publiée !
+  academy_qa_success_message: L'IA va répondre dans les prochaines minutes.
+  academy_qa_ask_another: Poser une autre question
+  auth_error_credentials: Identifiants incorrects
+  academy_register_modal_title: Rejoindre l'Academy
+  academy_register_modal_subtitle: Posez vos questions et recevez des réponses IA.
+  academy_label_pseudo: Pseudo
+  register_pseudo_placeholder: TonPseudo
+  register_password_placeholder: 8 caractères min.
+  academy_register_button_default: Créer mon compte
+  academy_register_button_loading: Inscription...
+
+chatbot:
+  chatbot_close_button_aria: Fermer le chat
+  chatbot_open_button_aria: Ouvrir le chat
+  chatbot_restart_button: Démarrer une nouvelle conversation
+  chatbot_subtitle_default: Comment vous aider ?
+  chatbot_subtitle_human: Vous écrivez à Aude
+  chatbot_subtitle_order: Question sur une commande
+  chatbot_subtitle_product: Demande sur un produit
+  chatbot_subtitle_takeover: En direct avec un commercial
+  chatbot_subtitle_terminal: Conversation terminée
+  chatbot_text_input_placeholder: Tapez votre réponse…
+  chatbot_user_qty_msg: "Qté visée : {qty}"
+  takeover_banner: Un commercial vous répond directement.
+  takeover_input_placeholder: Écrivez votre message…
+
+blogcomments:
+  comments_section_title: Discussion
+  comments_form_subtitle: Votre avis sur cet article
+  comments_form_hint: Les commentaires sont modérés et répondus par une intelligence artificielle. Votre email ne sera jamais affiché.
+  comments_label_author: Votre nom
+  comments_placeholder_author: Jean Dupont
+  comments_label_email: Votre email
+  comments_email_not_displayed: "(non affiché)"
+  comments_placeholder_email: jean@exemple.fr
+  comments_label_content: Votre commentaire
+  comments_placeholder_content: "Votre réflexion, question ou retour d'expérience..."
+  comments_submit_button_default: Publier mon commentaire
+  comments_submit_button_loading: Envoi...
+  comments_submit_success_message: Votre commentaire a été soumis. Il sera vérifié et publié sous quelques minutes.
+  comments_privacy_notice: 'En publiant, vous acceptez que votre nom et commentaire soient affichés publiquement. Votre email est utilisé uniquement pour la modération (base légale : intérêt légitime, durée : 3 ans). <a href="/confidentialite" class="underline">Politique de confidentialité</a>.'
+
+reviews:
+  heading: Ce que disent nos clients
+  customer_reviews: avis clients
+  avg_rating: Note moyenne
+  out_of: sur
+  stars_out_of_5: étoiles sur 5
+  review_by: Avis de
+  verified_badge: Avis vérifiés
+  source_verified: Vérifié
+  cta_google: Voir tous nos avis sur Google
+
+auth:
+  login_page_title: Se connecter
+  login_subtitle: Accédez à votre espace pro.
+  label_email: Email
+  placeholder_email: vous@exemple.fr
+  label_password: Mot de passe
+  login_button: Se connecter
+  login_loading: Connexion…
+  login_error_invalid: Email ou mot de passe incorrect.
+  login_forgot_password: Mot de passe oublié ?
+  login_no_account: Pas encore de compte ?
+  login_create_account: Créer un compte
+  logout: Se déconnecter
+
+account:
+  account_title: Mon compte
+  menu_label: Menu compte client
+
+cms:
+  contact_question_title: Une question ?
+  contact_question_lede: Notre équipe vous répond du lundi au vendredi.
+  contact_form_cta: Formulaire de contact
+
+testimonials:
+  heading: 119 avis clients PrestaShop & e-commerce
+  subheading: 5 étoiles sur Malt · +193 projets livrés
+
+investissement:
+  kicker: Partenariat Premium
+  heading: Quelle est votre situation actuelle ?
+  lede: Choisissez le profil qui vous ressemble. Nous adaptons notre accompagnement à votre réalité.
+  starter_title: Solopreneur & Créateur
+  starter_desc: Je veux lancer une boutique souveraine et automatisée sans me ruiner.
+  starter_cta: Découvrir l'offre Starter
+  premium_title: PME & Marque Établie
+  premium_desc: J'ai besoin d'une architecture Headless sur-mesure pour développer mon catalogue existant.
+  premium_cta: Découvrir l'offre Premium
+
+ctafinal:
+  heading: Prêt à reprendre le contrôle ?
+  lede: Un appel de 30 minutes. Pas de pitch commercial. Un diagnostic clair de votre situation e-commerce, de vos blocages SEO, et des opportunités IA concrètes pour votre activité.
+  cta_book: Réserver mon appel stratégique gratuit
+  cta_full: Complet ce mois-ci
+  signature: Alexandre Carette · Fondateur CodeMyShop · Metz, France
+
+probleme:
+  kicker: Le constat
+  heading: Vous payez pour un système qui ne vous appartient pas.
+  lede: Six réalités que vivent les e-commerçants français en 2026.
+  pain1_title: Commissions qui grimpent
+  pain1_desc: Les plateformes SaaS prélèvent 0,5 à 2 % de commission sur chaque vente, auxquels s'ajoutent les abonnements aux applications tierces. À mesure que votre chiffre d'affaires croît, ces coûts augmentent proportionnellement.
+  pain2_title: SEO bridé par la plateforme
+  pain2_desc: URLs imposées, vitesse médiocre, Core Web Vitals dans le rouge. Google vous pénalise et vous ne pouvez rien faire.
+  pain3_title: Données hors de France
+  pain3_desc: Vos clients, commandes et catalogue sont sur des serveurs américains. Un changement de CGU et vous perdez l'accès à votre propre business.
+  pain4_title: Vos données financent l'IA de vos concurrents
+  pain4_desc: "Sur les plateformes mutualisées, le comportement de vos clients améliore l'algorithme global — qui profite à tout le monde sauf à vous. Votre intelligence métier nourrit la machine de vos concurrents."
+  pain5_title: Équipe réduite, trop d'outils
+  pain5_desc: Un outil pour le SEO, un pour l'email, un pour le social, un pour le CRM. Rien ne communique. Vous gérez vos outils au lieu de vendre.
+  pain6_title: Dépendance totale
+  pain6_desc: Une décision prise à San Francisco peut couper votre boutique du jour au lendemain. Vous êtes locataire de votre propre vitrine.
+
+navpages:
+  heading: Allez plus loin
+  lede: Quatre pages pour comprendre qui je suis et pourquoi c'est différent.
+  page1_title: Pourquoi la souveraineté numérique est une urgence
+  page1_desc: En 2026, dépendre d'une plateforme américaine pour votre e-commerce, c'est accepter de ne rien contrôler. J'ai écrit pourquoi — et ce que je fais pour changer ça.
+  page1_cta: Lire le manifeste
+  page2_title: Du Macintosh de mon papa à CodeMyShop
+  page2_desc: Informatique à 5 ans, salons pirates d'AOL à 13, marque de skateboard à 24, expert PrestaShop à 35. L'histoire derrière 10 ans d'obsession e-commerce.
+  page2_cta: Découvrir mon parcours
+  page3_title: Distribuez notre infrastructure à votre réseau
+  page3_desc: "Devenez ambassadeur CodeMyShop. 20% de commission sur chaque deal, soit 3 000 € par client signé."
+  page3_cta: Devenir ambassadeur
+  page4_title: Du Hobbit à 12 ans au conseil de 20 agents IA
+  page4_desc: Figurines en plomb, philosophie au lycée, luxe à la française, trahison humaine — et la naissance du Synedre. La vraie histoire.
+  page4_cta: Lire l'histoire du Synedre
+  page5_title: Pourquoi ce système devient exponentiel à chaque tour
+  page5_desc: Data souveraine, architecture headless, IA qui apprend — les boucles de rétroaction cachées qui font que le tour 4 coûte moins cher que le tour 1.
+  page5_cta: Comprendre la théorie
+
+instagram:
+  heading: Suivez-nous sur Instagram
+  subheading: Découvrez nos dernières sélections et nos coulisses de grossiste.
+  view_on_ig: Voir sur Instagram
+  alt_post: Post Instagram
+  media_video: Vidéo
+  media_album: Album
+  see_all_cta: Voir toutes nos publications
+
+cartes_cadeaux:
+  kicker: Cartes cadeaux
+
+silo:
+  related_categories: Catégories liées
+  toc_title: Sommaire
+  breadcrumb_aria: Fil d'Ariane
+  breadcrumb_home: Accueil
+  silo_not_found: Catégorie introuvable
+  silo_back_home: Retour à l'accueil
+  presentation_title: Présentation
+  articles_title: Articles liés
+  shipping_title: Livraison & retrait
+  shipping_rungis: Retrait Rungis
+  shipping_rungis_detail: "Retirez votre commande directement à notre dépôt sur le marché de Rungis (M.I.N.).\nSur rendez-vous du lundi au vendredi."
+  shipping_bordeaux: Livraison nationale
+  shipping_bordeaux_detail: "Livraison France métropolitaine et grandes villes européennes.\nDélai indicatif 24-48h."
+  shipping_packaging: Emballage soigné
+  shipping_packaging_detail: Carton renforcé, calage anti-chocs, étiquetage traçabilité.
+  toc_products: Produits
+  toc_shipping: Livraison
+  toc_faq: FAQ
+  toc_presentation: Présentation
+  toc_articles: Articles
+  intro_fallback_root: ""
+  intro_fallback_template: "${label}"
+  rdv:
+    title: Échangeons sur votre projet
+    cta: Prendre RDV
+
+catalogue:
+  pagination_products: Pagination produits
+  pagination_top: Pagination produits (haut)
+  pagination_bottom: Pagination produits (bas)
+  prev: ← Précédent
+  next: Suivant →
+  references_singular: référence
+  references_plural: références
+  available_products: Produits disponibles
+  page: page
+  sort_by: Trier par
+  per_page: Par page
+  sort_relevance: Pertinence
+  sort_price_asc: Prix ↑
+  sort_price_desc: Prix ↓
+  sort_price_kg_asc: "Prix /kg ↑"
+  sort_price_kg_desc: "Prix /kg ↓"
+  sort_weight_asc: Poids ↑
+  sort_weight_desc: Poids ↓
+  view_grid: Vue grille
+  view_list: Vue liste
+  col_image: Image
+  col_ref: Réf.
+  col_product: Produit
+  col_ean13: EAN13
+  col_format: Format
+  col_format_title: Trie par poids net
+  col_weight: Poids
+  col_order: Commande
+  col_price_ht: Prix HT
+  col_price_kg: "Prix /kg"
+  empty_filtered_title: Aucun produit ne correspond à votre sélection
+  empty_filtered_body: Essayez de retirer un filtre ou de revenir à la première page.
+  empty_indexing_title: "Catalogue en cours d'indexation"
+  empty_indexing_body: "Cette catégorie est en cours de validation par notre équipe. Contactez-nous pour plus d'informations."
+  add_to_cart: Ajouter au panier
+  add_to_quote: Ajouter au devis
+  added_to_cart: Ajouté au panier
+  added_to_quote: Ajouté au devis
+  add_short: Ajouter
+  added_short: ✓
+  quote_short: Devis
+  qty_decrease: Diminuer
+  qty_increase: Augmenter
+  breadcrumb_home: Accueil
+  product_breadcrumb: Produit
+  description: Description
+  features: Caractéristiques
+  datasheets: Fiches techniques
+  drive_collect: Drive & Collect
+  free_shipping: Livraison offerte
+  secure_payment: Paiement sécurisé
+  quality_premium: Qualité Premium
+  image_close: Fermer l'image
+  image_zoom: Agrandir l'image
+  label_ht: HT
+  label_ref: Réf.
+  price_pro_only: Prix réservé aux pros
+  product_view_cart: Voir le panier
+  product_view_quote: Voir le devis
+  product_weight: Poids
+
+product:
+  ref: Réf.
+  price_on_quote: Prix sur devis
+  add_to_cart: Acheter
+  add_to_quote: Deviser
+  zoom_image: Agrandir l'image
+  on_quote: Sur devis
+  add_short: Ajouter
+  to_quote_short: Au devis
+  ean13: EAN-13
+  origin: Origine
+  shelf_life: DDM
+  months: mois
+  humidity: humidité
+  ingredients: Ingrédients
+  storage: Stockage
+  process: Processus
+  in_stock: En stock
+  in_stock_short: en stock
+  low_stock: Stock limité
+  out_of_stock: Rupture de stock
+  related_title: Vous aimerez aussi
+  specs_heading: Spécifications produit
+  pack_heading: Conditionnement logistique
+  pack_container: Contenant
+  pack_material: Matériau emballage
+  pack_unit_weight: Poids unitaire
+  pack_units_per_carton: Unités / colis
+  pack_carton_weight: Poids colis
+  pack_cartons_per_pallet: Colis / palette
+  nutri_heading: Valeurs nutritionnelles
+  nutri_per_100g: pour 100 g
+  nutri_energy: Énergie
+  nutri_fat: Matières grasses
+  nutri_satfat: dont acides gras saturés
+  nutri_carbs: Glucides
+  nutri_sugars: dont sucres
+  nutri_proteins: Protéines
+  nutri_salt: Sel
+  allergens: Allergènes
+  allergens_inco: déclaration obligatoire INCO
+  compliance_heading: Conformité réglementaire
+  compliance_no_nano: Sans nanomatériaux
+  compliance_non_gmo: Non-OGM
+  compliance_non_ionised: Non ionisé
+
+home_giftcard:
+  preview_amount: "À partir de 25€"
+  kicker: Idée cadeau
+  title: Offrez une carte cadeau
+  body: Choisissez le montant, ajoutez un message personnalisé. À imprimer ou à envoyer par email. Validité 1 an.
+  bullet_amounts: "Montants de 10€ à 500€"
+  bullet_delivery: PDF imprimable + envoi par email
+  bullet_validity: Valable 1 an, code unique sécurisé
+  cta: Offrir une carte cadeau
+
+search:
+  placeholder: Rechercher un produit…
+  aria_search: Rechercher un produit
+  aria_clear: Effacer la recherche
+  aria_submit: Lancer la recherche
+  loading: Recherche…
+  section_products: Produits
+  section_categories: Catégories
+  section_dictionary: Dictionnaire
+  section_pages: Pages
+  empty: "Aucun résultat pour « {query} »"
+  view_all: "Voir tous les résultats pour « {query} » →"
+
+wishlist:
+  in_favorites: Dans vos favoris
+  add_to_favorites: Ajouter aux favoris
+  picker_title: Ajouter à une liste
+  login_required: Connectez-vous pour gérer vos listes de favoris.
+  cta_login: Se connecter
+  default_badge: défaut
+  new_list_placeholder: Nom de la liste
+  cta_create: Créer
+  cta_new_list: + Nouvelle liste
+  cta_manage: Gérer mes listes
+  cta_close: Fermer
+
+blog:
+  search:
+    placeholder: Rechercher un article...
+    clear_aria: Effacer la recherche
+    loading: Recherche...
+    empty: Aucun article trouvé pour « {query} »
+  categories:
+    prestashop: PrestaShop Headless
+    strategie: Stratégie
+    seo: SEO & IA
+    devops: DevOps
+    securite: Sécurité
+  subcategories:
+    architecture: Architecture
+    performance: Performance
+    developpement: Développement
+    automatisation: Automatisation
+    referencement: Référencement
+    flywheel: Flywheel
+    positionnement: Positionnement
+    docker: Docker
+    intelligence-artificielle: Intelligence Artificielle
+    cybersecurite: Cybersécurité
