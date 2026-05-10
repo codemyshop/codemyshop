@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo-cms-512.png" alt="CodeMyShop logo" width="180" />
+</p>
+
 # CodeMyShop
 
 > **Open-source e-commerce PaaS for European sovereignty.** 100% TypeScript stack: Nuxt 4 + Drizzle + PostgreSQL. AGPL-3.0. 0% commission. Built in France in 2026.
