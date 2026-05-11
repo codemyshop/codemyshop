@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Question or discussion
+    url: https://github.com/codemyshop/codemyshop/discussions
+    about: Use GitHub Discussions for open-ended questions, ideas, and showing what you've built.
+  - name: 🔒 Security vulnerability
+    url: https://github.com/codemyshop/codemyshop/security/policy
+    about: Please report security issues privately following SECURITY.md — do not open a public issue.
+  - name: 📚 Documentation
+    url: https://github.com/codemyshop/codemyshop/blob/main/INSTALL.md
+    about: Installation, configuration, and architecture documentation.
+  - name: 💼 Managed plans
+    url: https://codemyshop.com
+    about: Looking for managed hosting, SLA, or paid support? See codemyshop.com.

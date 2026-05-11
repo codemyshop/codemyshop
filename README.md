@@ -1,70 +1,217 @@
 <p align="center">
-  <img src="logo-cms-512.png" alt="CodeMyShop logo" width="180" />
+  <a href="https://codemyshop.com">
+    <img src="core/public/logo-codemyshop.png" alt="CodeMyShop" width="120" height="120">
+  </a>
 </p>
 
-# CodeMyShop
+<h1 align="center">CodeMyShop</h1>
 
-> **Open-source e-commerce PaaS for European sovereignty.** 100% TypeScript stack: Nuxt 4 + Drizzle + PostgreSQL. AGPL-3.0. Built in France in 2026.
+<p align="center">
+  <strong>Open-source e-commerce PaaS for European sovereignty.</strong><br>
+  100% TypeScript stack: Nuxt 4 + Drizzle + PostgreSQL. AGPL-3.0. 0% commission. Built in France in 2026.
+</p>
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Built with Nuxt 4](https://img.shields.io/badge/Nuxt-4-00DC82)](https://nuxt.com)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791)](https://www.postgresql.org)
-[![Status: alpha](https://img.shields.io/badge/Status-alpha-orange)]()
+<p align="center">
+  <a href="https://demo.codemyshop.com"><strong>Live demo →</strong></a> ·
+  <a href="https://codemyshop.com"><strong>Website →</strong></a> ·
+  <a href="INSTALL.md"><strong>Install →</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://www.gnu.org/licenses/agpl-3.0"><img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg" alt="License: AGPL v3"></a>
+  <a href="https://nuxt.com"><img src="https://img.shields.io/badge/Nuxt-4-00DC82" alt="Built with Nuxt 4"></a>
+  <a href="https://www.postgresql.org"><img src="https://img.shields.io/badge/PostgreSQL-17-336791" alt="PostgreSQL 17"></a>
+  <a href="https://github.com/codemyshop/codemyshop/pkgs/container/codemyshop"><img src="https://img.shields.io/badge/ghcr.io-codemyshop-2496ED?logo=docker&logoColor=white" alt="Docker image"></a>
+  <a href="https://github.com/codemyshop/codemyshop/actions/workflows/ci.yml"><img src="https://github.com/codemyshop/codemyshop/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <img src="https://img.shields.io/badge/Status-alpha-orange" alt="Status: alpha">
+</p>
+
+## Try it in 30 seconds
+
+A live single-tenant demo (white-labelled as **Monsta Skate Co**) runs at **[demo.codemyshop.com](https://demo.codemyshop.com)**. Browse the storefront, check the admin hub, see what €0 commission looks like.
+
+Or run it locally:
+
+```bash
+docker run --rm -p 3000:3000 ghcr.io/codemyshop/codemyshop:latest
+# → http://localhost:3000
+```
+
+## Pick your install path
+
+CodeMyShop has **two distinct personas**. Pick yours and follow the matching path — they have very different setups.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🏪 You're a shop owner
+
+You want **one** sovereign e-commerce site for your business. No agency hat, no plans to host other people's shops.
+
+**What you get** in 5 minutes: a Nuxt 4 storefront + admin hub + AI content + Postgres on your own server.
+
+→ Jump to [Quick start (Community, self-host)](#quick-start-community-self-host)
+→ Production hardening: [INSTALL.md](INSTALL.md)
+
+</td>
+<td width="50%" valign="top">
+
+### 🏢 You're an agency, hoster, or franchise
+
+You want to host **5-50 e-commerce sites** for your clients on shared infrastructure: one codebase to maintain, isolated databases per client, 30-min onboarding.
+
+**What you get**: container-per-tenant isolation, `bin/init-tenant.sh` scripted onboarding, working multi-tenant `docker-compose` example.
+
+→ Jump to [Multi-tenant (agency / hoster)](#multi-tenant-agency--hoster)
+→ Full procedure: [INSTALL-MULTI-TENANT.md](INSTALL-MULTI-TENANT.md)
+
+</td>
+</tr>
+</table>
 
 ## Why CodeMyShop
 
 - **Sovereign by design** — your code, your data, your server. France-based hosting or self-host. No CLOUD Act exposure.
-- **Modern unified stack** — Nuxt 4 SSR + Drizzle ORM + PostgreSQL 17 with pgvector + Redis 7 + nginx. One Node process, atomic deploys.
-- **Open-core, real OSS** — the free Community edition is a complete production platform, not a crippled trial. Paid hosted tiers add managed ops and premium packs.
-- **Honest economics** — Community self-host is 0% commission, you keep 100% of revenue. Hosted tiers carry a transparent 0.25% platform slice (vs 1.5–2% on Shopify, BigCommerce, Squarespace).
+- **Modern unified stack** — Nuxt 4 SSR + Drizzle ORM + PostgreSQL with pgvector for AI + Redis cache + nginx. One process, atomic deploys.
+- **Multi-tenant at the deploy layer** — one codebase, N isolated container stacks. The only OSS e-commerce that lets a small agency host 30 clients without 30 forks. (See [§ Multi-tenancy](ARCHITECTURE.md#multi-tenancy) for the design rationale.)
+- **Open-source AGPL-3.0** — auditable, modifiable, forkable. No vendor lock-in. The AGPL clause protects the community from predatory SaaS forks.
+- **Zero commission** — vs 1.5–2 % on Shopify. On €750k of yearly GMV, that's €15k saved.
 - **Built-in AI** — autonomous SEO content generation, enriched product sheets, structured data for LLM visibility.
 
 ## Status
 
-**Alpha — public preview.** The core runtime has been stable in production on three internal tenants since April 2026. We're publishing the source under AGPL-3.0 to invite community installs and feedback before the hosted plans (Starter / Growth / Pro / Custom) open to the public.
+**Alpha — public preview.** Core runtime stable in production on 3 internal tenants. We're publishing the source code under AGPL-3.0 to invite community installations and feedback before launching the Managed plans (Q1 2027).
 
-If you install it and reach a working production site → please open an issue or DM us. We want 2–3 documented external installs to confirm the path works end-to-end.
+If you install it and have a working production site → please open an issue or DM. We want 2-3 documented external installations to confirm the install path works end-to-end.
 
-## Editions & pricing
+## Plans
 
-CodeMyShop is **open-core** with one free edition and four hosted tiers:
+CodeMyShop is **open-core**. Five tiers — one free self-host (Community) and four hosted Managed plans. **No setup fees, monthly cancellation, no engagement.**
 
 | | **Community** | **Starter** | **Growth** | **Pro** | **Custom** |
 |---|:---:|:---:|:---:|:---:|:---:|
-| **Price** | Free (AGPL-3.0) | **10 €/mo** | **80 €/mo** | **400 €/mo** | Talk to us |
-| **Target** | Devs, agencies, self-hosters | Solo founder, < 250 k€ revenue | SMB growing, 250 k–500 k€ | SMB scaling, 500 k–1.5 M€ | Mid-market, regulated, multi-shop, white-label |
-| **Hosting** | Self-host | Hosted EU (shared subdomain) | Hosted EU (custom domain) | Hosted EU (custom domain) | Multi-region, dedicated cluster, BYOC option |
-| **cs_payment slice** | 0% (bring your own PSP) | 0.25% | 0.25% | 0.25% | configurable |
-| **Support** | GitHub | Community Discord | Email 48 h | Email 24 h | 4 h business + 24/7 on-call + 99.9% SLA |
-| **Setup** | Self-serve docs | Self-serve onboarding | Self-serve onboarding | Guided onboarding | White-glove onboarding |
+| **Price** | Free (AGPL-3.0) | **10 €/mo** | **80 €/mo** | **400 €/mo** | **Talk to us** |
+| **Target** | Self-hosters, devs, agencies | Solo founders, < 250 k€ revenue | Growing SMBs, 250 k-500 k€ | Scaling SMBs, 500 k-1.5 M€ | Mid-market, regulated, multi-shop, white-label |
+| **Hosting** | Self-host | Sovereign EU VPS (2 GB) | Sovereign EU VPS (4 GB) | Sovereign EU VPS (8 GB) | Custom (multi-region, dedicated, BYOC) |
+| **Onboarding** | Self-serve docs | Self-serve (~15 min) | Self-serve | Guided | White-glove |
+| **Support** | GitHub | Community Discord | Email 48 h | Email 24 h | 4 h business + 24/7 on-call + SLA 99.9 % |
+| **cs_payment slice** | 0 % (BYO PSP) | 0.25 % | 0.25 % | 0.25 % | Configurable per contract |
 
-Full feature matrix, pack breakdown (AI / Data / SEO / Banking / Vertical Food–Vape–Fashion–Jewelry) and capability-by-capability split → **[core/EDITIONS.md](core/EDITIONS.md)**.
+Hosted tiers progressively unlock packs by domain: **Growth** adds AI lite (cover gen, basic rewriting), **Pro** adds the full AI pack (Brand DNA), Data pack (telemetry, market intelligence), and SEO pack (GSC console, JSON-LD). **Custom** is the only tier that unlocks the Cercle Elumni community, the Banking & Compliance pack (PSD2/Powens, URSSAF, fiscal audit), and the regulated verticals (Food, Vape, Fashion, Jewelry).
 
-Hosted tiers will open at [codemyshop.com](https://codemyshop.com).
+→ **Full feature matrix and pack details: [core/EDITIONS.md](core/EDITIONS.md)**
+→ Talk to us: [codemyshop.com](https://codemyshop.com)
 
 ## Quick start (Community, self-host)
 
-Prerequisites: **Node 22+**, **PostgreSQL 17+**, **Redis 7+**, Docker recommended.
+### Full stack with Docker Compose
+
+The bundled `docker-compose.yml` boots PostgreSQL + Redis + nginx + the
+Nuxt server (pulled from `ghcr.io/codemyshop/codemyshop:latest` by default):
 
 ```bash
 git clone https://github.com/codemyshop/codemyshop.git
-cd codemyshop/core
-npm install
-npm run dev
+cd codemyshop
+cp .env.example .env  # set PG_PASSWORD, REDIS_PASSWORD, NUXT_SECRET
+
+docker compose up -d
+PG_SCHEMA=codemyshop npm run db:migrate    # one-time: create the ~50 tables
+npm run seed:admin                         # one-time: bootstrap an admin
+npm run seed:demo                          # optional: populate demo data
 ```
 
-> Alpha note: the full standalone install bundle (`.env.example`, Docker Compose, Ansible playbook for VPS provisioning, SSL automation, Postgres seed) is being extracted from our private monolith and will land as a versioned release. The recipe above starts the dev server against a local Postgres for now. Watch [releases](https://github.com/codemyshop/codemyshop/releases) for the first packaged install.
+Image tags: `latest`, `0.1.3`, `0.1` (linux/amd64, ~446 MB).
+
+### From source
+
+Prerequisites: Node 22+, PostgreSQL 17+ with `pgvector`, Redis 7+.
+
+```bash
+git clone https://github.com/codemyshop/codemyshop.git
+cd codemyshop
+cp .env.example .env
+npm install
+npm run db:migrate
+npm run seed:admin
+npm run dev    # → http://localhost:3000
+```
+
+→ See [INSTALL.md](INSTALL.md) for production hardening (TLS, backups, env vars).
+
+## Multi-tenant (agency / hoster)
+
+If you operate an agency or sovereign hosting service, you can host **N independent clients** on a single VPS with one shared codebase. Each tenant gets its own Postgres database and Nuxt process — physically isolated, no risk of cross-tenant data leak — but they all benefit from the same `core/` code (one bug fix → all clients patched).
+
+### What this looks like
+
+```
+Your VPS
+│
+├── codebase: /opt/codemyshop/    (one git clone, shared by all tenants)
+│
+├── acme_postgres + acme_nuxt        → port 3001 → acme.com
+├── monaco_postgres + monaco_nuxt    → port 3002 → monaco-skate.com
+└── paris_postgres + paris_nuxt      → port 3003 → paris-vape.com
+
+       ▲ each tenant = a tiny Nuxt sub-project (clients/<tenant>/)
+       ▲ that does `extends: ['../../core']`
+```
+
+### Add a tenant in 30 minutes
+
+```bash
+# 1. Bootstrap the tenant pack from the demo template
+./bin/init-tenant.sh acme \
+    --brand "Acme Shop" \
+    --domain acme.com \
+    --vertical general
+
+# 2. Provision the tenant DB (one container per tenant)
+docker run -d --name acme_postgres -p 127.0.0.1:5433:5432 \
+    -e POSTGRES_DB=acme -e POSTGRES_USER=acme \
+    -e POSTGRES_PASSWORD="$(openssl rand -hex 32)" \
+    pgvector/pgvector:pg16
+
+# 3. Update clients/acme/.env with the PG_PASSWORD you just generated.
+
+# 4. Seed the DB from clients/acme/seed.yaml (theme, header, footer, categories…)
+npm run seed:tenant -- acme --reset --with-admin admin@acme.com
+
+# 5. Build + run the tenant's Nuxt process
+cd clients/acme && npm install && npm run build && PORT=3001 npm run preview
+
+# 6. nginx route: server { server_name acme.com; proxy_pass http://127.0.0.1:3001; }
+```
+
+→ Full procedure with PM2, TLS per tenant, backups, scaling: [INSTALL-MULTI-TENANT.md](INSTALL-MULTI-TENANT.md)
+→ Working two-tenant Docker Compose example: [examples/multi-tenant/](examples/multi-tenant/)
+→ Why container-per-tenant (not schema-per-tenant): [ARCHITECTURE.md § Multi-tenancy](ARCHITECTURE.md#multi-tenancy)
+
+### Agency margin math (vs single-tenant PrestaShop / WooCommerce)
+
+| Metric | PrestaShop / Woo (1 install per client) | CodeMyShop multi-tenant |
+|---|---|---|
+| Maintenance for 30 clients | 30 × ~2 h/month = 60 h | 1 × ~2 h/month + per-tenant SLA = ~10 h |
+| Onboarding time per client | 1-3 days of setup | 30 min via `init-tenant.sh` |
+| Codebase to know | 30 forks, slowly diverging | 1 official codebase |
+| Critical bug fix | Cherry-pick into 30 forks | One commit, redeploy all |
+| Net margin per client/month (you decide pricing) | ~€30 (eaten by maintenance) | ~€200-400 (90% automated) |
+
+The multi-tenant capability is **the** differentiator vs every other OSS e-commerce (PrestaShop, EverShop, Medusa, Saleor are all single-instance by design). If you operate an agency, this is what makes CodeMyShop economically interesting at 10+ clients.
 
 ## Architecture
 
-A single Node.js process (Nuxt 4 with the Nitro server) handles:
+A single Node.js process (Nuxt 4 Nitro) handles:
 
-- **product catalog** — PostgreSQL via Drizzle ORM, schema in [`core/server/db/schema-pg/`](core/server/db/schema-pg/)
-- **storefront experience** — Vue 3 SSR with a light theme (responsive, accessible)
-- **admin hub & back-office** — single integrated app, no extra Node service
-- **AI workers** — autonomous SEO content via OpenAI / Anthropic / Mistral, pluggable
+- product catalog (PostgreSQL via Drizzle ORM)
+- storefront experience (Vue 3 SSR)
+- admin hub / back-office
+- Centaure AI (autonomous SEO content via OpenAI / Anthropic / Mistral)
 
-No microservices, no API bridge between two systems: one atomic deploy with a single `git push`.
+No microservices, no API bridge between two systems: atomic deploy with a single `git push`.
+
+→ See [ARCHITECTURE.md](ARCHITECTURE.md) for the technical rationale (why monolith over headless, why Nuxt over Next, why Drizzle over Prisma) and [documentation/SCHEMA_HISTORY.md](documentation/SCHEMA_HISTORY.md) for the story behind the `cs_*` table prefix (and why v0.2.0 was a breaking rename).
 
 ## Stack
 
@@ -79,23 +226,31 @@ No microservices, no API bridge between two systems: one atomic deploy with a si
 | Analytics | Matomo (self-hosted) | First-party data, GDPR-friendly |
 | Process manager | PM2 | Graceful reload, monitoring, log aggregation |
 
-## Multi-tenant by design
+## Provenance
 
-A single CodeMyShop codebase powers many shops. Each tenant is configuration + theme + a dedicated database — the core stays a single canonical codebase. That's how we keep one mainline up to date for everyone without forks.
+Every published image is **signed with [cosign](https://docs.sigstore.dev/cosign/overview/) (keyless OIDC)** and ships a **CycloneDX SBOM** as a cosign attestation. Verify any release before running it:
 
-Tenant configuration lives under [`core/config/clients/`](core/config/clients/) in self-host setups (one TypeScript module per tenant — theme tokens, locales, feature flags). The Managed plans add per-tenant DB isolation on our hosted infrastructure.
+```bash
+cosign verify \
+  --certificate-identity-regexp '^https://github\.com/codemyshop/codemyshop/\.github/workflows/docker\.yml@refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  ghcr.io/codemyshop/codemyshop:latest
+```
+
+→ See [SECURITY.md § Verifying releases](SECURITY.md#verifying-releases) for the SBOM-download recipe and full details.
 
 ## Community
 
-- **GitHub Issues** — bugs, feature requests, install help.
-- **GitHub Discussions** — design questions, feedback, public roadmap.
-- **Discord and Twitter/X** — opening alongside the hosted plans launch; subscribe to repo releases until then.
+- **[GitHub Discussions](https://github.com/codemyshop/codemyshop/discussions)** — questions, ideas, "show what you've built"
+- **[GitHub Issues](https://github.com/codemyshop/codemyshop/issues/new/choose)** — bugs and feature requests (templates provided)
+- **Discord** — coming soon (we'll open it once there are 5+ active installations to keep the channel alive)
+- **Twitter/X** — [@codemyshop](https://twitter.com/codemyshop) (coming soon)
 
 ## Contributing
 
-PRs welcome. CI must pass and we follow [Conventional Commits](https://www.conventionalcommits.org/). Until the dedicated `CONTRIBUTING.md` lands, please open an issue describing the change before sending a sizeable patch — it saves everyone's time.
+We welcome PRs. See [CONTRIBUTING.md](CONTRIBUTING.md). Code reviews are mandatory, CI must pass, and we use [Conventional Commits](https://www.conventionalcommits.org/).
 
-For security issues, please email **security@codemyshop.com** privately. Do **not** open a public issue.
+For security issues, please follow [SECURITY.md](SECURITY.md) — do **not** open a public issue.
 
 ## License
 
@@ -109,4 +264,8 @@ For security issues, please email **security@codemyshop.com** privately. Do **no
 
 ## Acknowledgments
 
-Built in France in 2026 with [Claude Code](https://claude.com/claude-code) by Alexandre Carette and his Synedre of AI agents. Inspired by the open-source ethos of MongoDB, Plausible, n8n, and Supabase.
+Built in France in 2026 with [Claude Code](https://claude.com/claude-code). Inspired by the open-source ethos of MongoDB, Plausible, n8n, and Supabase.
+
+---
+
+🇫🇷 *Lire ce README en français : [README.fr.md](README.fr.md)* (à venir)

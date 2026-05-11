@@ -1,0 +1,87 @@
+name: 🐛 Bug report
+description: Something is broken or behaves incorrectly.
+title: "[Bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. Please fill in as much
+        of the form as you can — incomplete reports are slower to triage.
+        For security issues, please follow [SECURITY.md](../blob/main/SECURITY.md)
+        instead — do **not** open a public issue.
+
+  - type: input
+    id: version
+    attributes:
+      label: CodeMyShop version
+      description: Tag, commit SHA, or `ghcr.io` image digest you're running.
+      placeholder: "v0.1.4 / 92cf6b7 / ghcr.io/codemyshop/codemyshop:0.1.4"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: How did you install CodeMyShop?
+      options:
+        - Docker image (`docker run` / `docker compose`)
+        - From source (`npm install` / `npm run dev`)
+        - Other (please describe)
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: OS, Node version, PostgreSQL version, browser if relevant.
+      placeholder: "Ubuntu 24.04 / Node 22.13 / PostgreSQL 16.4 / Chrome 142"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal, numbered steps that lead to the bug.
+      placeholder: |
+        1. `docker compose up -d`
+        2. `npm run db:migrate && npm run seed:admin`
+        3. Open http://localhost:3000/hub
+        4. Log in with the admin user
+        5. Click "Products"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened?
+      description: Include error messages, stack traces, screenshots — anything that helps.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Output of `docker compose logs nuxt` or the browser console, if any.
+      render: shell
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues and didn't find a duplicate.
+          required: true
+        - label: I'm running a supported version (v0.1.x or later).
+          required: true

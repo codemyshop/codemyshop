@@ -1,0 +1,8 @@
+# GitHub Sponsors / funding configuration
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+#
+# Sustained development of CodeMyShop is funded by Managed Standard / Pro
+# customers (see https://codemyshop.com). Self-hosters who want to support
+# the project can land here too — every install matters.
+
+custom: ["https://codemyshop.com"]

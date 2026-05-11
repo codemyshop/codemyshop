@@ -1,0 +1,42 @@
+# Dependabot configuration
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# Opens automatic PRs when:
+# - npm dependencies have a security advisory or a newer compatible version
+# - GitHub Actions are pinned to outdated tags / SHAs
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "npm"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    groups:
+      nuxt-ecosystem:
+        patterns:
+          - "nuxt"
+          - "@nuxt/*"
+          - "@nuxtjs/*"
+      drizzle:
+        patterns:
+          - "drizzle-*"
+          - "@drizzle/*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(ci)"

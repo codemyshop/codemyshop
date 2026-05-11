@@ -1,0 +1,35 @@
+# Build output (rebuilt in container)
+.nuxt/
+.output/
+core/.nuxt/
+core/.output/
+examples/*/.nuxt/
+examples/*/.output/
+
+# Node
+node_modules/
+**/node_modules/
+
+# Local env / secrets
+.env
+.env.local
+.env.host
+.env.production
+*.pem
+*.key
+
+# Dev tooling
+.git/
+.github/
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Docker artifacts (avoid recursion)
+Dockerfile
+docker-compose*.yml
+.dockerignore

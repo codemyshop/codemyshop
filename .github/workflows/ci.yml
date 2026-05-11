@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install (npm ci)
+        run: npm ci --no-audit --no-fund
+
+      - name: Run unit tests
+        run: npm test
+
+  build:
+    name: Build & verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install (npm ci)
+        run: npm ci --no-audit --no-fund
+
+      - name: Syntax-check helper scripts
+        run: npm run syntax:check
+
+      - name: Build minimal tenant
+        run: npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
+  typecheck:
+    name: Typecheck (informational)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Informational only — the codebase still has known TS issues that
+    # will be cleaned up in v0.2.x. The job runs on every PR so we can
+    # see the trend, but it doesn't gate merges yet.
+    continue-on-error: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install (npm ci)
+        run: npm ci --no-audit --no-fund
+
+      - name: Generate Nuxt types
+        run: npm run prepare:nuxt
+
+      - name: Typecheck (allowed to fail)
+        run: npm run typecheck

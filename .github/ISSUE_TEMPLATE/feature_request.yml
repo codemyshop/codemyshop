@@ -1,0 +1,64 @@
+name: 💡 Feature request
+description: Suggest an idea or improvement.
+title: "[Feature] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a feature idea? Please describe **the problem** you're trying to
+        solve before describing the solution — that's how we end up shipping
+        features that actually help.
+
+        For brainstorming and open-ended ideas, [GitHub Discussions](https://github.com/codemyshop/codemyshop/discussions)
+        is usually a better place to start than an issue.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Concrete user story, not a solution.
+      placeholder: "As a shop owner, when I add 50 products via CSV import, I have to retype the SEO meta-description for each one because the AI suggestions don't pick up the category context."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What would the ideal behaviour look like? UI sketches and CLI examples welcome.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other ways you've thought of solving this. Why are they worse?
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Which area does this touch?
+      multiple: true
+      options:
+        - Storefront
+        - Admin hub
+        - API / Nitro server
+        - Database schema
+        - Centaure AI
+        - Build / deploy / Docker
+        - Documentation
+        - Other / cross-cutting
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues and discussions for similar ideas.
+          required: true
+        - label: This feature would be useful to more than just my own deployment.
+          required: true

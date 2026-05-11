@@ -1,0 +1,14 @@
+# CODEOWNERS — auto-assigns reviewers on pull requests
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/about-code-owners
+#
+# Order matters: the LAST matching pattern wins. Default catches everything,
+# then specific paths override.
+
+# Default owner — every PR gets reviewed by the project maintainer
+*                              @codemyshop
+
+# Security policy + supply-chain config require maintainer review
+SECURITY.md                    @codemyshop
+.github/workflows/             @codemyshop
+.github/dependabot.yml         @codemyshop
+LICENSE                        @codemyshop
