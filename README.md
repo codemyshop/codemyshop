@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://codemyshop.com">
-    <img src="core/public/logo-codemyshop.png" alt="CodeMyShop" width="120" height="120">
+    <img src="logo-cms-512.png" alt="CodeMyShop" width="180" height="180">
   </a>
 </p>
 
