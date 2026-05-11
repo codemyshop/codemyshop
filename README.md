@@ -4,7 +4,7 @@
 
 # CodeMyShop
 
-> **Open-source e-commerce PaaS for European sovereignty.** 100% TypeScript stack: Nuxt 4 + Drizzle + PostgreSQL. AGPL-3.0. 0% commission. Built in France in 2026.
+> **Open-source e-commerce PaaS for European sovereignty.** 100% TypeScript stack: Nuxt 4 + Drizzle + PostgreSQL. AGPL-3.0. Built in France in 2026.
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Built with Nuxt 4](https://img.shields.io/badge/Nuxt-4-00DC82)](https://nuxt.com)
@@ -14,55 +14,57 @@
 ## Why CodeMyShop
 
 - **Sovereign by design** — your code, your data, your server. France-based hosting or self-host. No CLOUD Act exposure.
-- **Modern unified stack** — Nuxt 4 SSR + Drizzle ORM + PostgreSQL with pgvector for AI + Redis cache + nginx. One process, atomic deploys.
-- **Open-source AGPL-3.0** — auditable, modifiable, forkable. No vendor lock-in. The AGPL clause protects the community from predatory SaaS forks.
-- **Zero commission** — vs 1.5–2 % on Shopify. On €750k of yearly GMV, that's €15k saved.
+- **Modern unified stack** — Nuxt 4 SSR + Drizzle ORM + PostgreSQL 17 with pgvector + Redis 7 + nginx. One Node process, atomic deploys.
+- **Open-core, real OSS** — the free Community edition is a complete production platform, not a crippled trial. Paid hosted tiers add managed ops and premium packs.
+- **Honest economics** — Community self-host is 0% commission, you keep 100% of revenue. Hosted tiers carry a transparent 0.25% platform slice (vs 1.5–2% on Shopify, BigCommerce, Squarespace).
 - **Built-in AI** — autonomous SEO content generation, enriched product sheets, structured data for LLM visibility.
 
 ## Status
 
-**Alpha — public preview.** Core runtime stable in production on 3 internal tenants. We're publishing the source code under AGPL-3.0 to invite community installations and feedback before launching the Managed plans (Q1 2027).
+**Alpha — public preview.** The core runtime has been stable in production on three internal tenants since April 2026. We're publishing the source under AGPL-3.0 to invite community installs and feedback before the hosted plans (Starter / Growth / Pro / Custom) open to the public.
 
-If you install it and have a working production site → please open an issue or DM. We want 2-3 documented external installations to confirm the install path works end-to-end.
+If you install it and reach a working production site → please open an issue or DM us. We want 2–3 documented external installs to confirm the path works end-to-end.
 
-## Three tiers
+## Editions & pricing
 
-| | Community | Managed Standard | Managed Pro |
-|---|---|---|---|
-| **Price** | **Free** | **€800/month** + €5k setup | **€1500–2500/month** + €15k setup |
-| **Hosting** | Self-host | Sovereign French VPS included | Dedicated VPS + 24/7 SLA |
-| **Setup** | DIY | We handle it | We handle it + strategic onboarding |
-| **Support** | GitHub issues | Email < 48 h business | Direct architect + 4 days/month dev included |
-| **Updates** | Manual | Express security < 48 h | Express + custom dev |
+CodeMyShop is **open-core** with one free edition and four hosted tiers:
 
-→ See [codemyshop.com](https://codemyshop.com) for Managed plans.
+| | **Community** | **Starter** | **Growth** | **Pro** | **Custom** |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **Price** | Free (AGPL-3.0) | **10 €/mo** | **80 €/mo** | **400 €/mo** | Talk to us |
+| **Target** | Devs, agencies, self-hosters | Solo founder, < 250 k€ revenue | SMB growing, 250 k–500 k€ | SMB scaling, 500 k–1.5 M€ | Mid-market, regulated, multi-shop, white-label |
+| **Hosting** | Self-host | Hosted EU (shared subdomain) | Hosted EU (custom domain) | Hosted EU (custom domain) | Multi-region, dedicated cluster, BYOC option |
+| **cs_payment slice** | 0% (bring your own PSP) | 0.25% | 0.25% | 0.25% | configurable |
+| **Support** | GitHub | Community Discord | Email 48 h | Email 24 h | 4 h business + 24/7 on-call + 99.9% SLA |
+| **Setup** | Self-serve docs | Self-serve onboarding | Self-serve onboarding | Guided onboarding | White-glove onboarding |
+
+Full feature matrix, pack breakdown (AI / Data / SEO / Banking / Vertical Food–Vape–Fashion–Jewelry) and capability-by-capability split → **[core/EDITIONS.md](core/EDITIONS.md)**.
+
+Hosted tiers will open at [codemyshop.com](https://codemyshop.com).
 
 ## Quick start (Community, self-host)
 
-Prerequisites: Node 22+, PostgreSQL 17+, Redis 7+, Docker recommended.
+Prerequisites: **Node 22+**, **PostgreSQL 17+**, **Redis 7+**, Docker recommended.
 
 ```bash
 git clone https://github.com/codemyshop/codemyshop.git
-cd codemyshop
-cp .env.example .env  # edit DB credentials
+cd codemyshop/core
 npm install
 npm run dev
 ```
 
-→ See [INSTALL.md](INSTALL.md) for the production setup (Ansible playbook, VPS provisioning, SSL, monitoring).
+> Alpha note: the full standalone install bundle (`.env.example`, Docker Compose, Ansible playbook for VPS provisioning, SSL automation, Postgres seed) is being extracted from our private monolith and will land as a versioned release. The recipe above starts the dev server against a local Postgres for now. Watch [releases](https://github.com/codemyshop/codemyshop/releases) for the first packaged install.
 
 ## Architecture
 
-A single Node.js process (Nuxt 4 Nitro) handles:
+A single Node.js process (Nuxt 4 with the Nitro server) handles:
 
-- product catalog (PostgreSQL via Drizzle ORM)
-- storefront experience (Vue 3 SSR)
-- admin hub / back-office
-- Centaure AI (autonomous SEO content via OpenAI / Anthropic / Mistral)
+- **product catalog** — PostgreSQL via Drizzle ORM, schema in [`core/server/db/schema-pg/`](core/server/db/schema-pg/)
+- **storefront experience** — Vue 3 SSR with a light theme (responsive, accessible)
+- **admin hub & back-office** — single integrated app, no extra Node service
+- **AI workers** — autonomous SEO content via OpenAI / Anthropic / Mistral, pluggable
 
-No microservices, no API bridge between two systems: atomic deploy with a single `git push`.
-
-→ See [ARCHITECTURE.md](ARCHITECTURE.md) for the technical rationale (why monolith over headless, why Nuxt over Next, why Drizzle over Prisma).
+No microservices, no API bridge between two systems: one atomic deploy with a single `git push`.
 
 ## Stack
 
@@ -77,18 +79,23 @@ No microservices, no API bridge between two systems: atomic deploy with a single
 | Analytics | Matomo (self-hosted) | First-party data, GDPR-friendly |
 | Process manager | PM2 | Graceful reload, monitoring, log aggregation |
 
+## Multi-tenant by design
+
+A single CodeMyShop codebase powers many shops. Each tenant is configuration + theme + a dedicated database — the core stays a single canonical codebase. That's how we keep one mainline up to date for everyone without forks.
+
+Tenant configuration lives under [`core/config/clients/`](core/config/clients/) in self-host setups (one TypeScript module per tenant — theme tokens, locales, feature flags). The Managed plans add per-tenant DB isolation on our hosted infrastructure.
+
 ## Community
 
-- **Discord** — coming soon
-- **GitHub Discussions** — for design questions and feedback
-- **GitHub Issues** — for bugs and feature requests
-- **Twitter/X** — [@codemyshop](https://twitter.com/codemyshop) (coming soon)
+- **GitHub Issues** — bugs, feature requests, install help.
+- **GitHub Discussions** — design questions, feedback, public roadmap.
+- **Discord and Twitter/X** — opening alongside the hosted plans launch; subscribe to repo releases until then.
 
 ## Contributing
 
-We welcome PRs. See [CONTRIBUTING.md](CONTRIBUTING.md). Code reviews are mandatory, CI must pass, and we use [Conventional Commits](https://www.conventionalcommits.org/).
+PRs welcome. CI must pass and we follow [Conventional Commits](https://www.conventionalcommits.org/). Until the dedicated `CONTRIBUTING.md` lands, please open an issue describing the change before sending a sizeable patch — it saves everyone's time.
 
-For security issues, please follow [SECURITY.md](SECURITY.md) — do **not** open a public issue.
+For security issues, please email **security@codemyshop.com** privately. Do **not** open a public issue.
 
 ## License
 
@@ -103,7 +110,3 @@ For security issues, please follow [SECURITY.md](SECURITY.md) — do **not** ope
 ## Acknowledgments
 
 Built in France in 2026 with [Claude Code](https://claude.com/claude-code) by Alexandre Carette and his Synedre of AI agents. Inspired by the open-source ethos of MongoDB, Plausible, n8n, and Supabase.
-
----
-
-🇫🇷 *Lire ce README en français : [README.fr.md](README.fr.md)* (à venir)
