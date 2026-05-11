@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import {
   clientVpsExists,
@@ -6,10 +6,6 @@ import {
   listClientVpsForAdmin,
 } from '~/internal/hub/server/utils/hub'
 
-/**
- * GET  /api/clients  → lists all clients from the database via the facade
- * POST /api/clients  → registers a new client
- */
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
 

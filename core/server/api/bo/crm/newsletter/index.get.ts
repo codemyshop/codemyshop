@@ -1,16 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/bo/crm/newsletter — list of the current tenant's newsletter opt-ins.
- *
- * Query :
- *   - status : 'pending' | 'confirmed' | 'unsubscribed' | 'bounced' | 'all' (def: 'all')
- *   - q      : recherche email (LIKE %q%)
- *   - limit  : 1-500 (def: 50)
- *   - offset : >=0 (def: 0)
- *
- * Retour : { rows, total, byStatus }.
- */
 
 import { resolveClientId } from '~/server/utils/db'
 import { listSubscribers, type SubscriberStatus } from '~/server/utils/newsletter-subscriber'

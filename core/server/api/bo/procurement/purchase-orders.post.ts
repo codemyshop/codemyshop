@@ -1,19 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * POST /api/bo/procurement/purchase-orders — purchase order creation.
- * Body: {
- *   idSupplier: number,
- *   deliveryDate?: string (YYYY-MM-DD),
- *   lines: [{ idProduct, quantity, unitPriceTE?, taxRate? }]
- * }
- *
- * Creates ps_supply_order + ps_supply_order_detail[] + ps_supply_order_history (initial state 1).
- * Auto-provisions a default warehouse if none exists.
- * Totals recalculated on the server side (never from the client).
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<any>(event)
   const idSupplier = Number(body?.idSupplier || 0)
@@ -29,10 +17,10 @@ export default defineEventHandler(async (event) => {
     const supplier = await db.get<any>(`SELECT id_supplier, name FROM ps_supplier WHERE id_supplier = ? LIMIT 1`, [idSupplier])
     if (!supplier) throw createError({ statusCode: 404, statusMessage: 'Fournisseur introuvable' })
 
-    // 1. Warehouse par défaut (auto-provision si nécessaire)
+    
     const idWarehouse = await ensureDefaultWarehouse(db)
 
-    // 2. Normalise les lignes + récupère prix fournisseur / références
+    
     const cleanedLines: any[] = []
     for (const raw of lines) {
       const idProduct = Number(raw?.idProduct || 0)
@@ -76,7 +64,7 @@ export default defineEventHandler(async (event) => {
 
     if (!cleanedLines.length) throw createError({ statusCode: 422, statusMessage: 'Aucune ligne valide' })
 
-    // 3. Totaux
+    
     let totalTE = 0
     let totalTax = 0
     for (const l of cleanedLines) {
@@ -87,7 +75,7 @@ export default defineEventHandler(async (event) => {
     }
     const totalTI = totalTE + totalTax
 
-    // 4. ps_supply_order
+    
     const ref = `SUP${Date.now().toString().slice(-8)}`
     const ins = await db.run(`
       INSERT INTO ps_supply_order
@@ -103,7 +91,7 @@ export default defineEventHandler(async (event) => {
     const newId = ins.insertId
     if (!newId) throw createError({ statusCode: 500, statusMessage: 'Échec création' })
 
-    // 5. ps_supply_order_detail (une ligne par produit)
+    
     for (const l of cleanedLines) {
       const priceTE = l.quantity * l.unitPriceTE
       const taxValue = priceTE * (l.taxRate / 100)
@@ -121,7 +109,7 @@ export default defineEventHandler(async (event) => {
           l.unitPriceTE, l.quantity, priceTE, priceTE, l.taxRate, taxValue, priceTI, priceTE])
     }
 
-    // 6. ps_supply_order_history (état initial)
+    
     await db.run(`
       INSERT INTO ps_supply_order_history
         (id_supply_order, id_employee, employee_lastname, employee_firstname, id_state, date_add)
@@ -136,15 +124,11 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-/**
- * Retrieves (or creates) a default warehouse. PS requires id_warehouse
- * on ps_supply_order — silently provisioned if absent.
- */
 async function ensureDefaultWarehouse(db: any): Promise<number> {
   const existing = await db.get<any>(`SELECT id_warehouse FROM ps_warehouse WHERE deleted = 0 ORDER BY id_warehouse ASC LIMIT 1`)
   if (existing?.id_warehouse) return Number(existing.id_warehouse)
 
-  // Besoin d'une adresse pour le warehouse
+  
   const addrIns = await db.run(`
     INSERT INTO ps_address
       (id_country, id_warehouse, alias, lastname, firstname, address1, postcode, city,
@@ -160,10 +144,10 @@ async function ensureDefaultWarehouse(db: any): Promise<number> {
   `, [idAddress])
   const idWarehouse = whIns.insertId
 
-  // Update ps_address.id_warehouse maintenant qu'on a l'id
+  
   await db.run(`UPDATE ps_address SET id_warehouse = ? WHERE id_address = ?`, [idWarehouse, idAddress])
 
-  // Lien shop
+  
   await db.run(`INSERT IGNORE INTO ps_warehouse_shop (id_shop, id_warehouse) VALUES (1, ?)`, [idWarehouse])
 
   return idWarehouse

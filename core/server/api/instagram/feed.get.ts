@@ -1,25 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/instagram/feed?limit=6
- *
- * Fetches the N most recent Instagram posts via the Meta API (2 flows supported):
- *
- * 1. Instagram Login API (recent flow — tokens starting with IGAA...)
- *     URL : graph.instagram.com/me/media
- * Requires: instagramToken only (no IG user ID)
- * This is the flow used by the Instagram integration module in production.
- *
- * 2. Meta Business / Page Access Token (flow via linked Facebook Page)
- *     URL : graph.facebook.com/v19.0/{ig-user-id}/media
- *     Requiert : instagramToken + instagramIgUserId
- *
- * Auto-detection: if an IG user ID is provided → Business flow. Otherwise → Instagram Login.
- * Silent fallback {items:[]} if token is absent or expired → the component falls back
- * to its static CTA.
- *
- * Cache : 1h via defineCachedEventHandler (rate-limit Graph API ~200/h).
- */
 
 interface IgMediaRaw {
   id:              string
@@ -54,9 +33,9 @@ export default defineCachedEventHandler(async (event): Promise<{ items: IgMedia[
   const { limit } = getQuery(event)
   const n = Math.min(Math.max(Number(limit) || 6, 1), 12)
 
-  // Auto-détection du flow : le préfixe IGAA... signe un token Instagram Login
-  // (flow récent, me/media) — ignorer un éventuel IG user ID dans ce cas.
-  // Sinon, si IG user ID fourni, flow Meta Business Page ({user-id}/media).
+  
+  
+  
   const isInstagramLoginToken = token.startsWith('IGAA')
   const url = (!isInstagramLoginToken && igUserId)
     ? `https://graph.facebook.com/v19.0/${igUserId}/media`
@@ -81,7 +60,7 @@ export default defineCachedEventHandler(async (event): Promise<{ items: IgMedia[
     return { items: [] }
   }
 }, {
-  maxAge: 60 * 60,       // 1h
+  maxAge: 60 * 60,       
   name:   'instagram-feed',
   getKey: (event) => `ig-${getQuery(event).limit || 6}`,
 })

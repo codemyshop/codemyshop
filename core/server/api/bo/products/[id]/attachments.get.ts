@@ -1,13 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { listForProduct } from '~/server/utils/attachments-db'
 
-/**
- * GET /api/bo/products/:id/attachments?lang=X
- *
- * Lists product attachments in the requested language — Drizzle DB
- * direct (policy: "Zero PrestaShop webservice" 2026-04-22).
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!id || id <= 0) throw createError({ statusCode: 400, message: 'id produit invalide' })

@@ -1,23 +1,9 @@
-/**
- *
- * User role system for the Hub.
- * 8 business profiles, each with a customized hub.
- *
- * The role is resolved from the session (role field, mapped from id_profile)
- * or simulated via the query param ?role=SALES for dev/demo.
- */
+
 
 export type UserRole = 'ROOT' | 'FOUNDER' | 'MARKET' | 'SALES' | 'SUPPORT' | 'LOGISTIC' | 'CATALOG' | 'EMPLOYEE'
 
 const ALL_ROLES: UserRole[] = ['ROOT', 'FOUNDER', 'MARKET', 'SALES', 'SUPPORT', 'LOGISTIC', 'CATALOG', 'EMPLOYEE']
 
-/**
- * Permissions par section — fallback statique.
- *
- * Runtime source of truth = cs_profile_section (DB), fetched by
- * useProfileSections() at Hub startup. This map serves only as a
- * fallback if the DB is unreachable / the table is missing.
- */
 const SECTION_ACCESS: Record<string, UserRole[]> = {
   dashboard:      ALL_ROLES,
   orders:         ['ROOT', 'FOUNDER', 'SALES', 'SUPPORT'],
@@ -37,13 +23,11 @@ const SECTION_ACCESS: Record<string, UserRole[]> = {
   founder_admin:  ['ROOT', 'FOUNDER'],
 }
 
-/** Mapping role front → id_profile PS (cf. core/server/utils/roles.ts) */
 const ROLE_TO_PROFILE: Record<UserRole, number> = {
   ROOT: 1, FOUNDER: 3, MARKET: 4, SALES: 5,
   SUPPORT: 6, LOGISTIC: 7, CATALOG: 8, EMPLOYEE: 9,
 }
 
-/** Color associated with the role (for sidebar badge) */
 const ROLE_COLORS: Record<UserRole, string> = {
   ROOT:     'text-red-500',
   FOUNDER:  'text-primary-500',
@@ -55,7 +39,6 @@ const ROLE_COLORS: Record<UserRole, string> = {
   EMPLOYEE: 'text-gray-400',
 }
 
-/** Human-readable label for the role */
 const ROLE_LABELS: Record<UserRole, string> = {
   ROOT:     'Super Admin',
   FOUNDER:  'Fondateur',
@@ -72,7 +55,7 @@ export const useRoles = () => {
   const user = (auth as any).user as Ref<{ is_admin?: boolean; role?: string } | null> | undefined
   const route = useRoute()
 
-  /** Actual role from the session, without any override (used to decide who can switch). */
+  
   const actualRole = computed<UserRole>(() => {
     const sessionRole = user?.value?.role?.toUpperCase()
     if (sessionRole && ALL_ROLES.includes(sessionRole as UserRole)) {
@@ -82,14 +65,11 @@ export const useRoles = () => {
     return 'EMPLOYEE'
   })
   const actualIsOwner = computed(() => actualRole.value === 'ROOT' || actualRole.value === 'FOUNDER')
-  /** True only for the actual SuperAdmin — gates the "View as" simulation. */
+  
   const actualIsRoot = computed(() => actualRole.value === 'ROOT')
 
-  /**
-   * Override "View as" persisted locally, accessible only to
-   * super-admin / founders. Allows previewing the hub of another
-   * profile without changing sessions.
-   */
+  
+
   const viewAsRole = useState<UserRole | null>('view_as_role', () => {
     if (!import.meta.client) return null
     try {
@@ -106,13 +86,13 @@ export const useRoles = () => {
     } catch {}
   }
 
-  /** Rôle effectif — viewAs (si autorisé) > query > session */
+  
   const role = computed<UserRole>(() => {
     if (actualIsRoot.value && viewAsRole.value && ALL_ROLES.includes(viewAsRole.value)) {
       return viewAsRole.value
     }
 
-    // Dev/demo override: ?role=SALES
+    
     const override = (route.query.role as string | undefined)?.toUpperCase()
     if (override && ALL_ROLES.includes(override as UserRole)) {
       return override as UserRole
@@ -130,7 +110,7 @@ export const useRoles = () => {
   const isCatalog  = computed(() => role.value === 'CATALOG')
   const isEmployee = computed(() => role.value === 'EMPLOYEE')
 
-  // Compat legacy
+  
   const isOwner     = computed(() => role.value === 'ROOT' || role.value === 'FOUNDER')
   const isMarketing = computed(() => role.value === 'MARKET')
   const isLogistics = computed(() => role.value === 'LOGISTIC')
@@ -138,7 +118,7 @@ export const useRoles = () => {
   const roleColor = computed(() => ROLE_COLORS[role.value] ?? 'text-gray-400')
   const roleLabel = computed(() => ROLE_LABELS[role.value] ?? role.value)
 
-  // Global cache of the dynamic profile → sections mapping (fetched 1×)
+  
   const dynamicMap = useState<Record<number, string[]> | null>(
     'profile_sections_map',
     () => null,
@@ -161,28 +141,24 @@ export const useRoles = () => {
       }
       dynamicMap.value = m
     } catch {
-      // Silent: we stay on the static fallback.
+      
       dynamicMap.value = {}
     } finally {
       dynamicLoading.value = false
     }
   }
 
-  // Fire-and-forget: triggers the fetch on first client-side usage.
+  
   if (import.meta.client) {
     ensureDynamicMap()
   }
 
-  /**
-   * Checks if the current role has access to a section.
-   *
-   * Priority: cs_profile_section (DB) if available for the profileId
-   * of the user. Otherwise fallback to static SECTION_ACCESS.
-   */
+  
+
   function canAccess(section: string): boolean {
-    // En mode "View as" (réservé SuperAdmin), on simule le profileId du
-    // rôle cible — sinon le sidebar lirait toujours les sections du compte
-    // réel et la simulation n'aurait aucun effet visible.
+    
+    
+    
     const isSimulating = actualIsRoot.value && !!viewAsRole.value
     const profileId = isSimulating
       ? ROLE_TO_PROFILE[viewAsRole.value!] || 0
@@ -209,7 +185,6 @@ export const useRoles = () => {
   }
 }
 
-/** Catalogue exposé pour le sélecteur "View as" du topbar. */
 export const ROLE_OPTIONS: { value: UserRole; label: string }[] = ALL_ROLES.map(r => ({
   value: r,
   label: ROLE_LABELS[r],

@@ -1,8 +1,4 @@
-/**
- *
- * PDF generation for premium service contracts.
- * Uses PDFKit (native Node.js, not Puppeteer).
- */
+
 
 import PDFDocument from 'pdfkit'
 
@@ -18,10 +14,6 @@ export interface ContractData {
   projectId?: number
 }
 
-/**
- * Generates a premium service contract as PDF.
- * Returns a Buffer ready to be sent by email or downloaded.
- */
 export function generateContract(data: ContractData): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ size: 'A4', margin: 60 })
@@ -36,7 +28,7 @@ export function generateContract(data: ContractData): Promise<Buffer> {
     const gray = '#64748b'
     const black = '#1e293b'
 
-    // ── En-tête ────────────────────────────────────────────────────────
+    
     doc.rect(0, 0, doc.page.width, 80).fill(dark)
     doc.fillColor('#ffffff').fontSize(22).font('Helvetica-Bold')
       .text('CodeMyShop', 60, 28)
@@ -49,7 +41,7 @@ export function generateContract(data: ContractData): Promise<Buffer> {
 
     let y = 110
 
-    // ── Parties ─────────────────────────────────────────────────────────
+    
     doc.fillColor(violet).fontSize(11).font('Helvetica-Bold')
       .text('ENTRE LES SOUSSIGNÉS', 60, y)
     y += 24
@@ -82,7 +74,7 @@ export function generateContract(data: ContractData): Promise<Buffer> {
     doc.moveTo(60, y).lineTo(doc.page.width - 60, y).strokeColor('#e2e8f0').lineWidth(0.5).stroke()
     y += 20
 
-    // ── Objet ───────────────────────────────────────────────────────────
+    
     doc.fillColor(violet).fontSize(11).font('Helvetica-Bold')
       .text('ARTICLE 1 — OBJET', 60, y)
     y += 18
@@ -120,12 +112,12 @@ export function generateContract(data: ContractData): Promise<Buffer> {
     doc.moveTo(60, y).lineTo(doc.page.width - 60, y).strokeColor('#e2e8f0').lineWidth(0.5).stroke()
     y += 20
 
-    // ── Tarifs ──────────────────────────────────────────────────────────
+    
     doc.fillColor(violet).fontSize(11).font('Helvetica-Bold')
       .text('ARTICLE 2 — INVESTISSEMENT', 60, y)
     y += 22
 
-    // Setup
+    
     doc.fillColor(black).fontSize(10).font('Helvetica-Bold')
       .text('Frais de mise en service (setup)', 60, y)
     doc.fillColor(violet).text(`${data.setupPrice} € HT`, doc.page.width - 200, y, { width: 140, align: 'right' })
@@ -138,7 +130,7 @@ export function generateContract(data: ContractData): Promise<Buffer> {
     doc.text('Règlement par virement bancaire sous 15 jours', 60, y)
     y += 22
 
-    // MRR
+    
     doc.fillColor(black).fontSize(10).font('Helvetica-Bold')
       .text('Abonnement infrastructure mensuel', 60, y)
     doc.fillColor(violet).text(`${data.mrrPrice} € HT /mois`, doc.page.width - 200, y, { width: 140, align: 'right' })
@@ -152,7 +144,7 @@ export function generateContract(data: ContractData): Promise<Buffer> {
     doc.moveTo(60, y).lineTo(doc.page.width - 60, y).strokeColor('#e2e8f0').lineWidth(0.5).stroke()
     y += 20
 
-    // ── Propriété & Souveraineté ────────────────────────────────────────
+    
     doc.fillColor(violet).fontSize(11).font('Helvetica-Bold')
       .text('ARTICLE 3 — PROPRIÉTÉ & SOUVERAINETÉ', 60, y)
     y += 18
@@ -166,7 +158,7 @@ export function generateContract(data: ContractData): Promise<Buffer> {
       )
     y += 55
 
-    // ── Durée ───────────────────────────────────────────────────────────
+    
     doc.fillColor(violet).fontSize(11).font('Helvetica-Bold')
       .text('ARTICLE 4 — DURÉE & RÉSILIATION', 60, y)
     y += 18
@@ -179,7 +171,7 @@ export function generateContract(data: ContractData): Promise<Buffer> {
       )
     y += 50
 
-    // ── CGV ─────────────────────────────────────────────────────────────
+    
     doc.fillColor(gray).fontSize(7).font('Helvetica')
       .text(
         'Les présentes sont complétées par les Conditions Générales de Vente disponibles sur https://codemyshop.com/conditions-generales-de-vente ' +
@@ -192,14 +184,14 @@ export function generateContract(data: ContractData): Promise<Buffer> {
     doc.moveTo(60, y).lineTo(doc.page.width - 60, y).strokeColor('#e2e8f0').lineWidth(0.5).stroke()
     y += 30
 
-    // ── Signatures ──────────────────────────────────────────────────────
+    
     doc.fillColor(violet).fontSize(11).font('Helvetica-Bold')
       .text('SIGNATURES', 60, y)
     y += 24
 
     const colW = (doc.page.width - 120) / 2
 
-    // Prestataire
+    
     doc.fillColor(black).fontSize(9).font('Helvetica-Bold')
       .text('Le Prestataire', 60, y)
     doc.fillColor(gray).fontSize(8).font('Helvetica')
@@ -207,7 +199,7 @@ export function generateContract(data: ContractData): Promise<Buffer> {
     doc.text(`Fait à Metz, le ${data.date}`, 60, y + 30)
     doc.text('Signature :', 60, y + 50)
 
-    // Client
+    
     doc.fillColor(black).fontSize(9).font('Helvetica-Bold')
       .text('Le Client', 60 + colW, y)
     doc.fillColor(gray).fontSize(8).font('Helvetica')
@@ -215,7 +207,7 @@ export function generateContract(data: ContractData): Promise<Buffer> {
     doc.text(`Fait à ____________, le ${data.date}`, 60 + colW, y + 30)
     doc.text('Signature + mention "Lu et approuvé" :', 60 + colW, y + 50)
 
-    // ── Footer ──────────────────────────────────────────────────────────
+    
     doc.fillColor(gray).fontSize(6).font('Helvetica')
       .text(
         'CodeMyShop — Marque d\'CodeMyShop — SIRET 51090359400057 — EUIPO 019334553 — contact@codemyshop.com',

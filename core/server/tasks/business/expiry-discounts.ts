@@ -1,26 +1,4 @@
-/**
- *
- * Nitro Task — business:expiry-discounts
- *
- * Wave 4F of task #43. Port of `synedre/ac_cron_expiry_discounts.py`
- * (cron 03:35 UTC). Synchronizes expiry discounts in `ps_specific_price`
- * for active lots (`cs_lot`, qty_remaining > 0, expiry 0-14d).
- *
- * Algorithme :
- * 1. Scan eligible lots with MAX(discount_pct) via cs_expiry_rule
- * 2. Upsert: INSERT ps_specific_price + INSERT cs_expiry_applied if not
- * existing, UPDATE if pct changes, no-op if pct is identical
- * 3. Cleanup: for each active cs_expiry_applied whose lot is no longer
- * eligible, DELETE ps_specific_price + UPDATE removed_at = NOW()
- *
- * Idempotent: successive runs produce the same final state.
- *
- * AUDIT_MODE :
- * - 'shadow' (default): preview only, NO writes — equivalent to a dry-run of the
- * Python. The Python cron continues with --apply.
- *  - 'active'           : applique. Cutover = AUDIT_MODE_AC_CRON_EXPIRY_DISCOUNTS=
- * active + disable the Python cron.
- */
+
 
 import { defineTask } from 'nitropack/runtime'
 import { skipIfNotAcInternal } from '~/server/utils/cron-context'

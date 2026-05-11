@@ -1,6 +1,6 @@
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 flex items-center justify-between shrink-0">
       <div>
         <h1 class="text-base font-bold text-gray-800 dark:text-slate-100">Commandes</h1>
@@ -16,13 +16,13 @@
       </div>
     </header>
 
-    <!-- Pagination top -->
+    
     <HubPaginationBar v-if="total > 0" :page="page" :total-pages="totalPages" :total="total" label="commandes"
       :per-page="perPage" :per-page-options="perPageOptions"
       @go="goPage" @update:per-page="setPerPage"
       class="border-b border-gray-100 dark:border-slate-800" />
 
-    <!-- Table -->
+    
     <div class="flex-1 overflow-auto">
       <div v-if="loading && !orders.length" class="px-6 py-4 space-y-2">
         <div v-for="i in 10" :key="i" class="h-14 bg-gray-100 dark:bg-slate-800 rounded-xl animate-pulse" />
@@ -91,7 +91,7 @@
       </table>
     </div>
 
-    <!-- Pagination bottom -->
+    
     <HubPaginationBar v-if="totalPages > 1" :page="page" :total-pages="totalPages" :total="total" label="commandes" @go="goPage" class="border-t border-gray-100 dark:border-slate-800" />
   </div>
 </template>
@@ -162,7 +162,7 @@ async function loadStatuses() {
   try {
     const data = await $fetch<any>('/api/bo/orders/statuses')
     statuses.value = data.statuses ?? []
-  } catch { /* silent */ }
+  } catch {  }
 }
 
 function formatDate(d: string) { return d ? new Date(d).toLocaleDateString('fr-FR') : '' }

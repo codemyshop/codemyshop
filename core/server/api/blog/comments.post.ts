@@ -1,7 +1,5 @@
-/**
- * POST /api/blog/comments — Drizzle DB direct (cs_blog_comments).
- *
- */
+
+
 import { createComment } from '~/enterprise/base/blog-comments/server/utils/blog-comments'
 
 export default defineEventHandler(async (event) => {

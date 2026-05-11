@@ -1,31 +1,19 @@
-/**
- *
- * Nitro Task — seed:translations
- *
- * Reads every `core/i18n/locales/<locale>.yaml` and upserts the flattened
- * key/value pairs into `ps_translation` (PG, schema cs_main) with
- * `domain='oss'`. Idempotent: re-running on identical files is a no-op
- * because we use ON CONFLICT DO UPDATE only when the value differs.
- *
- * Triggered:
- *   - At install (one-shot, docker entrypoint or `pnpm seed:translations`)
- *   - After every deploy that touches `core/i18n/locales/*.yaml`
- *
- * Locale codes map to PrestaShop `id_lang` via `ps_lang.iso_code`. Locales
- * with no matching `ps_lang` row are skipped (with a warning) — install the
- * language pack first, then re-seed.
- */
+
+
+i18n
 
 import { defineTask } from 'nitropack/runtime'
-import { readFileSync, readdirSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { resolve, basename } from 'node:path'
 import { parse as parseYaml } from 'yaml'
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 
 const PG_SCHEMA = 'cs_main'
-const DOMAIN = 'oss'
+const OSS_DOMAIN = 'oss'
+const OSS_THEME = 'core'
 
 interface SeedResult {
+  source: 'oss' | string  
   locale: string
   inserted: number
   updated: number
@@ -33,7 +21,6 @@ interface SeedResult {
   skipped?: string
 }
 
-/** Walk the YAML tree, emitting flat dotted keys + leaf string values. */
 function flatten(node: unknown, prefix = ''): Record<string, string> {
   const out: Record<string, string> = {}
   if (node === null || node === undefined) return out
@@ -59,9 +46,9 @@ async function resolveLangId(localeCode: string): Promise<number | null> {
   return rows[0]?.id_lang ?? null
 }
 
-async function seedLocale(filepath: string): Promise<SeedResult> {
+async function seedYamlFile(filepath: string, domain: string, theme: string, source: SeedResult['source']): Promise<SeedResult> {
   const localeCode = basename(filepath, '.yaml')
-  const result: SeedResult = { locale: localeCode, inserted: 0, updated: 0, unchanged: 0 }
+  const result: SeedResult = { source, locale: localeCode, inserted: 0, updated: 0, unchanged: 0 }
 
   const idLang = await resolveLangId(localeCode)
   if (idLang === null) {
@@ -80,20 +67,20 @@ async function seedLocale(filepath: string): Promise<SeedResult> {
   for (const [key, translation] of Object.entries(flat)) {
     const existing = await sql<{ translation: string }[]>`
       SELECT translation FROM cs_main.ps_translation
-      WHERE id_lang = ${idLang} AND key = ${key} AND domain = ${DOMAIN}
+      WHERE id_lang = ${idLang} AND key = ${key} AND domain = ${domain}
       LIMIT 1
     `
     if (existing.length === 0) {
       await sql`
         INSERT INTO cs_main.ps_translation (id_lang, key, translation, domain, theme)
-        VALUES (${idLang}, ${key}, ${translation}, ${DOMAIN}, 'core')
+        VALUES (${idLang}, ${key}, ${translation}, ${domain}, ${theme})
       `
       result.inserted++
     } else if (existing[0].translation !== translation) {
       await sql`
         UPDATE cs_main.ps_translation
         SET translation = ${translation}
-        WHERE id_lang = ${idLang} AND key = ${key} AND domain = ${DOMAIN}
+        WHERE id_lang = ${idLang} AND key = ${key} AND domain = ${domain}
       `
       result.updated++
     } else {
@@ -103,35 +90,64 @@ async function seedLocale(filepath: string): Promise<SeedResult> {
   return result
 }
 
+function discoverTenantOverrides(root: string): { tenant: string; file: string }[] {
+  const clientsDir = resolve(root, 'clients')
+  if (!existsSync(clientsDir)) return []
+  const out: { tenant: string; file: string }[] = []
+  for (const tenant of readdirSync(clientsDir)) {
+    const i18nDir = resolve(clientsDir, tenant, 'i18n')
+    let stat
+    try { stat = statSync(i18nDir) } catch { continue }
+    if (!stat.isDirectory()) continue
+    for (const f of readdirSync(i18nDir)) {
+      if (!f.endsWith('.yaml')) continue
+      out.push({ tenant, file: resolve(i18nDir, f) })
+    }
+  }
+  return out
+}
+
 export default defineTask({
   meta: {
     name: 'seed:translations',
-    description: 'Seed cs_translation from core/i18n/locales/*.yaml',
+    description: 'Seed cs_translation from core/i18n/locales + clients/*/i18n YAML packs',
   },
   async run() {
-    const localesDir = resolve(process.cwd(), 'core/i18n/locales')
-    let files: string[]
+    const root = process.cwd()
+    const results: SeedResult[] = []
+
+    
+    const localesDir = resolve(root, 'core/i18n/locales')
+    let coreFiles: string[] = []
     try {
-      files = readdirSync(localesDir)
+      coreFiles = readdirSync(localesDir)
         .filter((f) => f.endsWith('.yaml'))
         .map((f) => resolve(localesDir, f))
     } catch (err) {
-      return { result: 'no-locales-dir', error: String(err) }
+      return { result: 'no-core-locales-dir', error: String(err), dir: localesDir }
     }
-    if (files.length === 0) {
-      return { result: 'no-yaml-files-found', dir: localesDir }
-    }
-
-    const results: SeedResult[] = []
-    for (const f of files) {
+    for (const f of coreFiles) {
       try {
-        results.push(await seedLocale(f))
+        results.push(await seedYamlFile(f, OSS_DOMAIN, OSS_THEME, 'oss'))
       } catch (err) {
         results.push({
-          locale: basename(f, '.yaml'),
-          inserted: 0,
-          updated: 0,
-          unchanged: 0,
+          source: 'oss', locale: basename(f, '.yaml'),
+          inserted: 0, updated: 0, unchanged: 0,
+          skipped: `error: ${String(err).slice(0, 200)}`,
+        })
+      }
+    }
+
+    
+    for (const { tenant, file } of discoverTenantOverrides(root)) {
+      const domain = `tenant:${tenant}`
+      const source = `tenant:${tenant}` as const
+      try {
+        results.push(await seedYamlFile(file, domain, tenant, source))
+      } catch (err) {
+        results.push({
+          source, locale: basename(file, '.yaml'),
+          inserted: 0, updated: 0, unchanged: 0,
           skipped: `error: ${String(err).slice(0, 200)}`,
         })
       }
@@ -139,6 +155,8 @@ export default defineTask({
 
     const summary = {
       files_processed: results.length,
+      oss_files: results.filter((r) => r.source === 'oss').length,
+      tenant_files: results.filter((r) => r.source !== 'oss').length,
       total_inserted: results.reduce((a, r) => a + r.inserted, 0),
       total_updated: results.reduce((a, r) => a + r.updated, 0),
       total_unchanged: results.reduce((a, r) => a + r.unchanged, 0),

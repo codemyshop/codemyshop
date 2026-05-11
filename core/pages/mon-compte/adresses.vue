@@ -1,9 +1,4 @@
-<!--
-  Mon compte — Carnet d'adresses
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <script setup lang="ts">
 import type { AddressData } from '~/server/connectors/base'
 
@@ -61,14 +56,14 @@ async function deleteAddress(addr: AddressData) {
   try {
     await $fetch(`/api/catalogue/customer/addresses/${addr.id}`, { method: 'DELETE' })
     addresses.value = addresses.value.filter(a => a.id !== addr.id)
-  } catch { /* ignore */ }
+  } catch {  }
   finally { deletingId.value = null }
 }
 const countries = ref<{ id: number; name: string }[]>([])
 onMounted(async () => {
   try {
     countries.value = await $fetch<{ id: number; name: string }[]>('/api/catalogue/countries', { query: { clientId } })
-  } catch { /* fallback France */ }
+  } catch {  }
 })
 
 async function loadAddresses() {
@@ -81,7 +76,7 @@ async function loadAddresses() {
     addresses.value = await $fetch<AddressData[]>('/api/catalogue/customer/addresses', {
       query: { customerId: customer.value!.customerId },
     })
-  } catch { /* ignore */ }
+  } catch {  }
   finally { loading.value = false }
 }
 
@@ -113,7 +108,7 @@ async function onSaveAddress() {
     }
     showForm.value = false
     resetForm()
-  } catch { /* ignore */ }
+  } catch {  }
   finally { saving.value = false }
 }
 
@@ -138,7 +133,7 @@ useHead({ title: brandName ? `Mes adresses — ${brandName}` : 'Mes adresses' })
         <div v-if="loading" class="text-center py-12 text-gray-400 text-sm">{{ t('account.account_loading') }}</div>
 
         <div v-else class="space-y-4">
-          <!-- Adresses existantes -->
+          
           <div v-for="addr in addresses" :key="addr.id" class="bg-white rounded-xl p-5 border border-gray-100 flex justify-between gap-4">
             <div class="flex-1 min-w-0">
               <p class="text-sm font-bold text-gray-900">{{ addr.company || `${addr.firstname} ${addr.lastname}` }}</p>
@@ -160,7 +155,7 @@ useHead({ title: brandName ? `Mes adresses — ${brandName}` : 'Mes adresses' })
             </div>
           </div>
 
-          <!-- New/edit address form -->
+          
           <form v-if="showForm" class="bg-white rounded-xl p-6 border border-primary-600 space-y-4" @submit.prevent="onSaveAddress">
             <h2 class="text-sm font-bold text-gray-900">{{ editingId ? 'Modifier l\'adresse' : t('account.addresses_new_title') }}</h2>
             <div v-if="isB2b">

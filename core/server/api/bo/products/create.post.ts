@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/products/create
- * Minimal product creation in direct DB (ps_product + ps_product_shop +
- * ps_product_lang + ps_category_product + ps_stock_available).
- * Policy « Zero PrestaShop webservice » 2026-04-22.
- */
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 
 function slugify(s: string): string {
@@ -57,14 +51,14 @@ export default defineEventHandler(async (event) => {
       [productId, description, descriptionShort, slug, name, name],
     )
 
-    // Attache à la catégorie
+    
     await db.run(
       `INSERT IGNORE INTO ps_category_product (id_category, id_product, position)
        VALUES (?, ?, 0)`,
       [categoryId, productId],
     )
 
-    // Stock init à 0 (ou quantity si fourni)
+    
     const initQty = Number(data.quantity || 0)
     await db.run(
       `INSERT INTO ps_stock_available

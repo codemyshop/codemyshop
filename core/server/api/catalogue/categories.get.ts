@@ -1,13 +1,5 @@
-/**
- *
- * GET /api/catalogue/categories?clientId=example-vape-v2&limit=200&lang=fr
- *
- * List of active PS categories for a workspace. Refactored to direct DB (principle
- * 'Zero PrestaShop webservice' 2026-04-22). The previous implementation
- * went through getConnector(clientId).getCategories() which used psFetch.
- * Benefits: ~100-300ms latency saved, robustness against misconfigured Apache
- * configured (v2 AllowOverride validation), DB-only alignment.
- */
+
+
 import { useClientDbById, useClientDb } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 
@@ -30,8 +22,8 @@ export default defineEventHandler(async (event) => {
   const db = clientId ? useClientDbById(String(clientId)) : useClientDb(event)
 
   try {
-    // id_category > 2 : exclut Root (1) et Home (2) natifs PS.
-    // JOIN lang avec fallback id_lang=1 (FR source de vérité).
+    
+    
     const rows = await db.query<CategoryRow>(
       `SELECT c.id_category, c.id_parent, c.active, c.level_depth,
               COALESCE(cl.name,             clf.name, '')             AS name,

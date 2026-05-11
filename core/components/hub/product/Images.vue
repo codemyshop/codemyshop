@@ -6,7 +6,7 @@
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-      <!-- Upload placeholder — always first -->
+      
       <button
         type="button"
         @click="$emit('upload-request')"
@@ -19,7 +19,7 @@
         <span class="text-[11px] font-medium text-gray-500 group-hover:text-primary-600">Ajouter</span>
       </button>
 
-      <!-- Images existantes -->
+      
       <div
         v-for="(img, index) in displayImages"
         :key="img.id || index"
@@ -38,7 +38,7 @@
           </svg>
         </div>
 
-        <!-- Cover badge on index 0 -->
+        
         <div
           v-if="index === 0"
           class="absolute bottom-0 inset-x-0 bg-gray-900/70 backdrop-blur-sm text-white text-[10px] font-medium text-center py-1"
@@ -46,7 +46,7 @@
           Image de couverture
         </div>
 
-        <!-- Action supprimer au hover -->
+        
         <button
           type="button"
           @click="$emit('remove', img.id)"
@@ -81,7 +81,6 @@ defineEmits<{
   (e: 'remove', id: number | string): void
 }>()
 
-// Mock 3 visual placeholders when no image exists, so the grid is visible
 const mockImages: ProductImage[] = [
   { id: 'mock-1' },
   { id: 'mock-2' },

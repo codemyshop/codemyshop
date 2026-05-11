@@ -1,15 +1,9 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { markConversationRead } from '~/server/utils/chatbot-engine'
 import { requireEmployeeSession } from '~/server/utils/session'
 
-/**
- * POST /api/bo/chatbot/[token]/mark-read — marks a conversation
- * as read on the admin side (without sending a message). Called when the
- * sales agent opens the conversation details to dismiss
- * the sidebar badge.
- */
 export default defineEventHandler(async (event) => {
   requireEmployeeSession(event)
   const token = String(getRouterParam(event, 'token') || '').trim()

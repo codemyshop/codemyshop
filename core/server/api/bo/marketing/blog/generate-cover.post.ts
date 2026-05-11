@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { resolveClientId } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
@@ -9,16 +9,6 @@ import {
 import { getCmsExtraAvatarTargets } from '~/modules/cms-extra/server/utils/cms-extra'
 import { getAvatarDefinitionForCover } from '~/modules/avatars/server/utils/avatars'
 
-/**
- * POST /api/bo/marketing/blog/generate-cover
- *
- * Inserts a cover generation request into cs_covergen_queue
- * via the ac_covergen facade. Cross-domain: resolves the target avatar via
- * ac_cmsextra facades (page_type + target_avatar_ids) + ac_avatars
- * (personas + page_type_expression_map).
- *
- * Body : { id_cms, title, slug, withAvatar? }
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -45,7 +35,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // ── Résolution avatar + expression (cross-domain via façades) ────
+    
     let avatarId: number | null = null
     let expressionSlug: string | null = body.avatarExpression ? String(body.avatarExpression) : null
     let expressionImageUrl: string | null = body.avatarImageUrl ? String(body.avatarImageUrl) : null
@@ -81,7 +71,7 @@ export default defineEventHandler(async (event) => {
             }
           }
         }
-      } catch { /* graceful — covers sans expression fallback au perso générique */ }
+      } catch {  }
     }
 
     const id = await insertCovergenJob({

@@ -1,14 +1,9 @@
-/**
- * Generate CSS theme variables to inject on the root element (app.vue).
- * All new colors, border-radius values, and UI settings are calculated here
- * and applied as a :style object on the root <div>.
- */
+
 
 import { generateColorScale } from '~/utils/colorShades'
 import type { BorderRadius, ContentWidth } from '~/types/theme'
 import type { ThemeDbData } from '~/composables/useThemeDb'
 
-// Valeurs de rayon pour chaque preset —————————————————————————————————————
 const RADIUS_MAP: Record<BorderRadius, { btn: string; card: string; input: string }> = {
   none: { btn: '0',       card: '0',      input: '0' },
   sm:   { btn: '0.25rem', card: '0.375rem', input: '0.375rem' },
@@ -17,7 +12,6 @@ const RADIUS_MAP: Record<BorderRadius, { btn: string; card: string; input: strin
   full: { btn: '9999px',  card: '1rem',    input: '9999px' },
 }
 
-// Largeur maximale de la colonne centrale ——————————————————————————————————
 const CONTENT_WIDTH_MAP: Record<ContentWidth, string> = {
   '6xl': '72rem',
   '7xl': '80rem',
@@ -28,25 +22,25 @@ const CONTENT_WIDTH_MAP: Record<ContentWidth, string> = {
 export function useClientTheme() {
   const { config }     = useClientDetection()
 
-  // Source 1 — DB structurée (cs_theme via /api/theme), SSR-safe.
-  // Même clé useFetch que useThemeDb() → pas de double-fetch.
+  
+  
   const { data: themeFetch } = useFetch<{ theme: ThemeDbData | null }>('/api/theme', {
     key: 'theme-db',
     default: () => ({ theme: null }),
   })
 
-  // Source 2 — Builder live preview (useState partagé avec useThemeDb()).
+  
   const builderTheme = useState<ThemeDbData | null>('theme_builder_override', () => null)
 
-  // Source 3 (legacy) — JSON blob cs_client_config, fetché par white-label.vue.
-  // Conservé comme filet de sécurité pour les tenants sans row cs_theme.
+  
+  
   const dbConfig = useState<Record<string, unknown> | null>('client_db_config', () => null)
 
-  // DB = seule source de vérité. Live preview > cs_theme (DB structurée).
-  // Le fallback legacy `config_json.theme` est DÉPRÉCIÉ depuis 2026-04-22 :
-  // tenants sans cs_theme installé doivent installer le module ac_theme
-  // (ajouté à .tenant-modules). On garde un warn console pour détecter les
-  // tenants encore en mode legacy, à retirer après audit complet.
+  
+  
+  
+  
+  
   const effectiveTheme = computed(() => {
     if (builderTheme.value?.colors?.primary) return builderTheme.value
     const dbRow = themeFetch.value?.theme
@@ -67,7 +61,7 @@ export function useClientTheme() {
 
     const vars: Record<string, string> = {}
 
-    // ── Couleur primaire : palette complète 50→900 ────────────────────────
+    
     if (theme.colors.primary) {
       const scale = generateColorScale(theme.colors.primary)
       for (const [shade, value] of Object.entries(scale)) {
@@ -76,7 +70,7 @@ export function useClientTheme() {
       }
     }
 
-    // ── Couleur secondaire : palette complète 50→900 ──────────────────────
+    
     if (theme.colors.secondary) {
       const scale = generateColorScale(theme.colors.secondary)
       for (const [shade, value] of Object.entries(scale)) {
@@ -85,7 +79,7 @@ export function useClientTheme() {
       }
     }
 
-    // ── Tokens simples ────────────────────────────────────────────────────
+    
     if (theme.colors.background)  vars['--color-background']  = theme.colors.background
     if (theme.colors.foreground)  vars['--color-foreground']  = theme.colors.foreground
     if (theme.colors.muted)       vars['--color-muted']       = theme.colors.muted
@@ -96,11 +90,11 @@ export function useClientTheme() {
     if (theme.colors.topBarBg)    vars['--color-topbar-bg']   = theme.colors.topBarBg
     if (theme.colors.topBarText)  vars['--color-topbar-text'] = theme.colors.topBarText
 
-    // ── Typographie ───────────────────────────────────────────────────────
+    
     if (theme.typography?.fontFamily)   vars['--font-family']      = theme.typography.fontFamily
     if (theme.typography?.baseFontSize) vars['--font-size-base']   = theme.typography.baseFontSize
 
-    // ── Rayon des éléments interactifs ────────────────────────────────────
+    
     if (theme.ui?.borderRadius) {
       const r = RADIUS_MAP[theme.ui.borderRadius]
       vars['--radius-btn']   = r.btn
@@ -108,19 +102,19 @@ export function useClientTheme() {
       vars['--radius-input'] = r.input
     }
 
-    // ── Largeur de la colonne centrale ────────────────────────────────────
+    
     const cw = theme.ui?.contentWidth ?? '6xl'
     vars['--content-max-w'] = CONTENT_WIDTH_MAP[cw]
 
     return vars
   })
 
-  // Classe CSS conditionnelle pour désactiver les ombres portées
+  
   const shadowClass = computed(() =>
     effectiveTheme.value?.ui?.shadow === false ? 'theme-no-shadow' : ''
   )
 
-  // Classe Tailwind dynamique pour la largeur de la colonne centrale
+  
   const contentWidthClass = computed(() => {
     const cw = effectiveTheme.value?.ui?.contentWidth ?? '6xl'
     const map: Record<string, string> = {

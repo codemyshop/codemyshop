@@ -1,15 +1,4 @@
-/**
- *
- * POST /api/broadcast/send
- * Body : { to, subject, body, cta, channel }
- * Actually sends email via Resend.
- *
- * SECURITY.md R4: input validation.
- * SECURITY.md R1: Resend key from .env.
- *
- * Anti-spam: goes through the queue (1 send/min via cron email:queue-process)
- * to avoid MTA reputation ban in case of large broadcast.
- */
+
 
 import { sendEmailViaQueue } from '~/server/utils/email-queue'
 
@@ -26,7 +15,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'to et subject requis' })
   }
 
-  // Construire le HTML de l'email
+  
   const html = buildEmailHtml({
     subject: body.subject,
     body:    body.body,

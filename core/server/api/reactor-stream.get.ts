@@ -1,12 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/reactor-stream
- * Server-Sent Events (SSE) — pushes new pipeline activities in real-time.
- * PUBLIC endpoint (marketing — visible on /reacteur).
- *
- * Source of truth: cs_agent_activity + cs_agent_heartbeat (DB)
- */
+
 import {
   listHeartbeats,
   listRecentActivity,
@@ -14,7 +7,6 @@ import {
   getMaxActivityId,
 } from '~/internal/agents/server/utils/agents'
 
-// Patterns sensibles à ne jamais exposer en public
 const SECURITY_PATTERNS = [
   /CVE-\d{4}-\d+[^—;]*/gi,
   /nginx\/[\d.]+[^;—]*/gi,
@@ -33,7 +25,7 @@ function sanitizeEntry(entry: Record<string, unknown>): Record<string, unknown> 
 }
 
 export default defineEventHandler(async (event) => {
-  // Headers SSE
+  
   setResponseHeaders(event, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
@@ -48,7 +40,7 @@ export default defineEventHandler(async (event) => {
     res.write(`event: ${eventType}\ndata: ${JSON.stringify(data)}\n\n`)
   }
 
-  // Initial state — last 10 activities + heartbeats
+  
   const recentActivityRows = await listRecentActivity(10, { event })
   const recentActivity = recentActivityRows.map((r) => ({
     agent: r.agent_codename,
@@ -71,16 +63,16 @@ export default defineEventHandler(async (event) => {
     heartbeats: heartbeatMap,
   }, 'init')
 
-  // Tracking of the last seen ID
+  
   let lastSeenId = await getMaxActivityId({ event })
 
-  // Heartbeat SSE (keep-alive every 30s)
+  
   const keepAlive = setInterval(() => {
     if (res.closed) return
     res.write(': keepalive\n\n')
   }, 30000)
 
-  // Poll DB every 3 seconds for new activities
+  
   const poller = setInterval(async () => {
     if (res.closed) return
     try {
@@ -105,11 +97,11 @@ export default defineEventHandler(async (event) => {
         send(hbMap, 'heartbeats')
       }
     } catch {
-      // DB temporairement indisponible, on skip ce cycle
+      
     }
   }, 3000)
 
-  // Cleanup when client disconnects
+  
   return new Promise<void>((resolve) => {
     res.on('close', () => {
       clearInterval(keepAlive)

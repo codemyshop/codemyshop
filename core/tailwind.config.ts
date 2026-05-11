@@ -1,17 +1,6 @@
 import type { Config } from 'tailwindcss'
 import colors from 'tailwindcss/colors'
 
-/**
- * Tailwind Semantic Color System — Marque Blanche
- * ─────────────────────────────────────────────────────────────────────────────
- * primary, secondary → complete palettes controlled by CSS variables (50→900)
- * background, foreground, muted, header-bg, footer-bg → tokens simples
- * borderRadius → rounded-btn / rounded-card / rounded-input via CSS variables
- *
- * The default values are declared in assets/css/main.css
- * For flash-free SSR rendering. useClientTheme() overrides them dynamically.
- * ─────────────────────────────────────────────────────────────────────────────
- */
 export default {
   darkMode: 'class',
   safelist: [
@@ -21,7 +10,7 @@ export default {
     'dark:text-white',
     'dark:hover:bg-slate-700', 'dark:hover:bg-slate-800', 'dark:hover:bg-slate-950',
     'dark:divide-slate-700', 'dark:divide-slate-800',
-    // Home components dark mode
+    
     'dark:bg-slate-800/50', 'dark:bg-slate-800', 'dark:bg-slate-700', 'dark:bg-slate-700/50',
     'dark:bg-green-900/30', 'dark:text-green-400',
     'dark:bg-primary-600/15', 'dark:bg-primary-600/10', 'dark:bg-primary-600/20', 'dark:bg-primary-600/5',
@@ -34,7 +23,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // ── Palettes dynamiques (CSS variables) ───────────────────────────
+        
         primary: {
           DEFAULT: 'var(--color-primary)',
           50:  'var(--color-primary-50)',
@@ -62,7 +51,7 @@ export default {
           900: 'var(--color-secondary-900)',
         },
 
-        // ── Couleur accent (pink fuschia — issue du logo #F370FB) ────
+        
         accent: {
           DEFAULT: 'var(--color-accent, #ec4899)',
           50:  '#fdf2f8',
@@ -77,19 +66,19 @@ export default {
           900: '#831843',
         },
 
-        // ── Tokens de surface et texte ────────────────────────────────────
+        
         background: 'var(--color-background)',
         foreground: 'var(--color-foreground)',
         muted:      'var(--color-muted)',
         'header-bg': 'var(--color-header-bg)',
         'footer-bg': 'var(--color-footer-bg)',
 
-        // ── Tokens statiques (identiques pour tous les clients) ────────────
+        
         success: colors.green,
         danger:  colors.red,
         warning: colors.amber,
 
-        // ── Stades CRM (pipeline kanban) ──────────────────────────────────
+        
         stage: {
           lead:     colors.blue,
           qualify:  colors.cyan,
@@ -102,18 +91,18 @@ export default {
         },
       },
 
-      // ── Border radius dynamiques ─────────────────────────────────────────
+      
       borderRadius: {
         btn:   'var(--radius-btn)',
         card:  'var(--radius-card)',
         input: 'var(--radius-input)',
       },
 
-      // ── Typographie dynamique ─────────────────────────────────────────────
-      // Tenant déclare ses fonts dans clients/<t>/assets/theme-vars.css :
-      // --font-family (sans), --font-serif, --font-mono. @nuxt/fonts scanne
-      // le CSS résultant et ne génère les @font-face que pour les familles
-      // réellement utilisées par le tenant — évite 84 @font-face parasites.
+      
+      
+      
+      
+      
       fontFamily: {
         sans:  ['var(--font-family)', 'system-ui', 'sans-serif'],
         serif: ['var(--font-serif, Georgia)', 'Georgia', 'serif'],

@@ -1,15 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/bo/categories/:id/cross-categories
- *
- * Lists cross-categories linked to the host category (id), sorted by
- * position. Each entry returns the minimum data required for the linking UI:
- *   { id, name, link_rewrite, level_depth, active, breadcrumb }
- *
- * Inactive ones are included (the back-office must be able to see/unlink them); the
- * active=1 filtering is done on the /api/category endpoint (storefront).
- */
 
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession } from '~/server/utils/session'

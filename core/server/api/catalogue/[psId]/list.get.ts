@@ -1,16 +1,5 @@
-/**
- *
- * GET /api/catalogue/:psId/list?clientId=...&page=1&limit=24&sort=name_asc&priceMin=0&priceMax=999&f=12:45,67|8:120
- *
- * Paginated list of active products in a PrestaShop category (includes products
- * from subcategories via nleft/nright). Refactored to DB direct (doctrine: Zero
- * PrestaShop webservice, 2026-04-22). Before: connector.listProducts via psFetch.
- *
- * Parameter `f` (features) format: `featureId:valueId1,valueId2|featureId:valueId3`
- * Feature filters are applied with AND between features / OR within features.
- *
- * Renvoie { products: CatalogProduct[], total, page, limit, filters: ProductFilter[] }
- */
+
+
 import { useClientDbById, useClientDb } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 import { buildProductImage } from '~/server/utils/ps-image'
@@ -28,9 +17,6 @@ interface ProductRow {
   date_add: string
 }
 
-// PG strict (SELECT DISTINCT) : ORDER BY doit référencer un alias présent
-// dans le SELECT. `pl.name` / `pl.link_rewrite` sont masqués par COALESCE
-// (cf SELECT DISTINCT plus bas), donc on trie sur les alias.
 const SORT_MAP: Record<string, string> = {
   name_asc:    'name ASC',
   name_desc:   'name DESC',
@@ -73,13 +59,13 @@ export default defineEventHandler(async (event) => {
   const idLang = await resolveIdLang(event)
   const db = clientId ? useClientDbById(clientId) : useClientDb(event)
 
-  // B2B → HT, B2C → TTC. Cf. core/server/utils/ps-tax.ts.
+  
   const b2b = await isTenantB2b(db)
   const taxJoin = buildTaxJoinForPrice(b2b)
   const priceExpr = buildPriceExprNonAgg(b2b, 'ps.price')
 
   try {
-    // Récupère nleft/nright pour inclure les produits des sous-catégories
+    
     const catMeta = await db.get<{ nleft: number; nright: number }>(
       `SELECT nleft, nright FROM ps_category WHERE id_category = ? AND active = 1 LIMIT 1`,
       [psId],
@@ -88,7 +74,7 @@ export default defineEventHandler(async (event) => {
       return { products: [], total: 0, page, limit, filters: [] }
     }
 
-    // Base : JOIN ps_category_product via ps_category descendant de psId (nleft/nright)
+    
     const whereClauses: string[] = [
       'p.active = 1',
       'ps.active = 1',
@@ -106,7 +92,7 @@ export default defineEventHandler(async (event) => {
       whereParams.push(priceMax)
     }
 
-    // Filtres features : AND inter-features, OR intra-feature
+    
     const featureJoins: string[] = []
     const featureParams: any[] = []
     let i = 0
@@ -125,7 +111,7 @@ export default defineEventHandler(async (event) => {
     const whereSql = whereClauses.join(' AND ')
     const joinsSql = featureJoins.join(' ')
 
-    // COUNT (ignore l'ordre, mais applique filtres + DISTINCT produit)
+    
     const totalRow = await db.get<{ n: number }>(
       `SELECT COUNT(DISTINCT p.id_product) AS n
          FROM ps_product p
@@ -138,7 +124,7 @@ export default defineEventHandler(async (event) => {
     )
     const total = totalRow?.n ?? 0
 
-    // SELECT paginé
+    
     const rows = await db.query<ProductRow>(
       `SELECT DISTINCT p.id_product, p.reference, p.date_add AS date_add,
               COALESCE(pl.name, plf.name, '')                         AS name,
@@ -177,8 +163,8 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    // Filtres disponibles sur la catégorie : MVP renvoie les 10 premières
-    // features uniquement (counts exacts = backlog #285).
+    
+    
     const filters: any[] = []
 
     return { products, total, page, limit, filters }

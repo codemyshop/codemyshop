@@ -1,16 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { recordWeigh } from '~/enterprise/vertical-food/catchweight/server/utils/catchweight'
 
-/**
- * POST /api/bo/catch-weight/weigh — Records the actual weight of an order line.
- *
- * Body : { idLineWeight, weightShippedKg, idEmployee?, notes? }
- *
- * Recalcule price_final_ht = weight_shipped_kg × price_per_kg_ht.
- * Idempotent: re-entry updates without creating an additional line
- * (avoids double-billing mentioned in acceptance tests).
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     idLineWeight: number

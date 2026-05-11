@@ -1,9 +1,4 @@
-<!--
-  Mon compte — Détail commande client
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <script setup lang="ts">
 import type { OrderData } from '~/server/connectors/base'
 
@@ -38,7 +33,7 @@ async function downloadInvoice() {
     a.download = `facture-${order.value.invoiceNumber}-${order.value.reference}.pdf`
     a.click()
     URL.revokeObjectURL(url)
-  } catch { /* no invoice available */ }
+  } catch {  }
   finally { downloading.value = false }
 }
 
@@ -73,7 +68,7 @@ async function loadOrder() {
     order.value = await $fetch<OrderData>(`/api/orders/${route.params.id}`, {
       query: { clientId },
     })
-  } catch { /* ignore */ }
+  } catch {  }
   finally { loading.value = false }
 }
 
@@ -97,7 +92,7 @@ useHead({ title: computed(() => order.value ? `Commande #${order.value.reference
 
         <div v-else-if="order" class="space-y-6">
 
-          <!-- Statut -->
+          
           <div class="bg-white rounded-xl p-6 border border-gray-100">
             <div class="flex justify-between items-center">
               <div>
@@ -119,7 +114,7 @@ useHead({ title: computed(() => order.value ? `Commande #${order.value.reference
             </div>
           </div>
 
-          <!-- Articles -->
+          
           <div class="bg-white rounded-xl p-6 border border-gray-100">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-sm font-semibold text-gray-500">{{ t('account.order_articles') }}</h2>
@@ -146,7 +141,7 @@ useHead({ title: computed(() => order.value ? `Commande #${order.value.reference
             </div>
           </div>
 
-          <!-- Totaux -->
+          
           <div class="bg-white rounded-xl p-6 border border-gray-100">
             <div class="space-y-2 text-sm">
               <div class="flex justify-between"><span class="text-gray-500">{{ t('account.order_subtotal_ht') }}</span><span>{{ formatPrice(order.totalProducts) }}</span></div>
@@ -158,7 +153,7 @@ useHead({ title: computed(() => order.value ? `Commande #${order.value.reference
             </div>
           </div>
 
-          <!-- Adresse -->
+          
           <div v-if="order.addressDelivery" class="bg-white rounded-xl p-6 border border-gray-100">
             <h2 class="text-sm font-semibold text-gray-500 mb-2">{{ t('account.order_delivery_address') }}</h2>
             <div class="text-sm text-gray-700">

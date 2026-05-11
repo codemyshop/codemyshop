@@ -1,16 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Bouton pilotage démo — apparaît seulement si tenant a `isDemo: true` dans
-  runtimeConfig.public. Position fixed bottom-left, 3 actions :
-    - Vitrine CodeMyShop (retour produit)
-    - Hub admin
-    - Repo GitHub AGPL
-
-  Pattern Nuxt DevTools : pill collapsée par défaut, expand au click.
--->
 <script setup lang="ts">
 const _cfg = useRuntimeConfig()
 const isDemo = computed(() => Boolean((_cfg.public as any)?.isDemo))

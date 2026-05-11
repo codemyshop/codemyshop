@@ -1,13 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/loyalty/account
- *
- * Returns the loyalty balance of the connected customer, their transaction history
- * and available conversion tiers.
- *
- * DB-Only approach: direct read from cs_loyalty_* + ps_configuration tables.
- */
+
 import { useClientDb } from '~/server/utils/db'
 import { requireCustomer } from '~/server/utils/customer-session'
 
@@ -89,13 +81,13 @@ export default defineEventHandler(async (event): Promise<LoyaltyAccountResponse>
   const totalEarned  = Number(account?.total_earned ?? 0)
   const totalSpent   = Number(account?.total_spent ?? 0)
 
-  // tierMaxMultiplier = 0 → illimité (linéaire). On affiche alors jusqu'au
-  // palier max que le solde permet + 1 palier "à viser" au-dessus.
+  
+  
   const tiers: LoyaltyTier[] = []
   const affordableMax = Math.floor(balance / Math.max(1, tierPoints))
   const capMultiplier = tierMaxMultiplier > 0
     ? tierMaxMultiplier
-    : Math.max(2, affordableMax + 1) // au moins 2 paliers affichés même solde nul
+    : Math.max(2, affordableMax + 1) 
   for (let m = 1; m <= capMultiplier; m++) {
     const pts = tierPoints * m
     tiers.push({
@@ -148,9 +140,9 @@ export default defineEventHandler(async (event): Promise<LoyaltyAccountResponse>
     expired: number
     used_on_order: number
   }>(
-    // PG strict GROUP BY : on agrège ocr.id_order (MAX = un id si utilisé,
-     // NULL sinon) au lieu de l'utiliser brut. MariaDB tolérait l'ancien
-     // SQL sans erreur, PG (example_v2) refuse — incidents 2026-05-04.
+    
+     
+     
     `SELECT cr.code, cr.reduction_amount, cr.date_to,
             (cr.date_to < NOW()) AS expired,
             COALESCE(MAX(ocr.id_order), 0) AS used_on_order

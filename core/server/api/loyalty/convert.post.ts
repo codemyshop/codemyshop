@@ -1,15 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/loyalty/convert
- * Body: { multiplier: number }
- *
- * Converts N point tiers into native discount vouchers (ps_cart_rule) per-user.
- *
- * DB-Only approach: direct insert into ps_cart_rule + ps_cart_rule_lang + ps_cart_rule_shop,
- * then ledger into cs_loyalty_transaction + recompute cs_loyalty_account.
- * Idempotent: a failure in any table insert triggers a logical rollback (SQL transaction).
- */
+
 import { useClientDb } from '~/server/utils/db'
 import { requireCustomer } from '~/server/utils/customer-session'
 
@@ -37,7 +27,7 @@ export default defineEventHandler(async (event): Promise<LoyaltyConvertResponse>
   const body = await readBody<{ multiplier?: number }>(event)
   const multiplier = Math.floor(Number(body?.multiplier ?? 1))
 
-  // 1. Charger config
+  
   const configRows = await db.query<{ name: string; value: string }>(
     `SELECT name, value FROM ps_configuration WHERE name IN (
       'AC_LOYALTY_TIER_POINTS',
@@ -64,7 +54,7 @@ export default defineEventHandler(async (event): Promise<LoyaltyConvertResponse>
   const points   = tierPoints * multiplier
   const valueEur = tierValue * multiplier
 
-  // 2. Vérifier solde
+  
   const account = await db.get<{ balance_points: number }>(
     `SELECT balance_points FROM cs_loyalty_account WHERE id_customer = ?`,
     [session.customerId],
@@ -74,7 +64,7 @@ export default defineEventHandler(async (event): Promise<LoyaltyConvertResponse>
     return { success: false, error: `Solde insuffisant : ${points} points requis, ${balance} disponibles.` }
   }
 
-  // 3. Générer code unique (retry 3× si collision)
+  
   let code = ''
   for (let attempt = 0; attempt < 3; attempt++) {
     const candidate = generateCode()
@@ -91,7 +81,7 @@ export default defineEventHandler(async (event): Promise<LoyaltyConvertResponse>
     return { success: false, error: 'Impossible de générer un code unique. Réessayez.' }
   }
 
-  // 4. Insert ps_cart_rule
+  
   const nowSql    = new Date().toISOString().slice(0, 19).replace('T', ' ')
   const validTo   = new Date(Date.now() + validityDays * 86400_000).toISOString().slice(0, 19).replace('T', ' ')
   const description = `AC Loyalty — ${points} pts convertis (${session.email})`
@@ -123,7 +113,7 @@ export default defineEventHandler(async (event): Promise<LoyaltyConvertResponse>
     return { success: false, error: 'Échec création du bon (ps_cart_rule).' }
   }
 
-  // 5. Insert ps_cart_rule_lang pour chaque langue active
+  
   const langs = await db.query<{ id_lang: number }>(`SELECT id_lang FROM ps_lang WHERE active = 1`)
   for (const l of langs) {
     await db.run(
@@ -132,7 +122,7 @@ export default defineEventHandler(async (event): Promise<LoyaltyConvertResponse>
     )
   }
 
-  // 6. Insert ps_cart_rule_shop pour chaque boutique
+  
   const shops = await db.query<{ id_shop: number }>(`SELECT id_shop FROM ps_shop WHERE active = 1`)
   for (const s of shops) {
     await db.run(
@@ -141,7 +131,7 @@ export default defineEventHandler(async (event): Promise<LoyaltyConvertResponse>
     )
   }
 
-  // 7. Ledger : transaction debit (points négatifs)
+  
   const reference = `debit_${points}pts_${Math.round(valueEur)}eur_${code}`
   await db.run(
     `INSERT INTO cs_loyalty_transaction (id_customer, type, points, id_cart_rule, reference, date_add)
@@ -149,7 +139,7 @@ export default defineEventHandler(async (event): Promise<LoyaltyConvertResponse>
     [session.customerId, -Math.abs(points), idCartRule, reference],
   )
 
-  // 8. Recompute balance sur cs_loyalty_account (UPSERT idempotent sur PK id_customer)
+  
   await db.run(
     `INSERT INTO cs_loyalty_account (id_customer, balance_points, total_earned, total_spent)
      SELECT

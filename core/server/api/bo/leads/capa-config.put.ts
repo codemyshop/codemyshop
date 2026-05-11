@@ -1,13 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * PUT /api/bo/leads/capa-config — UPSERT Capa configuration of the current tenant.
- *
- * Body : { label?, ticketAnnuelEur, caConfortableMin, caFaisableMin, lossRatioMax }
- * All thresholds are validated (positive, consistent ordering: comfortable >= feasible).
- */
 export default defineEventHandler(async (event) => {
   const body = (await readBody(event)) as Record<string, any>
 
@@ -17,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const lossRatioMax = Math.max(0, Math.min(1, Number(body.lossRatioMax ?? 0.10)))
   const label = typeof body.label === 'string' ? body.label.slice(0, 64) : ''
 
-  // Cohérence : confortable doit être >= faisable
+  
   if (caConfortableMin < caFaisableMin) {
     throw createError({
       statusCode: 400,

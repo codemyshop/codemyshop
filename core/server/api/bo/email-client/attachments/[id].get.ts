@@ -1,9 +1,4 @@
-/**
- *
- * GET /api/bo/email-client/attachments/[id] — binary stream of an attachment
- * (BYTEA → response). Filter by current SMTP account to prevent
- * fuites cross-tenant.
- */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 
@@ -37,7 +32,7 @@ export default defineEventHandler(async (event) => {
   if (r.account_user !== account) throw createError({ statusCode: 403, statusMessage: 'Accès interdit.' })
   if (!r.content) throw createError({ statusCode: 404, statusMessage: 'Contenu vide.' })
 
-  // r.content sera un Buffer (postgres-js décode BYTEA → Buffer)
+  
   const buf = Buffer.isBuffer(r.content) ? r.content : Buffer.from(r.content as any)
   setHeader(event, 'Content-Type',  r.mime_type || 'application/octet-stream')
   setHeader(event, 'Content-Length', String(buf.length))

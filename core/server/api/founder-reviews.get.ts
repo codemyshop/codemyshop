@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/founder-reviews — PG direct (cs_main.cs_founder_reviews).
- * Tri : session_date DESC, agent_codename ASC.
- */
+
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
 

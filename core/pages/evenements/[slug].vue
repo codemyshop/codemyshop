@@ -1,12 +1,4 @@
-<!--
-  Détail événement — /evenements/{slug}/
-  Hero, infos pratiques (date/lieu/prix), description, formulaire d'inscription,
-  liste participants (consent), JSON-LD Event pour SEO.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -45,7 +37,6 @@ if (error.value || !data.value?.event) {
 const ev = computed(() => data.value!.event)
 const participants = computed(() => data.value!.participants)
 
-// Form state
 const form = ref({ email: '', name: '', phone: '', attendeesCount: 1, note: '', consent: false })
 const submitting = ref(false)
 const submitted = ref(false)
@@ -92,7 +83,6 @@ const isComplet = computed(() => ev.value.maxParticipants ? ev.value.registeredC
 const isClosed = computed(() => !ev.value.registrationOpen
   || (ev.value.registrationDeadline && new Date(ev.value.registrationDeadline) < new Date()))
 
-// JSON-LD Event for SEO
 const jsonLd = computed(() => ({
   '@context': 'https://schema.org',
   '@type': 'Event',
@@ -160,7 +150,7 @@ useHead(() => ({
 <template>
   <NuxtLayout name="white-label">
     <div class="bg-white">
-      <!-- Hero -->
+      
       <div class="relative bg-gradient-to-b from-gray-50 to-white border-b border-gray-100">
         <div class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
           <nav class="text-xs text-gray-400 mb-4">
@@ -181,7 +171,7 @@ useHead(() => ({
       </div>
 
       <div class="mx-auto max-w-6xl px-4 sm:px-6 py-10 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10">
-        <!-- Colonne gauche : description + image -->
+        
         <div class="space-y-8">
           <img v-if="ev.coverImageUrl" :src="ev.coverImageUrl" :alt="ev.title" class="w-full rounded-lg border border-gray-200" />
           <section v-if="ev.descriptionHtml" class="prose prose-sm sm:prose max-w-none text-gray-700" v-html="ev.descriptionHtml"></section>
@@ -193,7 +183,7 @@ useHead(() => ({
           </section>
         </div>
 
-        <!-- Colonne droite : infos + form -->
+        
         <aside class="space-y-6">
           <div class="rounded-lg border border-gray-200 bg-white p-5 space-y-3 text-sm">
             <p class="flex items-start gap-2">
@@ -225,7 +215,7 @@ useHead(() => ({
             </p>
           </div>
 
-          <!-- Form inscription -->
+          
           <div v-if="submitted" class="rounded-lg border border-emerald-200 bg-emerald-50 p-5 text-sm">
             <p class="font-semibold text-emerald-800 mb-2">✓ Inscription confirmée</p>
             <p class="text-emerald-700">Tu reçois un récap par email. À très vite !</p>

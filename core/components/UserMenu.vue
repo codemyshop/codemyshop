@@ -1,8 +1,8 @@
 <template>
-  <!-- Customer icon in the nav (never employee — see `EmployeeMenu`) -->
+  
   <div class="relative">
 
-    <!-- Button: avatar if customer is logged in, SVG silhouette otherwise -->
+    
     <button
       v-if="customer"
       @click="toggleDropdown"
@@ -26,7 +26,7 @@
       </svg>
     </button>
 
-    <!-- Dropdown customer -->
+    
     <Transition
       enter-active-class="transition duration-100 ease-out"
       enter-from-class="opacity-0 scale-95"
@@ -71,14 +71,14 @@
     </Transition>
   </div>
 
-  <!-- Overlay click-outside dropdown -->
+  
   <div
     v-if="dropdownOpen"
     class="fixed inset-0 z-40"
     @click="dropdownOpen = false"
   />
 
-  <!-- Login modal (outside `.relative` for fullscreen positioning) -->
+  
   <Teleport to="body">
     <Transition
       enter-active-class="transition-opacity duration-150"
@@ -187,7 +187,7 @@ function openLoginModal() {
   loginError.value = ''
   loginForm.email = ''
   loginForm.password = ''
-  // Focus the email on open (next tick = after render)
+  
   nextTick(() => emailInput.value?.focus())
 }
 
@@ -203,8 +203,8 @@ async function onLoginSubmit() {
     const res = await customerAuth.login(loginForm.email, loginForm.password)
     if (res.success) {
       closeLoginModal()
-      // Keeps the current page — no redirect. If the page consumes
-      // `useCustomerAuth`, its reactive state updates automatically.
+      
+      
       return
     }
     loginError.value = res.error || t('auth.login_error_invalid')

@@ -83,7 +83,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
@@ -99,7 +98,7 @@ function setPerPage(n: number) {
 }
 const loading = ref(false)
 const search = ref('')
-const statusFilter = ref(4) // 4=expédié par défaut
+const statusFilter = ref(4) 
 const updating = ref<number | null>(null)
 
 function setFilter(s: number) {
@@ -126,9 +125,9 @@ async function load() {
   loading.value = true
   try {
     if (statusFilter.value === 0) {
-      // Fetch both shipped + delivered
+      
       const data = await $fetch<any>('/api/bo/orders', { query: { page: page.value, perPage: perPage.value, search: search.value, sort: 'date', dir: 'DESC' } })
-      // Filter client-side for status 4+5
+      
       orders.value = (data.orders ?? []).filter((o: any) => o.statusId === 4 || o.statusId === 5)
       total.value = orders.value.length
       totalPages.value = 1

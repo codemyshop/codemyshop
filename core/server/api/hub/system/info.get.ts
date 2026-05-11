@@ -1,30 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/hub/system/info
- *
- * Inventory of open-source components + current tenant's server information.
- * Used by the 'System' tab in /hub/informations to get an overview
- * of versions to update.
- *
- * Sources :
- *   - OS / kernel / arch / hostname / uptime : node:os + /etc/os-release
- * - CPU (model, cores, load avg): node:os.cpus() + loadavg()
- * - RAM (total / free / used): node:os.totalmem() / freemem()
- * - Disk (total / free / used, rootfs): node:fs/promises.statfs('/')
- * - Node / Nuxt: process + nuxt/package.json (resolved at build)
- *   - PostgreSQL : SELECT VERSION()
- *   - pgvector : SELECT extversion FROM pg_extension WHERE extname='vector'
- * - Redis: INFO server (raw RESP over socket)
- *   - Nginx / Docker : exec(--version)
- *   - IP publique : env PUBLIC_IP / VPS_IP, fallback https://api.ipify.org (cache 1h)
- *
- * Historical note 2026-05-01 — PHP/PrestaShop removal: versions
- * PrestaShop / PHP / Symfony / MariaDB are no longer exposed (runtime
- * 100% PG/Nuxt depuis chantier #44 E.4 + php-eviction-phase3).
- *
- * No secrets exposed: only public versions + public IP (already visible via DNS).
- */
 
 import { readFile, statfs } from 'node:fs/promises'
 import { execFile } from 'node:child_process'
@@ -41,7 +15,7 @@ import {
   type as osType,
   uptime as osUptime,
 } from 'node:os'
-// @ts-expect-error JSON import — la version Nuxt est inlinée par le bundler Nitro au build
+
 import nuxtPkg from 'nuxt/package.json'
 import { useClientDb } from '~/server/utils/db'
 
@@ -57,7 +31,6 @@ interface SystemInfo {
   disk: { totalBytes: number; freeBytes: number; usedBytes: number; usedPct: number; mountpoint: string }
 }
 
-// Cache IP publique (1 heure)
 let ipCache: { value: string; expiresAt: number } | null = null
 
 async function getPublicIp(): Promise<string> {
@@ -103,11 +76,6 @@ interface DiskStats {
   mountpoint: string
 }
 
-/**
- * Redis: sends raw `INFO server` on the socket and parses `redis_version`.
- * No npm dependency (ioredis/redis) — RESP protocol is simple, we
- * negotiate in a few bytes. Timeout 800ms, fail-soft → ''.
- */
 async function getRedisVersion(): Promise<string> {
   const host = process.env.NUXT_REDIS_HOST || process.env.REDIS_HOST || 'localhost'
   const port = Number(process.env.NUXT_REDIS_PORT || process.env.REDIS_PORT || 6379)
@@ -117,11 +85,11 @@ async function getRedisVersion(): Promise<string> {
     const finish = (v: string) => {
       if (done) return
       done = true
-      try { sock.destroy() } catch { /* ignore */ }
+      try { sock.destroy() } catch {  }
       resolve(v)
     }
     const sock = createConnection({ host, port }, () => {
-      // Resp inline : INFO server\r\n
+      
       sock.write('INFO server\r\n')
     })
     sock.setTimeout(800, () => finish(''))
@@ -135,7 +103,6 @@ async function getRedisVersion(): Promise<string> {
   })
 }
 
-/** Nginx: `nginx -v` writes to stderr (e.g. "nginx version: nginx/1.24.0"). */
 async function getNginxVersion(): Promise<string> {
   try {
     const { stderr, stdout } = await execFileP('nginx', ['-v'], { timeout: 1500 })
@@ -146,7 +113,6 @@ async function getNginxVersion(): Promise<string> {
   }
 }
 
-/** Docker engine : `docker version --format {{.Server.Version}}`. */
 async function getDockerVersion(): Promise<string> {
   try {
     const { stdout } = await execFileP('docker', ['version', '--format', '{{.Server.Version}}'], { timeout: 2000 })
@@ -170,11 +136,6 @@ async function getDiskStats(): Promise<DiskStats> {
   }
 }
 
-/**
- * Extract PostgreSQL version from a `SELECT VERSION()` string.
- * Format typique : "PostgreSQL 16.4 (Debian 16.4-1.pgdg120+2) on x86_64..."
- * → we keep the version "16.4" without packaging noise.
- */
 function parsePgVersion(raw: string): string {
   const m = raw.match(/PostgreSQL\s+([\d.]+)/i)
   return m?.[1] ?? raw

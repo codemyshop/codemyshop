@@ -1,24 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/suggest?q=datte&clientId=example-shop-v2&limit=12&lang=fr
- *
- * Multi-entity autocomplete (V2 of internal search).
- * Aggregates in parallel: products (native PS engine), categories (ps_category_lang
- * + buildCategoryPathMap for SEO URL pillar/path/slug), CMS pages (ps_cms_lang),
- * food vertical dictionary entries (cs_dictionary).
- *
- * Nitro cache 60s keyed on (clientId, q, lang, limit) to amortize
- * identical requests (auto-complete repeats the same request on each keystroke).
- *
- * Retour :
- *   {
- *     products:   [{ id, name, ref, price, priceRaw, image }],
- *     categories: [{ id, name, href }],
- *     cms:        [{ id, title, href }],
- *     dictionary: [{ slug, word, excerpt, href }]
- *   }
- */
+
 import { useClientDbById } from '~/server/utils/db'
 import { buildCategoryPathMap } from '~/server/utils/category-path'
 import { resolveTenantPiliers } from '~/server/utils/tenant-piliers'
@@ -48,8 +29,8 @@ export default defineCachedEventHandler(async (event) => {
 
   const db = useClientDbById(clientId)
 
-  // ── ps_alias : map fautes/variantes → mot indexé (token-by-token) ─────
-  // « cernau de noix » → « cerneaux de noix » avant LIKE.
+  
+  
   const rawTerms = term.split(/\s+/).filter(Boolean)
   let mappedTerm = term
   if (rawTerms.length) {
@@ -63,16 +44,16 @@ export default defineCachedEventHandler(async (event) => {
         const aliasMap = new Map(aliasRows.map(r => [r.alias.toLowerCase(), r.search]))
         mappedTerm = rawTerms.map(t => aliasMap.get(t.toLowerCase()) || t).join(' ')
       }
-    } catch { /* ps_alias absent → pas de remapping */ }
+    } catch {  }
   }
   const like = `%${mappedTerm}%`
 
   const [productsRes, categoriesRes, cmsRes, dictionaryRes] = await Promise.allSettled([
-    // ── Products: direct DB (zero external service principle, 2026-04-22) ──────────────
+    
     db.query<{ id_product: number; reference: string; name: string; link_rewrite: string; price: number; id_image: number | null; unit_price_ratio: number | null; unity: string | null; weight: number | null }>(
-      // Strict PG: ORDER BY on SELECT DISTINCT must reference an alias present
-      // in the SELECT list (see list.get.ts line 17). Sort on the `name` alias.
-      // Added unit_price_ratio + unity + weight to calculate pricePerKg/HT-U
+      
+      
+      
       `SELECT DISTINCT p.id_product, p.reference, ps.price,
               COALESCE(pl.name, plf.name, '') AS name,
               COALESCE(pl.link_rewrite, plf.link_rewrite, '') AS link_rewrite,
@@ -90,9 +71,9 @@ export default defineCachedEventHandler(async (event) => {
     ).then((rows) => rows.map((r) => {
       const img = buildProductImage(r.id_image, r.link_rewrite)
       const priceHT = Number(r.price)
-      // Unit price DB-First (without `Units per box` features which would require
-      // too expensive a join for a 60s cache autocomplete) — fallback
-      // unit_price_ratio + unity puis poids colis.
+      
+      
+      
       const pricing = unitPricingEnabled
         ? deriveUnitPricing({
             priceHT,
@@ -118,7 +99,7 @@ export default defineCachedEventHandler(async (event) => {
       }
     })),
 
-    // ── Categories: ps_category_lang (current language, fallback id_lang=1) ───────
+    
     db.query<{ id_category: number; name: string }>(
       `SELECT c.id_category,
               COALESCE(cl.name, clf.name) AS name
@@ -131,7 +112,7 @@ export default defineCachedEventHandler(async (event) => {
       [idLang, like, like],
     ),
 
-    // ── Pages CMS : ps_cms_lang (meta_title + meta_description) ─────────────────
+    
     db.query<{ id_cms: number; meta_title: string; link_rewrite: string }>(
       `SELECT c.id_cms,
               COALESCE(cl.meta_title, clf.meta_title)     AS meta_title,
@@ -145,14 +126,14 @@ export default defineCachedEventHandler(async (event) => {
       [idLang, like, like, like, like],
     ),
 
-    // ── Food vertical dictionary — via Drizzle adapter ──────────
+    
     searchDictionarySuggest(mappedTerm, DICT_MAX, null, { clientId }),
   ])
 
   const products = productsRes.status === 'fulfilled' ? productsRes.value : []
 
-  // SEO category URL resolution: pillar/path/slug via id_parent traversal.
-  // Fallback /catalogue/:slug if the category is outside the pillars.
+  
+  
   let categories: Array<{ id: number; name: string; href: string }> = []
   if (categoriesRes.status === 'fulfilled' && categoriesRes.value.length) {
     const ids = categoriesRes.value.map(c => c.id_category)
@@ -185,7 +166,7 @@ export default defineCachedEventHandler(async (event) => {
 
   return { products, categories, cms, dictionary }
 }, {
-  maxAge: 60,             // 60s — auto-complete répète la même requête sur chaque frappe
+  maxAge: 60,             
   name:   'catalogue-suggest',
   getKey: (event) => {
     const q = getQuery(event)

@@ -1,19 +1,4 @@
-<!--
-  /hub/carts/abandoned — Relance (paniers abandonnés + devis non transformés).
 
-  2 tabs :
-    - Paniers : ps_cart non convertis (aucun ps_orders.id_cart match), filtres
-      âge / valeur / cooldown, mode test, bouton « Relancer ».
-    - Devis   : cs_quote_request status='pending', filtres âge / valeur,
-      mode test, bouton « Relancer ».
-
-  Les deux tabs poussent en queue cs_email_queue (templates DB
-  cart_recovery / quote_followup) — visibles dans /hub/crm/email tab Queue.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 flex items-center justify-between shrink-0">
@@ -42,7 +27,7 @@
       </div>
     </header>
 
-    <!-- Tabs -->
+    
     <nav class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 flex items-center gap-1 shrink-0" role="tablist">
       <button
         type="button"
@@ -76,9 +61,9 @@
       </button>
     </nav>
 
-    <!-- ═══ TAB : PANIERS ═══════════════════════════════════════════════ -->
+    
     <template v-if="activeTab === 'carts'">
-      <!-- Counters -->
+      
       <div class="px-6 py-4 grid grid-cols-2 md:grid-cols-7 gap-3 shrink-0 bg-gray-50 dark:bg-slate-950">
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-3">
           <p class="text-[10px] uppercase tracking-wider text-gray-400 mb-1">1-24h</p>
@@ -110,7 +95,7 @@
         </div>
       </div>
 
-      <!-- Filtres + actions panier -->
+      
       <div class="px-6 py-3 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 shrink-0 flex items-center gap-3 flex-wrap">
         <label class="text-xs text-gray-600 dark:text-slate-300">
           Âge min (h)
@@ -158,7 +143,7 @@
         </div>
       </div>
 
-      <!-- Liste paniers -->
+      
       <div class="flex-1 overflow-auto">
         <div v-if="loadingCarts" class="px-6 py-4 space-y-2">
           <div v-for="i in 8" :key="i" class="h-12 bg-gray-100 dark:bg-slate-800 rounded animate-pulse" />
@@ -218,9 +203,9 @@
       </div>
     </template>
 
-    <!-- ═══ TAB : DEVIS ═════════════════════════════════════════════════ -->
+    
     <template v-else-if="activeTab === 'quotes'">
-      <!-- Counters quotes -->
+      
       <div class="px-6 py-4 grid grid-cols-2 md:grid-cols-5 gap-3 shrink-0 bg-gray-50 dark:bg-slate-950">
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-3">
           <p class="text-[10px] uppercase tracking-wider text-gray-400 mb-1">0-3 j</p>
@@ -244,7 +229,7 @@
         </div>
       </div>
 
-      <!-- Filtres + actions devis -->
+      
       <div class="px-6 py-3 bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 shrink-0 flex items-center gap-3 flex-wrap">
         <label class="text-xs text-gray-600 dark:text-slate-300">
           Âge min (j)
@@ -284,7 +269,7 @@
         </div>
       </div>
 
-      <!-- Liste devis -->
+      
       <div class="flex-1 overflow-auto">
         <div v-if="loadingQuotes" class="px-6 py-4 space-y-2">
           <div v-for="i in 8" :key="i" class="h-12 bg-gray-100 dark:bg-slate-800 rounded animate-pulse" />
@@ -334,7 +319,7 @@
       </div>
     </template>
 
-    <!-- Result banner (common to both tabs) -->
+    
     <div v-if="sendResult" class="px-6 py-3 border-t text-xs"
       :class="sendResult.test_mode ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/30 text-amber-700 dark:text-amber-300' : 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/30 text-emerald-700 dark:text-emerald-300'">
       <span v-if="sendResult.test_mode">🧪 <strong>Mode TEST</strong> — </span>
@@ -355,7 +340,6 @@ function activityLabel(code: string) { return activityLabelMap[code] || code }
 type Tab = 'carts' | 'quotes'
 const activeTab = ref<Tab>('carts')
 
-// ── Paniers ──────────────────────────────────────────────────────────────
 interface Cart {
   id_cart: number
   id_customer: number
@@ -376,7 +360,6 @@ const filters = reactive({ ageMinH: 24, ageMaxH: 720, valueMin: 0, cooldownDays:
 const selectedIds = ref<Set<number>>(new Set())
 const loadingCarts = ref(true)
 
-// ── Devis ────────────────────────────────────────────────────────────────
 interface Quote {
   id_quote_request: number
   firstname: string
@@ -399,7 +382,6 @@ const qFilters = reactive({ ageMinDays: 0, ageMaxDays: 90, valueMin: 0 })
 const selectedQuoteIds = ref<Set<number>>(new Set())
 const loadingQuotes = ref(true)
 
-// ── Mode test (commun) ───────────────────────────────────────────────────
 const sending = ref(false)
 const sendResult = ref<{ sent: number; errors: number; test_mode?: boolean } | null>(null)
 const testMode = ref(false)

@@ -122,8 +122,6 @@ const plainTextLength = computed(() => {
   return (tmp.textContent || '').trim().length
 })
 
-// External sync (initial load, HTML mode toggle) → repopulates the contenteditable
-// without overwriting what the user just typed (simple diff).
 watch(
   () => model.value.description,
   (html) => {

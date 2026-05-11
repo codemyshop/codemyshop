@@ -1,13 +1,4 @@
-/**
- *
- * GET /api/hub/translations/strings?scope=X&source_lang=1&target_lang=2&filter=missing|all&limit=200
- *
- * If scope starts with 'group:' → resolve the members and concatenate the results
- * (rowKey prefixed by the memberSlug). Otherwise: classic single-scope logic.
- *
- * Security: `scope` is validated against a closed registry. No table/column name
- * is injected from a raw parameter.
- */
+
 
 import { useClientDb } from '~/server/utils/db'
 import {
@@ -32,12 +23,12 @@ export default defineEventHandler(async (event) => {
 
   const db = useClientDb(event)
 
-  // ── GROUP scope : délègue à chaque membre, préfixe les rowKeys ────────────
+  
   const group = findGroupScope(scopeSlug)
   if (group) {
     let members = [...group.members]
 
-    // Groupe dynamique : tous les domaines ps_translation matchant le préfixe
+    
     if (group.dynamicPsTranslationPrefix) {
       try {
         const domains = await db.query<{ domain: string }>(
@@ -45,7 +36,7 @@ export default defineEventHandler(async (event) => {
           [`${group.dynamicPsTranslationPrefix}%`],
         )
         members = [...members, ...domains.map(d => `ps_translation:${d.domain}`)]
-      } catch { /* table absente */ }
+      } catch {  }
     }
 
     const all: any[] = []
@@ -76,7 +67,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // ── Single scope (comportement existant) ─────────────────────────────────
+  
   const res = await fetchSingleScope(db, scopeSlug, sourceLang, targetLang, filter, search, limit)
   if (!res) throw createError({ statusCode: 404, statusMessage: 'scope inconnu' })
   return {
@@ -95,11 +86,6 @@ interface ScopeResult {
   rows: Array<{ rowKey: string; label: string; source: string | null; target: string | null; hasTarget: boolean }>
 }
 
-/**
- * Fetch the rows for a unique scope (ps_translation:domain OR ps_<table>_lang:col).
- * Handles the ps_translation branch and the _lang branch with optional clientScope.
- * Returns null if the scope is unknown.
- */
 async function fetchSingleScope(
   db: any,
   scopeSlug: string,
@@ -109,7 +95,7 @@ async function fetchSingleScope(
   search: string,
   limit: number,
 ): Promise<ScopeResult | null> {
-  // Résolution du scope
+  
   let scope: ScopeSpec | null = findScope(scopeSlug)
   if (!scope && scopeSlug.startsWith('ps_translation:')) {
     const domain = scopeSlug.slice('ps_translation:'.length)
@@ -132,7 +118,7 @@ async function fetchSingleScope(
   const col = scope.column
   const idCols = scope.idCols
 
-  // Branche ps_translation
+  
   if (t === 'ps_translation') {
     if (!scope.domain) return null
     const rows = await db.query<any>(
@@ -173,12 +159,12 @@ async function fetchSingleScope(
     }
   }
 
-  // Branche _lang
+  
   const onClause = idCols.map(c => `tgt.\`${c}\` = src.\`${c}\``).join(' AND ')
   const selectIdCols = idCols.map(c => `src.\`${c}\` AS \`${c}\``).join(', ')
   const whereSearch = search ? `AND src.\`${col}\` LIKE ?` : ''
 
-  // Filtrage multi-tenant via INNER JOIN master (+ parent)
+  
   let clientScopeJoin = ''
   let clientScopeWhere = ''
   const clientScopeParams: any[] = []
@@ -217,9 +203,9 @@ async function fetchSingleScope(
       : [targetLang, sourceLang, ...clientScopeParams],
   )
 
-  // Dédoublonnage par source_text si le scope le demande (ex: column_title
-  // dupliqué sur chaque lien de cs_footer → on n'affiche qu'une seule
-  // fois chaque source, l'apply propagera à tous les doublons).
+  
+  
+  
   let mappedRows = rows.map((r: any) => {
     const key = idCols.map(c => String(r[c])).join('::')
     return {

@@ -1,12 +1,9 @@
-/**
- *
- * POST /api/licensing/validate
- * The central service validates a satellite service's license and issues a 48h token.
- */
+
+
 import { timingSafeEqual } from 'node:crypto'
 
 export default defineEventHandler(async (event) => {
-  // Auth Bearer
+  
   const auth = (getHeader(event, 'authorization') ?? '').replace(/^Bearer\s+/i, '')
   const secret = process.env.MASTER_WEBHOOK_SECRET ?? ''
 
@@ -19,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
   if (!clientId) throw createError({ statusCode: 400, message: 'clientId requis' })
 
-  // Vérifier si le client est actif (DB cs_client_vps via façade ac_hub)
+  
   const { isClientActive } = await import('~/internal/hub/server/utils/hub')
   const isActive = await isClientActive(clientId)
 
@@ -27,15 +24,15 @@ export default defineEventHandler(async (event) => {
     return { ok: false, reason: 'suspended' }
   }
 
-  // Émettre un jeton valide 48h
+  
   const validUntil = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
 
-  // Features autorisées (lire depuis tenant-features.json)
+  
   let features: string[] = []
   try {
     features = getTenantEnabledFeatures(clientId)
   } catch {
-    features = ['broadcast', 'blog-ia', 'avatars'] // features de base
+    features = ['broadcast', 'blog-ia', 'avatars'] 
   }
 
   console.log(`[licensing] Jeton émis pour ${clientId} — valide jusqu'à ${validUntil}`)

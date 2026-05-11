@@ -20,7 +20,7 @@
     <div class="flex-1 overflow-auto p-6">
       <div class="max-w-3xl mx-auto space-y-6">
 
-        <!-- Meta -->
+        
         <div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl p-5 space-y-4">
           <div>
             <label class="block text-xs font-medium text-gray-500 mb-1">Titre</label>
@@ -46,7 +46,7 @@
           </div>
         </div>
 
-        <!-- Blocks -->
+        
         <div class="space-y-3">
           <div v-for="(block, i) in form.blocks" :key="i"
             class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl p-4">
@@ -64,7 +64,7 @@
               </div>
             </div>
 
-            <!-- Heading -->
+            
             <div v-if="block.type === 'heading'" class="flex gap-2">
               <select v-model.number="block.level" class="text-xs border border-gray-200 dark:border-slate-700 rounded px-2 py-1 w-16 dark:bg-slate-900 dark:text-slate-100">
                 <option :value="2">H2</option>
@@ -74,10 +74,10 @@
               <input v-model="block.text" class="flex-1 text-sm border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-2 dark:bg-slate-900 dark:text-slate-100" placeholder="Titre de section" />
             </div>
 
-            <!-- Paragraph -->
+            
             <textarea v-if="block.type === 'paragraph'" v-model="block.text" rows="3" class="w-full text-sm border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-2 dark:bg-slate-900 dark:text-slate-100" placeholder="Texte libre…" />
 
-            <!-- Checklist -->
+            
             <div v-if="block.type === 'checklist'" class="space-y-2">
               <div v-for="(item, j) in block.items" :key="j" class="flex items-center gap-2">
                 <input type="checkbox" v-model="item.checked" class="rounded border-gray-300" />
@@ -87,7 +87,7 @@
               <button @click="block.items.push({ text: '', checked: false })" class="text-xs text-primary-600 hover:text-primary-700">+ Ajouter une étape</button>
             </div>
 
-            <!-- Alert -->
+            
             <div v-if="block.type === 'alert'" class="space-y-2">
               <select v-model="block.variant" class="text-xs border border-gray-200 dark:border-slate-700 rounded px-2 py-1 dark:bg-slate-900 dark:text-slate-100">
                 <option value="info">Info</option>
@@ -98,7 +98,7 @@
             </div>
           </div>
 
-          <!-- Add block -->
+          
           <div class="flex justify-center">
             <button @click="addBlock" class="text-xs px-4 py-2 border-2 border-dashed border-gray-200 dark:border-slate-700 rounded-xl text-gray-400 hover:border-primary-300 hover:text-primary-500 transition-colors">
               + Ajouter un bloc
@@ -113,7 +113,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
@@ -188,7 +187,6 @@ async function save(status: 'draft' | 'published') {
   } finally { saving.value = false }
 }
 
-// Load existing playbook if editing
 onMounted(async () => {
   const editSlug = route.query.edit as string
   if (editSlug) {
@@ -202,7 +200,7 @@ onMounted(async () => {
       form.roles = (p.roles || '').split(',').filter(Boolean)
       try { form.blocks = JSON.parse(p.content_json || '[]') }
       catch { form.blocks = [] }
-    } catch { /* new playbook */ }
+    } catch {  }
   }
 })
 </script>

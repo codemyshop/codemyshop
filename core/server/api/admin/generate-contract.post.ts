@@ -1,12 +1,4 @@
-/**
- *
- * POST /api/admin/generate-contract
- * Generates a contract PDF and sends it via email to the prospect.
- *
- * Body : { company, email, contactName?, revenue, needs?, setupPrice?, mrrPrice? }
- * → Generates the PDF via contract-pdf.ts
- * → Sends to the prospect and copies the owner via Resend
- */
+
 
 import { generateContract } from '~/server/utils/contract-pdf'
 import { sendEmail } from '~/server/utils/email'
@@ -31,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
   const today = new Date().toISOString().slice(0, 10)
 
-  // ── Générer le PDF ────────────────────────────────────────────────────
+  
   const pdfBuffer = await generateContract({
     company: body.company.trim(),
     contactName: body.contactName?.trim(),
@@ -47,7 +39,7 @@ export default defineEventHandler(async (event) => {
   const pdfBase64 = pdfBuffer.toString('base64')
   const filename = `contrat-codemyshop-${body.company.trim().toLowerCase().replace(/\s+/g, '-')}-${today}.pdf`
 
-  // ── Envoyer au prospect ───────────────────────────────────────────────
+  
   const prospectHtml = `
     <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; background: #0F0F1A; color: #e2e8f0; padding: 32px; border-radius: 16px;">
       <h1 style="font-size: 20px; color: #fff; margin-bottom: 16px;">Votre contrat CodeMyShop</h1>
@@ -65,7 +57,7 @@ export default defineEventHandler(async (event) => {
     </div>
   `
 
-  // Envoi via le helper centralisé sendEmail
+  
   const contactEmail = process.env.CONTACT_EMAIL || ''
   const brandName = useRuntimeConfig().public.brandName as string || 'Boutique'
 
@@ -80,10 +72,10 @@ export default defineEventHandler(async (event) => {
     })
   } catch (err: any) {
     console.error('[contract] Email send failed:', err?.data?.message || err?.message)
-    // On retourne quand même le PDF pour téléchargement manuel
+    
   }
 
-  // ── Retourner le PDF pour téléchargement direct ───────────────────────
+  
   return {
     success: true,
     filename,

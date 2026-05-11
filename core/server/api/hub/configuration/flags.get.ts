@@ -1,15 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/hub/configuration/flags
- *
- * Returns the state of configurable PS flags from the hub (B2B, outstanding, etc.).
- * Source of truth: ps_configuration (native PrestaShop).
- *
- * Response: { PS_B2B_ENABLE: 0|1, PS_B2B_HIDE_PRICES: 0|1, ... }
- *
- * Used by /hub/informations for the B2B toggle.
- */
 
 import { useClientDb } from '~/server/utils/db'
 

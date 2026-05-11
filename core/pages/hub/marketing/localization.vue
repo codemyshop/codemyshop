@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -16,7 +16,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- ── S&eacute;lecteur de type de contenu ──────────────────────────────── -->
+      
       <div class="flex gap-2">
         <button
           v-for="tab in CONTENT_TABS"
@@ -39,23 +39,23 @@
         </button>
       </div>
 
-      <!-- ── S&eacute;lecteur d'item ─────────────────────────────────────────── -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
         <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">
           1. S&eacute;lectionnez {{ contentType === 'product' ? 'un produit' : contentType === 'article' ? 'un article' : 'une cat&eacute;gorie' }}
         </h2>
 
-        <!-- Loading -->
+        
         <div v-if="itemsLoading" class="space-y-2">
           <div v-for="i in 4" :key="i" class="h-12 bg-gray-100 dark:bg-slate-800 rounded-lg animate-pulse" />
         </div>
 
-        <!-- Vide -->
+        
         <div v-else-if="!items.length" class="text-sm text-gray-400 py-6 text-center">
           {{ contentType === 'product' ? 'Aucun produit (module ac_productextra requis)' : contentType === 'article' ? 'Aucun article de blog' : 'Aucune cat\u00e9gorie' }}
         </div>
 
-        <!-- Liste -->
+        
         <div v-else class="space-y-2 max-h-64 overflow-y-auto">
           <div
             v-for="item in items"
@@ -68,7 +68,7 @@
                 : 'border-gray-100 dark:border-slate-800 hover:border-gray-200 dark:border-slate-700 hover:bg-gray-50',
             ]"
           >
-            <!-- Icon / Image -->
+            
             <div class="w-9 h-9 rounded-lg overflow-hidden shrink-0 flex items-center justify-center"
                  :class="item.image ? 'bg-gray-100 dark:bg-slate-800' : contentType === 'article' ? 'bg-primary-100' : contentType === 'category' ? 'bg-amber-100' : 'bg-gray-100 dark:bg-slate-800'">
               <img v-if="item.image" :src="item.image" :alt="item.name" class="w-full h-full object-cover" />
@@ -85,10 +85,10 @@
         </div>
       </div>
 
-      <!-- ── Zone de travail (source + transcr&eacute;ation) ──────────────────── -->
+      
       <div v-if="selectedItem" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- Gauche : Texte source FR -->
+        
         <div class="space-y-4">
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <div class="flex items-center gap-2 mb-3">
@@ -118,7 +118,7 @@
             </div>
           </div>
 
-          <!-- Boutons transcr&eacute;ation -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h3 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-3">2. Transcr&eacute;er vers&hellip;</h3>
             <div class="grid grid-cols-2 gap-3">
@@ -143,7 +143,7 @@
           </div>
         </div>
 
-        <!-- Droite : R&eacute;sultats -->
+        
         <div class="space-y-4">
           <div v-if="!Object.keys(results).length" class="flex flex-col items-center justify-center py-20 text-gray-300">
             <svg class="w-14 h-14 mb-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
@@ -198,13 +198,10 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
+
 import type { TranscreationResult } from '~/server/api/ai/transcreate.post'
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 type ContentType = 'product' | 'article' | 'category'
 
@@ -227,8 +224,6 @@ interface Article {
   nuxtUrl: string; category: string
 }
 
-// ── Constantes ────────────────────────────────────────────────────────────────
-
 const CONTENT_TABS = [
   { id: 'product'  as ContentType, icon: '\ud83d\udce6', label: 'Produits' },
   { id: 'article'  as ContentType, icon: '\u270d\ufe0f', label: 'Articles' },
@@ -246,8 +241,6 @@ function getLocale(locale: string) {
   return LOCALES.find(l => l.locale === locale) ?? LOCALES[0]
 }
 
-// ── État ──────────────────────────────────────────────────────────────────────
-
 const { resolvedClientId } = useClientDetection()
 
 const contentType    = ref<ContentType>('product')
@@ -257,12 +250,9 @@ const generating     = ref<string | null>(null)
 const copiedLocale   = ref<string | null>(null)
 const results        = ref<Record<string, TranscreationResult>>({})
 
-// Données brutes par type
 const products   = ref<Product[]>([])
 const articles   = ref<Article[]>([])
 const categories = ref<any[]>([])
-
-// ── Computed ──────────────────────────────────────────────────────────────────
 
 const items = computed<ContentItem[]>(() => {
   switch (contentType.value) {
@@ -305,8 +295,6 @@ function getItemCount(type: ContentType): number {
   }
 }
 
-// ── Chargement ────────────────────────────────────────────────────────────────
-
 async function loadProducts() {
   try {
     const res = await $fetch<{ success: boolean; products: Product[] }>(
@@ -314,25 +302,25 @@ async function loadProducts() {
       { query: { limit: 50 } },
     )
     if (res.success) products.value = res.products
-  } catch { /* module absent */ }
+  } catch {  }
 }
 
 async function loadArticles() {
   try {
     const data = await $fetch<Article[]>('/api/cms', { query: { limit: 50 } })
     articles.value = data
-  } catch { /* API absente */ }
+  } catch {  }
 }
 
 async function loadCategories() {
   try {
-    // Fetch from the PS Webservice via our proxy
+    
     const data = await $fetch<any[]>(`/api/catalogue/categories`, {
       query: { clientId: resolvedClientId.value },
     })
     categories.value = data
   } catch {
-    // Fallback: load from CRM if the proxy doesn't exist yet
+    
     try {
       const res = await $fetch<{ success: boolean; categories: any[] }>(
         '/api/bo/productextra/form-data',
@@ -346,7 +334,7 @@ async function loadCategories() {
           productCount: null,
         }))
       }
-    } catch { /* */ }
+    } catch {  }
   }
 }
 
@@ -360,8 +348,6 @@ function selectItem(item: ContentItem) {
   selectedItem.value = item
   results.value = {}
 }
-
-// ── Transcr&eacute;ation ──────────────────────────────────────────────────────────
 
 async function transcreate(locale: string) {
   if (!sourceText.value || generating.value) return
@@ -391,10 +377,8 @@ async function copyText(text: string, locale: string) {
     await navigator.clipboard.writeText(text)
     copiedLocale.value = locale
     setTimeout(() => { copiedLocale.value = null }, 2500)
-  } catch { /* */ }
+  } catch {  }
 }
-
-// ── Utils ─────────────────────────────────────────────────────────────────────
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
@@ -402,8 +386,6 @@ function stripHtml(html: string): string {
 
 const formatPrice = (v: string | number) =>
   new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(Number(v))
-
-// ── Init ──────────────────────────────────────────────────────────────────────
 
 onMounted(() => {
   itemsLoading.value = true

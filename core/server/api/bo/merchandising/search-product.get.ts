@@ -1,14 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/merchandising/search-product?q=...
- *
- * Search for an active product by id (numeric) OR reference (LIKE) OR name (LIKE).
- * Returns max 20 results. Used by the 'Add by ref/id…' bar
- * of the merchandising view.
- */
 export default defineEventHandler(async (event) => {
   const { q } = getQuery(event)
   const query = String(q || '').trim()
@@ -17,9 +10,9 @@ export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
   const isNumeric = /^\d+$/.test(query)
 
-  // Tokenisation : "huile olive" → ["huile","olive"] AND-és, pour matcher
-  // "Huile d'olive Crète" (apostrophe entre les tokens). ILIKE car PG est
-  // case-sensitive sur LIKE (≠ MariaDB ci par défaut).
+  
+  
+  
   const tokens = query.split(/\s+/).filter(Boolean)
   const tokenClauses = tokens.map(() => '(p.reference ILIKE ? OR pl.name ILIKE ?)').join(' AND ')
   const tokenParams: any[] = []

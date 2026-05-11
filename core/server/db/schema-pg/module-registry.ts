@@ -1,20 +1,4 @@
-/**
- *
- * Drizzle PG schema for module registry — task #44
- * port-drizzle-mariadb-pg P1 step 1.
- *
- * Source of truth for runtime (PS / Nuxt) per module and per tenant. The table
- * lives in the tenant DB — on the PG side, schema `cs_main`. The VPS
- * Example Shop v2 / secondary v2 systems retain their table on their local MariaDB and
- * query the MariaDB branch of the facade (PG_ENABLED_DOMAINS not set).
- *
- * Type mapping MariaDB -> PG (parity with Phase C dump):
- *   - INT UNSIGNED AUTO_INCREMENT  -> serial
- *   - ENUM('ps','nuxt')            -> varchar(4) + $type<Runtime>
- *   - ENUM('active'…'deprecated')  -> varchar(10) + $type<ModuleStatus>
- *   - LONGTEXT manifest_json       -> text + $type<ModuleManifest | null>
- *   - DATETIME                     -> timestamp(0) without time zone
- */
+
 
 import { index, integer, pgSchema, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 

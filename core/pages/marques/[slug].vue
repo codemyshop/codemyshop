@@ -1,13 +1,4 @@
-<!--
-  Page détail marque — /marques/:slug/
-  Données : GET /api/catalogue/manufacturers/:slug (ps_manufacturer + ps_product).
 
-  Tenant-neutre : titre et meta dérivés de brandName (runtimeConfig).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { t } = useHubT()
 const { localePath } = useLocalePath()
@@ -48,7 +39,7 @@ useListingBodyId('manufacturer', () => brand.value?.id_manufacturer ?? null)
     <section v-if="brand" class="py-12 bg-white">
       <div class="max-w-6xl mx-auto px-4 sm:px-6">
 
-        <!-- Breadcrumb -->
+        
         <nav class="text-xs text-gray-400 mb-6" :aria-label="t('silo.breadcrumb_aria', 'Fil d\\x27Ariane')">
           <NuxtLink :to="localePath('/')" class="hover:text-primary-600 transition-colors">{{ t('silo.breadcrumb_home', 'Accueil') }}</NuxtLink>
           <span class="mx-1.5">/</span>
@@ -57,7 +48,7 @@ useListingBodyId('manufacturer', () => brand.value?.id_manufacturer ?? null)
           <span class="text-gray-700 font-medium">{{ brand.name }}</span>
         </nav>
 
-        <!-- Header marque -->
+        
         <div class="flex items-center gap-6 mb-10">
           <div class="w-24 h-24 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden shrink-0">
             <img
@@ -74,7 +65,7 @@ useListingBodyId('manufacturer', () => brand.value?.id_manufacturer ?? null)
           </div>
         </div>
 
-        <!-- Grille produits -->
+        
         <div v-if="products.length" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
           <NuxtLink
             v-for="product in products"

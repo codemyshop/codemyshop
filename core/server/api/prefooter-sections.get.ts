@@ -1,11 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/prefooter-sections
- * Returns pre-footer sections from cs_prefooter_section JOIN _lang.
- * Typed config: limit_items (INT) — no more payload_json (architecture debt #158
- * resolved 2026-04-19).
- */
 
 import { listSectionsWithLang } from '~/modules/prefooter-section/server/utils/prefooter-section'
 

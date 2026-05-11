@@ -1,25 +1,10 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/hub/backups/list
- *
- * Lists the current tenant's DB backups in the bucket
- * Scaleway `ac-db-backups`. Each tenant only sees its own prefix.
- *
- * Source: s3://ac-db-backups/<tenant>/*.sql.gz, 10-day rotation on Scaleway.
- * Used by the "Backups" tab in /hub/informations.
- */
 
 import { listS3Objects } from '~/server/utils/s3-sign'
 import { resolveClientId } from '~/server/utils/db'
 
-// Mapping clientId Nuxt (runtimeConfig) → codename tenant dans le bucket S3.
-// AC est stocké sous `vaisseau-mere-ac` dans le bucket (cf convention des crons).
-// Convention stricte (cf documentation/NAMING_TENANT.md) : 1 tenant = 1 codename.
-// Le clientId runtime, le codename chantier, le prefix S3, le DNS et le nom
-// d'env NUXT_TENANT_DB_* partagent TOUS la même chaîne.
 const CLIENT_TO_BACKUP_TENANT: Record<string, string> = {
-  'ac-hub':           'vaisseau-mere-ac',  // dette historique AC, à normaliser séparément
+  'ac-hub':           'vaisseau-mere-ac',  
   'codemyshop':       'codemyshop',
   'example-shop':       'example-shop',
   'example-vape': 'example-vape',
@@ -52,7 +37,7 @@ export default defineEventHandler(async (event) => {
       bucket:    cfg.scwBucket as string,
     }, `${tenant}/`)
 
-    // Tri : plus récent en premier
+    
     objects.sort((a, b) => b.lastModified.localeCompare(a.lastModified))
 
     return {
@@ -61,7 +46,7 @@ export default defineEventHandler(async (event) => {
       count: objects.length,
       objects: objects.map(o => ({
         key: o.key,
-        // Extrait la date YYYY-MM-DD depuis la clé tenant/YYYY-MM-DD.sql.gz
+        
         date: o.key.match(/(\d{4}-\d{2}-\d{2})/)?.[1] ?? '',
         size: o.size,
         lastModified: o.lastModified,

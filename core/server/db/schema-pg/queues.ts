@@ -1,8 +1,4 @@
-/**
- *
- * Drizzle PG schema — queues domain.
- * Generated 2026-05-01 (php-eviction-phase2) from live PG information_schema.
- */
+
 
 import {
   integer,

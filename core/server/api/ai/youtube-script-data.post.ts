@@ -1,12 +1,4 @@
-/**
- *
- * POST /api/ai/youtube-script-data
- * Body : { clientId, videoTopic, targetAudience }
- * Returns : DataDrivenStoryboard
- *
- * SECURITY.md R3: only aggregated metrics (no PII) are sent to the LLM.
- * SECURITY.md R4: inputs validated and limited.
- */
+
 
 export interface DataScene {
   sceneNumber:     number
@@ -31,7 +23,7 @@ export default defineEventHandler(async (event) => {
     targetAudience: string
   }>(event)
 
-  // R4 : validation
+  
   const clientId       = (body.clientId ?? '').trim().slice(0, 50)
   const videoTopic     = (body.videoTopic ?? '').trim().slice(0, 500)
   const targetAudience = (body.targetAudience ?? '').trim().slice(0, 200)
@@ -40,12 +32,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'clientId et videoTopic requis' })
   }
 
-  // 1. Agr\u00e9ger le contexte client via le connecteur (CMS-agnostique)
+  
   const { getConnector } = await import('~/server/connectors/base')
   const connector = getConnector(clientId)
   const context = await connector.getClientContext()
 
-  // 2. Construire le prompt avec les vraies donn\u00e9es
+  
   const systemPrompt = `Tu es un expert E-commerce High-Ticket et producteur YouTube B2B.
 
 R\u00e8dige un script vid\u00e9o dynamique en 5 plans.

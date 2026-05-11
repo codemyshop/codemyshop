@@ -1,11 +1,5 @@
-/**
- *
- * GET /api/catalogue/:psId/products?limit=50&clientId=...
- *
- * Simple list of products directly linked to a category (without
- * descending into subcategories). Direct DB (zero external service calls principle
- * PrestaShop » 2026-04-22). Refacto depuis connector.getProducts.
- */
+
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 import { buildProductImage } from '~/server/utils/ps-image'

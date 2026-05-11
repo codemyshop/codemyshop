@@ -58,7 +58,7 @@
       <p class="text-[10px] text-gray-400 mt-1">Minuscules, tirets, pas d'accent ni d'espace.</p>
     </div>
 
-    <!-- Google SERP preview in real-time -->
+    
     <div class="pt-4 border-t border-gray-100 dark:border-slate-800">
       <p class="text-[10px] uppercase tracking-wide text-gray-400 font-semibold mb-3">Aperçu Google</p>
       <div class="bg-white dark:bg-slate-950 border border-gray-100 dark:border-slate-800 rounded-lg p-4 font-sans">

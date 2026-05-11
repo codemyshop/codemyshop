@@ -1,19 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/bo/specific-prices — lists the tenant's promotions for the PIM
- * (page /hub/products/promotions). DB-only direct query on ps_specific_price with
- * JOIN ps_product_lang for product name (id_lang=1).
- *
- * Query :
- * ?status=active|future|expired|all  (default: all)
- *   ?search=<texte produit ou ref>
- *   ?limit=50  ?offset=0
- *
- * MariaDB legacy sentinels:
- * - "from" = '1970-01-01 00:00:00' → considered "no start date" (always active)
- * - "to"   = '9999-12-31 23:59:59' → considered "no end date" (never expired)
- */
+
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession } from '~/server/utils/session'
 

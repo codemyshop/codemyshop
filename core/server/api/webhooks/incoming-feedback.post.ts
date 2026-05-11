@@ -1,17 +1,10 @@
-/**
- *
- * POST /api/webhooks/incoming-feedback
- * Incoming webhook — receives feedback from satellite VPS instances.
- *
- * Auth: Bearer token verified against MASTER_WEBHOOK_SECRET (.env).
- * SECURITY.md R1: secret in .env only.
- * SECURITY.md R4: strict payload validation.
- */
+
+
 import { randomUUID } from 'node:crypto'
 import { timingSafeEqual } from 'node:crypto'
 
 export default defineEventHandler(async (event) => {
-  // ── Auth : vérifier le Bearer token ─────────────────────────────────────
+  
   const authHeader = getHeader(event, 'authorization') ?? ''
   const token = authHeader.replace(/^Bearer\s+/i, '')
 
@@ -24,7 +17,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, message: 'Unauthorized' })
   }
 
-  // ── Payload ─────────────────────────────────────────────────────────────
+  
   const body = await readBody<{
     clientId:     string
     clientName:   string
@@ -34,7 +27,7 @@ export default defineEventHandler(async (event) => {
     originUrl?:   string
   }>(event)
 
-  // R4 : validation
+  
   const clientId     = (body.clientId ?? '').trim().slice(0, 50)
   const clientName   = (body.clientName ?? '').trim().slice(0, 100)
   const feedbackType = (['feature', 'improvement', 'bug'].includes(body.feedbackType) ? body.feedbackType : 'feature') as 'feature' | 'improvement' | 'bug'
@@ -45,7 +38,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'clientId et message requis' })
   }
 
-  // ── Sauvegarder dans le backlog local ───────────────────────────────────
+  
   const item: FeedbackItem = {
     id:          randomUUID(),
     clientId,
@@ -62,7 +55,7 @@ export default defineEventHandler(async (event) => {
   all.unshift(item)
   await writeFeedbacks(all)
 
-  // ── Déclencher l'analyse IA (async, non bloquant) ───────────────────────
+  
   generatePromptAsync(item).catch(err =>
     console.error('[webhook] AI analysis failed:', err?.message)
   )
@@ -72,8 +65,6 @@ export default defineEventHandler(async (event) => {
   return { ok: true, feedbackId: item.id }
 })
 
-// ── Comparaison timing-safe ───────────────────────────────────────────────────
-
 function safeCompare(a: string, b: string): boolean {
   if (a.length !== b.length) return false
   try {
@@ -82,8 +73,6 @@ function safeCompare(a: string, b: string): boolean {
     return false
   }
 }
-
-// ── Analyse IA en arrière-plan ────────────────────────────────────────────────
 
 async function generatePromptAsync(fb: FeedbackItem) {
   try {
@@ -103,7 +92,7 @@ RÉPONDS en JSON : { "aiClassification": "...", "technicalPrompt": "...", "estim
 
     const parsed = JSON.parse(match[0])
 
-    // Mettre à jour le feedback avec l'analyse
+    
     const all = await readFeedbacks()
     const idx = all.findIndex(f => f.id === fb.id)
     if (idx >= 0) {
@@ -114,5 +103,5 @@ RÉPONDS en JSON : { "aiClassification": "...", "technicalPrompt": "...", "estim
       all[idx].updatedAt          = new Date().toISOString()
       await writeFeedbacks(all)
     }
-  } catch { /* silencieux — le feedback est déjà sauvegardé */ }
+  } catch {  }
 }

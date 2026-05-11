@@ -1,16 +1,4 @@
-/**
- *
- * Drizzle PG schema — transactional email templates (parent + _lang).
- *
- * Source of truth edited from /hub/crm/email/template/[slug] :
- * - audience='client' : dynamic recipient (client email) — columns
- * recipient_* IGNORED.
- *   - audience='admin'  : destinataires lus depuis recipient_to/cc/bcc (CSV
- * split on code side), fallback env ADMIN_NOTIF_EMAIL if empty.
- *
- * The i18n content (subject + html_body + plain_body) lives in the `_lang`
- * paired. No `auto_increment` on the `_lang` (composite PK slug+id_lang).
- */
+
 
 import {
   integer,
@@ -31,8 +19,8 @@ export const emailTemplate = vaisseauMereAcSchema.table(
     audience:     varchar('audience',     { length: 16 }).notNull(),
     triggerHint:  varchar('trigger_hint', { length: 255 }),
     active:       smallint('active').notNull().default(1),
-    /** Priorité par défaut 0-100 (0=critique, 50=standard, 100=marketing).
-     * Inherited by the cs_email_queue rows at enqueue time. */
+    
+
     priority:     smallint('priority').notNull().default(50),
     recipientTo:  text('recipient_to').notNull().default(''),
     recipientCc:  text('recipient_cc').notNull().default(''),
@@ -50,8 +38,8 @@ export const emailTemplateLang = vaisseauMereAcSchema.table(
     subject:     varchar('subject',     { length: 255 }).notNull(),
     htmlBody:    text('html_body').notNull(),
     plainBody:   text('plain_body'),
-    // BO metadata displayed in /hub/crm/email (DB-first since 2026-05-06).
-    // i18n via _lang (FR for current admin BO, open to EN/DE later).
+    
+    
     label:       varchar('label',       { length: 128 }).notNull().default(''),
     description: text('description').notNull().default(''),
   },

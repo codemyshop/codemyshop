@@ -1,30 +1,4 @@
-/**
- *
- * useListingBodyId — sets the `<body>` attributes following the conventions
- * PrestaShop for ALL listing pages. Allows GTM scripts, themes
- * custom and third-party CSS that expect the native PS selector to
- * work directly on this Nuxt frontend.
- *
- * Conventions PS natives :
- *   kind='category', id=X        → #category-X        .category.category-X
- *   kind='manufacturer', id=X    → #manufacturer-X    .page-manufacturer.manufacturer-X
- *   kind='product', id=X         → #product-X         .product.product-id-X
- *   kind='cms', id=X             → #cms-X             .cms.cms-id-X
- *   kind='cms-category', id=X    → #cms-category-X    .cms-category.cms-category-X
- *   kind='new-products'          → #new-products      .page-new-products
- *   kind='prices-drop'           → #prices-drop       .page-prices-drop
- *   kind='best-sales'            → #best-sales        .page-best-sales
- *   kind='search'                → #search            .page-search
- *
- * Reactive: if arguments change (SPA navigation), body updates.
- * Silent fallback if kind='category'/'manufacturer' without id → no attributes
- * (clean DOM, no error).
- *
- * Usage :
- *   useListingBodyId('category', () => silo.value?.id_category ?? null)
- *   useListingBodyId('new-products')
- *   useListingBodyId('manufacturer', () => brand.value?.id_manufacturer)
- */
+
 
 import type { MaybeRefOrGetter } from 'vue'
 
@@ -47,7 +21,7 @@ export function useListingBodyId(
     const k = toValue(kind)
     const i = id !== undefined ? toValue(id) : null
 
-    // Kinds qui requièrent un id : aucun attr si id absent
+    
     if ((k === 'category' || k === 'manufacturer' || k === 'product' || k === 'cms' || k === 'cms-category') && !i) return {}
 
     let domId = ''
@@ -95,7 +69,6 @@ export function useListingBodyId(
   })
 }
 
-/** Alias conservé pour backward-compat (anciennes pages qui l'importent). */
 export function useCategoryBodyId(idCategory: MaybeRefOrGetter<number | null | undefined>) {
   return useListingBodyId('category', idCategory)
 }

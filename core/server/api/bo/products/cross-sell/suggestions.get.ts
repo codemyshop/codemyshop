@@ -1,15 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/products/cross-sell/suggestions — frequent co-purchases.
- * For each pair of products (src, dst) ordered together at least
- * minCoOccurrences times on orders with valid=1, calculates a confidence:
- *   confidence = P(dst | src) = coCount / srcTotalCount
- *
- * Query: ?minCoOccurrences=2&limit=100
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const minCo = Math.max(1, Math.min(50, Number(q.minCoOccurrences || 2)))
@@ -17,10 +9,10 @@ export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
 
   try {
-    // Alias internes en snake_case (co_count, src_total) — PG lowercase les
-    // identifiants non-quotés, donc `HAVING coCount` se résout en `cocount`
-    // et plante. Le re-aliasing camelCase ne se fait que dans le SELECT
-    // final, où l'adapter PG auto-quote (cf db-pg-adapter.ts §2d).
+    
+    
+    
+    
     const pairs = await db.query<any>(`
       WITH pair_counts AS (
         SELECT

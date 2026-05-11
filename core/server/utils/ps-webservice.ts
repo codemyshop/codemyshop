@@ -1,29 +1,20 @@
-/**
- *
- * psWebservice — appelle l'API REST PrestaShop (/api/<resource>) en bypassant
- * undici. Cf incidents undici_no_host_override : $fetch refuse l'override
- * Host header, Apache returns 302 to the wrong vhost and the response
- * comes back empty. native node:http doesn't have this limitation.
- *
- * Used by:
- *   - core/server/api/auth/login.post.ts          (hub AC employee/customer lookup)
- *   - core/server/api/catalogue/customer/login.post.ts (tenants multi)
- */
+
+
 import { request as httpRequest } from 'node:http'
 import { request as httpsRequest } from 'node:https'
 
 export interface PsWebserviceOptions {
-  apiUrl: string                    // ex: http://ps_apache:8080/api  ou  http://51.75.26.78:8080
-  resource: string                  // ex: 'employees', 'customers'
+  apiUrl: string                    
+  resource: string                  
   query?: Record<string, string>
-  apiKey: string                    // PS webservice key (Basic auth user)
-  hostHeader: string                // ex: 'preprod.codemyshop.com' — REQUIS sous Docker
+  apiKey: string                    
+  hostHeader: string                
   method?: 'GET' | 'POST'
   timeoutMs?: number
 }
 
 export async function psWebservice<T = any>(opts: PsWebserviceOptions): Promise<T> {
-  // Normalise : on veut <apiUrl>/api/<resource>, mais l'apiUrl peut déjà contenir /api ou non.
+  
   const base = opts.apiUrl.replace(/\/+$/, '')
   const apiBase = base.endsWith('/api') ? base : `${base}/api`
   const url = new URL(`${apiBase}/${opts.resource}`)

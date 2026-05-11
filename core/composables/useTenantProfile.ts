@@ -1,15 +1,4 @@
-/**
- *
- * Tenant business profile — 2 orthogonal axes:
- * - vertical: business domain (food, beauty, vape, fashion, services,
- *     electronics, generic) → pilote PIM/MDM (prix unitaire HT/K ou HT/U
- * for food, etc).
- * - channel: distribution model (pure-online, phygital, b2b-only,
- * marketplace, mix) → drives omnichannel behaviors.
- *
- * Global useState cache to share a single HTTP read across all
- * components. Lazy: loaded on first use client-side.
- */
+
 
 export type BusinessVertical = 'food' | 'beauty' | 'vape' | 'fashion' | 'services' | 'electronics' | 'generic'
 export type BusinessChannel = 'pure-online' | 'phygital' | 'b2b-only' | 'marketplace' | 'mix'

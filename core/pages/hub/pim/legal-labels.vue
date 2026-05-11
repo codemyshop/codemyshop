@@ -10,7 +10,7 @@
 
     <div class="flex-1 overflow-auto p-6 space-y-6">
 
-      <!-- Legend -->
+      
       <section class="bg-amber-50/40 dark:bg-slate-800/30 border border-amber-100 dark:border-slate-700 rounded-xl p-4">
         <div class="flex items-start gap-3">
           <span class="text-lg">🏷️</span>
@@ -21,7 +21,7 @@
         </div>
       </section>
 
-      <!-- Tableau produits -->
+      
       <section>
         <div class="flex items-center justify-between mb-2">
           <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500">Produits</h2>
@@ -81,7 +81,7 @@
       </section>
     </div>
 
-    <!-- Edit modal -->
+    
     <div v-if="editModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="editModalOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-lg mx-4">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
@@ -112,7 +112,7 @@
             <textarea v-model="editForm.additionalMentions" rows="4" class="w-full mt-1 border border-gray-200 dark:border-slate-700 rounded px-2 py-1.5 text-xs" placeholder="Allergènes, conservation, DLC, lot, etc." />
           </label>
 
-          <!-- Preview rendu -->
+          
           <div class="mt-3 p-3 bg-gray-50 dark:bg-slate-800/50 rounded border border-dashed border-gray-200 dark:border-slate-700">
             <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Preview (fiche / facture)</p>
             <p class="text-xs text-gray-800 dark:text-slate-100">

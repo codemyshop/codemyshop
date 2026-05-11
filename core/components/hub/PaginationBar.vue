@@ -1,4 +1,4 @@
-<!-- @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later -->
+
 <template>
   <div class="bg-white dark:bg-slate-900 px-6 py-2 flex items-center justify-between shrink-0">
     <div class="flex items-center gap-3">

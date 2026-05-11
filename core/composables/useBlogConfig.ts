@@ -1,15 +1,4 @@
-/**
- * Composable: active tenant blog configuration.
- *
- * Source of truth for pillars and subcategories: native PS `ps_cms_category`
- * (preloaded in the `blog_categories` state by white-label.vue).
- * UI metadata (icon, color, tagBg) is a slug-keyed hardcoded overlay —
- * not stored in DB because PS has no field for it and we avoid a custom table.
- *
- * Editorial metadata (title, description, author, publisher) remain
- * lues depuis cs_client_config.config_json.blog (via `client_db_config`).
- *
- */
+
 
 import type { BlogConfig, BlogPillar } from '~/types/theme'
 
@@ -37,11 +26,6 @@ export interface BlogSeoMeta {
   description: string
 }
 
-/**
- * UI overlay by pillar slug. Used to augment what PS doesn't store
- * (icons, Tailwind classes). If a DB pillar isn't listed here, we fall back to
- * DEFAULT_UI (teintes neutres).
- */
 const PILLAR_UI: Record<string, Pick<BlogPillar, 'icon' | 'color' | 'tagBg' | 'accent'>> = {
   strategie: {
     icon: '🎯',
@@ -110,9 +94,9 @@ export function useBlogConfig() {
 
   const blogCfg = computed<BlogConfig | undefined>(() => (dbConfig.value as any)?.blog)
 
-  // ── Pillars (source: ps_cms_category via /api/blog/categories) ──────────
-  // Fallback config_json.blog.pillars si la DB n'a pas encore été migrée
-  // (compat tenants non encore alignés sur le modèle PS natif).
+  
+  
+  
   const pillars = computed<Record<string, BlogPillar>>(() => {
     if (categoriesState.value && categoriesState.value.length) {
       const map: Record<string, BlogPillar> = {}
@@ -129,7 +113,7 @@ export function useBlogConfig() {
     return blogCfg.value?.pillars ?? {}
   })
 
-  /** Ordered pillar keys (ordre DB = ps_cms_category.position, sinon ordre JSON) */
+  
   const pillarKeys = computed(() => {
     if (categoriesState.value && categoriesState.value.length) {
       return categoriesState.value.map(c => c.key)
@@ -141,14 +125,14 @@ export function useBlogConfig() {
     return pillars.value[category] ?? { ...DEFAULT_PILLAR, label: category }
   }
 
-  // ── Subcat labels (source: ps_cms_category enfants de niveau 4) ─────────
+  
   const subcatLabels = computed<Record<string, string>>(() => {
     if (categoriesState.value && categoriesState.value.length) {
       const map: Record<string, string> = {}
       for (const cat of categoriesState.value) {
         for (const sub of cat.subcategories || []) {
-          // If the same slug exists under multiple pillars, the last one wins —
-          // labels remain globally consistent because slugs are neutral.
+          
+          
           map[sub.key] = sub.name
         }
       }
@@ -161,7 +145,7 @@ export function useBlogConfig() {
     return subcatLabels.value[key] ?? key
   }
 
-  // ── SEO meta (source: ps_cms_category_lang) ─────────────────────────────
+  
   function getPillarMeta(pillarKey: string): BlogSeoMeta {
     const cat = (categoriesState.value || []).find(c => c.key === pillarKey)
     if (cat?.metaTitle || cat?.metaDescription) {
@@ -186,13 +170,13 @@ export function useBlogConfig() {
     return { title: getSubcatLabel(subKey), description: '' }
   }
 
-  // ── PS `id_cms_category` (for body class `.cms-category-X` native PS) ───────
+  
   function getPillarId(pillarKey: string): number | null {
     const cat = (categoriesState.value || []).find(c => c.key === pillarKey)
     return cat?.id ?? null
   }
 
-  /** `id_cms_category` from the "Blog" root (under Home) — for `body#cms-category-X` on `/blog` */
+  
   const blogRootId = computed<number | null>(() => blogRootIdState.value ?? null)
 
   function getSubcatId(pillarKey: string, subKey: string): number | null {
@@ -201,7 +185,7 @@ export function useBlogConfig() {
     return sub?.id ?? null
   }
 
-  // ── Author / Publisher (source: config_json.blog) ───────────────────────
+  
   const author = computed(() => blogCfg.value?.author ?? { name: '', url: '/' })
 
   const publisher = computed(() => blogCfg.value?.publisher ?? {
@@ -209,14 +193,14 @@ export function useBlogConfig() {
     url: author.value.url,
   })
 
-  // ── Domain (for JSON-LD, OG, sitemap) ───────────────────────────────────
+  
   const siteUrl = computed(() => {
     const d = (dbConfig.value as any)?.domain
     const hostname = d ? (Array.isArray(d) ? d[0] : d) : 'localhost'
     return `https://${hostname}`
   })
 
-  // ── Meta ────────────────────────────────────────────────────────────────
+  
   const blogTitle = computed(() => blogCfg.value?.title ?? 'Blog')
   const blogDescription = computed(() => blogCfg.value?.description ?? '')
   const contactCta = computed(() => blogCfg.value?.contactCta)

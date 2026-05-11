@@ -1,16 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/chatbot/conversations — list of chatbot conversations for
- * the hub console. Filters: status (open|closed|all), takeover (1|0|all),
- * scenario (global|product|order|human|all), search (token, email, name, company).
- *
- * Default sort: last_message_at DESC NULLS LAST (the conversations
- * live at the top). Also returns the status counters for the
- * list tabs.
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const page    = Math.max(1, Number(q.page || 1))
@@ -42,7 +33,7 @@ export default defineEventHandler(async (event) => {
   const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : ''
   const offset = (page - 1) * perPage
 
-  // Liste paginée + dernier message snippet (LATERAL pour rapide single-row).
+  
   const rows = await db.query<any>(
     `SELECT c.id_conversation, c.conversation_token, c.scenario_root,
             c.status, c.human_takeover, c.unread_for_admin,
@@ -71,7 +62,7 @@ export default defineEventHandler(async (event) => {
   )
   const total = Number(totalRow?.n || 0)
 
-  // Compteurs globaux pour les onglets (indépendants des filtres).
+  
   const counts = await db.get<any>(
     `SELECT
         COUNT(*) FILTER (WHERE status = 'open' AND human_takeover = FALSE)::int AS bot_open,

@@ -1,17 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { bookSlot, getAppointmentById } from '~/enterprise/base/appointment/server/utils/appointment'
 import { sendAppointmentConfirmation } from '~/enterprise/base/appointment/server/utils/appointment-email'
 import { verifySiret } from '~/server/utils/siret-verify'
-
-/**
- * POST /api/appointment/book → { success, idAppointment, dateAppointment, durationMin }
- *
- * Body : { idAvailability, prospectName, prospectEmail, prospectPhone?, prospectMessage?, idAcSmartlead? }
- *
- * Concurrency: atomic lock on the facade side (UPDATE … WHERE is_booked = 0).
- * If 0 rows updated → 409 (another prospect booked the slot during display).
- */
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -35,15 +26,15 @@ export default defineEventHandler(async (event) => {
   if (!EMAIL_RE.test(prospectEmail)) {
     throw createError({ statusCode: 422, statusMessage: 'Email invalide', data: { code: 'INVALID_EMAIL' } })
   }
-  // Mode 'phone' (tenant config) : le numéro est obligatoire — on appelle
-  // le prospect, donc pas de fallback visio possible.
+  
+  
   const appointmentMode = String((useRuntimeConfig().public as any)?.appointmentMode ?? 'both')
   if (appointmentMode === 'phone' && !prospectPhone) {
     throw createError({ statusCode: 422, statusMessage: 'Numéro de téléphone requis pour ce rendez-vous', data: { code: 'PHONE_REQUIRED' } })
   }
 
-  // Mode B2B (tenant-config) : SIRET obligatoire + re-vérification serveur
-  // pour éviter qu'un client malveillant bypass la validation front.
+  
+  
   const cfg = useRuntimeConfig()
   const b2bMode = !!(cfg.public as any)?.b2bMode
   let prospectSiret: string | null = null
@@ -93,7 +84,7 @@ export default defineEventHandler(async (event) => {
     { event },
   )
 
-  // Email confirmation (façade ac_email_client) — best-effort, ne fait pas échouer le booking.
+  
   try {
     const apt = await getAppointmentById(result.idAppointment, { event })
     if (apt) await sendAppointmentConfirmation(apt)

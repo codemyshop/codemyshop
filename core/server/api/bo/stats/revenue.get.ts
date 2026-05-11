@@ -1,10 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/bo/stats/revenue?clientId=...
- * Revenue stats day/week/month. Direct DB access (principle 'Zero webservice
- * PrestaShop » 2026-04-22). Refacto depuis connector.getRevenueStats.
- */
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
@@ -12,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const db = clientId ? useClientDbById(String(clientId)) : useClientDb(event)
 
   try {
-    // 4 agrégations en 1 SQL via conditions SUM(CASE WHEN ...)
+    
     const row = await db.get<any>(
       `SELECT
           SUM(CASE WHEN DATE(date_add) = CURDATE()                         THEN total_paid_tax_incl ELSE 0 END) AS today,

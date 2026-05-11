@@ -1,15 +1,10 @@
-/**
- * GET /api/academy/:slug
- * Return a module with the SEO slugs of lessons + related blog articles.
- *
- */
+
+
 import { getModuleBySlugAsync, findModuleByPartialSlug, getAllModulesAsync } from '~/server/utils/academy-content'
 
-// ── Cache articles PS (évite un $fetch lent à chaque requête) ────────────────
 let _psArticlesCache: { data: Record<string, unknown>[] | null; ts: number } = { data: null, ts: 0 }
-const PS_CACHE_TTL = 300_000 // 5 min
+const PS_CACHE_TTL = 300_000 
 
-/** Mapping inverse : mentor → catégories blog pertinentes */
 const MENTOR_BLOG_CATEGORIES: Record<string, string[]> = {
   descartes:  ['prestashop/architecture', 'prestashop/developpement', 'prestashop'],
   aristote:   ['seo', 'prestashop/performance'],
@@ -30,7 +25,7 @@ export default defineEventHandler(async (event) => {
 
   const mod = await getModuleBySlugAsync(slug)
   if (!mod) {
-    // Fallback: partial slug → 301 redirect to the correct slug
+    
     const partial = findModuleByPartialSlug(slug)
     if (partial) {
       return sendRedirect(event, `/api/academy/${partial.slug}`, 301)
@@ -38,7 +33,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Module introuvable' })
   }
 
-  // ── Blog articles related to the module's mentor ──────────────────────────
+  
   let relatedArticles: { id: number; title: string; url: string; excerpt: string; coverImage: string }[] = []
   const mentorKey = mod.mentor
   if (mentorKey) {
@@ -49,12 +44,12 @@ export default defineEventHandler(async (event) => {
         const apiKey = config.prestashopApiKey
         const apiBase = config.public.apiBase
         if (apiKey && apiBase) {
-          // Use cached PS articles if fresh enough
+          
           let psItems = _psArticlesCache.data
           if (!psItems || Date.now() - _psArticlesCache.ts > PS_CACHE_TTL) {
             const auth = Buffer.from(`${apiKey}:`).toString('base64')
             const controller = new AbortController()
-            const timeout = setTimeout(() => controller.abort(), 3000) // 3s timeout
+            const timeout = setTimeout(() => controller.abort(), 3000) 
             const data = await $fetch<{ content_management_system: Record<string, unknown>[] }>(
               `${apiBase}/content_management_system`,
               {
@@ -71,7 +66,7 @@ export default defineEventHandler(async (event) => {
             if (item.active !== '1') return false
             const lr = getLang(item.link_rewrite)
             if (!lr.includes('--')) return false
-            // Check if the article matches one of the mentor's categories
+            
             return blogCategories.some(cat => lr.startsWith(`${cat.replace('/', '--')}--`) || lr.startsWith(`${cat}--`))
           })
 
@@ -79,7 +74,7 @@ export default defineEventHandler(async (event) => {
             const lr = getLang(item.link_rewrite)
             const rawContent = getLang(item.content)
             const coverMatch = rawContent.match(/<img[^>]+src=["']([^"']+)["']/)
-            // Build the Nuxt URL from the link_rewrite
+            
             const parts = lr.split('--')
             const nuxtUrl = parts.length >= 3
               ? `/blog/${parts[0]}/${parts[1]}/${parts.slice(2).join('--')}`
@@ -97,12 +92,12 @@ export default defineEventHandler(async (event) => {
           })
         }
       } catch {
-        // PS API unavailable — not blocking
+        
       }
     }
   }
 
-  // Include mentors so the page doesn't need a second /api/academy fetch
+  
   const allData = await getAllModulesAsync()
   const mentorData = mod.mentor ? (allData.mentors?.[mod.mentor] ?? null) : null
 

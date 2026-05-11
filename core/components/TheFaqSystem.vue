@@ -84,7 +84,6 @@ const toggle = (i: number) => {
   open.value = open.value === i ? null : i
 }
 
-// ── JSON-LD FAQPage ──────────────────────────────────────────────────────────
 useHead(() => ({
   script: props.faqs.length
     ? [

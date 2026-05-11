@@ -1,9 +1,5 @@
-/**
- *
- * GET /api/footer-config
- * Footer config for the tenant from cs_footer_config JOIN _lang + cs_footer_social.
- * Strict _lang pattern, no more JSON i18n.
- */
+
+
 import { resolveClientId } from '~/server/utils/db'
 import { getConfigWithLang, listSocialsWithLang } from '~/modules/footer/server/utils/footer'
 

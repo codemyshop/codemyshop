@@ -1,14 +1,4 @@
-/**
- *
- * Multi-tenant composable for Design Systems.
- * Loads the active theme for the tenant and exposes tokens
- * as reactive Tailwind classes.
- *
- * Architecture modeled after useFeatureFlag.ts:
- * - JSON catalog on the server (server/data/design-systems.json)
- * - Tenant → theme mapping via tenant-themes (or premium fallback)
- * - Client-side composable that exposes tokens
- */
+
 
 export interface DesignSystemTokens {
   bgWow:          string
@@ -39,7 +29,6 @@ export interface DesignSystem {
   tokens:      DesignSystemTokens
 }
 
-// Tokens par défaut (ac-premium hardcodés pour le fallback SSR)
 const DEFAULT_TOKENS: DesignSystemTokens = {
   bgWow:          'bg-gradient-to-br from-rose-50/60 via-white to-purple-50/40',
   bgWowDark:      'dark:bg-[#0f172a] dark:bg-none',
@@ -68,7 +57,7 @@ export const useDesignSystem = () => {
   const activeThemeId = useState<string>('design_system_active', () => 'ac-premium')
   const loaded = useState('design_systems_loaded', () => false)
 
-  /** Charge le catalogue depuis le JSON serveur */
+  
   async function loadDesignSystems() {
     if (loaded.value) return
     try {
@@ -81,21 +70,21 @@ export const useDesignSystem = () => {
     }
   }
 
-  /** Active theme resolved (fallback to default tokens) */
+  
   const activeTheme = computed<DesignSystem>(() => {
     const found = catalog.value.find(ds => ds.id === activeThemeId.value)
     return found ?? { id: 'ac-premium', name: 'AC Premium', description: '', tokens: DEFAULT_TOKENS }
   })
 
-  /** Shortcut: active theme tokens */
+  
   const tokens = computed<DesignSystemTokens>(() => activeTheme.value.tokens)
 
-  /** Change the active theme */
+  
   function setTheme(themeId: string) {
     activeThemeId.value = themeId
   }
 
-  // Auto-loads on the client at first call
+  
   if (import.meta.client && !loaded.value) {
     loadDesignSystems()
   }

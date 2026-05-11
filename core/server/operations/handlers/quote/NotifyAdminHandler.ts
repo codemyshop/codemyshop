@@ -1,13 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Handler: Notifies the admin of a new B2B quote request (template
- * admin_new_lead). Destinataires lus depuis cs_email_template.recipient_to
- * (CSV multi-emails) with fallback env ADMIN_NOTIF_EMAIL.
- *
- * Must be subscribed AFTER SaveToDatabaseHandler — the quote reference (Q-{id})
- * est lue depuis `event._quoteRequestId`.
- */
 
 import type { DomainEvent } from '../../bus/EventBus'
 import type { QuoteRequestedPayload } from '../../events/QuoteRequestedEvent'

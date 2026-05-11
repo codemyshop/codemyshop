@@ -1,11 +1,4 @@
-/**
- *
- * Drizzle PG schema — predefined message templates + account signature.
- * Owns `cs_email_canned` and `cs_email_signature` (rule 7 §DB-Only).
- *
- * Multi-account : `account_user` discrimine. Signature en singleton par
- * compte (UNIQUE(account_user)).
- */
+
 
 import {
   serial, smallint, timestamp, varchar, text,

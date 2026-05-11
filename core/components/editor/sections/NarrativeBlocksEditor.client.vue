@@ -1,10 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Éditeur Blocs Narratifs — image, kicker, titre, texte, CTA, multilang.
--->
 <template>
   <div class="space-y-3">
     <div class="flex items-center justify-between">

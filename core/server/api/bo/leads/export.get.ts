@@ -1,14 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { listSmartLeadsForExport } from '~/enterprise/base/smartlead/server/utils/smartlead'
 
-/**
- * GET /api/bo/leads/export — CSV of all leads (cs_smartlead).
- *
- * Separator `;` (French Excel standard) + UTF-8 BOM for accents.
- * Only returns the leads (not the contact_messages which are inbound and
- * re-importable in read-only mode).
- */
 export default defineEventHandler(async (event) => {
   const rows = await listSmartLeadsForExport({ event })
 

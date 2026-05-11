@@ -1,12 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/giftcard/check?code=XXXX-XXXX-XXXX
- *
- * Verifies the status of a gift card code on the visitor side (e.g. entered on
- * /cartes-cadeaux/utiliser). Normalized response to avoid leaking
- * exact reasons (anti-enumeration).
- */
 
 import { resolveClientId } from '~/server/utils/db'
 import { isFeatureEnabled } from '~/server/utils/feature-flags'

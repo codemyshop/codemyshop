@@ -1,8 +1,4 @@
-/**
- *
- * Drizzle PG schema — email-config domain (singleton cs_email_config).
- * Voir migration 2026-05-05_email_config.sql.
- */
+
 
 import {
   integer,

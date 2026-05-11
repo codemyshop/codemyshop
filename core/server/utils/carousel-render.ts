@@ -18,7 +18,7 @@ const MARGIN_X = 60
 export type CarouselSlide = {
   title: string
   text?: string
-  role?: string  // 'hook' | 'cta' | other → couleur titre
+  role?: string  
 }
 
 const escapeXml = (s: string) =>

@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { sql } from 'drizzle-orm'
 import { requireRoleOrSaas } from '~/server/utils/session'
@@ -9,22 +9,6 @@ import {
   writeCategoryImage,
 } from '~/server/utils/ps-fs'
 
-/**
- * POST /api/bo/categories/:id/upload-cover?variant=cover|thumb
- *
- * FS-direct only since PHP removal on 2026-05-01 — the old fallback
- * psProxyMultipart to ac_categorycovergen/upload targeted PrestaShop legacy which
- * no longer exists (containers Exited). The tenant MUST expose the mount via
- * env `PS_IMG_CATEGORY_DIR_<TENANT_KEY>` (ex: PS_IMG_CATEGORY_DIR_EXAMPLE_V2).
- *
- * Pipeline :
- *   1. Lecture multipart + sharp .rotate() + crop center 1:1
- *   2. Variantes : cover = 4 WebP (400/600/800/1200) + JPG legacy 800
- *                  thumb = 1 WebP 200 + JPG legacy 200_thumb
- *   3. Filename SEO : `{id}-{slug}-{width}.webp` + legacy `{id}.jpg` / `{id}_thumb.jpg`
- * Purge old variants of the same id_category (current variant)
- *   5. Write FS direct + UPDATE ps_category.date_upd (cache-bust thumbUrl).
- */
 const MAX_FILE_SIZE = 10 * 1024 * 1024
 const COVER_WIDTHS = [400, 600, 800, 1200] as const
 const COVER_LEGACY_JPG_WIDTH = 800
@@ -42,7 +26,7 @@ function slugify(s: string): string {
 }
 
 function rows<T = any>(result: any): T[] {
-  // postgres-js : `d.execute(sql\`…\`)` retourne directement un array de rows.
+  
   return ((result as any) as T[]) ?? []
 }
 
@@ -146,6 +130,6 @@ export default defineEventHandler(async (event) => {
   }
   try {
     await d.execute(sql`UPDATE cs_main.ps_category SET date_upd = NOW() WHERE id_category = ${id}`)
-  } catch { /* no-op */ }
+  } catch {  }
   return { success: true, variant, slug, files: written, purged }
 })

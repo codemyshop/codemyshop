@@ -1,12 +1,4 @@
-<!--
-  Page catégorie — /catalogue/:slug
-  Sous-catégories visuelles + grille produits + sidebar facettes (calibrage, origine…)
-  Titre/canonical dérivés de brandName + psFrontUrl (runtimeConfig, tenant-neutre).
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -18,15 +10,12 @@ const { t } = useHubT()
 const _cfg = useRuntimeConfig()
 const clientId = String((_cfg.public as any).clientId ?? '')
 
-// Panier serveur (useServerCart) + drawer slide-in
 const { addToCart, totalItems } = useServerCart(clientId)
 const { open: openCartDrawer } = useCartDrawer()
 
-// B2B quote (unauthenticated visitor)
 const { addToQuote, totalItems: quoteTotalItems } = useQuoteCart()
 const { open: openQuoteDrawer } = useQuoteDrawer()
 
-// Product quantities in listings
 const quantities = ref<Record<number, number>>({})
 function getQty(id: number) { return quantities.value[id] ?? 1 }
 function setQty(id: number, v: number) { quantities.value = { ...quantities.value, [id]: Math.max(1, v) } }
@@ -40,7 +29,6 @@ function quickQuote(product: any) {
   openQuoteDrawer()
 }
 
-// Resolve the psId from the slug via the menu config
 const slug = computed(() => {
   const parts = route.params.slug
   return Array.isArray(parts) ? parts.join('/') : parts
@@ -66,7 +54,6 @@ const psId = computed(() => {
   return findPsId(items, slug.value) ?? findPsId(items, slug.value.split('/').pop() ?? '')
 })
 
-// Categories for subcategories + breadcrumb — lang-aware
 const { activeLang } = useRouteLang()
 const { data: allCategories } = await useFetch('/api/catalogue/categories', {
   query: { clientId, limit: 200, lang: activeLang },
@@ -85,16 +72,14 @@ const subcategories = computed(() => {
   return cats.filter((c: any) => c.id_parent === psId.value)
 })
 
-// Filter state (URL synced)
 const sortBy = ref<string>((route.query.sort as string) || 'name_asc')
 const priceMin = ref<number>(Number(route.query.priceMin) || 0)
 const priceMax = ref<number>(Number(route.query.priceMax) || 10000)
 const currentPage = ref<number>(Number(route.query.page) || 1)
 const showMobileFilters = ref(false)
 
-// Selected features: Map<featureId, Set<valueId>>
 const selectedFeatures = ref<Record<number, number[]>>({})
-// Restaurer depuis URL ?f=4:127,128|7:541
+
 function parseFParam(raw: string | undefined): Record<number, number[]> {
   if (!raw) return {}
   const out: Record<number, number[]> = {}
@@ -115,7 +100,6 @@ function serializeFParam(features: Record<number, number[]>): string {
 }
 selectedFeatures.value = parseFParam(route.query.f as string)
 
-// Sync URL ← state (debounced via watch)
 function syncUrl() {
   const q: Record<string, any> = { ...route.query }
   if (sortBy.value && sortBy.value !== 'name_asc') q.sort = sortBy.value
@@ -132,7 +116,6 @@ function syncUrl() {
   router.replace({ query: q })
 }
 
-// Endpoint riche /list (renvoie { products, total, page, limit, filters })
 const perPage = 24
 const listKey = computed(() => `${psId.value}-${sortBy.value}-${priceMin.value}-${priceMax.value}-${currentPage.value}-${serializeFParam(selectedFeatures.value)}`)
 
@@ -157,7 +140,6 @@ const filters = computed<Array<{ id: number; name: string; values: Array<{ id: n
 
 const totalPages = computed(() => Math.ceil(total.value / perPage) || 1)
 
-// Toggle valeur de feature
 function toggleFeatureValue(fId: number, vId: number) {
   const current = selectedFeatures.value[fId] || []
   if (current.includes(vId)) {
@@ -192,14 +174,11 @@ watch([sortBy, priceMin, priceMax, selectedFeatures, currentPage], () => {
   syncUrl()
 }, { deep: true })
 
-// Reset page if filters change
 watch([sortBy, priceMin, priceMax], () => { currentPage.value = 1 })
 
-// Collapsible sections (by default all open)
 const collapsed = ref<Record<number, boolean>>({})
 function toggleSection(fId: number) { collapsed.value = { ...collapsed.value, [fId]: !collapsed.value[fId] } }
 
-// Slug utility
 function findSlugForPsId(id: number): string {
   const items = menuItems.value
   for (const item of items) {
@@ -214,7 +193,6 @@ function findSlugForPsId(id: number): string {
   return `/catalogue/${id}`
 }
 
-// body#category-{id} + class (PS convention) to target from CSS/JS
 useCategoryBodyId(() => psId.value ?? null)
 
 const brandName = computed(() => String((_cfg.public as any).brandName ?? ''))
@@ -226,7 +204,7 @@ useHead({
     { name: 'description', content: computed(() => category.value?.meta_description || category.value?.description?.slice(0, 160) || '') },
   ],
   script: computed(() => category.value ? [{
-    key: 'jsonld-collectionpage',  // dedup re-renders réactifs (cf. [...path].vue)
+    key: 'jsonld-collectionpage',  
     type: 'application/ld+json',
     innerHTML: JSON.stringify({
       '@context': 'https://schema.org',
@@ -245,7 +223,7 @@ useHead({
   <NuxtLayout name="white-label">
     <div class="min-h-screen bg-white">
 
-      <!-- Breadcrumb -->
+      
       <div class="bg-gray-50 border-b border-gray-100">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
           <nav class="flex items-center gap-2 text-xs text-gray-400">
@@ -258,10 +236,10 @@ useHead({
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
-        <!-- Category title -->
+        
         <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ category?.name ?? t('catalogue.catalogue_breadcrumb') }}</h1>
 
-        <!-- Visual subcategories -->
+        
         <div v-if="subcategories.length" class="mb-10">
           <div class="flex flex-wrap gap-3">
             <NuxtLink
@@ -275,20 +253,20 @@ useHead({
           </div>
         </div>
 
-        <!-- Layout : sidebar + grille -->
+        
         <div class="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
 
-          <!-- ────── SIDEBAR FACETTES (desktop sticky) ────── -->
+          
           <aside class="hidden lg:block">
             <div class="sticky top-24 space-y-6">
 
-              <!-- Reset global -->
+              
               <div v-if="hasActiveFilters" class="flex items-center justify-between">
                 <span class="text-xs text-gray-500">{{ t('catalogue.filters_active') }}</span>
                 <button class="text-xs font-medium text-primary-600 hover:underline" @click="resetFilters">{{ t('catalogue.filters_clear_all') }}</button>
               </div>
 
-              <!-- Sections facettes dynamiques -->
+              
               <section v-for="feat in filters" :key="feat.id" class="border-b border-gray-100 pb-5">
                 <button
                   class="flex items-center justify-between w-full mb-3 text-left"
@@ -318,9 +296,9 @@ useHead({
             </div>
           </aside>
 
-          <!-- ────── COLONNE PRODUITS ────── -->
+          
           <div>
-            <!-- Compteur + tri + bouton filtres mobile -->
+            
             <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
               <p class="text-sm text-gray-500">{{ total }} produit{{ total > 1 ? 's' : '' }}</p>
               <div class="flex items-center gap-3">
@@ -341,7 +319,7 @@ useHead({
               </div>
             </div>
 
-            <!-- Loading skeleton -->
+            
             <div v-if="loadingProducts" class="grid grid-cols-2 sm:grid-cols-3 gap-5">
               <div v-for="i in 6" :key="i" class="rounded-xl border border-gray-100 overflow-hidden animate-pulse">
                 <div class="aspect-square bg-gray-100" />
@@ -353,7 +331,7 @@ useHead({
               </div>
             </div>
 
-            <!-- Grille produits -->
+            
             <div v-else-if="products.length" class="grid grid-cols-2 sm:grid-cols-3 gap-5">
               <NuxtLink
                 v-for="product in products"
@@ -412,13 +390,13 @@ useHead({
               </NuxtLink>
             </div>
 
-            <!-- Empty state -->
+            
             <div v-else class="text-center py-20 border border-dashed border-gray-200 rounded-xl">
               <p class="text-gray-400 text-sm mb-4">{{ t('catalogue.catalogue_empty') }}</p>
               <button v-if="hasActiveFilters" class="text-xs font-medium text-primary-600 hover:underline" @click="resetFilters">{{ t('catalogue.reset_filters') }}</button>
             </div>
 
-            <!-- Pagination -->
+            
             <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 mt-10">
               <button
                 :disabled="currentPage <= 1"
@@ -441,7 +419,7 @@ useHead({
           </div>
         </div>
 
-        <!-- ────── DRAWER FILTRES MOBILE ────── -->
+        
         <Teleport to="body">
           <Transition name="fade">
             <div v-if="showMobileFilters" class="fixed inset-0 z-50 lg:hidden">
@@ -483,10 +461,9 @@ useHead({
           </Transition>
         </Teleport>
 
-        <!-- FAB cart/devis : showPrices + compteurs cookie session →
-             ClientOnly pour ne JAMAIS apparaître dans le HTML SSR caché. -->
+        
         <ClientOnly>
-          <!-- Floating cart link (authenticated) -->
+          
           <div v-if="showPrices && totalItems > 0" class="fixed bottom-6 right-6 z-40">
             <NuxtLink
               to="/panier"
@@ -496,7 +473,7 @@ useHead({
               {{ totalItems }} {{ totalItems > 1 ? t('cart.articles') : t('cart.article') }}
             </NuxtLink>
           </div>
-          <!-- Floating estimate link (not logged in) -->
+          
           <div v-if="!showPrices && quoteTotalItems > 0" class="fixed bottom-6 right-6 z-40">
             <NuxtLink
               to="/devis"

@@ -1,14 +1,4 @@
-<!--
-  Page inscription — /inscription
 
-  Mode B2B (PS_B2B_ENABLE=1 ou runtimeConfig.public.b2bMode=true) :
-  collecte company + SIRET + activité. Mode B2C : signup minimal
-  (prénom, nom, email, password). Title et placeholders adaptés.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -39,9 +29,9 @@ async function onSubmit() {
         clientId,
         firstname: form.firstname, lastname: form.lastname,
         email: form.email, password: form.password,
-        // B2B fields: sent only if the tenant is in B2B mode,
-        // otherwise they remain absent/empty and the API skips validation
-        // SIRET / company required.
+        
+        
+        
         company: isB2b.value ? form.company : undefined,
         siret: isB2b.value ? form.siret : undefined,
         activityCode: isB2b.value && form.activityCode ? form.activityCode : undefined,

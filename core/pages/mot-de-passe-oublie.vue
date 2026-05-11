@@ -1,14 +1,4 @@
-<!--
-  Page mot de passe oublié — /mot-de-passe-oublie
-  Formulaire email → POST /api/catalogue/customer/password-reset-request.
 
-  Anti-énumération : on affiche toujours le message générique de succès,
-  qu'un compte existe ou non avec cet email.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 

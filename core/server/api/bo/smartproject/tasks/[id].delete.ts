@@ -1,12 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * DELETE /api/bo/smartproject/tasks/:id
- * Remplace ac_smartproject/ajaxdeletetask (chantier #38 Phase B1.1).
- *
- * Response: { success, projectId, countTask } — projectId + countTask allow
- * the frontend to update the counter without refetch.
- */
+
 import { deleteProjectTask } from '~/enterprise/base/smartproject/server/utils/smartproject'
 
 export default defineEventHandler(async (event) => {

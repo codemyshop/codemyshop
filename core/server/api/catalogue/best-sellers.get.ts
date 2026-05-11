@@ -1,18 +1,5 @@
-/**
- *
- * GET /api/catalogue/best-sellers?limit=8
- *
- * Returns best sellers of the current tenant — direct DB aggregation
- * (ps_order_detail × ps_orders × ps_product) over 90-day rolling window.
- *
- * Why direct DB rather than REST API: the REST API does not expose
- * order_detail aggregation properly, and useClientDb hits the actual database
- * of the tenant (resolution by hostname). Pattern already proven in production
- * (cf homepage-sections.get.ts, contact.post.ts).
- *
- * Tenant-aware: limited to the current tenant for now. To extend to another
- * tenant, add its DB to CLIENT_DB_MAP (db.ts).
- */
+
+
 import { useClientDb, resolveClientId } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 import { buildProductUrl, buildImageUrl, buildImageSrcset } from '~/server/utils/product-urls'
@@ -61,17 +48,17 @@ export default defineEventHandler(async (event): Promise<{ products: BestSellerP
   const db = useClientDb(event)
   const idLang = await resolveIdLang(event)
 
-  // B2B → HT, B2C → TTC. Cf. core/server/utils/ps-tax.ts.
+  
   const b2b = await isTenantB2b(db)
   const taxJoin = buildTaxJoinForPrice(b2b)
   const priceExpr = buildPriceExpr(b2b, 'p.price')
 
   try {
     const rows = await db.query<BestSellerRow>(
-      // ⚠️ ps_product n'a PAS de colonne id_default_image (cf découverte 1.8).
-      // L'image cover vit dans ps_image (cover=1). LEFT JOIN pour ne pas perdre
-      // les produits sans image.
-      // PG strict : GROUP BY étendu pour inclure tous les non-aggrégats du SELECT.
+      
+      
+      
+      
       `SELECT od.product_id AS id,
               p.reference AS ref,
               pl.name AS name,

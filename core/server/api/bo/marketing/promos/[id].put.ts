@@ -1,27 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * PUT /api/bo/marketing/promos/:id — upsert of a promo code.
- *
- * Applies multilingual semantics:
- *
- * - `?lang=1` (master) : all structural columns of
- * `ps_cart_rule` are editable (code, dates, amounts, quantities,
- * %/€, free_shipping, active, description). The `name` is also
- * written in `ps_cart_rule_lang` for the master language.
- *
- *   - `?lang>1` (traduction) : seul `ps_cart_rule_lang.name` est mis
- * up to date via INSERT…ON CONFLICT DO UPDATE. All other
- * body fields are ignored to prevent a translation
- * from overwriting the promo structure (amounts, validity…).
- *
- * Creation: if `id=new` or `id=0`, INSERT a new row
- * `ps_cart_rule` (master only) then INSERT into
- * `ps_cart_rule_lang` for **all** active languages to
- * respect the PrestaShop constraint (one row per language per rule).
- */
 export default defineEventHandler(async (event) => {
   const rawId = getRouterParam(event, 'id')
   if (!rawId) throw createError({ statusCode: 400, message: 'id requis' })
@@ -35,9 +15,9 @@ export default defineEventHandler(async (event) => {
 
   const isNew = rawId === 'new' || Number(rawId) === 0
 
-  // ─── Création ────────────────────────────────────────────────────
-  // Autorisée uniquement en langue master. Traduire une promo qui
-  // n'existe pas encore n'a pas de sens.
+  
+  
+  
   if (isNew) {
     if (!isMaster) {
       throw createError({ statusCode: 400, message: 'Création autorisée uniquement en langue master (id_lang=1)' })
@@ -82,10 +62,10 @@ export default defineEventHandler(async (event) => {
     const newId = insert.insertId
     if (!newId) throw createError({ statusCode: 500, message: 'Échec création' })
 
-    // ps_cart_rule_lang : une ligne par langue active. On récupère
-    // toutes les langues actives du tenant pour éviter l'erreur
-    // d'intégrité si la règle est ensuite affichée dans une langue
-    // non encore seed.
+    
+    
+    
+    
     const langs = await db.query<any>(`SELECT id_lang FROM ps_lang WHERE active = 1`)
     for (const l of langs) {
       await db.run(
@@ -97,12 +77,12 @@ export default defineEventHandler(async (event) => {
     return { success: true, id: newId, langId, isMaster, created: true }
   }
 
-  // ─── Édition ─────────────────────────────────────────────────────
+  
   const id = Number(rawId)
   const exists = await db.get<any>(`SELECT id_cart_rule FROM ps_cart_rule WHERE id_cart_rule = ?`, [id])
   if (!exists) throw createError({ statusCode: 404, message: 'Code promo introuvable' })
 
-  // ps_cart_rule — structure : UNIQUEMENT en langue master.
+  
   if (isMaster) {
     const pf: string[] = []
     const pp: any[] = []
@@ -124,10 +104,10 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // ps_cart_rule_lang — INSERT…ON CONFLICT DO UPDATE sur `name`
-  // uniquement (seule colonne localisée de la table). S'applique aux
-  // deux modes (master met aussi à jour la ligne FR, traduction ne
-  // touche QUE son id_lang).
+  
+  
+  
+  
   if (body.name !== undefined) {
     await db.run(`
       INSERT INTO ps_cart_rule_lang (id_cart_rule, id_lang, name)

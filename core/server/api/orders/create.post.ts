@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/orders/create
- * Direct PostgreSQL DB (Zero PrestaShop webservice policy 2026-04-22).
- *
- * Converts a cart to an order: ps_orders + ps_order_detail + ps_order_history.
- */
+
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 import { createOrderFromCart, getOrderFromDb } from '~/server/utils/orders-db'
@@ -51,16 +45,16 @@ export default defineEventHandler(async (event) => {
     const shopName = shopRow?.value
       || (clientId ? `${String(clientId).charAt(0).toUpperCase()}${String(clientId).slice(1)}` : 'Boutique')
 
-    // Pour SystemPay (CB) on attend l'IPN avant d'envoyer le mail de
-    // confirmation : la commande peut être créée mais le paiement échouer
-    // (signature invalide, refus banque…). L'email est déclenché par
-    // systempay-ipn.post.ts au passage state=2 (Paiement accepté).
+    
+    
+    
+    
     const paymentLow = String(order.payment).toLowerCase()
     const isSystempay = paymentLow.includes('systempay') || paymentLow.includes('carte bancaire')
     const isBankwire = paymentLow.includes('virement')
 
     if (!isSystempay) {
-      // RIB tenant si paiement = virement
+      
       let bankDetails: { owner: string; details: string; address: string; customText: string } | undefined
       if (isBankwire) {
         const bankRows: any[] = await d.execute(sql`
@@ -77,7 +71,7 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      // Carrier name + tracking URL pour le template
+      
       const carrierRow: any = await d.execute(sql`
         SELECT cl.name FROM cs_main.ps_carrier c
         LEFT JOIN cs_main.ps_carrier_lang cl
@@ -104,10 +98,10 @@ export default defineEventHandler(async (event) => {
       console.log(`[orders/create] SystemPay → email confirmation différé jusqu'à IPN success (order=#${(order as any).reference})`)
     }
 
-    // Notif admin (DB-first, recipient_to édité dans /hub/crm/email/template/admin_new_order)
+    
     const addr = (order as any).addressDelivery
     const customerName = `${addr?.firstname || ''} ${addr?.lastname || ''}`.trim() || String(customerEmail)
-    // Récupère la société depuis ps_customer (addressDelivery.company peut être vide)
+    
     const custRows: any[] = await d.execute(sql`
       SELECT company FROM cs_main.ps_customer WHERE id_customer = ${resolvedCustomerId} LIMIT 1
     `).catch(() => [] as any[]) as any[]
@@ -128,9 +122,9 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // ─── Crédit loyalty si le state initial est paid (rare : paiement
-  // immédiat dès start). Idempotent — no-op si state pending (virement,
-  // SystemPay) où le crédit se fera plus tard via status.put.ts ou IPN.
+  
+  
+  
   creditLoyaltyForOrder(Number((order as any).id)).catch(err => {
     console.error('[orders/create] Loyalty credit failed:', err?.message || err)
   })

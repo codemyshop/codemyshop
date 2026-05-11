@@ -1,12 +1,4 @@
-/**
- *
- * POST /api/hub/translations/generate-prompt
- * Body : { scope, source_lang, target_lang, rowKeys: string[] }
- * Retourne { prompt: string, payload: Array<{rowKey, source}> }
- *
- * Supports individual scopes AND group scopes: for a group, each rowKey encodes the memberSlug; resolve each one on its scope.
- * each rowKey encodes the memberSlug; resolve each one on its scope.
- */
+
 
 import { useClientDb } from '~/server/utils/db'
 import {
@@ -49,7 +41,6 @@ function resolveScope(slug: string): ScopeSpec | null {
   return s
 }
 
-/** Charge le texte source d'une ligne pour un scope donné. */
 async function loadSourceText(
   db: any,
   scope: ScopeSpec,
@@ -115,7 +106,7 @@ export default defineEventHandler(async (event) => {
   const isGroup = !!findGroupScope(scopeSlug)
   let scopeLabel = scopeSlug
 
-  // Load the source text for each rowKey.
+  
   const payload: Array<{ rowKey: string; source: string; memberLabel?: string }> = []
   let anyHtml = false
   let anySlug = false

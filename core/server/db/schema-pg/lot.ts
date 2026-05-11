@@ -1,19 +1,4 @@
-/**
- *
- * Drizzle PG schemas for lot — task #44 port-drizzle-mariadb-pg.
- *
- * 2 tables (cs_main) — supplier batch traceability (shelf life, origin,
- * calibre) + asso lot ↔ ligne de commande (consommation FIFO) :
- *   - cs_lot
- *   - cs_lot_order_detail
- *
- * Mapping types MariaDB -> PG :
- *   - INT AUTO_INCREMENT  -> serial
- *   - TINYINT(1)          -> integer
- *   - DECIMAL(p,s)        -> numeric(p, s)
- *   - DATE                -> date (mode 'string')
- *   - DATETIME            -> timestamp(0) without time zone (defaultNow)
- */
+
 
 import {
   date,

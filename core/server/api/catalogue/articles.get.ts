@@ -1,26 +1,5 @@
-/**
- *
- * GET /api/catalogue/articles?categoryId=132&limit=8
- *
- * Returns CMS articles (ps_cms) linked to a product category via the
- * table de jointure cs_category_cms (module ac_cmscategoryextra,
- * Sprint 11). Lecture DB directe via useClientDb.
- *
- * Why ps_cms and not ps_smart_blog: the tenant uses CMS pages
- * standard PrestaShop comme moteur de blog (35 entries au 08/04, slugs
- * in 3 segments like 'family--sub--slug'). The N-N pivot is
- * cs_category_cms (id_category, id_cms, position).
- *
- * Tenant-aware: limited to the current tenant for now. To extend to another
- * tenant, add its DB to CLIENT_DB_MAP + its base URL below.
- *
- * Cicatrices :
- * - useClientDb(event) → DB of the current tenant, NEVER the legacy database
- * - try/catch ER_NO_SUCH_TABLE on cs_category_cms → fallback
- * gracefully (table absent if module ac_cmscategoryextra is not installed)
- * - NO reference to cx.image (schema drift in cs_cms_extra between tenants
- *    Hub AC vs Example Shop — feedback_ps_ac_cms_extra_schema_drift)
- */
+
+
 import { useClientDb, resolveClientId } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 
@@ -48,7 +27,6 @@ interface ArticlesResponse {
   limit: number
 }
 
-
 export default defineEventHandler(async (event): Promise<ArticlesResponse> => {
   const tenant = resolveClientId(event)
   if (!tenant) {
@@ -67,7 +45,7 @@ export default defineEventHandler(async (event): Promise<ArticlesResponse> => {
   const idLang = await resolveIdLang(event)
 
   try {
-    // Comptage total (pour le carrousel "voir tout")
+    
     const totalRows = await db.query<{ total: number }>(
       `SELECT COUNT(*) AS total
          FROM cs_category_cms cc
@@ -80,9 +58,9 @@ export default defineEventHandler(async (event): Promise<ArticlesResponse> => {
       return { articles: [], total: 0, limit }
     }
 
-    // Articles avec dates de publication (LEFT JOIN sur cs_cms_extra
-    // car certains articles peuvent ne pas avoir d'extra). Schéma minimal
-    // commun à tous tenants : id_cms, date_published, date_updated.
+    
+    
+    
     const rows = await db.query<ArticleRow>(
       `SELECT c.id_cms,
               cl.meta_title,
@@ -106,9 +84,9 @@ export default defineEventHandler(async (event): Promise<ArticlesResponse> => {
       title: r.meta_title,
       slug: r.link_rewrite,
       excerpt: r.meta_description ?? '',
-      // link_rewrite Example Shop stocke les segments séparés par '--' (convention
-      // legacy). Routing Nuxt utilise /blog/[category]/[subcategory]/[slug].vue
-      // → reconstruire avec '/'. Slug 1-segment reste inchangé (split renvoie [slug]).
+      
+      
+      
       url: `/blog/${r.link_rewrite.split('--').join('/')}`,
       date_published: r.date_published,
     }))
@@ -119,7 +97,7 @@ export default defineEventHandler(async (event): Promise<ArticlesResponse> => {
       err?.code === 'ER_NO_SUCH_TABLE' || err?.errno === 1146 ||
       err?.code === 'ER_BAD_FIELD_ERROR' || err?.errno === 1054
     ) {
-      // Module ac_cmscategoryextra pas installé OU drift schéma — fallback gracieux
+      
       return { articles: [], total: 0, limit }
     }
     console.error('[articles] DB error:', err?.message)

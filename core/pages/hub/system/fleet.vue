@@ -24,7 +24,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- KPIs -->
+      
       <div v-if="fleet" class="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-4 text-center">
           <p class="text-2xl font-extrabold text-gray-900">{{ fleet.totalInstances }}</p>
@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <!-- Barre FinOps -->
+      
       <div v-if="fleet" class="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-5 text-white">
         <div class="grid grid-cols-4 gap-4 text-center text-xs">
           <div><p class="text-lg font-extrabold">{{ formatEur(fleet.totalMrr) }}</p><p class="text-gray-400">Revenus</p></div>
@@ -72,7 +72,7 @@
         </div>
       </div>
 
-      <!-- Instances table -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <table class="w-full text-sm">
           <thead>
@@ -126,7 +126,7 @@
         <div v-else-if="!fleet?.instances?.length" class="p-8 text-center text-gray-400 text-sm">Aucune instance</div>
       </div>
 
-      <!-- Credentials Modal -->
+      
       <Teleport to="body">
         <div v-if="selectedCreds" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" @click.self="selectedCreds = null">
           <div class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-white/[0.06] rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
@@ -170,7 +170,7 @@
         </div>
       </Teleport>
 
-      <!-- Prompt Registry -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
         <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-4">Prompt Registry (versioning A/B)</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">

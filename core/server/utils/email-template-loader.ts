@@ -1,19 +1,4 @@
-/**
- *
- * DB-first loader for email templates (cs_email_template_lang).
- *
- * Single source of truth editable from /hub/crm/email/template/{slug}. The
- * senders de `order-emails.ts` (sendWelcomeEmail, sendOrderConfirmationEmail,
- * etc.) read from here rather than inlining their HTML — any admin panel change takes
- * effet au prochain envoi (cache TTL 5 min).
- *
- * Simple in-process cache: Map keyed by `${slug}:${idLang}`. The cache
- * includes misses (data=null) to avoid re-querying the database in a loop
- * when a slug does not yet exist.
- *
- * Adding/modifying a template → invalidate via clearEmailTemplateCache(slug)
- * (on the PUT /api/bo/email-templates/{slug} endpoint, to be wired up).
- */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -24,7 +9,7 @@ export interface LoadedEmailTemplate {
   htmlBody:   string
   plainBody:  string | null
   audience:   'client' | 'admin' | string
-  /** Destinataires admin uniquement (CSV brut, à parser via parseRecipients). */
+  
   recipientTo:  string
   recipientCc:  string
   recipientBcc: string
@@ -36,8 +21,8 @@ export async function loadEmailTemplate(
   slug: string,
   idLang: number = 1,
 ): Promise<LoadedEmailTemplate | null> {
-  // Shared Redis cache (survives redeployments, shared across PM2 instances).
-  // Fall back to direct fetch if Redis is unavailable.
+  
+  
   return cachedFetch<LoadedEmailTemplate | null>(
     `email-tpl:${slug}:${idLang}`,
     TTL_SEC,
@@ -70,12 +55,6 @@ export async function loadEmailTemplate(
   )
 }
 
-/**
- * Parse a CSV of recipients into a deduplicated and filtered email list.
- * Tolerates spaces around commas, semicolons, newlines.
- * Basic regex validation (RFC-light sufficient to catch typos
- * — not a deliverability check).
- */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export function parseRecipients(csv: string): string[] {
@@ -91,12 +70,6 @@ export function parseRecipients(csv: string): string[] {
   return out
 }
 
-/**
- * Resolves the recipient of an admin template:
- * 1. recipient_to (CSV) if provided
- *  2. fallback env ADMIN_NOTIF_EMAIL → BLOG_CONTACT_EMAIL → CONTACT_EMAIL
- * 3. otherwise returns {} and the caller decides to abort / log
- */
 export function resolveAdminRecipients(tpl: LoadedEmailTemplate): {
   to:  string[]
   cc:  string[]
@@ -116,15 +89,8 @@ export function resolveAdminRecipients(tpl: LoadedEmailTemplate): {
   return { to, cc, bcc }
 }
 
-/**
- * Invalidates the cache (a specific slug on the Redis side). To be called from
- * the PUT /api/bo/email-templates/{slug} endpoint after UPDATE.
- *
- * NB: invalidates common languages (1=FR, 2=EN, 3=DE) — adapt if we
- * add other languages. No wildcard on the unstorage side so we list them.
- */
 export async function clearEmailTemplateCache(slug?: string): Promise<void> {
-  if (!slug) return   // pas de wildcard avec unstorage — caller responsable
+  if (!slug) return   
   for (const idLang of [1, 2, 3]) {
     await invalidateCache(`email-tpl:${slug}:${idLang}`)
   }

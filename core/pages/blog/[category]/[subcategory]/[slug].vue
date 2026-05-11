@@ -1,6 +1,5 @@
 <script setup lang="ts">
-/**
- */
+
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 
 const { fetchTerms, annotateProse } = useDictionaryLinks()
@@ -19,12 +18,10 @@ const pilier = getPillar(category)
 const pilierLabel = pilier.label
 const subcatLabel = getSubcatLabel(subcategory)
 
-// Maillage tridirectionnel : Academy + Expertise liés à cet article
 const { data: crosslinks } = await useFetch('/api/crosslinks', {
   params: { type: 'blog', slug, category },
 })
 
-// L'API attend le slug complet : "subcategory--article-slug" — lang-aware
 const { activeLang } = useRouteLang()
 const { data: article, error } = await useFetch(`/api/cms/${category}/${subcategory}--${slug}`, {
   query: { lang: activeLang },
@@ -35,11 +32,6 @@ if (error.value) {
   throw createError({ statusCode: 404, statusMessage: 'Article introuvable', fatal: true })
 }
 
-// Auteur résolu : 1) cs_employee_extra via author_employee_id (article.author),
-// 2) fallback useBlogConfig().author (config_json.blog historique).
-// Déclaré AVANT articleJsonLd qui lit author.value, sinon TDZ error
-// (« Cannot access 'author' before initialization ») quand useHead évalue
-// articleJsonLd.value au setup synchrone.
 const author = computed(() => {
   const a = (article.value as any)?.author
   if (a && (a.name || a.image)) {
@@ -60,8 +52,6 @@ const author = computed(() => {
   }
 })
 
-// Image auteur — déclarée comme variable JS pour éviter que Vite tente
-// de résoudre le chemin comme un import statique au build.
 const authorImg = computed(() => author.value.image ?? '')
 
 const faqJsonLd = computed(() => {
@@ -136,10 +126,7 @@ useHead({
   ],
 })
 
-// Convention PS : <body id="cms-X" class="cms cms-id-X"> — article CMS natif
 useListingBodyId('cms', () => article.value?.id ?? null)
-
-// ── Date ────────────────────────────────────────────────────────────────────
 
 function formatDate(raw: string): string {
   if (!raw) return ''
@@ -147,17 +134,11 @@ function formatDate(raw: string): string {
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-// ── FAQ accordion ────────────────────────────────────────────────────────────
-
 const openFaqIndex = ref<number | null>(null)
 function toggleFaq(i: number) {
   openFaqIndex.value = openFaqIndex.value === i ? null : i
 }
 
-// ── Contact form ─────────────────────────────────────────────────────────────
-// (author + authorImg déclarés plus haut, avant articleJsonLd)
-
-// URL de partage (résolution côté client uniquement)
 const shareUrl = computed(() => {
   if (import.meta.client) {
     return window.location.href
@@ -195,8 +176,6 @@ async function submitContact() {
   }
 }
 
-// ── TOC ──────────────────────────────────────────────────────────────────────
-
 interface TocItem { id: string; text: string; level: string }
 
 const tocItems    = ref<TocItem[]>([])
@@ -227,7 +206,7 @@ function onScroll() {
 onMounted(() => {
   const proseEl  = document.querySelector('.prose')
   if (!proseEl) return
-  // Sommaire = H2 uniquement (pas H3) pour garder un sommaire compact
+  
   const headings = proseEl.querySelectorAll('h2')
   const hasFaq   = !!(faqHeading.value && article.value?.faq?.length)
   if (headings.length < 2 && !hasFaq) return
@@ -240,19 +219,19 @@ onMounted(() => {
   })
   activeId.value = tocItems.value[0]?.id ?? ''
 
-  // Observer toutes les headings (H2+H3) pour le tracking de position
+  
   const allHeadings = proseEl.querySelectorAll('h2, h3')
   observer = new IntersectionObserver(
     entries => {
       for (const e of entries) {
         if (e.isIntersecting) {
-          // Si c'est un H3, activer son H2 parent dans le sommaire
+          
           const targetId = e.target.id
           const tocMatch = tocItems.value.find(t => t.id === targetId)
           if (tocMatch) {
             activeId.value = targetId
           } else {
-            // H3 → trouver le H2 précédent
+            
             const idx = Array.from(allHeadings).indexOf(e.target as HTMLElement)
             for (let i = idx; i >= 0; i--) {
               const prev = allHeadings[i]
@@ -272,7 +251,7 @@ onMounted(() => {
     observer!.observe(h)
   })
 
-  // Ajoute la FAQ au sommaire si elle existe
+  
   if (faqHeading.value && article.value?.faq?.length) {
     tocItems.value.push({ id: 'questions-frequentes', text: 'Questions fréquentes', level: 'H2' })
     observer.observe(faqHeading.value)
@@ -280,7 +259,7 @@ onMounted(() => {
 
   window.addEventListener('scroll', onScroll, { passive: true })
 
-  // ── Dictionary auto-links ──
+  
   fetchTerms().then(() => {
     nextTick(() => {
       const prose = document.querySelector('.prose')
@@ -299,10 +278,10 @@ onUnmounted(() => {
   <div class="max-w-7xl mx-auto px-4 py-12">
     <div class="lg:flex lg:gap-12 lg:items-start">
 
-      <!-- ── Article ──────────────────────────────────────────────────────── -->
+      
       <article class="min-w-0 flex-1 max-w-3xl">
 
-        <!-- Fil d'Ariane -->
+        
         <nav aria-label="Fil d'Ariane" class="text-sm text-gray-600 dark:text-slate-400 mb-8 flex items-center gap-2 flex-wrap">
           <NuxtLink to="/" class="hover:text-primary-600 transition-colors">Accueil</NuxtLink>
           <span aria-hidden="true">/</span>
@@ -321,7 +300,7 @@ onUnmounted(() => {
           <span class="text-gray-500 dark:text-slate-500 truncate max-w-xs">{{ article?.title }}</span>
         </nav>
 
-        <!-- Cover -->
+        
         <figure v-if="article?.coverImage" class="mb-10 rounded-2xl overflow-hidden shadow-md">
           <img
             :src="article.coverImage"
@@ -337,9 +316,9 @@ onUnmounted(() => {
           >
         </figure>
 
-        <!-- Header article -->
+        
         <header class="mb-10">
-          <!-- Badge catégorie (backlink) -->
+          
           <NuxtLink
             v-if="article?.category"
             :to="`/blog/${article.category}/`"
@@ -356,7 +335,7 @@ onUnmounted(() => {
             {{ article.metaDescription }}
           </p>
 
-          <!-- Meta : dates + lecture + auteur -->
+          
           <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
             <span v-if="article?.datePublished" class="flex items-center gap-1.5">
               <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -384,7 +363,7 @@ onUnmounted(() => {
             </span>
           </div>
 
-          <!-- Boutons de partage -->
+          
           <div class="flex items-center gap-3 mt-4">
             <span class="text-xs text-gray-400 font-medium uppercase tracking-wide">Partager</span>
             <a
@@ -410,7 +389,7 @@ onUnmounted(() => {
           </div>
         </header>
 
-        <!-- ── Audio (en haut pour accessibilité) ─────────────────────────── -->
+        
         <ArticleAudioPlayer
           v-if="article?.audioEnabled"
           :audio-url="article.audioUrl"
@@ -418,11 +397,11 @@ onUnmounted(() => {
 
         <hr class="border-gray-200 mb-10">
 
-        <!-- Corps -->
-        <!-- eslint-disable-next-line vue/no-v-html -->
+        
+        
         <div class="prose prose-lg max-w-none" v-html="article?.content" />
 
-        <!-- ── Éclairage du Mentor ───────────────────────────────────────── -->
+        
         <MentorInsight
           v-if="article?.mentor"
           :name="article.mentor.name"
@@ -433,7 +412,7 @@ onUnmounted(() => {
           :academy-slug="article.mentor.academySlug"
         />
 
-        <!-- ── FAQ ────────────────────────────────────────────────────────── -->
+        
         <section v-if="article?.faq?.length" class="mt-14">
           <h2 id="questions-frequentes" ref="faqHeading" class="text-2xl font-bold text-gray-800 mb-2">Questions fréquentes</h2>
           <p class="text-sm text-gray-500 mb-6">Tout ce que vous devez savoir sur ce sujet.</p>
@@ -470,11 +449,11 @@ onUnmounted(() => {
           </dl>
         </section>
 
-        <!-- ── Formulaire de contact pré-rempli ──────────────────────────── -->
+        
         <div class="mt-14 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
           <div class="flex flex-col sm:flex-row">
 
-            <!-- Colonne gauche : CTA -->
+            
             <div class="sm:w-56 shrink-0 bg-gray-900 text-white flex flex-col items-center justify-center p-8 text-center gap-4">
               <div class="w-14 h-14 rounded-2xl bg-primary-500/20 flex items-center justify-center">
                 <svg class="w-7 h-7 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
@@ -491,7 +470,7 @@ onUnmounted(() => {
               </div>
             </div>
 
-            <!-- Colonne droite : formulaire -->
+            
             <div class="flex-1 p-8 bg-white">
               <div v-if="contactSent" class="text-success-600 font-medium text-sm bg-success-50 rounded-xl p-6 text-center">
                 <p class="text-lg font-semibold mb-1">Message envoy&eacute;</p>
@@ -540,9 +519,9 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- ── Maillage tridirectionnel — Academy + Expertise ─────────────── -->
+        
         <div v-if="crosslinks?.academy?.length || crosslinks?.expertise?.length" class="mt-12 pt-8 border-t border-gray-100 dark:border-slate-800">
-          <!-- Academy modules liés -->
+          
           <div v-if="crosslinks.academy?.length" class="mb-6">
             <div class="flex items-center gap-2 mb-3">
               <svg class="w-4 h-4 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -563,7 +542,7 @@ onUnmounted(() => {
               </NuxtLink>
             </div>
           </div>
-          <!-- Guides expertise liés -->
+          
           <div v-if="crosslinks.expertise?.length">
             <div class="flex items-center gap-2 mb-3">
               <svg class="w-4 h-4 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -585,7 +564,7 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- ── Bloc auteur ─────────────────────────────────────────────────── -->
+        
         <div id="auteur" class="mt-12 pt-8 border-t border-gray-200">
           <div class="flex items-start gap-6">
             <img
@@ -621,14 +600,14 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- ── Commentaires ────────────────────────────────────────────────── -->
+        
         <BlogComments
           v-if="article?.id"
           :article-id="article.id"
           :article-title="article.title ?? ''"
         />
 
-        <!-- ── Articles liés ───────────────────────────────────────────────── -->
+        
         <div class="mt-12 -mx-4 sm:-mx-6">
           <RelatedBlogArticles
             :category-slug="article?.category ?? category"
@@ -642,7 +621,7 @@ onUnmounted(() => {
 
       </article>
 
-      <!-- ── Sommaire (TOC) ─────────────────────────────────────────────── -->
+      
       <aside v-if="tocItems.length" class="hidden xl:block w-56 shrink-0 sticky top-24 self-start max-h-[calc(100vh-8rem)]">
         <nav class="flex flex-col h-full">
           <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3 shrink-0">
@@ -695,7 +674,7 @@ onUnmounted(() => {
 .prose dt { @apply text-gray-800 dark:text-white font-semibold mt-4 mb-1; }
 .prose dd { @apply text-gray-600 dark:text-slate-300 mb-4 ml-0; }
 
-/* ── Tables — override inline styles + dark mode + accessibility ───── */
+/* ── Tableaux — écrase les styles inline + dark mode + accessibilité ───── */
 .prose .article-table,
 .prose table {
   @apply w-full border-collapse rounded-xl overflow-hidden text-sm my-8;
@@ -737,24 +716,24 @@ html.dark .prose .article-table tbody td,
 html.dark .prose table tbody td {
   border-bottom-color: rgb(51 65 85) !important;
 }
-/* TOTAL row with green background */
+/* Ligne TOTAL avec fond vert */
 .prose .article-table tbody td[style*="f0fdf4"],
 .prose table tbody td[style*="f0fdf4"] {
   background: transparent;
 }
-/* Visible focus for keyboard navigation */
+/* Focus visible pour navigation clavier */
 .prose .article-table :focus-visible,
 .prose table :focus-visible {
   @apply outline-2 outline-offset-2 outline-primary-500;
 }
-/* Caption for accessibility */
+/* Caption pour accessibilité */
 .prose .article-table caption,
 .prose table caption {
   @apply text-sm text-gray-500 dark:text-slate-400 mb-2 text-left;
   caption-side: top;
 }
 
-/* ── Authority source box ─────────────────────────────────────────── */
+/* ── Cartouche source d'autorité ─────────────────────────────────────────── */
 .prose .expert-quote {
   @apply relative my-8 rounded-2xl bg-primary-50 dark:bg-primary-900 border border-primary-100 dark:border-primary-800 px-8 py-6;
 }
@@ -775,7 +754,7 @@ html.dark .prose table tbody td {
 .prose .article-sources li { @apply text-sm; }
 .prose .article-sources a { @apply text-primary-700 dark:text-primary-400 underline hover:text-primary-900 dark:hover:text-primary-300; }
 
-/* ── Colored callouts (inline style) — dark mode override ─────────── */
+/* ── Encarts colorés (callouts inline style) — dark mode override ─────────── */
 html.dark .prose div[style*="f0fdf4"] { background: rgba(6, 78, 59, 0.2) !important; border-color: #065f46 !important; }
 html.dark .prose div[style*="f8fafc"] { background: rgba(30, 41, 59, 0.5) !important; }
 
@@ -789,7 +768,7 @@ html.dark .prose div[style*="f8fafc"] { background: rgba(30, 41, 59, 0.5) !impor
   @apply text-accent-500 dark:text-accent-400;
   border-bottom-style: solid;
 }
-/* ── Subtle scrollbar for the table of contents ─────────────────────────────────── */
+/* ── Scrollbar discrète pour le sommaire ─────────────────────────────────── */
 .scrollbar-thin::-webkit-scrollbar { width: 3px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 .scrollbar-thin::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 9999px; }

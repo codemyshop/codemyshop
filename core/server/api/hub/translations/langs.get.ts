@@ -1,8 +1,4 @@
-/**
- *
- * GET /api/hub/translations/langs
- * List of active languages in `ps_lang` for the current tenant.
- */
+
 
 import { useClientDb } from '~/server/utils/db'
 

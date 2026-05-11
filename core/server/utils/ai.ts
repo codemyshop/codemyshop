@@ -1,12 +1,4 @@
-/**
- * Universal AI wrapper — Anthropic claude-sonnet-4-6 in production, deterministic stub in dev/demo.
- *
- * Usage :
- *   const result = await callAI(systemPrompt, userPrompt)
- *
- * Variables d'environnement requises en prod :
- *   ANTHROPIC_API_KEY=sk-ant-...
- */
+
 
 interface AnthropicMessage {
   role:    'user' | 'assistant'
@@ -17,25 +9,19 @@ interface AnthropicResponse {
   content: Array<{ type: string; text: string }>
 }
 
-/**
- * Calls the Anthropic API (claude-sonnet-4-6) with a system prompt + user message.
- * Returns the raw text of the response.
- *
- * If ANTHROPIC_API_KEY is missing → stub mode (deterministic fake response).
- */
 export async function callAI(
   systemPrompt: string,
   userPrompt:   string,
 ): Promise<string> {
   const config = useRuntimeConfig()
 
-  // ── Mode stub / démo ──────────────────────────────────────────────────────
+  
   if (!config.anthropicApiKey) {
     console.warn('[AI] ANTHROPIC_API_KEY absent — mode stub activé')
     return generateStubResponse(systemPrompt, userPrompt)
   }
 
-  // ── Appel Anthropic (centralisé) ───────────────────────────────────────────
+  
   const result = await callAnthropicRaw({
     apiKey: config.anthropicApiKey as string,
     systemPrompt,
@@ -46,16 +32,10 @@ export async function callAI(
   return result.content
 }
 
-// ── Stub déterministe ──────────────────────────────────────────────────────
-
-/**
- * Generates a consistent fake response based on keywords in the prompt.
- * Deterministic: same inputs → same output. No randomness.
- */
 function generateStubResponse(system: string, user: string): string {
   const combined = (system + ' ' + user).toLowerCase()
 
-  // Classification avatar — déclenché UNIQUEMENT par le classificateur de visiteurs
+  
   if (system.includes('classificateur de visiteurs') || system.includes('classifie ce visiteur')) {
     if (combined.includes('prestashop') || combined.includes('e-commerce') || combined.includes('boutique')) {
       return JSON.stringify({ type: 'prospect-ecommerce', label: 'Prospect E-commerce', confidence: 0.87, signals: ['Mots-clés PrestaShop détectés', 'Contexte e-commerce'] })
@@ -72,7 +52,7 @@ function generateStubResponse(system: string, user: string): string {
     return JSON.stringify({ type: 'unknown', label: 'Inconnu', confidence: 0.3, signals: ['Signaux insuffisants'] })
   }
 
-  // Newsletter
+  
   if (system.includes('newsletter') || system.includes('email')) {
     return '[STUB] Objet généré par l\'IA · Corps de l\'email factice pour démo.'
   }

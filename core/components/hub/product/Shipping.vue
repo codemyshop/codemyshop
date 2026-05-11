@@ -8,7 +8,7 @@
       <span class="text-[10px] uppercase tracking-wide text-gray-400">Shipping</span>
     </div>
 
-    <!-- Dimensions & poids -->
+    
     <div>
       <h3 class="text-xs font-semibold text-gray-700 dark:text-slate-200 uppercase tracking-wide mb-3">Dimensions & poids</h3>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -71,7 +71,7 @@
       </div>
     </div>
 
-    <!-- Fees & Delays -->
+    
     <div class="pt-5 border-t border-gray-100 dark:border-slate-800">
       <h3 class="text-xs font-semibold text-gray-700 dark:text-slate-200 uppercase tracking-wide mb-3">Frais & délais</h3>
       <div class="space-y-4">
@@ -113,7 +113,7 @@
       </div>
     </div>
 
-    <!-- Authorized carriers -->
+    
     <div class="pt-5 border-t border-gray-100 dark:border-slate-800">
       <div class="flex items-center justify-between mb-3">
         <h3 class="text-xs font-semibold text-gray-700 dark:text-slate-200 uppercase tracking-wide">Transporteurs autorisés</h3>
@@ -165,8 +165,8 @@
 
 <script setup lang="ts">
 interface Carrier {
-  id: number              // id_reference (stable across versions)
-  idCarrier: number       // id_carrier (current version)
+  id: number              
+  idCarrier: number       
   name: string
   isFree: number
   isModule: number
@@ -191,7 +191,6 @@ const model = defineModel<ShippingForm>({ required: true })
 const carriers = ref<Carrier[]>([])
 const loading = ref(true)
 
-// Utility set for toggles; source of truth = model.carrierRefs
 const selectedRefs = reactive(new Set<number>())
 
 function syncFromModel() {

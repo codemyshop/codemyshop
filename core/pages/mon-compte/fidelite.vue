@@ -1,9 +1,4 @@
-<!--
-  Mes points de fidélité — page client
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <script setup lang="ts">
 import type { LoyaltyAccountResponse, LoyaltyTier, LoyaltyTransaction } from '~/server/api/loyalty/account.get'
 import type { LoyaltyConvertResponse } from '~/server/api/loyalty/convert.post'
@@ -100,7 +95,7 @@ useHead({ title: t('account.account_fidelity_title', 'Mes points de fidélité')
     <div class="min-h-screen bg-gray-50">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
 
-        <!-- Header -->
+        
         <div class="flex items-center justify-between mb-8">
           <div>
             <NuxtLink to="/mon-compte" class="text-xs text-gray-400 hover:text-primary-600">{{ t('account.account_back_link', '← Mon compte') }}</NuxtLink>
@@ -111,7 +106,7 @@ useHead({ title: t('account.account_fidelity_title', 'Mes points de fidélité')
         <div v-if="loading" class="text-center py-12 text-gray-400 text-sm">{{ t('common.common_loading', 'Chargement…') }}</div>
 
         <template v-else-if="data">
-          <!-- Solde -->
+          
           <div class="bg-white rounded-xl p-6 border border-gray-100 mb-6">
             <div class="flex items-center justify-between">
               <div>
@@ -131,7 +126,7 @@ useHead({ title: t('account.account_fidelity_title', 'Mes points de fidélité')
             </div>
           </div>
 
-          <!-- Conversion result -->
+          
           <div v-if="lastResult?.success" class="bg-emerald-50 border border-emerald-200 rounded-xl p-5 mb-6">
             <div class="flex items-start gap-3">
               <div class="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center">✓</div>
@@ -152,12 +147,12 @@ useHead({ title: t('account.account_fidelity_title', 'Mes points de fidélité')
             </div>
           </div>
 
-          <!-- Erreur -->
+          
           <div v-if="errorMsg" class="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 text-sm text-red-800">
             {{ errorMsg }}
           </div>
 
-          <!-- Paliers de conversion -->
+          
           <div class="bg-white rounded-xl p-6 border border-gray-100 mb-6">
             <h2 class="text-lg font-bold text-gray-900 mb-1">{{ t('account.account_convert_title', 'Convertir mes points') }}</h2>
             <p class="text-sm text-gray-500 mb-5">
@@ -194,7 +189,7 @@ useHead({ title: t('account.account_fidelity_title', 'Mes points de fidélité')
             </div>
           </div>
 
-          <!-- History + Vouchers side by side -->
+          
           <div class="grid lg:grid-cols-12 gap-6">
           <div class="bg-white rounded-xl p-6 border border-gray-100 lg:col-span-7">
             <h2 class="text-lg font-bold text-gray-900 mb-4">{{ t('account.account_history_title', 'Historique') }}</h2>
@@ -239,14 +234,14 @@ useHead({ title: t('account.account_fidelity_title', 'Mes points de fidélité')
             </div>
           </div>
 
-          <!-- Panel "My loyalty vouchers" -->
+          
           <div class="bg-white rounded-xl p-6 border border-gray-100 lg:col-span-5">
             <h2 class="text-lg font-bold text-gray-900 mb-4">{{ t('account.account_vouchers_title', 'Mes bons de fidélité') }}</h2>
             <div v-if="!data.vouchers || data.vouchers.length === 0" class="text-sm text-gray-400 py-6 text-center">
               {{ t('account.account_vouchers_empty', 'Aucun bon pour le moment. Convertissez vos points pour générer votre premier bon.') }}
             </div>
             <div v-else class="space-y-3">
-              <!-- Actifs -->
+              
               <div
                 v-for="v in data.vouchers"
                 :key="v.code"

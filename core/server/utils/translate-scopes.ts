@@ -1,59 +1,31 @@
-/**
- *
- * Closed register of translatable scopes. Each scope describes a column
- * of a PrestaShop `_lang` table or a subset of `ps_translation`.
- * The endpoints /api/hub/translations/* only allow these scopes: no
- * table/column name is ever concatenated from the client.
- */
+
 
 export interface ScopeSpec {
-  slug: string         // clé opaque côté client
-  label: string        // libellé UI
-  table: string        // table PrestaShop (ex: 'ps_product_lang')
-  column: string       // colonne à traduire (ex: 'name')
-  idCols: string[]     // colonnes PK (hors id_lang) dans l'ordre
-  labelSql?: string    // SQL alternatif pour charger un libellé de ligne (ex: jointure sur ps_product.reference)
-  domain?: string      // uniquement pour scopes ps_translation (filtre sur `domain`)
+  slug: string         
+  label: string        
+  table: string        
+  column: string       
+  idCols: string[]     
+  labelSql?: string    
+  domain?: string      
   category: 'i18n-hub' | 'catalog' | 'cms' | 'seo' | 'config' | 'features'
-  multiline?: boolean  // hint UI : contenu long (description, content)
-  html?: boolean       // hint UI : contenu HTML
-  /**
-   * Filtering by client_id via JOIN on master table (multi-tenant tables).
-   * When the same database hosts multiple client_ids (rare, but a legacy case in
-   * shared hosting scenarios where stale rows from other tenants may persist), restrict
-   * the workspace to rows belonging to the current tenant.
-   * masterTable   : name of the master table (ex: 'cs_header')
-   * masterIdCol   : column linking to the _lang table (ex: 'id_header')
-   * nested.parent : if the master is itself attached to another master
-   * (ex: cs_footer_social → cs_footer_config), specify
-   * the parent table+column bearing client_id.
-   */
+  multiline?: boolean  
+  html?: boolean       
+  
+
   clientScope?: {
     masterTable: string
     masterIdCol: string
     parentTable?: string
     parentIdCol?: string
   }
-  /**
-   * Deduplication on workspace side: 'source' groups by source value.
-   * Useful for denormalized tables (ex: cs_footer where column_title
-   * is duplicated on each link of the same column → 6 identical rows).
-   *
-   * Effet :
-   * - strings.get returns a single row per distinct source + count.
-   * - apply propagates the translation to ALL rows having this source_text,
-   * ensuring visual consistency (entire column translated at once).
-   */
+  
+
   dedupe?: 'source'
 }
 
-/**
- * Static scopes on native PrestaShop _lang tables.
- * Adding a scope here immediately exposes the corresponding column
- * in the workspace /hub/translations (provided the table exists).
- */
 export const STATIC_SCOPES: ScopeSpec[] = [
-  // ─── PIM / Catalogue ────────────────────────────────────────────────────────
+  
   { slug: 'ps_product_lang:name',              label: 'Produits — Nom',              table: 'ps_product_lang',   column: 'name',              idCols: ['id_product', 'id_shop'],    category: 'catalog' },
   { slug: 'ps_product_lang:description_short', label: 'Produits — Description courte', table: 'ps_product_lang', column: 'description_short', idCols: ['id_product', 'id_shop'],    category: 'catalog', multiline: true, html: true },
   { slug: 'ps_product_lang:description',       label: 'Produits — Description',       table: 'ps_product_lang',  column: 'description',       idCols: ['id_product', 'id_shop'],    category: 'catalog', multiline: true, html: true },
@@ -67,7 +39,7 @@ export const STATIC_SCOPES: ScopeSpec[] = [
   { slug: 'ps_category_lang:meta_description', label: 'Catégories — Meta description', table: 'ps_category_lang', column: 'meta_description', idCols: ['id_category', 'id_shop'],   category: 'seo', multiline: true },
   { slug: 'ps_category_lang:link_rewrite',     label: 'Catégories — URL (slug)',      table: 'ps_category_lang', column: 'link_rewrite',      idCols: ['id_category', 'id_shop'],   category: 'seo' },
 
-  // ─── CMS ────────────────────────────────────────────────────────────────────
+  
   { slug: 'ps_cms_lang:meta_title',            label: 'CMS — Meta title',             table: 'ps_cms_lang',      column: 'meta_title',        idCols: ['id_cms', 'id_shop'],        category: 'cms' },
   { slug: 'ps_cms_lang:meta_description',      label: 'CMS — Meta description',       table: 'ps_cms_lang',      column: 'meta_description',  idCols: ['id_cms', 'id_shop'],        category: 'cms', multiline: true },
   { slug: 'ps_cms_lang:content',               label: 'CMS — Contenu',                table: 'ps_cms_lang',      column: 'content',           idCols: ['id_cms', 'id_shop'],        category: 'cms', multiline: true, html: true },
@@ -77,21 +49,21 @@ export const STATIC_SCOPES: ScopeSpec[] = [
   { slug: 'ps_cms_category_lang:name',         label: 'CMS Catégories — Nom',         table: 'ps_cms_category_lang', column: 'name',          idCols: ['id_cms_category', 'id_shop'], category: 'cms' },
   { slug: 'ps_cms_category_lang:description',  label: 'CMS Catégories — Description', table: 'ps_cms_category_lang', column: 'description',   idCols: ['id_cms_category', 'id_shop'], category: 'cms', multiline: true, html: true },
 
-  // ─── SEO / Meta pages natives ───────────────────────────────────────────────
+  
   { slug: 'ps_meta_lang:title',                label: 'Meta pages — Title',           table: 'ps_meta_lang',     column: 'title',             idCols: ['id_meta', 'id_shop'],       category: 'seo' },
   { slug: 'ps_meta_lang:description',          label: 'Meta pages — Description',     table: 'ps_meta_lang',     column: 'description',       idCols: ['id_meta', 'id_shop'],       category: 'seo', multiline: true },
 
-  // ─── Attributs / Caractéristiques ───────────────────────────────────────────
+  
   { slug: 'ps_attribute_lang:name',            label: 'Attributs — Valeur',           table: 'ps_attribute_lang', column: 'name',             idCols: ['id_attribute'],             category: 'features' },
   { slug: 'ps_attribute_group_lang:name',      label: 'Groupes d\'attributs — Nom',   table: 'ps_attribute_group_lang', column: 'name',       idCols: ['id_attribute_group'],       category: 'features' },
   { slug: 'ps_attribute_group_lang:public_name', label: 'Groupes d\'attributs — Nom public', table: 'ps_attribute_group_lang', column: 'public_name', idCols: ['id_attribute_group'], category: 'features' },
   { slug: 'ps_feature_lang:name',              label: 'Caractéristiques — Nom',       table: 'ps_feature_lang',  column: 'name',              idCols: ['id_feature'],               category: 'features' },
   { slug: 'ps_feature_value_lang:value',       label: 'Caractéristiques — Valeur',    table: 'ps_feature_value_lang', column: 'value',        idCols: ['id_feature_value'],         category: 'features' },
 
-  // ─── Configuration ──────────────────────────────────────────────────────────
+  
   { slug: 'ps_configuration_lang:value',       label: 'Configuration — Valeur',       table: 'ps_configuration_lang', column: 'value',        idCols: ['id_configuration'],         category: 'config', multiline: true },
 
-  // ─── Modules AC natifs i18n (_lang pattern) ─────────────────────────────────
+  
   { slug: 'cs_megamenu_lang:label',         label: 'Megamenu — Libellé',           table: 'cs_megamenu_lang', column: 'label',        idCols: ['id_megamenu'],                category: 'cms', clientScope: { masterTable: 'cs_megamenu', masterIdCol: 'id_megamenu' } },
   { slug: 'cs_megamenu_lang:description',   label: 'Megamenu — Tagline',           table: 'cs_megamenu_lang', column: 'description',  idCols: ['id_megamenu'],                category: 'cms', multiline: true, clientScope: { masterTable: 'cs_megamenu', masterIdCol: 'id_megamenu' } },
   { slug: 'cs_megamenu_lang:badge',         label: 'Megamenu — Badge',             table: 'cs_megamenu_lang', column: 'badge',        idCols: ['id_megamenu'],                category: 'cms', clientScope: { masterTable: 'cs_megamenu', masterIdCol: 'id_megamenu' } },
@@ -121,7 +93,7 @@ export const STATIC_SCOPES: ScopeSpec[] = [
   { slug: 'cs_prefooter_section_lang:title',    label: 'Pré-footer — Titre section',   table: 'cs_prefooter_section_lang', column: 'title',     idCols: ['id_section'], category: 'cms' },
   { slug: 'cs_prefooter_section_lang:subtitle', label: 'Pré-footer — Sous-titre',      table: 'cs_prefooter_section_lang', column: 'subtitle',  idCols: ['id_section'], category: 'cms' },
 
-  // Blocks homepage/prefooter (slides, features, categories, narrative, banners, FAQ, CTA)
+  
   { slug: 'cs_homepage_block_lang:label',       label: 'Homepage block — Label',         table: 'cs_homepage_block_lang', column: 'label',       idCols: ['id_block'], category: 'cms' },
   { slug: 'cs_homepage_block_lang:title',       label: 'Homepage block — Titre',         table: 'cs_homepage_block_lang', column: 'title',       idCols: ['id_block'], category: 'cms' },
   { slug: 'cs_homepage_block_lang:subtitle',    label: 'Homepage block — Sous-titre',    table: 'cs_homepage_block_lang', column: 'subtitle',    idCols: ['id_block'], category: 'cms' },
@@ -141,23 +113,12 @@ export function findScope(slug: string): ScopeSpec | null {
   return STATIC_SCOPES.find(s => s.slug === slug) || null
 }
 
-/**
- * Meta-scopes: aggregate multiple individual scopes into a single workspace option
- * (ex: "Header — All" = logo_alt + logo_text + topbar_message + language label).
- * The frontend sees a single entry in the <select>, the server splits into multiple queries
- * and merges the results. rowKey is prefixed by the member's slug
- * to enable reverse routing on apply.
- *
- * Convention: group slug = 'group:<name>' (frontend constraint for routing).
- * Inner rowKey = '<memberSlug>|<originalRowKey>' (separator '|' to avoid
- * collision with '::' in _lang rowKeys).
- */
 export interface GroupScope {
-  slug: string                             // 'group:header'
-  label: string                            // 'Header — Tout'
+  slug: string                             
+  label: string                            
   category: ScopeSpec['category']
-  members: string[]                        // slugs de scopes individuels
-  dynamicPsTranslationPrefix?: string      // ex: 'Hub' → tous les domaines LIKE 'Hub%'
+  members: string[]                        
+  dynamicPsTranslationPrefix?: string      
 }
 
 export const GROUP_SCOPES: GroupScope[] = [
@@ -282,12 +243,10 @@ export function findGroupScope(slug: string): GroupScope | null {
   return GROUP_SCOPES.find(g => g.slug === slug) || null
 }
 
-/** Encode un rowKey d'un membre dans un rowKey de groupe. */
 export function encodeGroupRowKey(memberSlug: string, innerRowKey: string): string {
   return `${memberSlug}|${innerRowKey}`
 }
 
-/** Decode a group rowKey → { memberSlug, innerRowKey }. */
 export function decodeGroupRowKey(groupRowKey: string): { memberSlug: string; innerRowKey: string } | null {
   const idx = groupRowKey.indexOf('|')
   if (idx < 0) return null
@@ -297,11 +256,6 @@ export function decodeGroupRowKey(groupRowKey: string): { memberSlug: string; in
   }
 }
 
-/**
- * Builds a dynamic scope for a ps_translation domain.
- * The domain is verified against the actual list of domains in the database
- * (GET /scopes.get.ts) — never trust raw user input.
- */
 export function buildPsTranslationScope(domain: string): ScopeSpec {
   return {
     slug: `ps_translation:${domain}`,

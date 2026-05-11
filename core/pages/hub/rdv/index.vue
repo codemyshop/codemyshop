@@ -1,12 +1,4 @@
-<!--
-  Hub admin /hub/rdv — gestion des créneaux + appointments.
-  3 tabs : Demandes (bookings) · Créneaux (slots, paginés) · Configuration
-  (génération bulk + unitaire). Wire CRM auto à la réservation côté serveur.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: 'hub' })
 
@@ -50,7 +42,6 @@ function fmtDateTime(iso: string): string {
   })
 }
 
-// ─── Tab Configuration ───────────────────────────────────────────────────────
 const newSlot = reactive({ dateStart: '', durationMin: 30, notes: '' })
 const creating = ref(false)
 const errorMsg = ref('')
@@ -79,7 +70,6 @@ async function onCreateSlot() {
   finally { creating.value = false }
 }
 
-// Bulk
 const todayStr = new Date().toISOString().slice(0, 10)
 const oneYearLater = new Date(Date.now() + 365 * 86400000).toISOString().slice(0, 10)
 const bulk = reactive({
@@ -121,7 +111,6 @@ async function onBulk() {
   finally { bulkLoading.value = false }
 }
 
-// ─── Slots Tab (pagination) ───────────────────────────────────────────────
 const openSlots = computed(() => (data.value?.slots ?? []).filter(s => s.is_booked === 0))
 const slotsPageSize = 30
 const slotsPage = ref(1)
@@ -131,8 +120,8 @@ const slotsPageRows = computed(() => {
   return openSlots.value.slice(start, start + slotsPageSize)
 })
 watch(openSlots, () => {
-  // If the current page exceeds the total after refresh (e.g. after deletion), we return to the last valid page.
-  // ═══ SLOTS TAB (paginated) ═══
+  
+  
   if (slotsPage.value > slotsTotalPages.value) slotsPage.value = slotsTotalPages.value
 })
 
@@ -147,7 +136,6 @@ async function onDeleteSlot(id: number) {
   }
 }
 
-// ─── Tab Demandes (appointments) ─────────────────────────────────────────────
 async function onChangeStatus(id: number, status: string) {
   try {
     await $fetch(`/api/bo/appointment/${id}`, { method: 'PATCH', body: { status } })
@@ -170,7 +158,7 @@ const dowLabels: Array<{ iso: number; short: string }> = [
       <h1 class="text-base font-bold text-gray-800 dark:text-slate-100">Rendez-vous</h1>
       <p class="text-xs text-gray-400 mt-0.5">Page publique : <NuxtLink to="/rdv" target="_blank" class="text-primary-600 hover:underline">/rdv</NuxtLink></p>
 
-      <!-- Tabs -->
+      
       <nav class="flex items-center gap-1 mt-4 -mb-2">
         <button
           v-for="t in (['requests','slots','config'] as const)"
@@ -193,7 +181,7 @@ const dowLabels: Array<{ iso: number; short: string }> = [
 
     <div class="flex-1 overflow-auto px-6 py-6 space-y-6">
 
-      <!-- ═══ TAB DEMANDES ═══ -->
+      
       <section v-if="tab === 'requests'">
         <div v-if="!data?.appointments?.length" class="text-xs text-gray-500 dark:text-slate-400">
           Aucune demande de RDV pour le moment.
@@ -255,7 +243,7 @@ const dowLabels: Array<{ iso: number; short: string }> = [
         </div>
       </section>
 
-      <!-- ═══ TAB CRÉNEAUX (paginé) ═══ -->
+      
       <section v-else-if="tab === 'slots'">
         <div v-if="pending" class="text-xs text-gray-500 dark:text-slate-400">Chargement…</div>
         <div v-else-if="!openSlots.length" class="text-xs text-gray-500 dark:text-slate-400">Aucun créneau ouvert. Onglet « Configuration » pour générer.</div>
@@ -276,7 +264,7 @@ const dowLabels: Array<{ iso: number; short: string }> = [
             </div>
           </div>
 
-          <!-- Pagination -->
+          
           <div class="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-slate-400">
             <div>
               {{ (slotsPage - 1) * slotsPageSize + 1 }}–{{ Math.min(slotsPage * slotsPageSize, openSlots.length) }}
@@ -313,10 +301,10 @@ const dowLabels: Array<{ iso: number; short: string }> = [
         </template>
       </section>
 
-      <!-- ═══ TAB CONFIGURATION ═══ -->
+      
       <section v-else class="space-y-6">
 
-        <!-- Bulk -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-1">Ouverture en lot</h2>
           <p class="text-xs text-gray-500 dark:text-slate-400 mb-4">
@@ -383,7 +371,7 @@ const dowLabels: Array<{ iso: number; short: string }> = [
           </div>
         </div>
 
-        <!-- Unitaire -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-1">Ouvrir un créneau ponctuel</h2>
           <p class="text-xs text-gray-500 dark:text-slate-400 mb-4">Pour ajouter un seul horaire hors planning récurrent.</p>

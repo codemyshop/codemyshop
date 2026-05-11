@@ -1,12 +1,4 @@
-/**
- * POST /api/academy/qa/process
- * Worker: processes pending academy-* tasks in the AI queue — direct Drizzle DB.
- *   - academy-qa:{id} → INSERT ai_answer + status='published'
- *   - academy-suggestion:{slug}:{index} → UPSERT cs_academy_suggestion
- *
- * Called by cron (every 2 minutes) or manually.
- *
- */
+
 
 import { readAiQueue, executeAiTask } from '~/server/utils/ai-queue'
 import { updateQaAiAnswer, upsertSuggestion } from '~/server/utils/academy-db'
@@ -32,7 +24,7 @@ export default defineEventHandler(async (event) => {
         continue
       }
 
-      // ── Q&A : push réponse ────────────────────────────────────────
+      
       if (task.name.startsWith('academy-qa:')) {
         const idQa = parseInt(task.name.replace('academy-qa:', ''), 10)
         if (!idQa) continue
@@ -41,7 +33,7 @@ export default defineEventHandler(async (event) => {
         results.push({ name: task.name, task_id: task.id, status: r.ok ? 'published' : `failed:${r.error}` })
       }
 
-      // ── Suggestion : push question suggérée ───────────────────────
+      
       if (task.name.startsWith('academy-suggestion:')) {
         const parts = task.name.replace('academy-suggestion:', '').split(':')
         const moduleSlug = parts[0]

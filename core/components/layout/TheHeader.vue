@@ -17,17 +17,17 @@
       : 'background-color: var(--color-header-bg, #ffffff); color: var(--color-header-text, inherit)'"
     @click.self="isEditMode && openGlobalPanel('header')"
   >
-    <!-- Editor badge -->
+    
     <div v-if="isEditMode" class="edit-section-label">🏷️ Header</div>
 
-    <!-- ── Top Bar ────────────────────────────────────────────────────────── -->
+    
     <div
       v-if="effectiveConfig?.topBar?.message || effectiveConfig?.topBar?.showLanguages"
       class="text-xs"
       style="background-color: var(--color-topbar-bg); color: var(--color-topbar-text);"
     >
       <div class="max-w-6xl mx-auto px-4 sm:px-6 h-8 flex items-center gap-4">
-        <!-- Message: flexible zone with configurable alignment (left|center) -->
+        
         <div
           class="flex-1 flex items-center min-w-0"
           :class="topBarAlign === 'center' ? 'justify-center' : 'justify-start'"
@@ -37,7 +37,7 @@
           </span>
         </div>
 
-        <!-- Language selector on the right -->
+        
         <div v-if="effectiveConfig?.topBar?.showLanguages && effectiveConfig.topBar.languages?.length" class="flex items-center gap-3 shrink-0">
           <a
             v-for="lang in effectiveConfig.topBar.languages"
@@ -51,11 +51,11 @@
       </div>
     </div>
 
-    <!-- ── Main section: Logo + (Inline nav) + Icons ─────────────── -->
+    
     <div class="border-b border-transparent">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-2 min-h-16 flex items-center justify-between gap-4">
 
-        <!-- Logo -->
+        
         <component
           :is="effectiveConfig?.logo?.href ? NuxtLink : 'span'"
           :to="localePath(effectiveConfig?.logo?.href)"
@@ -84,7 +84,7 @@
           </span>
         </component>
 
-        <!-- ── Inline nav (layout === 'inline'): menu centered on the same line ── -->
+        
         <nav
           v-if="isInlineLayout"
           class="hidden lg:flex flex-1 items-center justify-center relative"
@@ -100,7 +100,7 @@
                 item.align === 'right' ? 'ml-auto' : '',
               ]"
             >
-              <!-- Simple link (no dropdown or megamenu) -->
+              
               <template v-if="!item.megaMenu && !item.children">
                 <component
                   :is="isExternal(item) ? 'a' : NuxtLink"
@@ -124,7 +124,7 @@
                   {{ i18nt(item.label) }}
                 </component>
               </template>
-              <!-- Dropdown simple via children[] -->
+              
               <template v-else-if="item.children">
                 <button
                   type="button"
@@ -163,7 +163,7 @@
                   </div>
                 </div>
               </template>
-              <!-- Simple dropdown via megaMenu (legacy, without isMegaMenu) -->
+              
               <template v-else-if="item.megaMenu && !item.isMegaMenu">
                 <button
                   type="button"
@@ -207,7 +207,7 @@
                   </div>
                 </div>
               </template>
-              <!-- Mega Menu grid (megaMenu + isMegaMenu: true) -->
+              
               <template v-else-if="item.megaMenu && item.isMegaMenu">
                 <button
                   type="button"
@@ -235,7 +235,7 @@
                     :style="`grid-template-columns: repeat(${item.megaMenu.length}, minmax(0, 1fr));`"
                   >
                     <div v-for="(col, ci) in item.megaMenu" :key="ci" class="space-y-1">
-                      <!-- Colonne image : 1 link + icon=path image (pattern fashion Vans/Nike SB/Supreme) -->
+                      
                       <template v-if="col.icon && String(col.icon).startsWith('/') && col.links?.length === 1">
                         <NuxtLink :to="localePath(col.links[0].href)" class="block group/img relative overflow-hidden rounded-xl">
                           <img :src="col.icon" :alt="i18nt(col.links[0].label)" class="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover/img:scale-105" loading="lazy" data-no-filter />
@@ -247,7 +247,7 @@
                           </div>
                         </NuxtLink>
                       </template>
-                      <!-- Colonne classique : titre + liste de liens -->
+                      
                       <template v-else>
                         <div v-if="col.title" class="flex items-center gap-1.5 px-3 pb-1 mb-1 border-b border-gray-100">
                           <img v-if="col.icon && String(col.icon).startsWith('/')" :src="col.icon" :alt="''" class="w-6 h-6 object-contain" loading="lazy" data-no-filter />
@@ -282,7 +282,7 @@
           </ul>
         </nav>
 
-        <!-- Barre de recherche (center) — layout stacked uniquement -->
+        
         <div
           v-else-if="effectiveConfig?.features?.showSearch"
           class="flex-1 hidden sm:flex items-center"
@@ -293,10 +293,10 @@
         </div>
         <div v-else-if="!isInlineLayout" class="flex-1 hidden sm:block" />
 
-        <!-- Right icons -->
+        
         <div class="flex items-center gap-1 shrink-0">
 
-          <!-- Contact email -->
+          
           <a
             v-if="effectiveConfig?.features?.showContact && effectiveConfig?.contactEmail"
             :href="`mailto:${effectiveConfig!.contactEmail}`"
@@ -309,13 +309,9 @@
             <span class="hidden xl:inline text-xs">{{ effectiveConfig!.contactEmail }}</span>
           </a>
 
-          <!-- Boutons Devis / Panier : visibilité dépend de showPrices
-               (session-dépendant). Wrap ClientOnly pour cache SSR Redis :
-               le bouton lui-même peut swap entre Devis et Panier après
-               hydratation, donc on ne rend rien côté SSR (placeholder spacer
-               minimal pour éviter le saut visuel du header). -->
+          
           <ClientOnly>
-            <!-- B2B quote (visible if B2B and not logged in) -->
+            
             <button
               v-if="isB2b && !showPrices"
               type="button"
@@ -334,7 +330,7 @@
               </span>
             </button>
 
-            <!-- Panier / Cart (drawer slide-in) -->
+            
             <button
               v-if="effectiveConfig?.features?.showCart && (!isB2b || showPrices)"
               type="button"
@@ -343,9 +339,9 @@
               @click="openCart"
             >
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-                <!-- Caddie : tenants food (Example Shop) — paniers de plusieurs kg/L. -->
+                
                 <path v-if="isFoodVertical" stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                <!-- Shopping bag: fashion / general (codemyshop-demo, future instances). -->
+                
                 <path v-else stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
               </svg>
               <span
@@ -360,7 +356,7 @@
             </template>
           </ClientOnly>
 
-          <!-- Favoris / Wishlist -->
+          
           <NuxtLink
             v-if="effectiveConfig?.features?.showWishlist"
             to="/favoris"
@@ -380,21 +376,21 @@
             </ClientOnly>
           </NuxtLink>
 
-          <!-- Dark Mode toggle removed — light by default, dark forced per page -->
+          
 
-          <!-- EmployeeMenu (logged-in staff — independent of UserMenu) -->
+          
           <div class="hidden lg:block">
             <EmployeeMenu />
           </div>
 
-          <!-- Login / UserMenu (customer) -->
+          
           <div v-if="effectiveConfig?.features?.showLogin" class="hidden lg:block">
             <slot name="actions">
               <UserMenu />
             </slot>
           </div>
 
-          <!-- Bouton hamburger mobile -->
+          
           <button
             class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
             :aria-expanded="mobileOpen"
@@ -414,7 +410,7 @@
       </div>
     </div>
 
-    <!-- ── Mega Menu desktop (layout stacked uniquement) ─────────────────── -->
+    
     <nav
       v-if="!isInlineLayout"
       class="hidden lg:block relative"
@@ -435,7 +431,7 @@
           ]"
         >
 
-          <!-- ① Lien simple ─────────────────────────────────────────────── -->
+          
           <template v-if="!item.megaMenu">
             <component
               :is="item.external ? 'a' : NuxtLink"
@@ -464,7 +460,7 @@
             </component>
           </template>
 
-          <!-- ② Simple dropdown: megaMenu defined, isMegaMenu absent/false ─ -->
+          
           <template v-else-if="item.megaMenu && !item.isMegaMenu">
             <button
               type="button"
@@ -518,7 +514,7 @@
             </div>
           </template>
 
-          <!-- ③ Full Mega Menu: megaMenu defined AND isMegaMenu: true ───── -->
+          
           <template v-else-if="item.megaMenu && item.isMegaMenu">
             <button
               type="button"
@@ -585,13 +581,13 @@
       </ul>
     </nav>
 
-    <!-- ── Badge mode preview ──────────────────────────────────────────────── -->
+    
     <div v-if="previewMode" class="bg-warning-400 text-warning-900 text-xs font-semibold text-center py-1 px-4">
       Mode preview — client : <strong>{{ previewClient }}</strong>
       · <a :href="currentPathWithoutPreview" class="underline hover:no-underline">Quitter le preview</a>
     </div>
 
-    <!-- ── Menu mobile ────────────────────────────────────────────────────── -->
+    
     <Transition
       enter-active-class="transition-all duration-200 ease-out"
       enter-from-class="opacity-0 -translate-y-2"
@@ -606,7 +602,7 @@
         class="lg:hidden border-t border-gray-100 bg-white px-4 py-4 space-y-1 shadow-lg"
       >
 
-        <!-- Recherche mobile -->
+        
         <div v-if="effectiveConfig?.features?.showSearch" class="mb-3">
           <SearchAutocomplete
             :client-id="resolvedClientId"
@@ -616,10 +612,10 @@
           />
         </div>
 
-        <!-- Items de navigation -->
+        
         <template v-for="item in navItems" :key="i18nt(item.label)">
 
-          <!-- ① Lien simple mobile -->
+          
           <template v-if="!item.megaMenu && !item.children">
             <component
               :is="item.external ? 'a' : NuxtLink"
@@ -643,7 +639,7 @@
             </component>
           </template>
 
-          <!-- ② Accordion mobile (children[] ou megaMenu) -->
+          
           <template v-else>
             <div>
               <button
@@ -676,10 +672,10 @@
                 leave-to-class="opacity-0 max-h-0"
               >
                 <div v-if="mobileAccordion === i18nt(item.label)" class="ml-3 mt-1 space-y-0.5 border-l-2 border-primary-100 pl-3">
-                  <!-- children[] (dropdown simple) -->
+                  
                   <template v-if="item.children">
                     <template v-for="sub in item.children" :key="sub.href">
-                      <!-- Item with PS subcategories -->
+                      
                       <template v-if="sub.psChildren?.length">
                         <component
                           :is="NuxtLink" :to="localePath(sub.href)"
@@ -693,7 +689,7 @@
                           @click="mobileOpen = false"
                         >{{ i18nt(pc.label) }}</component>
                       </template>
-                      <!-- Item simple -->
+                      
                       <component
                         v-else
                         :is="NuxtLink" :to="localePath(sub.href)"
@@ -702,7 +698,7 @@
                       >{{ i18nt(sub.label) }}</component>
                     </template>
                   </template>
-                  <!-- megaMenu (legacy + grid) -->
+                  
                   <template v-else>
                     <template v-for="col in item.megaMenu" :key="i18nt(col.title) || col.links[0]?.href">
                       <p
@@ -748,7 +744,7 @@
 
         </template>
 
-        <!-- Actions mobile : EmployeeMenu + UserMenu + Wishlist -->
+        
         <div class="pt-3 mt-3 border-t border-gray-100 flex items-center gap-3">
           <slot name="actions-mobile">
             <EmployeeMenu />
@@ -789,8 +785,7 @@ const { t: i18nt } = useI18nField()
 const { t } = useT()
 const { localePath } = useLocalePath()
 const route = useRoute()
-// defaultColorMode source: cs_theme (DB-first) with legacy fallback
-// config_json.defaultColorMode for non-migrated tenants (to remove later).
+
 const themeDbColorMode = computed(() =>
   (themeDb.value as any)?.defaultColorMode
   ?? (dbConfig.value as any)?.defaultColorMode
@@ -799,16 +794,9 @@ const themeDbColorMode = computed(() =>
 const darkModeOnly = computed(() => themeDbColorMode.value === 'dark' || (route.meta as any)?.darkPage === true)
 const fixedColorMode = computed(() => darkModeOnly.value || themeDbColorMode.value === 'light')
 
-// Shared DB config — populated by the server plugin client-config.server.ts (SSR)
-// and by white-label.vue useFetch (CSR). Available from first render.
 const { resolvedClientId } = useClientDetection()
 const dbConfig = useState<Record<string, unknown> | null>('client_db_config', () => null)
 
-// DB = single source of truth.
-// cs_client_config (dbConfig) + cs_header (headerDb) merged.
-// In edit mode the builderHeader (live preview) replaces headerDb.
-// The old editorHeader (useEditorState flat) is no longer used here
-// to avoid structure conflicts that override logo/features.
 const effectiveConfig = computed(() => {
   const base = dbConfig.value || {} as any
   const headerOverlay = isEditMode.value && builderHeader.value
@@ -817,30 +805,12 @@ const effectiveConfig = computed(() => {
   return deepMerge(base, headerOverlay)
 })
 
-// ── Megamenu DB-first (cs_megamenu) ──────────────────────────────────
 const { menuItems: dbMenuItems } = useMegamenu()
 const contentWidthClass = useContentWidth()
 
-// Cart icon: cart for food (grocery store), shopping bag for fashion / general
-// (codemyshop-demo / others). See core/server/utils/tenant-vertical.ts on the server side.
 const _runtimeCfg = useRuntimeConfig()
 const isFoodVertical = computed(() => String((_runtimeCfg.public as any)?.vertical || '') === 'food')
 
-// Items de navigation : DB megamenu + items rapides activables (toggles
-// header builder). 2 categories:
-//
-// - showGiftcardLink: inline item inserted AFTER the "Brands" item of
-// megamenu (dynamic detection by label/href). If "Brands" does not exist
-// then fallback to end of inline list (before right extras).
-//
-// - showBlogLink / showContactLink: items pushed to the right. ONLY the
-// first of the right series receives `align: 'right'` (= ml-auto in
-// flexbox) — the following ones stay attached to the previous. Otherwise multiple
-// `ml-auto` distribute the residual space and create a visible gap.
-//
-// Auto dedup: if a toggle is active, remove the DB megamenu item
-// pointing to the same href (with or without trailing slash) — avoids
-// duplicates when a tenant migrates from a manual version (e.g., food vertical).
 const BLOG_HREFS = new Set(['/blog', '/blog/'])
 const CONTACT_HREFS = new Set(['/contact', '/contact/', '/nous-contacter', '/nous-contacter/'])
 const GIFTCARD_HREFS = new Set(['/cartes-cadeaux', '/cartes-cadeaux/', '/gift-cards', '/gift-cards/'])
@@ -874,7 +844,7 @@ const navItems = computed(() => {
     return true
   })
 
-  // In-flow insertion AFTER "Brands" (dynamic detection)
+  
   const inlineItems = [...filtered]
   if (feats.showGiftcardLink) {
     const giftcardItem = {
@@ -887,8 +857,8 @@ const navItems = computed(() => {
     inlineItems.splice(insertAt, 0, giftcardItem)
   }
 
-  // Right-aligned extras — only the first receives ml-auto to not
-  // create a gap between Blog and Contact (cf. multiple flex distribution).
+  
+  
   const extras: Array<Record<string, any>> = []
   let firstRight = true
   if (feats.showBlogLink) {
@@ -924,15 +894,9 @@ const navItems = computed(() => {
   return [...inlineItems, ...extras]
 })
 
-// ── Header layout ──────────────────────────────────────────────────────
 const stickyMode = computed(() => !!effectiveConfig.value?.features?.stickyHeader)
 const isInlineLayout = computed(() => effectiveConfig.value?.features?.headerLayout === 'inline')
 
-// ── Dark header mode (black background, white text, inverted hover) ──────────
-// Auto-detection from cs_theme.color_header_bg (relative luminance
-// WCAG < 0.5). An explicit flag theme.headerDark=true takes priority.
-// Avoids the case of gray-text-on-black-background when a tenant configures a header
-// that is dark without explicitly enabling inverse mode.
 function isDarkHex(hex?: string | null): boolean {
   if (!hex) return false
   const h = hex.replace('#', '').trim()
@@ -949,12 +913,10 @@ const isHeaderDark = computed(() => {
   return isDarkHex((themeDb.value as any)?.colors?.headerBg)
 })
 
-// Top bar message alignment: 'left' (default) | 'center'
 const topBarAlign = computed<'left' | 'center'>(() =>
   (effectiveConfig.value as any)?.topBar?.align === 'center' ? 'center' : 'left'
 )
 
-// ── Stacked nav bar: optional dark theme (e.g., food vertical) ────────────────
 const isDarkNav = computed(() => !!(effectiveConfig.value as any)?.navBar?.backgroundColor)
 const navBarStyle = computed(() => {
   const nb = (effectiveConfig.value as any)?.navBar
@@ -965,22 +927,19 @@ const navBarStyle = computed(() => {
   return parts.join('; ')
 })
 
-// ── Local state ────────────────────────────────────────────────────────────
 const mobileOpen      = ref(false)
 const mobileAccordion = ref<string | null>(null)
 
-// Wishlist count — wired to useWishlist (ac_session cookie → itemTotal on server side)
 const { itemTotal: wishlistItemTotal, loadLists: loadWishlist } = useWishlist()
 const wishlistCount = computed(() => wishlistItemTotal.value || 0)
 const { loggedIn: customerLoggedIn } = useCustomerAuth()
 if (import.meta.client) {
   onMounted(() => {
-    // Skip if anonymous visitor → avoids noisy 401 in console
+    
     if (effectiveConfig.value?.features?.showWishlist && customerLoggedIn.value) loadWishlist()
   })
 }
 
-// ── Scroll detection for sticky header transparent → opaque ─────────────
 const scrolled = ref(false)
 if (import.meta.client) {
   const onScroll = () => { scrolled.value = window.scrollY > 20 }
@@ -991,16 +950,13 @@ if (import.meta.client) {
   onUnmounted(() => window.removeEventListener('scroll', onScroll))
 }
 
-// ── Cart (slide-in drawer, wired to useServerCart) ───────────────────
 const { open: openCart } = useCartDrawer()
 const { totalItems: cartTotalItems } = useServerCart(resolvedClientId.value)
 
-// ── B2B quote (slide-in drawer, wired to useQuoteCart) ─────────────────
 const { open: openQuote } = useQuoteDrawer()
 const { totalItems: quoteTotalItems } = useQuoteCart()
 const { showPrices, isB2b } = useB2bVisibility()
 
-/** Detects external links (http/https or explicit flag) */
 const isExternal = (item: { href?: string; external?: boolean }) =>
   item.external || item.href?.startsWith('http://') || item.href?.startsWith('https://')
 
@@ -1014,12 +970,6 @@ watch(() => route.path, () => {
 })
 </script>
 
-<!--
-  header-inverse : mode sombre (fond noir, texte blanc, hover = swap bg/text).
-  Cascade globale (non scoped) pour surcharger les hover:text-primary-* et
-  text-gray-* hérités de Tailwind, sans refacto des dizaines de classes
-  inline du template. Activé via theme.headerDark=true dans cs_client_config.
--->
 <style>
 .header-inverse,
 .header-inverse nav,
@@ -1034,10 +984,10 @@ watch(() => route.path, () => {
   color: var(--color-header-text, #ffffff) !important;
 }
 .header-inverse [class*="dark:text-"] {
-  /* neutralizes dark mode overlays (headerDark is sufficient) */
+  /* neutralise les surcouches dark mode (headerDark suffit) */
   color: var(--color-header-text, #ffffff);
 }
-/* Hover = pure inversion (white background, black text). Cancels hover:text-primary-* and hover:bg-primary-*. */
+/* Hover = inversion pure (fond blanc, texte noir). Annule les hover:text-primary-* et hover:bg-primary-*. */
 .header-inverse a:hover,
 .header-inverse button:hover,
 .header-inverse [class*="hover:text-primary"]:hover,
@@ -1046,7 +996,7 @@ watch(() => route.path, () => {
   color: var(--color-header-bg, #000000) !important;
   background-color: var(--color-header-text, #ffffff) !important;
 }
-/* Chevrons / SVG icons inherit currentColor → follow automatically. */
+/* Chevrons / icônes SVG héritent de currentColor → suivent automatiquement. */
 .header-inverse svg { color: inherit; }
 
 /* ═════════════════════════════════════════════════════════════════════
@@ -1072,7 +1022,7 @@ watch(() => route.path, () => {
 .header-inverse .bg-white [class*="text-slate-400"] {
   color: rgb(107 114 128) !important; /* gray-500 */
 }
-/* Hover in dropdowns: bg-gray-50 / text-gray-900 (Tailwind standard), not header inversion. */
+/* Hover dans les dropdowns : bg-gray-50 / text-gray-900 (Tailwind standard), pas l'inversion header. */
 .header-inverse .bg-white a:hover,
 .header-inverse .bg-white button:hover,
 .header-inverse .bg-white [class*="hover:text-primary"]:hover,
@@ -1081,7 +1031,7 @@ watch(() => route.path, () => {
   color: rgb(17 24 39) !important;
   background-color: rgb(249 250 251) !important; /* gray-50 */
 }
-/* Preserve colored badges (bg-primary-*, etc.) in dropdowns */
+/* Preserve les badges colorés (bg-primary-*, etc.) dans les dropdowns */
 .header-inverse .bg-white [class*="bg-primary-"] {
   color: white !important;
 }

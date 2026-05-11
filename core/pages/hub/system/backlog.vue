@@ -17,7 +17,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-4">
 
-      <!-- Filtre statut -->
+      
       <div class="flex gap-2">
         <button v-for="f in FILTERS" :key="f.value" @click="filter = f.value"
           :class="['px-3 py-1.5 rounded-lg text-xs font-semibold transition-all',
@@ -27,7 +27,7 @@
         </button>
       </div>
 
-      <!-- Liste -->
+      
       <div v-if="loading" class="space-y-3">
         <div v-for="i in 4" :key="i" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5 animate-pulse">
           <div class="h-4 bg-gray-100 dark:bg-slate-800 rounded w-1/3 mb-2" /><div class="h-3 bg-gray-50 rounded w-2/3" />
@@ -41,7 +41,7 @@
       <div v-else class="space-y-3">
         <div v-for="fb in filtered" :key="fb.id" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
 
-          <!-- En-t&ecirc;te -->
+          
           <div class="px-5 py-4 flex items-start gap-4">
             <span class="text-lg mt-0.5">{{ typeIcon(fb.type) }}</span>
             <div class="flex-1 min-w-0">
@@ -52,7 +52,7 @@
               </div>
               <p class="text-sm text-gray-700 dark:text-slate-200 leading-relaxed">{{ fb.description }}</p>
 
-              <!-- Classification IA -->
+              
               <div v-if="fb.aiClassification" class="mt-2 flex items-center gap-2">
                 <span class="text-[10px] font-semibold text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full border border-violet-100">
                   &#x1f916; {{ fb.aiClassification }}
@@ -61,9 +61,9 @@
               </div>
             </div>
 
-            <!-- Actions -->
+            
             <div class="flex items-center gap-1 shrink-0">
-              <!-- Generate the prompt -->
+              
               <button v-if="!fb.technicalPrompt" @click="generatePrompt(fb)"
                 :disabled="generating === fb.id"
                 class="flex items-center gap-1 text-xs font-semibold text-violet-600 hover:text-violet-700 px-2.5 py-1.5 rounded-lg hover:bg-violet-50 transition-colors disabled:opacity-40">
@@ -77,7 +77,7 @@
                 Analyser
               </button>
 
-              <!-- Statut -->
+              
               <select v-model="fb.status" @change="updateStatus(fb)" class="text-[10px] border border-gray-200 dark:border-slate-700 rounded-lg px-1.5 py-1 text-gray-600 bg-white dark:bg-slate-900">
                 <option value="pending">En attente</option>
                 <option value="todo">&Agrave; faire</option>
@@ -88,7 +88,7 @@
             </div>
           </div>
 
-          <!-- Technical prompt (if generated) -->
+          
           <div v-if="fb.technicalPrompt" class="border-t border-gray-100 dark:border-slate-800 bg-gray-50 px-5 py-4">
             <div class="flex items-center justify-between mb-2">
               <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">&#x1f4cb; Prompt Claude Code</p>

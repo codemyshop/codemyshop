@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white dark:bg-slate-900 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
 
-    <!-- Header -->
+    
     <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 dark:border-slate-800 shrink-0">
       <div class="flex items-center justify-between mb-3">
         <div>
@@ -19,7 +19,7 @@
         </button>
       </div>
 
-      <!-- Barre de progression globale -->
+      
       <div class="flex items-center gap-3">
         <div class="flex-1 bg-gray-100 dark:bg-slate-800 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
           <div
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <!-- Task list -->
+    
     <div class="divide-y divide-gray-50 flex-1 overflow-auto">
       <div
         v-for="task in tasks"
@@ -39,7 +39,7 @@
         class="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors group"
         :class="task.status === 'done' ? 'opacity-60' : ''"
       >
-        <!-- Checkbox -->
+        
         <button
           @click="toggleTask(task.id)"
           :class="task.status === 'done'
@@ -52,20 +52,20 @@
           </svg>
         </button>
 
-        <!-- Contenu -->
+        
         <div class="flex-1 min-w-0">
           <p
             class="text-sm font-medium truncate"
             :class="task.status === 'done' ? 'text-gray-400 line-through' : 'text-gray-800 dark:text-slate-100 dark:text-slate-100'"
           >{{ task.title }}</p>
           <div class="flex items-center gap-2 mt-0.5">
-            <!-- Priority -->
+            
             <span :class="priorityDot(task.priority)" class="w-1.5 h-1.5 rounded-full inline-block shrink-0" />
             <span class="text-xs text-gray-400 capitalize">{{ task.priority }}</span>
           </div>
         </div>
 
-        <!-- Assigned -->
+        
         <div class="flex items-center gap-1.5 shrink-0">
           <div
             class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
@@ -77,13 +77,13 @@
           <span class="text-xs text-gray-500 hidden lg:block max-w-[80px] truncate">{{ task.assignee.name.split(' ')[0] }}</span>
         </div>
 
-        <!-- Statut badge -->
+        
         <span :class="taskStatusBadge(task.status)" class="text-xs font-semibold px-2 py-0.5 rounded-full shrink-0 hidden sm:inline-block">
           {{ taskStatusLabel(task.status) }}
         </span>
       </div>
 
-      <!-- Empty state -->
+      
       <div v-if="tasks.length === 0" class="flex flex-col items-center justify-center py-10 text-gray-400">
         <svg class="w-8 h-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -94,7 +94,7 @@
 
   </div>
 
-  <!-- ── Assign Task Modal ───────────────────────────────────────────── -->
+  
   <Teleport to="body">
     <Transition
       enter-active-class="transition-all duration-200"
@@ -110,7 +110,7 @@
         @click.self="showTaskModal = false"
       >
         <div class="bg-white dark:bg-slate-900 dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md">
-          <!-- Modal header -->
+          
           <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 dark:border-slate-800">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center">
@@ -127,7 +127,7 @@
             </button>
           </div>
 
-          <!-- Modal body -->
+          
           <div class="px-6 py-5 space-y-4">
             <div>
               <label class="block text-xs font-medium text-gray-600 mb-1">Titre de la tâche <span class="text-red-400">*</span></label>
@@ -165,7 +165,7 @@
             </div>
           </div>
 
-          <!-- Modal footer -->
+          
           <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 dark:border-slate-800 dark:border-slate-800">
             <button @click="showTaskModal = false" class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 dark:text-slate-200 transition-colors">
               Annuler
@@ -197,7 +197,6 @@ export interface Task {
 const props = defineProps<{ tasks: Task[] }>()
 const emit  = defineEmits<{ taskCreated: [task: Task]; taskToggled: [id: number] }>()
 
-// ── Team Available for Assignment ──────────────────────────────────────
 const TEAM: TeamMember[] = [
   { name: 'Alexandre C.', initials: 'AC', color: 'var(--color-primary-600)' },
   { name: 'Sophie M.',    initials: 'SM', color: '#10b981' },
@@ -205,16 +204,13 @@ const TEAM: TeamMember[] = [
   { name: 'Claire T.',    initials: 'CT', color: '#8b5cf6' },
 ]
 
-// ── Progression ───────────────────────────────────────────────────────────────
 const doneTasks   = computed(() => props.tasks.filter(t => t.status === 'done').length)
 const progressPct = computed(() =>
   props.tasks.length ? Math.round((doneTasks.value / props.tasks.length) * 100) : 0
 )
 
-// ── Task Toggle ──────────────────────────────────────────────────────────────
 function toggleTask(id: number) { emit('taskToggled', id) }
 
-// ── New Task Modal ──────────────────────────────────────────────────────
 const showTaskModal = ref(false)
 const newTask = reactive({
   title:       '',
@@ -236,7 +232,6 @@ function submitTask() {
   showTaskModal.value = false
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 function taskStatusBadge(s: Task['status']) {
   return {
     todo:        'bg-gray-100 dark:bg-slate-800 dark:bg-slate-800 text-gray-500',

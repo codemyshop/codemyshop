@@ -1,27 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/giftcard/order — creation of a gift card (status=pending,
- * en attente paiement).
- *
- * Body :
- *   - amount_cents       (int, 1000-50000)
- *   - delivery_mode      ('pdf' | 'email' | 'both')
- *   - purchaser_name     (string)
- *   - purchaser_email    (string)
- * - recipient_name?    (string, required if delivery_mode != 'pdf')
- * - recipient_email?   (string, required if delivery_mode != 'pdf')
- *   - personal_message?  (string, max 1000)
- *   - scheduled_send_at? (ISO date)
- *   - website (honeypot)
- *
- * Gating: feature `ac_giftcard` must be active for the tenant
- * (sinon 404 — comportement non-leaky).
- *
- * Return: { ok: true, code, pdf_url } — the code is also included to
- * allow an immediate thank you page. The pdf_url contains the
- * pdf_token (non-enumerable URL).
- */
 
 import { resolveClientId } from '~/server/utils/db'
 import { isFeatureEnabled } from '~/server/utils/feature-flags'
@@ -33,14 +10,14 @@ const VALID_MODES: ReadonlySet<GiftcardDeliveryMode> = new Set(['pdf', 'email', 
 export default defineEventHandler(async (event) => {
   const body = await readBody<any>(event)
 
-  // Honeypot
+  
   if (body?.website && String(body.website).trim() !== '') {
     throw createError({ statusCode: 422, statusMessage: 'Invalid request' })
   }
 
   const clientId = resolveClientId(event)
 
-  // Gate marketplace — non-leaky 404
+  
   const enabled = await isFeatureEnabled(clientId, 'ac_giftcard')
   if (!enabled) {
     throw createError({ statusCode: 404, statusMessage: 'Not found' })
@@ -71,7 +48,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 422, statusMessage: 'Coordonnées du destinataire incomplètes.', data: { code: 'INVALID_RECIPIENT' } })
     }
   } else {
-    // Mode PDF : optional recipient (cadeau imprimé pour main propre)
+    
     recipientName = body?.recipient_name ? String(body.recipient_name).trim().slice(0, 128) : null
     recipientEmail = null
   }
@@ -100,8 +77,8 @@ export default defineEventHandler(async (event) => {
       scheduledSendAt,
     })
 
-    // Stub UX : on retourne le code à la page merci. Statut reste 'pending'
-    // jusqu'à la confirmation IPN. Wire SystemPay form HMAC = backlog #285.
+    
+    
 
     return {
       ok: true,

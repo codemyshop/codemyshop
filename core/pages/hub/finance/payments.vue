@@ -1,6 +1,4 @@
-<!--
-  @author CodeMyShop | FIN — Paiements & Rapprochements
--->
+
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">

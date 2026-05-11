@@ -1,14 +1,14 @@
 <template>
   <div class="min-h-screen flex transition-colors duration-200" :class="isDark ? 'bg-gray-900' : 'bg-gray-100 dark:bg-slate-800'">
 
-    <!-- ─── Sidebar ───────────────────────────────────────────── -->
+    
     <aside class="border-r shadow-sm flex flex-col shrink-0 transition-all duration-200"
       :class="[
         sidebarCollapsed ? 'w-14 is-collapsed' : 'w-56',
         isDark ? 'bg-gray-800 border-gray-700' : 'bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800',
       ]">
 
-      <!-- Logo + toggle collapse -->
+      
       <div class="px-3 py-4 border-b flex items-center justify-between gap-2"
         :class="[
           isDark ? 'border-gray-700' : 'border-gray-100 dark:border-slate-800',
@@ -37,7 +37,7 @@
         </button>
       </div>
 
-      <!-- Deploy button in collapsed mode (rail) — full width under the logo -->
+      
       <button
         v-if="sidebarCollapsed"
         @click="toggleSidebarCollapsed"
@@ -49,10 +49,10 @@
         </svg>
       </button>
 
-      <!-- Navigation -->
+      
       <nav ref="navRef" class="flex-1 overflow-y-auto px-3 py-4 space-y-5" @click="onNavClick">
 
-        <!-- Dashboard -->
+        
         <ul class="space-y-0.5">
           <li>
             <NuxtLink to="/hub/dashboard" class="nav-link" active-class="nav-link-active">
@@ -88,7 +88,7 @@
           </li>
         </ul>
 
-        <!-- Catalogue (root, founder, catalog, market, logistic) -->
+        
         <div v-if="canAccess('catalogue')">
           <p class="section-title">PIM</p>
           <p class="section-subtitle">Product Information Management</p>
@@ -194,7 +194,7 @@
           </ul>
         </div>
 
-        <!-- CRM (root, founder, sales) -->
+        
         <div v-if="canAccess('crm')">
           <p class="section-title">CRM</p>
           <p class="section-subtitle">Customer Relationship Management</p>
@@ -270,7 +270,7 @@
           </ul>
         </div>
 
-        <!-- Commandes (root, founder, sales, support, logistic) -->
+        
         <div v-if="canAccess('orders')">
           <p class="section-title">OMS</p>
           <p class="section-subtitle">Order Management System</p>
@@ -350,7 +350,7 @@
           </ul>
         </div>
 
-        <!-- Logistique (root, founder, logistic) -->
+        
         <div v-if="canAccess('logistique')">
           <p class="section-title">WMS</p>
           <p class="section-subtitle">Warehouse Management System</p>
@@ -431,14 +431,13 @@
           </ul>
         </div>
 
-        <!-- Contenu (root, founder, market) — landing pages + blog -->
+        
         <div v-if="canAccess('intelligence')">
           <p class="section-title">CMS</p>
           <p class="section-subtitle">Content Management System</p>
           <ul class="space-y-0.5">
             <li>
-              <!-- Sprint 18.1 — CMS Marketing scindé : landing pages (institutionnel, cat=1)
-                   vs articles de blog (tous les autres dossiers). -->
+              
               <NuxtLink to="/hub/marketing/landing-pages" class="nav-link" active-class="nav-link-active">
                 <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
@@ -481,7 +480,7 @@
           </ul>
         </div>
 
-        <!-- Communication (root, founder, market) — nurturing + diffusion -->
+        
         <div v-if="canAccess('intelligence')">
           <p class="section-title">MAP</p>
           <p class="section-subtitle">Marketing Automation Platform</p>
@@ -538,7 +537,7 @@
           </ul>
         </div>
 
-        <!-- BI — Business Intelligence (root, founder, market) -->
+        
         <div v-if="canAccess('intelligence')">
           <p class="section-title">BI</p>
           <p class="section-subtitle">Business Intelligence</p>
@@ -586,7 +585,7 @@
           </ul>
         </div>
 
-        <!-- Finance & Accounting (hidden while all features are off) -->
+        
         <div v-if="canAccess('fin') && hasAnyFeature('fin-payments','fin-tva-fec','fin-refunds','fin-treasury','fin-bank')">
           <p class="section-title">FIN</p>
           <p class="section-subtitle">Finance & Accounting</p>
@@ -634,7 +633,7 @@
           </ul>
         </div>
 
-        <!-- PRM — Purchasing & Fournisseurs -->
+        
         <div v-if="canAccess('prm') && hasAnyFeature('prm-suppliers','prm-purchase-orders','prm-restock')">
           <p class="section-title">PRM</p>
           <p class="section-subtitle">Procurement & Supplier Management</p>
@@ -666,7 +665,7 @@
           </ul>
         </div>
 
-        <!-- Support — Helpdesk & UGC -->
+        
         <div v-if="canAccess('crm_sav') && hasAnyFeature('support-sav','support-inbox','support-tickets','support-rma','support-reviews')">
           <p class="section-title">SUP</p>
           <p class="section-subtitle">Support & Customer Service</p>
@@ -716,7 +715,7 @@
 
       </nav>
 
-      <!-- ── Modal customization sidebar visibility ──────────────────── -->
+      
       <Teleport to="body">
         <div v-if="pickerOpen" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4" @click.self="pickerOpen = false">
           <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm p-5 space-y-3">
@@ -757,7 +756,7 @@
         </div>
       </Teleport>
 
-      <!-- Profil utilisateur -->
+      
       <div class="px-3 py-3 border-t relative" :class="isDark ? 'border-slate-700' : 'border-gray-100 dark:border-slate-800'">
         <button
           @click="profileOpen = !profileOpen"
@@ -777,7 +776,7 @@
           </svg>
         </button>
 
-        <!-- Dropdown profil -->
+        
         <Transition
           enter-active-class="transition-all duration-150"
           enter-from-class="opacity-0 -translate-y-1"
@@ -818,17 +817,17 @@
 
     </aside>
 
-    <!-- ─── Zone principale ───────────────────────────────────── -->
+    
     <div class="flex-1 flex flex-col min-w-0">
 
-      <!-- Demo banner (if demo tenant: isDemo=true in runtimeConfig.public) -->
+      
       <DemoBanner />
 
-      <!-- Top Bar -->
+      
       <header class="h-12 border-b px-6 flex items-center justify-end gap-1 shrink-0 transition-colors duration-200"
         :class="isDark ? 'bg-gray-800 border-gray-700' : 'bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800'">
 
-        <!-- Chatbot — triggering / unread messages during takeover -->
+        
         <div class="relative">
           <NuxtLink to="/hub/chatbot" class="topbar-btn" :title="chatbotUnread > 0 ? `${chatbotUnread} message(s) chatbot non lu(s)` : 'Chatbot — conversations en cours'">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -841,21 +840,21 @@
           >{{ chatbotUnread > 99 ? '99+' : chatbotUnread }}</span>
         </div>
 
-        <!-- WhatsApp -->
+        
         <NuxtLink to="/hub/whatsapp" class="topbar-btn" :title="t('hub.hub_topbar_whatsapp', 'Templates WhatsApp')">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
           </svg>
         </NuxtLink>
 
-        <!-- Events -->
+        
         <NuxtLink v-if="!isFeatureDisabled('events')" to="/hub/logistique/events" class="topbar-btn" :title="t('hub.hub_topbar_events', 'Événements')">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 9v7.5" />
           </svg>
         </NuxtLink>
 
-        <!-- View as (super-admin / fondateur uniquement) -->
+        
         <div v-if="actualIsRoot" class="flex items-center gap-1.5 mr-1" :title="viewAsRole ? t('hub.hub_view_as_active', 'Vous prévisualisez le hub en tant que {role}').replace('{role}', viewAsRole) : t('hub.hub_view_as_idle', 'Prévisualiser le hub avec un autre profil')">
           <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -874,7 +873,7 @@
           </select>
         </div>
 
-        <!-- Config dropdown -->
+        
         <div class="relative">
           <button @click="configOpen = !configOpen" class="topbar-btn" :title="t('hub.hub_topbar_config', 'Configuration')">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -891,7 +890,7 @@
           >
             <div v-if="configOpen" class="absolute top-full right-0 mt-1 w-56 rounded-xl border shadow-lg py-1 z-50" :class="isDark ? 'bg-slate-800 border-slate-700' : 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-700'">
 
-              <!-- ─── My hub (common to all tenants) ──────────── -->
+              
               <p class="config-section-label">Mon hub</p>
               <NuxtLink v-if="isOwner" to="/hub/monitoring" class="config-link" @click="configOpen = false">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -924,7 +923,7 @@
                 FinOps Queue
               </NuxtLink>
 
-              <!-- ─── Operations Center (AC-hub uniquement, super admin) ─── -->
+              
               <template v-if="isRoot && isPlaceDesArmes">
                 <div class="border-t border-gray-100 dark:border-slate-700 my-1" />
                 <p class="config-section-label config-section-label-ac">Operations Center</p>
@@ -982,7 +981,7 @@
         </div>
       </header>
 
-      <!-- Contenu -->
+      
       <div class="flex-1 flex flex-col min-w-0 relative">
         <ImpersonationBanner />
         <slot />
@@ -990,7 +989,7 @@
       </div>
     </div>
 
-    <!-- Backdrop dropdowns -->
+    
     <div
       v-if="configOpen || profileOpen"
       class="fixed inset-0 z-40"
@@ -1011,23 +1010,16 @@ const { header } = useHeaderDb()
 const { role, roleColor, roleLabel, canAccess, isOwner, isRoot, actualIsRoot, viewAsRole, setViewAsRole } = useRoles()
 const { features, loaded: featuresLoaded, loadFeatures } = useFeatureFlag()
 
-// Hides a sidebar item only if the feature EXISTS in the catalog
-// and is disabled. If absent from the catalog (marketplace module not installed),
-// it remains visible to avoid regressions on tenants without marketplace.
 function isFeatureDisabled(id: string): boolean {
   if (!featuresLoaded.value) return false
   const f = features.value.find(x => x.id === id)
   return !!f && !f.enabled
 }
 
-// True if at least one of the features is visible (not disabled). Useful
-// to hide an entire section when all its items are off.
 function hasAnyFeature(...ids: string[]): boolean {
   return ids.some(id => !isFeatureDisabled(id))
 }
 
-// Used to hide global orchestration tools (Fleet, Planning,
-// Auto-Backlog, Deployment, System Configuration) on client VPS.
 const isPlaceDesArmes = computed(() => resolvedClientId.value === 'ac-hub')
 const { t } = useHubT()
 const { isDark } = useDarkMode()
@@ -1040,15 +1032,6 @@ const hubTitle = computed(() =>
 const profileOpen = ref(false)
 const configOpen  = ref(false)
 
-// ── Sidebar customization (visibility + order + collapsed) ────────────
-// Source of truth: cs_employee_sidebar_pref (1 row per id_employee
-// on the current tenant's DB). Read/write via:
-//   - GET  /api/hub/employee/sidebar-prefs
-// - PUT  /api/hub/employee/sidebar-prefs   (debounced 300 ms)
-//
-// localStorage cache = first paint without flash while awaiting DB fetch
-// on mount. After each mutation: local update + immediate localStorage
-// (reactive UI), debounced DB PUT (multi-device persistence).
 const navRef = ref<HTMLElement | null>(null)
 const pickerOpen = ref(false)
 const pickerTitle = ref('')
@@ -1058,21 +1041,16 @@ const hiddenSidebarItems = ref<Set<string>>(new Set())
 const sidebarOrder = ref<Record<string, string[]>>({})
 const dragSrcIdx = ref<number | null>(null)
 
-
 const STORAGE_KEY = 'hub_sidebar_hidden_v1'
 const ORDER_KEY = 'hub_sidebar_order_v1'
 
-// Sidebar collapse/expand state — persisted in localStorage. The rail
-// collapsed (w-14) keeps icons clickable, gains ~10rem for the
-// main-view. The CSS rule `.is-collapsed` hides labels and section titles
-// via font-size:0 on anchors (child elements remain visible).
 const COLLAPSE_KEY = 'hub_sidebar_collapsed_v1'
 const sidebarCollapsed = ref(false)
 function loadSidebarCollapsed() {
   if (!import.meta.client) return
   try {
     sidebarCollapsed.value = localStorage.getItem(COLLAPSE_KEY) === '1'
-  } catch { /* ignore */ }
+  } catch {  }
 }
 function toggleSidebarCollapsed() {
   sidebarCollapsed.value = !sidebarCollapsed.value
@@ -1087,7 +1065,7 @@ function loadHiddenSidebar() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) hiddenSidebarItems.value = new Set(JSON.parse(raw))
-  } catch { /* ignore */ }
+  } catch {  }
 }
 function saveHiddenSidebar() {
   if (!import.meta.client) return
@@ -1098,7 +1076,7 @@ function loadSidebarOrder() {
   try {
     const raw = localStorage.getItem(ORDER_KEY)
     if (raw) sidebarOrder.value = JSON.parse(raw)
-  } catch { /* ignore */ }
+  } catch {  }
 }
 function saveSidebarOrder() {
   if (!import.meta.client) return
@@ -1125,7 +1103,7 @@ function resetSidebarOrder() {
   delete next[pickerSectionKey.value]
   sidebarOrder.value = next
   saveSidebarOrder()
-  // Re-sorts pickerItems according to native DOM order (picker is open).
+  
   pickerItems.value = readPickerItemsFromDom(pickerSectionKey.value)
   applySidebarPrefs()
   persistPrefsDebounced()
@@ -1135,7 +1113,7 @@ function sectionKeyFromTitle(text: string): string {
 }
 function readPickerItemsFromDom(sectionKey: string): Array<{ key: string; label: string }> {
   if (!navRef.value) return []
-  // Finds the section by normalized title
+  
   const sections = navRef.value.querySelectorAll<HTMLDivElement>(':scope > div')
   for (const div of sections) {
     const titleEl = div.querySelector('.section-title')
@@ -1155,9 +1133,7 @@ function readPickerItemsFromDom(sectionKey: string): Array<{ key: string; label:
   }
   return []
 }
-// Combines visibility (display:none) + order (CSS order). The UL parent becomes
-// flex-column so that `order` takes effect — preserves Tailwind classes
-// existantes (space-y-0.5 reste intact via gap effectif).
+
 function applySidebarPrefs() {
   if (!navRef.value) return
   const sections = navRef.value.querySelectorAll<HTMLDivElement>(':scope > div')
@@ -1170,7 +1146,7 @@ function applySidebarPrefs() {
     const orderMap = new Map<string, number>()
     order.forEach((href, idx) => orderMap.set(href, idx))
 
-    // Activates flex-column on the UL so that CSS `order` takes effect.
+    
     ul.style.display = 'flex'
     ul.style.flexDirection = 'column'
 
@@ -1178,16 +1154,16 @@ function applySidebarPrefs() {
     ul.querySelectorAll<HTMLLIElement>(':scope > li').forEach((li) => {
       const a = li.querySelector('a[href]') as HTMLAnchorElement | null
       const href = a?.getAttribute('href') || ''
-      // Visibility (toggle hidden items)
+      
       li.style.display = hiddenSidebarItems.value.has(href) ? 'none' : ''
-      // Position (known items take their idx; new items at the tail)
+      
       li.style.order = orderMap.has(href) ? String(orderMap.get(href)) : String(trailingIdx++)
     })
   })
 }
 function onNavClick(e: MouseEvent) {
   const target = e.target as HTMLElement
-  // Click on section-title or section-subtitle
+  
   if (!target.classList.contains('section-title') && !target.classList.contains('section-subtitle')) return
   e.preventDefault()
   const sectionDiv = target.closest('div')
@@ -1197,7 +1173,7 @@ function onNavClick(e: MouseEvent) {
   const ul = sectionDiv.querySelector('ul')
   if (!ul) return
   const sectionKey = sectionKeyFromTitle(titleEl?.textContent || '')
-  // Raw DOM read then sort according to the stored order for this section.
+  
   const rawItems: Array<{ key: string; label: string }> = []
   ul.querySelectorAll<HTMLLIElement>(':scope > li').forEach((li) => {
     const a = li.querySelector('a[href]') as HTMLAnchorElement | null
@@ -1221,7 +1197,6 @@ function onNavClick(e: MouseEvent) {
   pickerOpen.value = true
 }
 
-// ── Drag-and-drop reorder in the picker ──────────────────────────────
 function onPickerDragStart(idx: number, e: DragEvent) {
   dragSrcIdx.value = idx
   if (e.dataTransfer) {
@@ -1242,7 +1217,7 @@ function onPickerDrop(idx: number, e: DragEvent) {
   const [moved] = arr.splice(src, 1)
   arr.splice(idx, 0, moved)
   pickerItems.value = arr
-  // Persists the complete order of the section.
+  
   sidebarOrder.value = {
     ...sidebarOrder.value,
     [pickerSectionKey.value]: arr.map((it) => it.key),
@@ -1255,7 +1230,6 @@ function onPickerDragEnd() {
   dragSrcIdx.value = null
 }
 
-// ── Sync DB (loaded on mount, debounced persist) ───────────────────────
 let putTimer: ReturnType<typeof setTimeout> | null = null
 function persistPrefsDebounced() {
   if (!import.meta.client) return
@@ -1269,7 +1243,7 @@ function persistPrefsDebounced() {
         order: sidebarOrder.value,
         collapsed: sidebarCollapsed.value,
       },
-    }).catch(() => { /* silent — localStorage couvre l'offline */ })
+    }).catch(() => {  })
   }, 300)
 }
 async function loadPrefsFromDb() {
@@ -1279,34 +1253,32 @@ async function loadPrefsFromDb() {
     hiddenSidebarItems.value = new Set(Array.isArray(data?.hidden) ? data.hidden : [])
     sidebarOrder.value = (data?.order && typeof data.order === 'object') ? data.order : {}
     sidebarCollapsed.value = !!data?.collapsed
-    // Sync localStorage cache for the next paint
+    
     saveHiddenSidebar()
     saveSidebarOrder()
     localStorage.setItem(COLLAPSE_KEY, sidebarCollapsed.value ? '1' : '0')
     nextTick(() => applySidebarPrefs())
-  } catch { /* silent — fallback localStorage */ }
+  } catch {  }
 }
 
 onMounted(() => {
-  // First paint from localStorage cache (instantaneous, zero flash)
+  
   loadSidebarCollapsed()
   loadHiddenSidebar()
   loadSidebarOrder()
   nextTick(() => applySidebarPrefs())
-  // Then sync DB in background (multi-device source of truth)
+  
   loadPrefsFromDb()
 })
-// Re-apply when items mount asynchronously (feature flags loaded)
+
 watch(featuresLoaded, () => nextTick(() => applySidebarPrefs()))
 
-// Chatbot badge — lightweight counter, 10s polling. Visible in the sidebar
-// CRM (Chatbot button) + dedicated topbar bell.
 const chatbotUnread = ref(0)
 async function loadChatbotUnread() {
   try {
     const data = await $fetch<any>('/api/bo/chatbot/unread-count', { query: { clientId: resolvedClientId.value } })
     chatbotUnread.value = Number(data?.unread || 0)
-  } catch { /* silent */ }
+  } catch {  }
 }
 
 onMounted(() => {
@@ -1363,7 +1335,7 @@ const handleLogout = async () => {
   @apply mb-0;
 }
 
-/* Sidebar collapsed (rail w-14) — we hide labels via font-size:0 on
+/* Sidebar collapsed (rail w-14) — on masque les labels via font-size:0 sur
    .nav-link (les nœuds texte enfants disparaissent) et on restaure une
    font-size sur les enfants élément (svg garde son sizing intrinsèque).
    Sections : titres + sous-titres entièrement masqués. */

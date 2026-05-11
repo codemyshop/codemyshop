@@ -1,8 +1,4 @@
-/**
- *
- * Drizzle PG schema for subscription — project #38 Phase 1 step 4.
- * 1 table (cs_main, AC-only) : cs_subscription.
- */
+
 
 import {
   date,

@@ -1,13 +1,4 @@
-/**
- *
- * POST /api/onboarding/qualify
- * Records a qualified lead (pre-call Calendly) and notifies the administrator.
- *
- * Body : { company, email, website?, revenue, needs? }
- * → Creates the contact in SmartLead + the project in SmartProject
- * → Sends a summary email to the administrator
- * → Sends a confirmation email to the prospect
- */
+
 
 import { sendEmailViaQueue } from '~/server/utils/email-queue'
 import { crmCreateLeadProject } from '~/server/utils/crm-direct'
@@ -23,7 +14,7 @@ interface QualifyBody {
 export default defineEventHandler(async (event) => {
   const body = await readBody<QualifyBody>(event)
 
-  // ── Validation ────────────────────────────────────────────────────────
+  
   if (!body.company?.trim() || !body.email?.trim() || !body.revenue) {
     throw createError({ statusCode: 400, message: 'Champs obligatoires : company, email, revenue' })
   }
@@ -34,7 +25,7 @@ export default defineEventHandler(async (event) => {
   const revenue = body.revenue
   const needs = body.needs?.trim() || ''
 
-  // ── Créer le lead + projet via Drizzle direct (Phase 9b.4f) ───────────
+  
   let leadId: number | null = null
   let projectId: number | null = null
 
@@ -58,7 +49,7 @@ export default defineEventHandler(async (event) => {
     console.error('[qualify] CRM unexpected error:', err?.message || err)
   }
 
-  // ── Email récap à Alexandre ───────────────────────────────────────────
+  
   const adminHtml = `
     <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; background: #0F0F1A; color: #e2e8f0; padding: 32px; border-radius: 16px;">
       <h1 style="font-size: 20px; color: #fff; margin-bottom: 24px;">🎯 Nouveau lead CodeMyShop Premium</h1>
@@ -82,7 +73,7 @@ export default defineEventHandler(async (event) => {
     html: adminHtml,
   })
 
-  // ── Email confirmation au prospect ────────────────────────────────────
+  
   const prospectHtml = `
     <div style="font-family: Inter, system-ui, sans-serif; max-width: 600px; margin: 0 auto; background: #0F0F1A; color: #e2e8f0; padding: 32px; border-radius: 16px;">
       <h1 style="font-size: 20px; color: #fff; margin-bottom: 16px;">Votre demande a bien été enregistrée</h1>

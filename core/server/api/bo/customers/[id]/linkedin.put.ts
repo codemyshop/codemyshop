@@ -1,17 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { setCustomerLinkedinUrl } from '~/modules/customer-extra/server/utils/customer-extra'
 
-/**
- * PUT /api/bo/customers/{id}/linkedin
- *
- * Saves the verified LinkedIn URL of a customer in
- * cs_customer_extra.linkedin_url (UPSERT — the row may not
- * exist as long as no metadata has been entered).
- *
- * Body: { url: string } — empty to clear.
- * Accepted URL: https?://….linkedin.com/… or empty.
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!Number.isFinite(id) || id <= 0) {

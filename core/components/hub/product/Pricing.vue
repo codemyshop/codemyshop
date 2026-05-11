@@ -63,7 +63,7 @@
       </p>
     </div>
 
-    <!-- Margin summary -->
+    
     <div class="bg-gray-50 dark:bg-slate-950/60 border border-gray-100 dark:border-slate-800 p-4 rounded-md space-y-3">
       <div class="flex items-center justify-between">
         <span class="text-[10px] uppercase tracking-wide text-gray-400 font-semibold">Récapitulatif</span>

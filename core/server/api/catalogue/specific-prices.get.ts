@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/specific-prices?clientId=...
- *
- * List of active product discounts. Direct DB (doctrine "Zero web service"
- * PrestaShop » 2026-04-22). Refacto depuis connector.getSpecificPrices.
- */
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 
 interface SpRow {

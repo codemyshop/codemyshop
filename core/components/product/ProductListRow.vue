@@ -1,13 +1,4 @@
-<!--
-  Ligne produit — vue liste/table (prise de commande rapide pro).
-  Utilisée par CategoryProductGrid quand ?view=list. Mêmes composables que
-  ProductCard (useServerCart / useQuoteCart) pour que les mutations soient
-  cohérentes entre les 2 vues.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 interface ProductRow {
   id: number
@@ -44,7 +35,6 @@ const { open: openQuoteDrawer } = useQuoteDrawer()
 const qty = ref(1)
 function setQty(v: number) { qty.value = Math.max(1, v) }
 
-// ── Galerie lightbox ──────────────────────────────────────────────────
 const modalOpen = ref(false)
 const modalImages = ref<number[]>([])
 const modalLoading = ref(false)
@@ -58,7 +48,7 @@ async function openGallery() {
     })
     modalImages.value = res.imageIds.length
       ? res.imageIds
-      : // fallback : cover seulement si endpoint vide et URL exploitable
+      : 
         (() => {
           const m = props.product.image?.match(/\/(\d+)-[^/]+\.(?:jpg|jpeg|png|webp)$/i)
           return m ? [Number(m[1])] : []
@@ -113,7 +103,7 @@ const weightLabel = computed(() => {
 
 <template>
   <tr class="border-b border-slate-100 transition-colors hover:bg-primary-50/30 dark:border-slate-800/60 dark:hover:bg-slate-800/40">
-    <!-- Image — click opens the lightbox -->
+    
     <td class="w-16 px-3 py-2">
       <button
         v-if="product.image"
@@ -136,12 +126,12 @@ const weightLabel = computed(() => {
       </NuxtLink>
     </td>
 
-    <!-- Reference -->
+    
     <td class="px-3 py-2 font-mono text-xs text-slate-500 dark:text-slate-400">
       {{ product.ref || '—' }}
     </td>
 
-    <!-- Nom + pills -->
+    
     <td class="px-3 py-2">
       <NuxtLink
         :to="productUrl"
@@ -159,18 +149,17 @@ const weightLabel = computed(() => {
       </div>
     </td>
 
-    <!-- EAN13 -->
+    
     <td class="px-3 py-2 font-mono text-xs text-slate-500 dark:text-slate-400">
       {{ product.ean13 || '—' }}
     </td>
 
-    <!-- Format = poids unitaire (netWeight brut, ex '200g') -->
+    
     <td class="px-3 py-2 text-xs text-slate-600 dark:text-slate-400">
       {{ product.netWeight || '—' }}
     </td>
 
-    <!-- Prix HT (qty dynamique) — ClientOnly : showPrices session-dépendant
-         pour permettre cache SSR Redis sur /grossiste/** + /produit/**. -->
+    
     <td class="px-3 py-2 text-right">
       <ClientOnly>
         <template v-if="showPrices">
@@ -184,17 +173,17 @@ const weightLabel = computed(() => {
       </ClientOnly>
     </td>
 
-    <!-- Prix /kg -->
+    
     <td class="px-3 py-2 text-right text-xs text-slate-500 dark:text-slate-400">
       {{ product.pricePerKgFormatted ? `${product.pricePerKgFormatted} /kg` : '—' }}
     </td>
 
-    <!-- Poids total -->
+    
     <td class="px-3 py-2 text-right text-xs text-slate-500 dark:text-slate-400">
       {{ weightLabel }}
     </td>
 
-    <!-- Qty + ajouter -->
+    
     <td v-if="isB2b" class="px-3 py-2">
       <div class="flex items-center justify-end gap-2">
         <div class="flex items-center rounded-md border border-slate-200 dark:border-slate-700">
@@ -228,7 +217,7 @@ const weightLabel = computed(() => {
     <td v-else class="px-3 py-2" />
   </tr>
 
-  <!-- Modal galerie (teleport to body via ImageModal) -->
+  
   <HubProductImageModal
     :open="modalOpen"
     :images="modalImages"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 const props = defineProps<{
   name: string
   title: string
@@ -17,7 +17,7 @@ const academyLink = computed(() =>
 <template>
   <aside class="mt-12 rounded-2xl border border-primary-100 dark:border-primary-800/50 bg-gradient-to-br from-primary-50/80 to-white dark:from-primary-950/30 dark:to-slate-900 overflow-hidden">
     <div class="px-6 py-5 sm:px-8 sm:py-6">
-      <!-- Header -->
+      
       <div class="flex items-center gap-3 mb-4">
         <div class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center shrink-0">
           <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
@@ -36,7 +36,7 @@ const academyLink = computed(() =>
         </div>
       </div>
 
-      <!-- Citation -->
+      
       <blockquote class="relative pl-4 border-l-2 border-primary-300 dark:border-primary-700 mb-4">
         <p class="text-gray-700 dark:text-slate-300 italic text-sm leading-relaxed">
           &laquo;&nbsp;{{ quote }}&nbsp;&raquo;
@@ -46,7 +46,7 @@ const academyLink = computed(() =>
         </footer>
       </blockquote>
 
-      <!-- CTA Academy -->
+      
       <div class="flex items-center justify-between gap-4">
         <span class="text-xs text-gray-500 dark:text-slate-400">{{ domain }}</span>
         <NuxtLink

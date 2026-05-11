@@ -1,10 +1,4 @@
-/**
- *
- * Drizzle PG schema — category cross-link domain.
- * Self-referential N-N association between ps_category : id_category displays
- * id_cross_category as a pseudo-subcategory at the end of native children.
- * Created 2026-05-08.
- */
+
 
 import {
   integer,

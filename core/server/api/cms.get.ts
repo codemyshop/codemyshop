@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/cms?limit=N&category=xxx
- * Blog articles from the DB. Source of truth for pillar assignment:
- * ps_cms.id_cms_category → ps_cms_category_lang (PS natif).
- * Multi-tenant: resolves the correct DB according to the hostname
- */
+
 import { buildNuxtUrl, stripHtml } from '~/server/utils/ps'
 import { useClientDb } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
@@ -17,36 +11,36 @@ export default defineEventHandler(async (event) => {
     const db = useClientDb(event)
     const idLang = await resolveIdLang(event)
 
-    // Check if cs_cms_extra exists (optional table)
+    
     let hasExtraTable = false
     try {
       await db.query('SELECT 1 FROM cs_cms_extra LIMIT 0')
       hasExtraTable = true
-    } catch { /* table doesn't exist */ }
+    } catch {  }
 
-    // Check if cs_covergen_queue exists
+    
     let hasCoverQueue = false
     try {
       await db.query('SELECT 1 FROM cs_covergen_queue LIMIT 0')
       hasCoverQueue = true
-    } catch { /* table doesn't exist */ }
+    } catch {  }
 
     const coverSelect = hasCoverQueue
       ? `, COALESCE((SELECT cq.cover_url FROM cs_covergen_queue cq WHERE cq.id_cms = c.id_cms AND cq.status = 'done' ORDER BY cq.id_covergen DESC LIMIT 1), '') as generated_cover`
       : `, '' as generated_cover`
 
-    // JOIN on ps_cms_category_lang to fetch the pillar slug (native PS category).
-    // The blog root (direct child of home, id_parent=1) is NOT a valid pillar —
-    // it represents the blog itself. We exclude it to force the fallback to link_rewrite
-    // (first segment of the slug "pillar--subcat--article"). Without this, miscategorized articles
-    // (all with id_cms_category=2 "Blog") cluster under a false pillar /blog/blog/*.
-    // idLang resolved from ?lang= or X-Lang header (fallback fr=1).
-    // Eligibility filter: an article is listed if it has (A) a resolved pillar
-    // via ps_cms.id_cms_category (structure Blog → Pilier → Article), OU (B)
-    // its slug follows the naming convention `pillar--subcat--article` (fallback
-    // legacy for tenants without backfilled ps_cms_category structure).
-    // Scar 2026-04-22 — before, only (B) was accepted → tenants with
-    // native PS structure had /blog empty despite 23 articles in DB.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     const eligibleWhere = `c.active = 1 AND (ccl.link_rewrite IS NOT NULL OR cl.link_rewrite LIKE '%--%--%')`
 
     let sql = hasExtraTable
@@ -72,8 +66,8 @@ export default defineEventHandler(async (event) => {
     const params: any[] = [idLang, idLang]
 
     if (category) {
-      // Pillar filter: priority to native PS category; fallback to the prefix
-      // of link_rewrite for tenants whose ps_cms.id_cms_category is not yet backfilled.
+      
+      
       sql += ' AND (ccl.link_rewrite = ? OR cl.link_rewrite LIKE ?)'
       params.push(String(category), `${category}--%`)
     }
@@ -92,7 +86,7 @@ export default defineEventHandler(async (event) => {
       const rawContent = r.content || ''
       const metaDesc = r.meta_description || ''
       const parsed = parseSlug(linkRewrite)
-      // Pillar: priority to native PS category; fallback to the first segment of link_rewrite for non-backfilled articles.
+      
       const category = r.pillar_slug || parsed.category
       const slug = parsed.slug
       const parts = linkRewrite.split('--')

@@ -1,22 +1,10 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/list — Product list with filters/sorting/pagination.
- * Query: ?clientId=...&categoryId=3&page=1&limit=24&sort=price_asc&priceMin=5&priceMax=100&q=pistache
- *
- * Functional alias of /api/catalogue/:psId/list (which requires the id in the path) —
- * This endpoint accepts categoryId in query for more flexible use cases. Direct
- * database (doctrine "Zero PrestaShop webservice" 2026-04-22). Refactoring
- * depuis connector.listProducts.
- */
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 import { buildProductImage } from '~/server/utils/ps-image'
 import { isTenantB2b, buildTaxJoinForPrice, buildPriceExprNonAgg } from '~/server/utils/ps-tax'
 
-// PG strict (SELECT DISTINCT) : ORDER BY doit référencer un alias présent
-// dans le SELECT. `pl.name` est masqué par `COALESCE(pl.name, plf.name) AS name`,
-// donc on trie sur l'alias `name`. `price` et `date_add` sont alias-isés ci-dessous.
 const SORT_MAP: Record<string, string> = {
   name_asc:   'name ASC',
   name_desc:  'name DESC',
@@ -41,7 +29,7 @@ export default defineEventHandler(async (event) => {
   const idLang = await resolveIdLang(event)
   const db = q.clientId ? useClientDbById(String(q.clientId)) : useClientDb(event)
 
-  // B2B → HT, B2C → TTC. Cf. core/server/utils/ps-tax.ts.
+  
   const b2b = await isTenantB2b(db)
   const taxJoin = buildTaxJoinForPrice(b2b)
   const priceExpr = buildPriceExprNonAgg(b2b, 'ps.price')

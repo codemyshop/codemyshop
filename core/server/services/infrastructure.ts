@@ -1,13 +1,4 @@
-/**
- *
- * Service d'infrastructure — Orchestrateur PaaS
- *
- * Manages automatic provisioning of CodeMyShop clients:
- * - Starter: add to existing shared VPS registry
- * - Premium: order a new dedicated VPS via OVH API + Ansible
- *
- * Source of truth: cs_client_vps (DB) via ac_hub facade.
- */
+
 
 import { execSync } from 'node:child_process'
 import { resolve } from 'node:path'
@@ -81,7 +72,7 @@ async function provisionPremium(req: ProvisionRequest): Promise<ProvisionResult>
     return { success: false, steps, error: `Le client '${req.clientId}' existe déjà` }
   }
 
-  // Enregistrer immédiatement en status provisioning
+  
   await createClientVps({
     clientId: req.clientId,
     name: req.clientId,
@@ -105,7 +96,7 @@ async function provisionPremium(req: ProvisionRequest): Promise<ProvisionResult>
     const vpsInfo = await waitForVPSReady(order.serviceName)
     steps.push(`[OVH] VPS livré — IP : ${vpsInfo.ip} (${vpsInfo.serviceName})`)
 
-    // Mettre à jour le registre avec l'IP
+    
     await updateClientVps(req.clientId, [
       { kind: 'value', column: 'ip', value: vpsInfo.ip },
       { kind: 'value', column: 'ovh_vps_id', value: vpsInfo.serviceName },
@@ -132,7 +123,7 @@ async function provisionPremium(req: ProvisionRequest): Promise<ProvisionResult>
       steps.push(`[ANSIBLE] ${ansibleErr?.message?.slice(0, 200) || 'Erreur inconnue'}`)
     }
 
-    // Marquer comme actif (production)
+    
     await updateClientVps(req.clientId, [
       { kind: 'value', column: 'purpose', value: 'production' },
     ])

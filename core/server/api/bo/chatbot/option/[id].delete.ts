@@ -1,7 +1,5 @@
-/**
- *
- * DELETE /api/bo/chatbot/option/:id — Deletes an option + its languages.
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {

@@ -1,13 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * POST /api/bo/products/search-boost/aliases — upsert synonyme.
- * Body: { id?: number, alias: string, search: string, active?: boolean }
- * - If id is present → UPDATE.
- * - Otherwise → SELECT-then-UPDATE-or-INSERT (no unique index on alias on the PG side post-#44).
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ id?: number; alias?: string; search?: string; active?: boolean }>(event)
   const id     = Number(body?.id || 0)
@@ -31,9 +25,9 @@ export default defineEventHandler(async (event) => {
       )
       return { ok: true, id, alias, search, active: !!active }
     }
-    // Pas d'index unique sur ps_alias.alias côté PG (port chantier #44 a perdu
-    // l'index natif PS). On émule l'upsert app-level : SELECT, puis UPDATE
-    // ou INSERT selon présence. Race possible mais ok pour endpoint admin.
+    
+    
+    
     const existing = await db.get<any>(
       `SELECT id_alias FROM ps_alias WHERE alias = ? LIMIT 1`,
       [alias],

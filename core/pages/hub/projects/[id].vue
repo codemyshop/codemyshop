@@ -1,6 +1,6 @@
 <template>
   <div class="flex-1 overflow-auto">
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center gap-3">
         <NuxtLink to="/hub/projects" class="text-gray-400 hover:text-primary-600 transition-colors">
@@ -22,7 +22,7 @@
 
     <div v-if="loadingProject" class="text-center py-20 text-gray-400">Chargement…</div>
 
-    <!-- Fatal error (project not found / 500 on main endpoint) -->
+    
     <div v-else-if="!project" class="p-6">
       <div class="rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-700/40 p-6 text-sm text-rose-800 dark:text-rose-200">
         <p class="font-semibold mb-1">Impossible de charger ce projet</p>
@@ -34,16 +34,15 @@
     </div>
 
     <div v-else class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Partial error banner (sub-resources failed but project OK) -->
+      
       <div v-if="loadError" class="lg:col-span-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/40 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
         ⚠ {{ loadError }}
       </div>
 
-
-      <!-- Left column: info + tasks -->
+      
       <div class="lg:col-span-2 space-y-6">
 
-        <!-- Info card -->
+        
         <section class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-5">
           <div class="flex items-center justify-between mb-4">
             <h2 class="font-semibold text-gray-700 dark:text-slate-200 text-sm">Informations projet</h2>
@@ -95,7 +94,7 @@
           </form>
         </section>
 
-        <!-- Tasks -->
+        
         <section class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-5">
           <div class="flex items-center justify-between mb-4">
             <h2 class="font-semibold text-gray-700 dark:text-slate-200 text-sm">Tâches ({{ tasks.length }})</h2>
@@ -127,7 +126,7 @@
             </div>
           </div>
 
-          <!-- Add task form -->
+          
           <div v-if="showAddTask" class="mt-3 flex gap-2">
             <input v-model="newTaskTitle" @keyup.enter="addTask" placeholder="Titre de la tâche…" class="input-field flex-1 text-xs" />
             <button @click="addTask" class="btn-primary text-xs px-3 py-1.5">Ajouter</button>
@@ -135,7 +134,7 @@
           </div>
         </section>
 
-        <!-- Emails -->
+        
         <section class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-5">
           <div class="flex items-center justify-between mb-4">
             <h2 class="font-semibold text-gray-700 dark:text-slate-200 text-sm">Emails ({{ emails.length }})</h2>
@@ -166,10 +165,10 @@
         </section>
       </div>
 
-      <!-- Right column: contact + docs + whatsapp -->
+      
       <div class="space-y-6">
 
-        <!-- Contact -->
+        
         <section v-if="project.contact_name" class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-5">
           <h2 class="font-semibold text-gray-700 dark:text-slate-200 text-sm mb-3">Contact</h2>
           <div class="flex items-center gap-3 mb-3">
@@ -195,7 +194,7 @@
           </div>
         </section>
 
-        <!-- Documents -->
+        
         <section class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-5">
           <div class="flex items-center justify-between mb-3">
             <h2 class="font-semibold text-gray-700 dark:text-slate-200 text-sm">Documents ({{ documents.length }})</h2>
@@ -216,7 +215,7 @@
           </div>
         </section>
 
-        <!-- Logs -->
+        
         <section class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-5">
           <h2 class="font-semibold text-gray-700 dark:text-slate-200 text-sm mb-3">Activité</h2>
           <div v-if="!logs.length" class="text-xs text-gray-400 text-center py-3">Aucune activité</div>
@@ -296,10 +295,10 @@ const loadAll = async () => {
   loadingProject.value = true
   loadError.value = null
   try {
-    // Promise.allSettled: a failing endpoint (e.g. cs_smart* tables missing
-    // on a freshly provisioned tenant) should not show a blank screen —
-    // we display the project + what loaded, and a targeted error banner for
-    // failed sub-resources. Issue from 2026-05-06.
+    
+    
+    
+    
     const [pRes, tRes, dRes, eRes, lRes] = await Promise.allSettled([
       $fetch<{ project: any }>(`/api/bo/smartproject/projects/${projectId.value}`),
       $fetch<{ tasks: any[] }>(`/api/bo/smartproject/projects/${projectId.value}/tasks`),
@@ -320,9 +319,9 @@ const loadAll = async () => {
     emails.value    = eRes.status === 'fulfilled' ? (eRes.value.emails    || []) : []
     logs.value      = lRes.status === 'fulfilled' ? (lRes.value.logs      || []) : []
 
-    // Sub-errors (tasks/docs/emails/logs): we log but do not override the
-    // project — the admin sees the main page + orange banner listing what
-    // failed to load.
+    
+    
+    
     const subErrors = [
       tRes.status === 'rejected' ? 'tâches' : null,
       dRes.status === 'rejected' ? 'documents' : null,
@@ -376,7 +375,7 @@ const addTask = async () => {
     },
   )
   if (data.success && data.inserted > 0) {
-    // Refetch to retrieve the ID generated server-side (assigned_name, etc.)
+    
     const refresh = await $fetch<{ tasks: any[] }>(
       `/api/bo/smartproject/projects/${projectId.value}/tasks`,
     )

@@ -1,11 +1,4 @@
-/**
- *
- * GET  /api/hub/seo-config?clientId=example-shop   — lit { gscSiteUrl } depuis cs_client_config
- * POST /api/hub/seo-config — updates { clientId, gscSiteUrl }
- *
- * Key endpoint for the SEO Console: no need to fetch the entire
- * tenant config just to check for the presence of a GSC URL.
- */
+
 
 import { getSession } from '~/server/utils/session'
 import {
@@ -49,7 +42,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, message: 'clientId requis' })
     }
 
-    // Validation siteUrl GSC : "sc-domain:exemple.com" ou "https://exemple.com/"
+    
     if (url && !/^(sc-domain:|https?:\/\/)/.test(url)) {
       throw createError({
         statusCode: 400,

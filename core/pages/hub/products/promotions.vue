@@ -1,12 +1,4 @@
-<!--
-  Hub Promotions — gestion des remises produit (ps_specific_price).
-  Liste filtrable (actives/futures/expirées) + modal create/edit (cible
-  produit ou catégorie, période, reduction percentage/amount).
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: 'hub' })
 
@@ -50,7 +42,6 @@ const { data, refresh, pending } = useFetch<{ ok: boolean; total: number; promot
 const promotions = computed(() => data.value?.promotions ?? [])
 const total      = computed(() => data.value?.total ?? 0)
 
-// ─── Form (modal create/edit) ────────────────────────────────────────────
 type Mode = 'product' | 'category'
 interface FormState {
   open: boolean
@@ -61,13 +52,13 @@ interface FormState {
   productLabel: string
   idCategory: number | null
   categoryLabel: string
-  reductionPct: number      // 0–100 côté UI
-  reductionAmount: number   // €
+  reductionPct: number      
+  reductionAmount: number   
   reductionType: 'percentage' | 'amount'
-  reductionTax: 1 | 0       // 1 = TTC inclus
+  reductionTax: 1 | 0       
   fromQuantity: number
   idGroup: number
-  dateFrom: string          // 'YYYY-MM-DD'
+  dateFrom: string          
   dateTo: string
   saving: boolean
   error: string | null
@@ -108,7 +99,6 @@ function openEdit(p: Promotion) {
 }
 function closeForm() { form.value.open = false }
 
-// Picker produit : debounce search + suggestions
 const productResults = ref<Array<{ id: number; name: string; reference: string }>>([])
 let productSearchTimer: ReturnType<typeof setTimeout> | null = null
 watch(() => form.value.productSearch, (s) => {
@@ -130,7 +120,6 @@ function selectProduct(p: { id: number; name: string; reference: string }) {
   productResults.value = []
 }
 
-// Category picker: flat list of categories with indent (depth)
 const categories = ref<Array<{ id: number; name: string; depth: number }>>([])
 async function loadCategories() {
   if (categories.value.length) return
@@ -142,7 +131,7 @@ async function loadCategories() {
       name: String(c.name || ''),
       depth: Number(c.depth || c.level_depth || 0),
     }))
-  } catch (e) { /* silencieux — picker juste vide */ }
+  } catch (e) {  }
 }
 watch(() => form.value.mode, (m) => { if (m === 'category') loadCategories() })
 
@@ -205,7 +194,6 @@ async function deletePromo(p: Promotion) {
   await refresh()
 }
 
-// ─── Helpers display ─────────────────────────────────────────────────────
 function fmtReduction(p: Promotion): string {
   if (p.reductionType === 'percentage') return `-${(p.reduction * 100).toFixed(p.reduction * 100 >= 10 ? 0 : 1)}%`
   return `-${p.reduction.toFixed(2)} €`
@@ -223,7 +211,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
 
 <template>
   <div class="px-6 py-6">
-    <!-- Header -->
+    
     <div class="mb-6 flex items-end justify-between gap-4">
       <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-slate-100">Promotions</h1>
@@ -240,7 +228,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
       </button>
     </div>
 
-    <!-- Filtres -->
+    
     <div class="mb-4 flex flex-wrap items-center gap-2">
       <div class="flex rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden text-xs">
         <button
@@ -266,7 +254,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
       <span class="text-xs text-gray-400 ml-auto">{{ total }} promotion{{ total > 1 ? 's' : '' }}</span>
     </div>
 
-    <!-- Tableau -->
+    
     <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
       <table class="w-full text-sm">
         <thead class="bg-gray-50 dark:bg-slate-800/50 text-xs uppercase text-gray-500 dark:text-slate-400">
@@ -317,7 +305,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
       </table>
     </div>
 
-    <!-- Pagination simple -->
+    
     <div v-if="total > limit" class="mt-3 flex items-center justify-between text-xs text-gray-500 dark:text-slate-400">
       <span>{{ offset + 1 }} – {{ Math.min(offset + limit, total) }} sur {{ total }}</span>
       <div class="flex gap-2">
@@ -326,7 +314,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
       </div>
     </div>
 
-    <!-- ────────── Modal create / edit ────────── -->
+    
     <div v-if="form.open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div class="bg-white dark:bg-slate-900 w-full max-w-xl rounded-xl shadow-xl p-6">
         <div class="flex items-center justify-between mb-4">
@@ -337,7 +325,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
         </div>
 
         <form @submit.prevent="submitForm" class="space-y-4">
-          <!-- Mode (creation only) -->
+          
           <div v-if="!form.editId" class="flex rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
             <button
               type="button"
@@ -351,7 +339,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
             >Catégorie entière</button>
           </div>
 
-          <!-- Picker produit -->
+          
           <div v-if="form.mode === 'product' || form.editId">
             <label class="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Produit</label>
             <div v-if="form.editId || form.idProduct" class="text-sm bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded px-3 py-2">
@@ -377,7 +365,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
             </div>
           </div>
 
-          <!-- Category picker -->
+          
           <div v-else>
             <label class="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Catégorie (subtree inclus)</label>
             <select
@@ -393,7 +381,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
             <p class="text-[11px] text-gray-400 mt-1">Crée une promo individuelle pour chaque produit actif de la catégorie.</p>
           </div>
 
-          <!-- Discount -->
+          
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Type</label>
@@ -415,7 +403,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
             </div>
           </div>
 
-          <!-- Period -->
+          
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Du (vide = toujours)</label>
@@ -427,7 +415,7 @@ function statusPill(s: Promotion['status']): { label: string; cls: string } {
             </div>
           </div>
 
-          <!-- Advanced options -->
+          
           <div class="grid grid-cols-3 gap-3">
             <div>
               <label class="block text-xs font-semibold text-gray-700 dark:text-slate-300 mb-1">Qté min</label>

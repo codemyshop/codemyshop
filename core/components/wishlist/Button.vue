@@ -1,14 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  WishlistButton — bouton cœur à poser sur card produit / fiche produit.
-  Ouvre un picker multi-listes (et permet de créer une liste à la volée).
-
-  Usage :
-    <WishlistButton :product-id="42" :attribute-id="0" variant="icon" />
--->
 <template>
   <div class="inline-flex">
     <button
@@ -25,7 +15,7 @@
       </span>
     </button>
 
-    <!-- Modal picker -->
+    
     <Teleport to="body">
       <Transition
         enter-active-class="transition-opacity" enter-from-class="opacity-0" enter-to-class="opacity-100"
@@ -127,8 +117,6 @@ const creating = ref(false)
 const newName = ref('')
 const busy = ref(false)
 
-// For performance reasons, we don't fetch each list — we infer "in list" via
-// a local map hydrated on demand when the modal opens.
 const containsMap = ref<Record<number, boolean>>({})
 const isInAnyList = computed(() => Object.values(containsMap.value).some(Boolean))
 
@@ -146,7 +134,7 @@ const buttonClasses = computed(() => {
 
 async function onClick() {
   if (!loggedIn.value) {
-    // Redirects to login without opening the modal — minimal friction.
+    
     navigateTo(`/connexion?redirect=${encodeURIComponent(currentPath.value)}`)
     return
   }
@@ -160,7 +148,7 @@ async function ensureLoaded() {
 }
 
 async function refreshContainsMap() {
-  // Light call to /items for each list — limited to existing lists (max 20).
+  
   const map: Record<number, boolean> = {}
   await Promise.all(lists.value.map(async (l) => {
     try {

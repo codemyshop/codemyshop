@@ -1,10 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { deleteAeClient } from '~/internal/aetracker/server/utils/aetracker'
 
-/**
- * DELETE /api/bo/finance/ae/clients/:id — Deletes a client.
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!id || Number.isNaN(id)) {

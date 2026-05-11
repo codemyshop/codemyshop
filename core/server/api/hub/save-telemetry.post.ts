@@ -1,8 +1,5 @@
-/**
- *
- * POST /api/hub/save-telemetry
- * Saves AI telemetry to cs_ai_telemetry via the automation facade.
- */
+
+
 import { insertAiTelemetry, countAiTelemetryEntries } from '~/internal/automates/server/utils/automates'
 
 export default defineEventHandler(async (event) => {

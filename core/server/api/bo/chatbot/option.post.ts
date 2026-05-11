@@ -1,8 +1,5 @@
-/**
- *
- * POST /api/bo/chatbot/option — Creates an option + its translations.
- * Body : { idNode, position?, nextNodeKey, langs: [{ idLang, labelText }] }
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
@@ -19,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
   const db = useClientDb(event)
 
-  // Vérifie que le parent + la cible existent
+  
   const parent = await db.query<any>(`SELECT id_node FROM cs_chatbot_node WHERE id_node = ?`, [body.idNode])
   if (!parent.length) throw createError({ statusCode: 404, message: 'Parent node introuvable' })
   const target = await db.query<any>(`SELECT node_key FROM cs_chatbot_node WHERE node_key = ?`, [body.nextNodeKey])

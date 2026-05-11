@@ -1,13 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import archiver from 'archiver'
 import { PassThrough } from 'stream'
 
-/**
- * POST /api/bo/invoices/zip — downloads multiple invoices as a ZIP.
- * Body: { ids: [1, 2, 3] }
- * Generates each PDF via the internal endpoint /api/bo/invoices/pdf?id=X
- */
 export default defineEventHandler(async (event) => {
   const { ids } = await readBody<{ ids: number[] }>(event)
   if (!ids?.length) throw createError({ statusCode: 400, message: 'IDs required' })

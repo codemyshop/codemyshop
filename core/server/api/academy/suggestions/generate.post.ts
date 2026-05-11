@@ -1,10 +1,4 @@
-/**
- * POST /api/academy/suggestions/generate
- * Generate suggested questions for all lessons without suggestions.
- * Create an AI task per lesson in the FinOps queue — direct Drizzle DB
- * (reading existing suggestions from the DB side, not via PS).
- *
- */
+
 
 import { getAllModules } from '~/server/utils/academy-content'
 import { getSuggestion } from '~/server/utils/academy-db'

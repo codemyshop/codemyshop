@@ -1,42 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/customers — paginated CRM contacts list.
- *
- * Lead/customer segmentation (as of 2026-05-01):
- * - segment=customer → contacts with ≥ 1 validated order
- * - segment=lead   → contacts with NO orders (prospects /
- * accounts created but not converted)
- * - segment=all    → all (legacy / global view)
- *
- * Optimization: a single aggregated LEFT JOIN on ps_orders replaces the
- * two correlated subqueries per row from the previous version.
- * Segment filter applied to the aggregate, COUNT(*) recalculated via the
- * same CTE for consistency with pagination.
- *
- * Search: firstname + lastname + email + company + literal id.
- *
- * Server-side sorting (sort/dir) — whitelisted columns: id, firstname,
- * lastname, email, company, dateAdd, nbOrders, totalSpent. The
- * aggregated columns (nbOrders/totalSpent) sort on the expression
- * COALESCE to remain consistent with the display.
- *
- * Filtres par colonne (port leads UX 2026-05-05) :
- * - fName            : LIKE on firstname OR lastname
- * - fEmail           : LIKE on email
- *   - fEmailVerified   : 'ok'|'rejected'|'unknown'|'none' (none = NULL)
- * - fCompany         : LIKE on company
- *   - fActivite        : exact match cx.activity_code
- * - fOrdersMin       : nb_orders >= N (COUNT subquery)
- *   - fActive          : '1' | '0' (statut Actif/Inactif)
- *
- * Query : ?page=1&perPage=100&search=…&segment=client|lead|all
- *         &sort=…&dir=asc|desc
- *         &fName=…&fEmail=…&fEmailVerified=…&fCompany=…&fActivite=…
- *         &fOrdersMin=…&fActive=…
- */
 const SORT_COLUMNS: Record<string, string> = {
   id:         'c.id_customer',
   firstname:  'c.firstname',
@@ -55,12 +20,12 @@ export default defineEventHandler(async (event) => {
   const search = (q.search || '').trim()
   const segment = (q.segment === 'lead' || q.segment === 'client' || q.segment === 'all') ? q.segment : 'all'
 
-  // Tri serveur — whitelist + direction validée
+  
   const sortKey = SORT_COLUMNS[q.sort || ''] ? q.sort : 'id'
   const sortCol = SORT_COLUMNS[sortKey] || SORT_COLUMNS.id
   const sortDir = (q.dir || '').toLowerCase() === 'asc' ? 'ASC' : 'DESC'
 
-  // Filtres par colonne
+  
   const fName          = (q.fName     || '').trim()
   const fEmail         = (q.fEmail    || '').trim()
   const fEmailVerified = ['ok', 'rejected', 'unknown', 'none'].includes(q.fEmailVerified) ? q.fEmailVerified : ''
@@ -109,7 +74,7 @@ export default defineEventHandler(async (event) => {
       params.push(`%${fCompany}%`)
     }
     if (fActivite) {
-      // EXISTS pour ne pas casser le COUNT/main quand cx absent
+      
       conditions.push(`EXISTS (SELECT 1 FROM cs_customer_extra cx2 WHERE cx2.id_customer = c.id_customer AND cx2.activity_code = ?)`)
       params.push(fActivite)
     }

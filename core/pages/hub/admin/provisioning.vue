@@ -1,8 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <script setup lang="ts">
 definePageMeta({ layout: 'hub', middleware: 'crm-auth' })
 
@@ -34,10 +30,9 @@ const isValid = computed(() =>
   && form.clientName.trim().length >= 2
   && form.domain.trim().includes('.')
   && form.email.trim().includes('@')
-  && !form.region.startsWith('BHS') // Bloquer les régions non-souveraines pour le moment
+  && !form.region.startsWith('BHS') 
 )
 
-// Auto-generate clientId from the name
 watch(() => form.clientName, (name) => {
   if (!form.clientId || form.clientId === slugify(form.clientName)) {
     form.clientId = slugify(name)
@@ -101,33 +96,33 @@ async function launchProvisioning() {
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-      <!-- Formulaire -->
+      
       <div class="bg-white dark:bg-slate-800/60 border border-gray-200 dark:border-white/[0.06] rounded-2xl p-6">
         <h2 class="text-base font-bold text-gray-900 dark:text-white mb-6">Configuration</h2>
 
         <div class="space-y-5">
-          <!-- Client name -->
+          
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Nom du client *</label>
             <input v-model="form.clientName" type="text" placeholder="Ex : Stéphanie Immobilier"
               class="w-full bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all">
           </div>
 
-          <!-- Client ID (auto-generated) -->
+          
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Client ID (slug) *</label>
             <input v-model="form.clientId" type="text" placeholder="stephanie-immobilier"
               class="w-full bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-700 rounded-lg px-3.5 py-2.5 text-sm font-mono text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all">
           </div>
 
-          <!-- Email -->
+          
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Email du client *</label>
             <input v-model="form.email" type="email" placeholder="contact@stephanie-immo.fr"
               class="w-full bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all">
           </div>
 
-          <!-- Type d'offre -->
+          
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Type d'offre *</label>
             <div class="grid grid-cols-2 gap-3">
@@ -154,14 +149,14 @@ async function launchProvisioning() {
             </div>
           </div>
 
-          <!-- Domaine -->
+          
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Domaine cible *</label>
             <input v-model="form.domain" type="text" placeholder="stephanie-immo.fr"
               class="w-full bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-all">
           </div>
 
-          <!-- OVH region -->
+          
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Région OVH *</label>
             <select v-model="form.region"
@@ -171,7 +166,7 @@ async function launchProvisioning() {
             <p v-if="form.region === 'BHS'" class="text-xs text-red-500 mt-1">Région non souveraine — déconseillé pour les clients français.</p>
           </div>
 
-          <!-- Bouton -->
+          
           <button
             class="w-full bg-primary-600 hover:bg-primary-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold py-3 rounded-lg transition-all mt-2"
             :disabled="!isValid || isSubmitting"
@@ -189,11 +184,11 @@ async function launchProvisioning() {
         </div>
       </div>
 
-      <!-- Panneau de statut -->
+      
       <div class="bg-white dark:bg-slate-800/60 border border-gray-200 dark:border-white/[0.06] rounded-2xl p-6">
         <h2 class="text-base font-bold text-gray-900 dark:text-white mb-4">Journal de déploiement</h2>
 
-        <!-- Config summary -->
+        
         <div v-if="form.clientId" class="bg-gray-50 dark:bg-slate-900/30 border border-gray-200 dark:border-slate-700 rounded-lg p-4 mb-4 space-y-2">
           <div class="flex justify-between text-xs">
             <span class="text-gray-500 dark:text-slate-500">Client</span>
@@ -215,7 +210,7 @@ async function launchProvisioning() {
           </div>
         </div>
 
-        <!-- Logs -->
+        
         <div class="bg-gray-900 dark:bg-black/30 rounded-lg p-4 font-mono text-xs text-emerald-400 min-h-[200px] max-h-[400px] overflow-y-auto">
           <div v-if="deployLog.length === 0" class="text-slate-600">
             En attente du lancement...
@@ -226,7 +221,7 @@ async function launchProvisioning() {
           <span v-if="deployStatus === 'provisioning'" class="inline-block w-2 h-4 bg-emerald-400 animate-pulse" />
         </div>
 
-        <!-- Status badge -->
+        
         <div class="mt-4">
           <span v-if="deployStatus === 'success'" class="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-semibold px-3 py-1.5 rounded-full">
             <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full" /> Déployé

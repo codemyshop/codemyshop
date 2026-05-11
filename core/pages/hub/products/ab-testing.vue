@@ -1,13 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  PIM — A/B Testing. CRUD expériences A/B sur fiches produit. Stocké
-  dans cs_ab_experiment (module ac_ab_testing). Calcul inline du
-  taux de conversion, lift relatif et z-score de significativité.
-  Tracking/affichage front sera branché dans une version ultérieure.
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
@@ -28,7 +19,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- KPIs + filtre -->
+      
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <button @click="statusFilter = ''; load()"
           :class="['text-left p-5 rounded-2xl border transition-all', !statusFilter ? 'bg-primary-50 border-primary-200 dark:bg-primary-500/15' : 'bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 hover:border-gray-200']">
@@ -52,7 +43,7 @@
         </button>
       </div>
 
-      <!-- Experience list -->
+      
       <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div v-for="i in 4" :key="i" class="h-48 bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 animate-pulse" />
       </div>
@@ -88,7 +79,7 @@
             </div>
           </div>
 
-          <!-- Stats AB -->
+          
           <div class="grid grid-cols-2 divide-x divide-gray-100 dark:divide-slate-800 border-t border-gray-100 dark:border-slate-800">
             <div class="px-5 py-4">
               <div class="flex items-center justify-between mb-1">
@@ -110,7 +101,7 @@
             </div>
           </div>
 
-          <!-- Lift + significance -->
+          
           <div class="px-5 py-3 bg-gray-50 dark:bg-slate-800/30 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
             <div class="flex items-center gap-3">
               <span class="text-gray-500">Lift</span>
@@ -126,7 +117,7 @@
 
     </div>
 
-    <!-- ═══ MODAL create/edit ═══════════════════════════════════════ -->
+    
     <Transition enter-active-class="transition-opacity" enter-from-class="opacity-0" leave-active-class="transition-opacity" leave-to-class="opacity-0">
       <div v-if="modalOpen" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-auto" @click.self="modalOpen = false">
         <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-auto">
@@ -138,7 +129,7 @@
           </div>
 
           <div class="px-6 py-5 space-y-5">
-            <!-- Meta -->
+            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="md:col-span-2">
                 <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Nom de l'expérience</label>
@@ -170,7 +161,7 @@
               </div>
             </div>
 
-            <!-- Variants -->
+            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="border border-gray-200 dark:border-slate-700 rounded-xl p-4 space-y-3 bg-gray-50/50 dark:bg-slate-800/30">
                 <p class="text-xs font-bold uppercase tracking-wider text-primary-600">Variant A</p>
@@ -250,7 +241,6 @@ async function load() {
   finally { loading.value = false }
 }
 
-// ── Helpers d'affichage ──
 const fmtEur = (v: number) => (v || 0).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
 
 function rateOf(conv: number, views: number): string {
@@ -273,7 +263,6 @@ function liftClass(e: Experiment): string {
   return lift.startsWith('+') ? 'text-success-600' : 'text-danger-600'
 }
 
-/** Z-test of proportions (approximation, threshold 1.96 for p<0.05). */
 function significanceOf(e: Experiment): string {
   const nA = e.viewsA, nB = e.viewsB
   if (!nA || !nB) return 'Pas de donnée'
@@ -309,7 +298,6 @@ function statusBadge(s: string): string {
   } as Record<string, string>)[s] || 'bg-gray-100 text-gray-500'
 }
 
-// ── Modal ──
 const modalOpen = ref(false)
 const modalError = ref('')
 const savingModal = ref(false)
@@ -370,7 +358,6 @@ async function deleteExperiment(e: Experiment) {
   } catch (err) { console.error(err) }
 }
 
-// ── Product picker in the modal ──
 const productQuery = ref('')
 const productResults = ref<{ id: number; name: string }[]>([])
 let productTimer: any

@@ -1,11 +1,4 @@
-<!--
-  Login employé — /hub/login
-  Route séparée du login customer (/connexion) pour éviter toute interférence.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false, ssr: false })
 
@@ -13,8 +6,7 @@ const router = useRouter()
 const route = useRoute()
 const _cfg = useRuntimeConfig()
 const isDemo = Boolean((_cfg.public as any)?.isDemo)
-// forceEmployee: on tenants, without it useAuth() points to
-// /api/catalogue/customer/login (front client) au lieu de /api/auth/login (BO).
+
 const { login, user } = useAuth({ forceEmployee: true })
 const error = ref('')
 const loading = ref(false)
@@ -23,7 +15,6 @@ const form = reactive({
   password: isDemo ? 'demo' : '',
 })
 
-// Sanitize ?redirect: must point within the hub only, never externally.
 function resolveRedirect(): string {
   const raw = route.query.redirect
   const target = Array.isArray(raw) ? raw[0] : raw

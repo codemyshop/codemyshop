@@ -1,13 +1,4 @@
-<!--
-  /instagram — Archive complète des posts Instagram de Example Shop.
-  Source : cs_instagram_post (+ _lang FR), sync paginée hors-ligne.
-  Pagination URL : ?page=N&limit=N. Anti-cannibalisation SEO : noindex
-  sur pages 2+ avec rel=canonical vers page 1.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { t } = useHubT()
 
@@ -95,7 +86,7 @@ useHead(() => ({
   link: [{ rel: 'canonical', href: canonical }],
   meta: [
     { name: 'description', content: 'Retrouvez l\'intégralité des publications Instagram de Example Shop : nouveautés produits, coulisses grossiste, inspirations B2B.' },
-    // Page 2+ → noindex, canonical to page 1 (anti-cannibalization)
+    
     ...(isFirstPage.value ? [] : [{ name: 'robots', content: 'noindex,follow' }]),
     { property: 'og:title', content: 'Instagram Example Shop — @example_fruits_secs' },
     { property: 'og:url', content: canonical },
@@ -132,7 +123,7 @@ useHead(() => ({
         </a>
       </header>
 
-      <!-- Toolbar : nb par page -->
+      
       <div v-if="total > 0" class="mb-5 flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
         <p class="text-sm text-slate-500">
           Page {{ currentPage }} / {{ totalPages }}
@@ -149,7 +140,7 @@ useHead(() => ({
         </label>
       </div>
 
-      <!-- Grille posts -->
+      
       <div
         v-if="posts.length"
         class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
@@ -197,7 +188,7 @@ useHead(() => ({
         {{ t('instagram.no_posts', 'Aucune publication disponible pour l\'instant.') }}
       </div>
 
-      <!-- Pagination -->
+      
       <nav
         v-if="totalPages > 1"
         class="mt-10 flex items-center justify-center gap-1 flex-wrap"

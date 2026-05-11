@@ -1,9 +1,5 @@
-/**
- * POST /api/ambassador/apply
- * Records an ambassador application in cs_referrals (DB).
- * Read/write via the Drizzle facade.
- *
- */
+
+
 import { insertReferral } from '~/enterprise/base/referral/server/utils/referral'
 
 export default defineEventHandler(async (event) => {

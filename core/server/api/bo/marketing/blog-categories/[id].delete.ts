@@ -1,17 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * DELETE /api/bo/marketing/blog-categories/:id — deletes a CMS category.
- *
- * Rejects deletion if the category has articles (ps_cms) or
- * children (ps_cms_category) to avoid orphans. The admin must
- * reassign or delete dependents first.
- *
- * Root id=1 is protected (404).
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 

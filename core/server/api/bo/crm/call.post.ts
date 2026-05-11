@@ -1,16 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/crm/call — Server-side proxy to PS CRM front-controllers.
- *
- * The browser cannot reach PS directly (Nginx routes everything to Nuxt).
- * This endpoint acts as a bridge: receives { module, controller, body } from the client,
- * and calls PS via internal HTTP with the correct Host header + form-urlencoded
- * (PS Tools::getValue() only reads $_POST, not the JSON body).
- *
- * Auth: the tenant's webservice API key is injected server-side.
- * The client NEVER has access to the token.
- */
 
 import { request as httpRequest } from 'node:http'
 import { request as httpsRequest } from 'node:https'
@@ -36,7 +24,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, message: `Module '${module}' non autorisé` })
   }
 
-  // Résoudre la config PS du tenant
+  
   const tenant = getTenantPsConfig(event)
   let baseUrl = (tenant.apiUrl || '').replace(/\/api\/?$/, '')
   const hostHeader = tenant.hostHeader
@@ -46,7 +34,7 @@ export default defineEventHandler(async (event) => {
     baseUrl = config.psBaseUrl as string
   }
 
-  // Injecter le token API (le client ne le connaît pas)
+  
   const apiKey = tenant.apiKey || ''
   const payload: Record<string, string> = { token: apiKey }
   if (clientBody) {
@@ -55,7 +43,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Encoder en form-urlencoded (PS Tools::getValue() ne lit que $_POST)
+  
   const encoded = Object.entries(payload)
     .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
     .join('&')

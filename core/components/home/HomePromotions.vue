@@ -1,14 +1,4 @@
-<!--
-  Section "Nos promotions" — produits en réduction (DB-driven via ps_specific_price).
-  Layout 1+4 via FeaturedProductGrid (source unique).
-  Alimenté par GET /api/catalogue/by-category?id_category=391 (catégorie
-  virtuelle "promotions") pour bénéficier des mêmes fields enrichis
-  (pricePerKgFormatted, format, packaging…) que les pages catégorie listing.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const props = defineProps<{
   title?: string | null

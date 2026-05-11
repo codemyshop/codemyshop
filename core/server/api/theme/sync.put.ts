@@ -1,10 +1,5 @@
-/**
- *
- * PUT /api/theme/sync
- *
- * Receives the theme in builder format and synchronizes it to the DB (UPSERT).
- * Body : { theme: { colors, typography, ui, defaultColorMode } }
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 import { writeThemeCss } from '~/server/utils/theme-css-generator'
 import { upsertThemeForTenant } from '~/modules/theme/server/utils/theme'
@@ -71,7 +66,7 @@ export default defineEventHandler(async (event) => {
     defaultColorMode: t.defaultColorMode || 'light',
   }, { event })
 
-  // ── Génération CSS statique (artifact pour le build Nuxt) ────────
+  
   try {
     writeThemeCss(clientId, {
       colors: {
@@ -97,7 +92,7 @@ export default defineEventHandler(async (event) => {
       },
     })
   } catch (err: any) {
-    // Non-bloquant : le CSS statique est un bonus perf, la DB reste la source.
+    
     console.warn('[theme/sync] CSS generation failed:', err?.message)
   }
 

@@ -1,5 +1,4 @@
-/**
- */
+
 
 import type { HeaderConfig } from '~/types/theme'
 

@@ -38,7 +38,7 @@
       </div>
     </header>
 
-    <!-- Creation modal -->
+    
     <HubCreateModal v-model="showCreate" title="Nouvelle catégorie" :loading="creating" @submit="createCategory">
       <div class="space-y-4">
         <div>
@@ -55,7 +55,7 @@
       </div>
     </HubCreateModal>
 
-    <!-- Barre d'action bulk -->
+    
     <Transition enter-active-class="transition duration-150" enter-from-class="-translate-y-2 opacity-0" leave-active-class="transition duration-100" leave-to-class="-translate-y-2 opacity-0">
       <div v-if="selected.size > 0" class="bg-violet-50 dark:bg-violet-950/30 border-b border-violet-200 dark:border-violet-800 px-6 py-2.5 flex items-center gap-4 shrink-0">
         <span class="text-xs font-medium text-violet-700 dark:text-violet-300">
@@ -180,7 +180,7 @@
 
     <HubPaginationBar v-if="totalPages > 1" :page="page" :total-pages="totalPages" :total="total" label="catégories" @go="goPage" class="border-t border-gray-100 dark:border-slate-800" />
 
-    <!-- Lightbox cover -->
+    
     <Teleport to="body">
       <Transition enter-active-class="transition-opacity duration-200" enter-from-class="opacity-0" leave-active-class="transition-opacity duration-150" leave-to-class="opacity-0">
         <div v-if="lightbox" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 cursor-zoom-out" @click="lightbox = null">
@@ -208,9 +208,7 @@ const categories = ref<any[]>([])
 const total = ref(0)
 const page = ref(1)
 const totalPages = ref(0)
-// Default 1000: we load the entire category catalog at once
-// (tree structure + accordion require all parent nodes to be visible for
-// `isVisible`/`childrenByParent` to remain consistent).
+
 const perPage = ref(1000)
 const perPageOptions = [100, 500, 1000, 5000, 10000]
 function setPerPage(n: number) {
@@ -223,12 +221,6 @@ const showCreate = ref(false)
 const creating = ref(false)
 const newCat = reactive({ name: '', parentId: 2 })
 
-// ── Lightbox cover ──────────────────────────────────────────────
-// Four-state machine per category: WebP (default) → JPG legacy → covergen legacy
-// /blog-covers/ → placeholder SVG.
-// `thumbFallbackMap` = categories where WebP returns 404 → display JPG legacy.
-// `legacyCovergenMap` = categories where JPG is also broken → display `c.legacyThumbUrl`.
-// `brokenImages` = categories where even covergen is broken → SVG placeholder.
 const brokenImages = reactive(new Set<number>())
 const thumbFallbackMap = reactive(new Set<number>())
 const legacyCovergenMap = reactive(new Set<number>())
@@ -250,21 +242,19 @@ function onEsc(e: KeyboardEvent) { if (e.key === 'Escape') lightbox.value = null
 onMounted(() => window.addEventListener('keydown', onEsc))
 onUnmounted(() => window.removeEventListener('keydown', onEsc))
 
-// ── Selection & Bulk ────────────────────────────────────────────
 const selected = reactive(new Set<number>())
 const selectedCats = reactive(new Map<number, { name: string; slug: string }>())
 const bulkLoading = ref(false)
 const bulkStatus = ref<string | null>(null)
 const bulkStatusClass = ref('text-violet-600')
 
-// ── Migration covers legacy JPG → WebP responsive ───────────────
 const migrateLoading = ref(false)
 const migrateStatus = ref<string | null>(null)
 const migrateStatusClass = ref('text-gray-500')
 
 async function runMigrateWebp() {
   if (migrateLoading.value) return
-  // Dry-run first to display the plan before writing.
+  
   migrateLoading.value = true
   migrateStatus.value = 'Analyse…'
   migrateStatusClass.value = 'text-gray-500'
@@ -296,7 +286,7 @@ async function runMigrateWebp() {
     migrateStatus.value = fail === 0 ? `${ok} cover(s) migrée(s)` : `${ok} OK, ${fail} erreur(s)`
     migrateStatusClass.value = fail === 0 ? 'text-emerald-600' : 'text-amber-600'
     if (fail > 0) console.warn('[migrate-webp] errors:', run.errors)
-    // Force thumbnail reload (cache bust via reload list)
+    
     await load()
     setTimeout(() => { migrateStatus.value = null }, 8000)
   } catch (e: any) {
@@ -369,7 +359,6 @@ async function bulkCover() {
   setTimeout(() => { bulkStatus.value = null }, 5000)
 }
 
-// ── CRUD ────────────────────────────────────────────────────────
 async function createCategory() {
   creating.value = true
   try {
@@ -388,7 +377,6 @@ const catMap = computed(() => {
 
 function parentName(id: number) { return catMap.value[id] || (id > 1 ? `#${id}` : 'Racine') }
 
-// ── Tree accordion (collapse by default) ─────────────────
 const expanded = reactive(new Set<number>())
 
 const childrenByParent = computed(() => {
@@ -415,9 +403,6 @@ const catsById = computed(() => {
   return m
 })
 
-// A row is visible if all its ancestors (parent, grandparent…) are
-// either root (id_parent ≤ 2, depth = 2) or expanded. The top-level
-// (depth = 2) is always visible.
 function isVisible(c: any): boolean {
   if (c.depth <= 2) return true
   let pid = c.parentId
@@ -430,8 +415,6 @@ function isVisible(c: any): boolean {
   return true
 }
 
-// In search mode, display all results flat (parent nodes
-// are not necessarily loaded, the accordion has no meaning).
 const visibleCategories = computed(() => search.value.trim()
   ? categories.value
   : categories.value.filter(isVisible))
@@ -443,7 +426,6 @@ function expandAll() {
 }
 function collapseAll() { expanded.clear() }
 
-// ── Drag & drop reorder (siblings only) ─────────────────────────
 const draggedId = ref<number | null>(null)
 const dragOverId = ref<number | null>(null)
 const reorderStatus = ref<string | null>(null)

@@ -1,15 +1,4 @@
-/**
- *
- * Module-registry facade — source of truth for the runtime (Nuxt) per module.
- *
- * All Nuxt consumers (back office `/hub`, boot plugins, admin API) must
- * go through this facade. No direct access to the table.
- *
- * Target: `cs_main.cs_module_registry` (Postgres). The VPS
- * tenants keep their own table in their DB
- * local, and their PostgreSQL upgrade cycle will come later — their Nuxt runtime does not call
- * this facade (each tenant has its own binary and DB credentials).
- */
+
 
 import { eq, and, sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'

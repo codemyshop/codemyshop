@@ -1,12 +1,4 @@
-<!--
-  HomeIframe — section homepage qui embarque un iframe externe (ex: avis-garantis,
-  widget Google Reviews, Trustpilot, calendly, etc.). Configurable en BO via le
-  block kind='iframe' (href = src, extra_config_json.title = title).
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <template>
   <section v-if="src" class="w-full bg-white dark:bg-slate-950 py-2">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">

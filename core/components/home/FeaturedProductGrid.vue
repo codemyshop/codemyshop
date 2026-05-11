@@ -1,16 +1,4 @@
-<!--
-  Template partagé "1 card featured à gauche + 4 cards (2×2) à droite".
-  Source unique de vérité pour les 3 sections marchandes homepage :
-    - HomePromotions
-    - HomeBestsellers
-    - HomeNewProducts
-  Garantit la cohérence visuelle (hauteur, proportions, padding) — toucher
-  ici = tous les 3 changent.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 type BadgeVariant = 'promo' | 'top' | 'new' | 'custom'
 
@@ -19,17 +7,17 @@ interface Badge { text: string; variant?: BadgeVariant }
 const props = withDefaults(defineProps<{
   title?: string | null
   subtitle?: string | null
-  /** Array of 1 to 5 products. The first becomes the featured card. */
+  
   products: any[]
-  /** Right header pill (e.g. "Current offers", "Last 90 days"). */
+  
   headerPill?: { text: string; variant?: 'red' | 'green' | 'primary' | 'amber' } | null
-  /** Theme fond section. */
+  
   bgClass?: string
-  /** Explicit badge for the featured card (otherwise auto from product.reductionLabel). */
+  
   featuredBadge?: Badge | null
-  /** Function to calculate a badge per rank (0-based) on the 4 right cards. */
+  
   otherBadgeFn?: ((rank: number) => Badge | null) | null
-  /** Featured card position: 'left' (default) or 'right' — breaks the visual repetition. */
+  
   featuredPosition?: 'left' | 'right'
 }>(), {
   title: '',
@@ -69,13 +57,9 @@ const pillClass = computed(() => {
         </span>
       </div>
 
-      <!-- lg:items-center : la card featured (1 ligne, ~520px) est centrée
-           verticalement dans la même row que la grid 2×2 right (~940px),
-           sans s'étirer (cf retour Alex 04/05 — featured prenait toute la
-           hauteur du grid avec aspect-square). -->
+      
       <div class="grid gap-5 lg:grid-cols-2 lg:items-center">
-        <!-- Card featured (image large_default + description)
-             Position gauche ou droite via order CSS (lg+ uniquement — mobile reste linéaire). -->
+        
         <ProductCard
           v-if="featured"
           :product="featured"
@@ -84,9 +68,7 @@ const pillClass = computed(() => {
           :class="featuredPosition === 'right' ? 'lg:order-2' : ''"
         />
 
-        <!-- 4 cards : 1 colonne mobile (Alex 05/05 — meilleure lisibilité
-             sur petit écran), 2 colonnes dès sm pour conserver le grid 2×2
-             qui matche la hauteur de la card featured. -->
+        
         <div
           v-if="others.length"
           class="grid grid-cols-1 sm:grid-cols-2 gap-5"

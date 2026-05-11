@@ -1,14 +1,4 @@
-<!--
-  Dictionnaire — Glossaire A-Z tenant-neutre.
 
-  Contenu : /api/dictionary (filtré par client_id côté serveur, tenant-aware).
-  Présentation : strings paramétrées via t('dictionary.*') avec fallbacks génériques.
-  Override par tenant : clés ps_translation (ex: dictionary.hero_label, dictionary.h1…).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -42,7 +32,7 @@ function entriesByLetter(letter: string) {
 <template>
   <NuxtLayout name="white-label">
 
-    <!-- HERO -->
+    
     <section class="relative pt-28 md:pt-36 pb-16 overflow-hidden bg-white dark:bg-[#0f172a]">
       <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div class="absolute top-20 left-1/4 w-[500px] h-[500px] bg-primary-500/6 dark:bg-primary-500/4 rounded-full blur-[140px]" />
@@ -61,7 +51,7 @@ function entriesByLetter(letter: string) {
       </div>
     </section>
 
-    <!-- LETTRES NAV -->
+    
     <section class="pb-8 bg-white dark:bg-[#0f172a]">
       <div class="max-w-4xl mx-auto px-6">
         <div class="flex flex-wrap gap-2 justify-center">
@@ -77,7 +67,7 @@ function entriesByLetter(letter: string) {
       </div>
     </section>
 
-    <!-- ENTRIES -->
+    
     <section class="pb-20 bg-white dark:bg-[#0f172a]">
       <div class="max-w-4xl mx-auto px-6">
         <div v-for="letter in letters" :key="letter" class="mb-12">
@@ -120,7 +110,7 @@ function entriesByLetter(letter: string) {
       </div>
     </section>
 
-    <!-- CTA -->
+    
     <section class="py-16 bg-white dark:bg-[#0f172a]">
       <div class="max-w-2xl mx-auto px-6 text-center">
         <p class="text-sm text-gray-500 dark:text-slate-400 mb-6">

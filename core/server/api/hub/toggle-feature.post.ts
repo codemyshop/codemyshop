@@ -1,9 +1,4 @@
-/**
- *
- * POST /api/hub/toggle-feature
- * Body : { clientId, featureId, action: 'enable' | 'disable' }
- * Source of truth: PS ac_marketplace module
- */
+
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<{

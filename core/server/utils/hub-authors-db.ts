@@ -1,10 +1,4 @@
-/**
- *
- * Direct DB helper for /api/hub/authors — zero-webservice doctrine
- * PrestaShop » 2026-04-22. Source : JOIN ps_employee × cs_employee_extra.
- *
- * Cible : `cs_main` (Postgres). Chantier #44 — port MariaDB → PG.
- */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -22,10 +16,6 @@ export interface AuthorRow {
   active: boolean
 }
 
-/**
- * Author list: all ps_employee with a cs_employee_extra row
- * (= opt-in author profile). An employee without extra = not a public author.
- */
 export async function listAuthors(): Promise<AuthorRow[]> {
   const result = await usePocPg().execute(sql`
     SELECT e.id_employee, e.firstname, e.lastname,

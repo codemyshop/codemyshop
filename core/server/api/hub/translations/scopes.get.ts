@@ -1,11 +1,4 @@
-/**
- *
- * GET /api/hub/translations/scopes
- * Retourne :
- * - static scopes (tables _lang PS) filtered according to real table existence
- * - dynamic scopes: one scope per distinct `domain` in ps_translation
- * - group scopes: meta-scopes aggregating multiple individual scopes
- */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { STATIC_SCOPES, GROUP_SCOPES, buildPsTranslationScope } from '~/server/utils/translate-scopes'
@@ -13,7 +6,7 @@ import { STATIC_SCOPES, GROUP_SCOPES, buildPsTranslationScope } from '~/server/u
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
 
-  // 1. Filtrer les scopes statiques par tables réellement présentes
+  
   const tables = new Set<string>()
   try {
     const rows = await db.query<any>(`SHOW TABLES`)
@@ -22,12 +15,12 @@ export default defineEventHandler(async (event) => {
       if (name) tables.add(name)
     }
   } catch {
-    /* fallback : garder tous les scopes */
+    
   }
 
   const staticScopes = STATIC_SCOPES.filter(s => tables.size === 0 || tables.has(s.table))
 
-  // 2. Scopes dynamiques ps_translation (par domain)
+  
   const dynamicScopes: any[] = []
   if (tables.size === 0 || tables.has('ps_translation')) {
     try {
@@ -39,11 +32,11 @@ export default defineEventHandler(async (event) => {
         dynamicScopes.push({ ...scope, rowCount: Number(d.cnt) })
       }
     } catch {
-      /* ps_translation absente ou vide */
+      
     }
   }
 
-  // 3. Group scopes — filtrer ceux dont AUCUN membre n'existe (tables absentes)
+  
   const staticSlugs = new Set(staticScopes.map(s => s.slug))
   const groupScopes = GROUP_SCOPES.filter(g => {
     if (g.dynamicPsTranslationPrefix) return tables.size === 0 || tables.has('ps_translation')

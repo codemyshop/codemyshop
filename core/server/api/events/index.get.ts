@@ -1,10 +1,4 @@
-/**
- *
- * GET /api/events?lang=fr&upcoming=1
- * Lists published events for the current tenant + i18n.
- * upcoming=1 (default) : start_at >= now()
- * upcoming=0 : all published events (incl. past/finished)
- */
+
 
 import { useClientDb } from '../../utils/db'
 

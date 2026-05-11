@@ -1,15 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * GET /api/bo/marketing/blog/export — CSV of blog articles.
- *
- * Isolation Sprint 18.1 : WHERE id_cms_category <> 1 (exclusion racine /
- * landings). Default language id_lang=1. No content (too large,
- * and the import must not overwrite AI-generated content in bulk).
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 

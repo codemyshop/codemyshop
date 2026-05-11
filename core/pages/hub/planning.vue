@@ -25,7 +25,7 @@
     </header>
 
     <div class="p-6 max-w-7xl mx-auto space-y-4">
-      <!-- Onglets vue -->
+      
       <div class="flex gap-2 flex-wrap">
         <button v-for="v in VIEWS" :key="v.value" @click="view = v.value"
           :class="['px-3 py-1.5 rounded-lg text-xs font-semibold transition-all',
@@ -37,7 +37,7 @@
         </button>
       </div>
 
-      <!-- Priority + category filters -->
+      
       <div class="flex gap-2 flex-wrap">
         <select v-model="filterPriority" class="text-xs px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300">
           <option value="">Toutes priorités</option>
@@ -49,17 +49,17 @@
         </select>
       </div>
 
-      <!-- Loading -->
+      
       <div v-if="loading" class="space-y-3">
         <div v-for="i in 4" :key="i" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5 animate-pulse h-20" />
       </div>
 
-      <!-- Vide -->
+      
       <div v-else-if="!visibleItems.length" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-10 text-center text-gray-400 text-sm">
         Aucun item dans cette vue
       </div>
 
-      <!-- This week view: grouped by day -->
+      
       <div v-else-if="view === 'week'" class="space-y-6">
         <div v-for="day in DAYS" :key="day">
           <div v-if="groupedByDay[day]?.length" class="space-y-2">
@@ -73,14 +73,14 @@
         </div>
       </div>
 
-      <!-- Autres vues : liste plate -->
+      
       <div v-else class="space-y-2">
         <HubBacklogItem v-for="it in visibleItems" :key="it.idItem" :item="it"
           @update="updateItem" @delete="deleteItem" />
       </div>
     </div>
 
-    <!-- Creation modal -->
+    
     <div v-if="showCreate" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" @click.self="showCreate = false">
       <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-4">
         <h3 class="text-lg font-bold text-gray-800 dark:text-slate-100">Nouveau item</h3>
@@ -161,7 +161,7 @@ async function loadAll() {
       query: { view: view.value },
     })
     items.value = r.items || []
-    // Load counts in parallel (main views)
+    
     const viewKeys = ['today', 'week', 'all', 'backlog', 'done']
     const results = await Promise.all(
       viewKeys.map(v =>

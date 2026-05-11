@@ -1,15 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/hub/configuration/payment
- *
- * Body : { name: 'BANK_WIRE_DETAILS', value: 'IBAN: FR76…\nBIC: …' }
- *
- * Update a payment key in ps_configuration. Strict whitelist. The
- * SystemPay keys (TEST_KEY/PROD_KEY/ID_SHOP) are **forbidden in the database**:
- * they remain in .env (security — no leaks via SQL injection or
- * database dump). Only SYSTEMPAY_MODE is editable from the UI.
- */
 
 import { useClientDb } from '~/server/utils/db'
 import { upsertConfiguration } from '~/server/utils/ps-configuration'

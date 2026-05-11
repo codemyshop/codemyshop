@@ -24,7 +24,7 @@
     <div v-else-if="cart" class="px-6 py-6 space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-        <!-- Infos panier -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-3">Panier</h2>
           <dl class="space-y-2 text-sm">
@@ -43,7 +43,7 @@
           </dl>
         </div>
 
-        <!-- Client -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-3">Client</h2>
           <p class="text-sm font-medium text-gray-800 dark:text-slate-100">{{ cart.customerName }}</p>
@@ -52,7 +52,7 @@
           <p v-if="!cart.customerId || cart.customerId === 0" class="text-xs text-amber-500 mt-2">Visiteur non connecté</p>
         </div>
 
-        <!-- Estimation -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-3">Estimation</h2>
           <dl class="space-y-2 text-sm">
@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <!-- Produits -->
+      
       <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl overflow-hidden">
         <div class="px-5 py-3 border-b border-gray-100 dark:border-slate-800">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Produits ({{ items.length }})</h2>

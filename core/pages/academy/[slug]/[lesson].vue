@@ -1,12 +1,4 @@
-<!--
-  Academy — Page leçon individuelle (long tail SEO) tenant-neutre.
-  URL : /academy/[module-slug]/[lesson-slug]
-  1 URL = 1 leçon = contenu complet + takeaway + Q&A UGC + JSON-LD.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -49,7 +41,7 @@ async function loadMentorQuote() {
       mentorQuote.value = { quote: result.quote, source: result.source || '' }
       return
     }
-  } catch { /* fallback */ }
+  } catch {  }
 
   if (lessonData?.mentorQuote) {
     mentorQuote.value = { quote: lessonData.mentorQuote, source: lessonData.mentorSource || '' }
@@ -140,7 +132,7 @@ onMounted(() => {
         learnerSession.value = { learnerId: data.learnerId, pseudo: data.pseudo }
       }
     }
-  } catch { /* not logged in */ }
+  } catch {  }
 })
 
 async function markCompleted() {
@@ -159,7 +151,7 @@ async function markCompleted() {
       },
     })
     lessonCompleted.value = true
-  } catch { /* silent */ }
+  } catch {  }
   completingLesson.value = false
 }
 </script>
@@ -167,7 +159,7 @@ async function markCompleted() {
 <template>
   <NuxtLayout name="white-label">
 
-    <!-- HERO -->
+    
     <section class="relative pt-28 md:pt-36 pb-12 overflow-hidden bg-white dark:bg-[#0f172a]">
       <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div class="absolute top-10 left-1/3 w-[500px] h-[500px] bg-primary-500/6 dark:bg-primary-500/4 rounded-full blur-[140px]" />
@@ -214,7 +206,7 @@ async function markCompleted() {
       </div>
     </section>
 
-    <!-- LESSON CONTENT -->
+    
     <section class="pb-12 bg-white dark:bg-[#0f172a]">
       <div class="max-w-3xl mx-auto px-6">
 
@@ -306,7 +298,7 @@ async function markCompleted() {
       </div>
     </section>
 
-    <!-- MARK COMPLETED -->
+    
     <section v-if="learnerSession" class="py-6 bg-white dark:bg-[#0f172a]">
       <div class="max-w-3xl mx-auto px-6 text-center">
         <button v-if="!lessonCompleted"
@@ -324,7 +316,7 @@ async function markCompleted() {
       </div>
     </section>
 
-    <!-- NAVIGATION -->
+    
     <section class="py-12 bg-gray-50 dark:bg-[#111827]">
       <div class="max-w-3xl mx-auto px-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

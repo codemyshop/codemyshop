@@ -25,7 +25,7 @@
       </div>
     </header>
 
-    <!-- Status badges (unfiltered — global totals) -->
+    
     <div class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-2.5 flex items-center gap-4 shrink-0">
       <button
         type="button"
@@ -128,7 +128,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
@@ -154,7 +153,6 @@ const loading = ref(false)
 const search = ref('')
 const statusFilter = ref('')
 
-// Sprint 16 — 300 ms debounce on search.
 let searchTimer: ReturnType<typeof setTimeout> | null = null
 watch(search, () => {
   if (searchTimer) clearTimeout(searchTimer)

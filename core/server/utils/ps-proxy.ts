@@ -1,12 +1,5 @@
-/**
- * HTTP proxy to a PrestaShop front controller.
- * Forces the Host header for Docker (else 302).
- *
- * Multi-tenant: if an H3Event is passed as the 2nd parameter, the tenant is resolved
- * via getTenantPsConfig (env PS_URL_<KEY>/PS_HOST_<KEY>). Without an event, fallback
- * to runtimeConfig.psBaseUrl/psHost (legacy hub compatibility).
- *
- */
+
+
 import { request as httpRequest } from 'node:http'
 import { request as httpsRequest } from 'node:https'
 import { getTenantPsConfig } from './ps-tenant'
@@ -26,7 +19,7 @@ export async function psProxy<T = Record<string, unknown>>(opts: PsProxyOptions,
 
   if (event) {
     const tenant = getTenantPsConfig(event)
-    // psProxy tape /module/<mod>/<controller> donc base = racine PS sans /api
+    
     baseUrlStr = (tenant.apiUrl || '').replace(/\/api\/?$/, '')
     effectiveHost = tenant.hostHeader
   }
@@ -38,10 +31,10 @@ export async function psProxy<T = Record<string, unknown>>(opts: PsProxyOptions,
   }
 
   const mod = opts.module ?? 'ac_academy'
-  // Forme query-string `?fc=module&module=X&controller=Y` plutôt que pretty
-  // URL `/module/X/Y` : pas de dépendance sur Apache mod_rewrite + .htaccess
-  // (cf doctrine 2026-04-22 + incidents Example Shop v2 sans .htaccess → 404 sur
-  // tous les psProxy). Cohérent avec sync-modules-tenant.sh.
+  
+  
+  
+  
   const baseUrl = new URL(`${baseUrlStr}/index.php`)
   baseUrl.searchParams.set('fc', 'module')
   baseUrl.searchParams.set('module', mod)
@@ -96,31 +89,15 @@ export async function psProxy<T = Record<string, unknown>>(opts: PsProxyOptions,
   })
 }
 
-/** Pièce de multipart — un champ texte OU un fichier. */
 export interface MultipartPart {
   name: string
-  /** If defined, the part is a file. Otherwise it's a text field. */
+  
   filename?: string
   contentType?: string
-  /** Buffer (fichier) ou string (champ texte). */
+  
   data: Buffer | string
 }
 
-/**
- * Variant of psProxy for multipart/form-data. Builds the body
- * manually (undici_no_host_override incidents — we remain on
- * node:http to force the Host header in Docker network).
- *
- * Usage :
- *   await psProxyMultipart({
- *     module: 'ac_attachmentapi',
- *     controller: 'upload',
- *     parts: [
- *       { name: 'id_product', data: '42' },
- *       { name: 'file', filename: 'ft.pdf', contentType: 'application/pdf', data: buffer },
- *     ],
- *   }, event)
- */
 export async function psProxyMultipart<T = Record<string, unknown>>(
   opts: { module?: string; controller: string; parts: MultipartPart[]; query?: Record<string, string> },
   event?: any,
@@ -149,7 +126,7 @@ export async function psProxyMultipart<T = Record<string, unknown>>(
   }
   if (!effectiveHost) effectiveHost = baseUrl.host
 
-  // Boundary aléatoire — ASCII, safe pour les parsers PHP.
+  
   const boundary = '----AcHubBoundary' + Math.random().toString(16).slice(2) + Date.now().toString(16)
 
   const chunks: Buffer[] = []
@@ -158,7 +135,7 @@ export async function psProxyMultipart<T = Record<string, unknown>>(
   for (const part of opts.parts) {
     chunks.push(Buffer.from(`--${boundary}${CRLF}`, 'ascii'))
     if (part.filename !== undefined) {
-      // Fichier
+      
       chunks.push(Buffer.from(
         `Content-Disposition: form-data; name="${part.name}"; filename="${part.filename}"${CRLF}`,
         'ascii',
@@ -170,7 +147,7 @@ export async function psProxyMultipart<T = Record<string, unknown>>(
       chunks.push(Buffer.isBuffer(part.data) ? part.data : Buffer.from(part.data))
       chunks.push(Buffer.from(CRLF, 'ascii'))
     } else {
-      // Champ texte — en-têtes UTF-8 (PHP sanitize via Tools::getValue).
+      
       chunks.push(Buffer.from(
         `Content-Disposition: form-data; name="${part.name}"${CRLF}${CRLF}`,
         'ascii',

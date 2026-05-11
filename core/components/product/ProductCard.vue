@@ -1,57 +1,47 @@
-<!--
-  Card produit partagée (multi-tenant, B2B-aware).
-  Source unique de vérité : toute grille produit (catalogue, promos, bestsellers,
-  nouveautés) doit passer par ce composant — modifier la card ici change partout.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 interface ProductCardData {
   id: number
   ref?: string | null
   name: string
-  /** Optional — fallback `/product/{id}` if absent. */
+  
   url?: string
   image?: string | null
-  /** Responsive WebP srcset (400/600/800/1200) generated for multiple sizes. */
+  
   imageSrcset?: string | null
-  /** Fallback JPG 800×800 (ac_productcovergen migrate). */
+  
   imageFallback?: string | null
-  /** High-resolution image for featured card (large_default size). */
+  
   imageLarge?: string | null
-  /** Short description (HTML stripped, ~180 chars) — displayed only in featured mode. */
+  
   descriptionShort?: string | null
-  /** Normal price already formatted (e.g. "36,45 €"). */
+  
   price: string
-  /** Raw price for multiplication by qty. If absent, qty does not change the displayed price. */
+  
   priceRaw?: number
-  /** Promotional price already formatted. If present, display promo + strikethrough. */
+  
   pricePromo?: string
   pricePromoRaw?: number
-  /** Label badge (ex "-20%", "Top 1", "Nouveau"). */
+  
   reductionLabel?: string
-  /** Pills commerciales. */
+  
   format?: string
   packaging?: string
   caliber?: string
-  /** "12,15 €" → displayed as "12,15 € per kg (net)". If provided, becomes the main price;
-   * primary (bulk); the `price` (package) switches to secondary mention. */
+  
+
   pricePerKgFormatted?: string
-  /** Promotional price per kg, formatted. If present + hasPromo, becomes the main per-kg (net) price
-   * main (with `pricePerKgFormatted` struck through in red). */
+  
+
   pricePerKgPromoFormatted?: string
-  /** Formatted savings amount ("9,50 €"). Displayed in secondary mention
-   * promo: "Save X €". */
+  
+
   savingsFormatted?: string
-  /** VAT rate (e.g. 5.5, 20). Displayed in secondary mention
-   * "VAT at X%, i.e. for a package: YY € (net)". Fallback 5.5
-   * (example shop food = 95% of the catalog at 5.5%). */
+  
+
   taxRate?: number
-  /** Short suffix to display after unit price (per kg, per L, per unit).
-   *  DB-First (cf. core/server/utils/unity-label.ts). Fallback "HT/K"
-   * template-side for payloads without the field. */
+  
+
   unitLabel?: string
 }
 
@@ -62,7 +52,7 @@ const props = withDefaults(
     product: ProductCardData
     featured?: boolean
     showWishlist?: boolean
-    /** Badge explicite (sinon auto depuis product.reductionLabel → variant 'promo'). */
+    
     badge?: { text: string; variant?: BadgeVariant } | null
   }>(),
   { featured: false, showWishlist: true, badge: null },
@@ -84,11 +74,11 @@ function setQty(v: number) { qty.value = Math.max(1, v) }
 
 async function quickCart() {
   const p = props.product
-  // Snapshot of pills + per-kg price + promo state: useful in visitor mode
-  // (localStorage, no enrichment SQL). In logged-in mode, the server
-  // rewrites these fields from `cart-db.getCartFromDb` (see `useServerCart.items`
-  // mapping) — so this snapshot is just a transient fallback before
-  // the server cart is hydrated.
+  
+  
+  
+  
+  
   await addToCart(
     {
       id: p.id,
@@ -144,10 +134,6 @@ const hasPromo = computed(
   () => !!(props.product.pricePromo && props.product.pricePromoRaw != null),
 )
 
-/** Dynamic price (multiplied by qty). In promo: promo price × qty,
- * fallback on the formatted string if pricePromoRaw absent.
- * Note: the by-category API already returns priceRaw net in B2B and gross in B2C
- * via buildPriceExpr() — no VAT re-multiplication on the front-end. */
 const displayPrice = computed(() => {
   const p = props.product
   if (hasPromo.value) {
@@ -158,14 +144,12 @@ const displayPrice = computed(() => {
   return p.price
 })
 
-/** Strikethrough price (old package × qty) — displayed only in promo. */
 const displayOriginalPrice = computed(() => {
   const p = props.product
   if (p.priceRaw != null) return fmtEur(p.priceRaw * qty.value)
   return p.price
 })
 
-/** Savings × qty — displayed only in promo. */
 const displaySavings = computed(() => {
   const p = props.product
   if (p.priceRaw != null && p.pricePromoRaw != null) {
@@ -176,18 +160,13 @@ const displaySavings = computed(() => {
 </script>
 
 <template>
-  <!-- Wrapper : impose une hauteur fixe à la card featured sur desktop
-       (sections homepage Nouveautés/Bestsellers/Promotions). Sans wrapper,
-       la card prenait la hauteur de son contenu, créant des cards de tailles
-       disparates entre sections. Std card : h-full pour stretch dans 2×2. -->
+  
   <div :class="['group relative', featured ? 'lg:h-[800px]' : 'h-full']">
     <NuxtLink
       :to="productUrl"
       class="flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-all hover:border-primary-500 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
     >
-      <!-- Badge (promo / top / new / custom)
-           ClientOnly : showPrices dépend de la session connectée → on évite
-           que le HTML SSR caché Redis fige l'état du visiteur cold-render. -->
+      
       <ClientOnly>
         <span
           v-if="effectiveBadge && showPrices"
@@ -200,7 +179,7 @@ const displaySavings = computed(() => {
         </span>
       </ClientOnly>
 
-      <!-- Wishlist (top-right) -->
+      
       <div
         v-if="showWishlist"
         class="absolute right-2 top-2 z-10"
@@ -210,9 +189,7 @@ const displaySavings = computed(() => {
         <WishlistButton :product-id="product.id" variant="icon" />
       </div>
 
-      <!-- Image — featured : hauteur fixe lg:h-[36rem] (576px), image quasi
-           carrée à max-w-6xl. Card 800px → image dominante (72%), reste
-           224px pour le contenu. Mobile/tablet : aspect-[2/1]. -->
+      
       <div
         :class="[
           'overflow-hidden bg-white dark:bg-slate-800',
@@ -248,8 +225,7 @@ const displaySavings = computed(() => {
         </div>
       </div>
 
-      <!-- Contenu — paddings identiques featured/std pour ne pas gonfler la
-           hauteur de la card featured. -->
+      
       <div class="flex flex-1 flex-col p-4">
       <h3
         :class="[
@@ -260,7 +236,7 @@ const displaySavings = computed(() => {
         {{ product.name }}
       </h3>
 
-      <!-- Pills : format / packaging / calibre -->
+      
       <div
         v-if="product.format || product.packaging || product.caliber"
         class="mb-2 flex flex-wrap gap-1"
@@ -281,21 +257,16 @@ const displaySavings = computed(() => {
 
       <p v-if="product.ref" class="mb-2 text-[10px] text-slate-400">{{ t('product.ref') }} {{ product.ref }}</p>
 
-      <!-- Description courte (featured uniquement) -->
+      
       <p
         v-if="featured && product.descriptionShort"
         class="mb-3 line-clamp-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300"
       >{{ product.descriptionShort }}</p>
 
-      <!-- Bloc prix : showPrices/isB2b dépendent de la session → ClientOnly
-           pour permettre le cache SSR Redis sur /grossiste/** et /produit/**.
-           Fallback skeleton 1 ligne pour éviter le CLS pendant l'hydratation. -->
+      
       <ClientOnly>
         <template v-if="showPrices">
-          <!-- Hiérarchie inversée Aude 04/05 P2 : prix HT/K en gros si dispo,
-               prix colis en mention secondaire avec taux TVA. En promo : même
-               layout, prix promo en gros + ancien HT/K barré rouge + montant
-               économisé sous la mention TVA. Fallback layout simple sans HT/K. -->
+          
           <template v-if="product.pricePerKgFormatted">
             <div class="flex items-baseline gap-2">
               <span
@@ -345,10 +316,7 @@ const displaySavings = computed(() => {
         </template>
       </ClientOnly>
 
-      <!-- Qty + add to cart/quote : 1 ligne (qty selector compact à gauche +
-           bouton CTA flex-1 à droite). ChatbotProductButton en 2e ligne.
-           Affiché pour TOUS les tenants (B2B et B2C). showPrices détermine le
-           bouton : panier (B2C ou B2B logué) vs devis (B2B anonyme). -->
+      
       <div
         class="mt-auto flex flex-col gap-2 pt-3"
         @click.stop

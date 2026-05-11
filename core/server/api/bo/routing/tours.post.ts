@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { createTour } from '~/modules/routing/server/utils/routing'
 
-/** POST /api/bo/routing/tours — creates a tour. */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     label: string

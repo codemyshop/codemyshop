@@ -1,14 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * B2B commercial segmentation — professional activity declared by the
- * client. Source of truth: table `cs_customer_extra` (module
- * customer_extra). The codes are semantic (gms, CHR, wholesaler, …)
- * to remain readable in the database and independent of the Addify schema.
- *
- * Migration one-shot depuis `ps_addifycustomercustomdata` (codes opaques
- * `value1..value11`) → voir `synedre/ac_customer_extra_migrate.py`.
- */
+
 export interface CustomerActivity {
   code: string
   label: string
@@ -28,11 +19,6 @@ export const CUSTOMER_ACTIVITIES: readonly CustomerActivity[] = [
   { code: 'autre',              label: 'Autre' },
 ] as const
 
-/**
- * Legacy Addify mapping (opaque codes) → semantic customer_extra codes.
- * Used only by the migration script + the read fallback
- * during the transition period.
- */
 export const ADDIFY_ACTIVITY_CODE_MAP: Readonly<Record<string, string>> = {
   value1:  'gms',
   value2:  'superette',

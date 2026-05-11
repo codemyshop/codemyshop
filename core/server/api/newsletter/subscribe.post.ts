@@ -1,22 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/newsletter/subscribe — Inscription newsletter (footer / popup).
- *
- * GDPR: a valid consent_text must be present in DB
- * (`cs_footer_config_lang.newsletter_consent_text`) — on snapshot ce texte
- * in the `cs_newsletter_subscriber` row at the time of opt-in to
- * record informed consent. Also stores IP + user-agent + URL.
- *
- * Anti-spam :
- *  - Honeypot field `website` (interdit par convention).
- *  - Validation regex e-mail.
- *
- * Responses:
- * - 200 OK { ok: true } in all legitimate cases (no existence leak
- * of an email — anti-enumeration rule).
- * - 422 if invalid format / honeypot filled.
- */
 
 import { resolveClientId } from '~/server/utils/db'
 import { upsertSubscriber } from '~/server/utils/newsletter-subscriber'
@@ -46,10 +28,10 @@ export default defineEventHandler(async (event) => {
     locale?: string
     source?: string
     sourceUrl?: string
-    website?: string  // honeypot
+    website?: string  
   }>(event)
 
-  // Honeypot — bot rempli, on retourne 200 muet pour ne rien révéler
+  
   if (body?.website && String(body.website).trim() !== '') {
     return { ok: true }
   }
@@ -69,8 +51,8 @@ export default defineEventHandler(async (event) => {
 
   const consentText = await loadConsentText(clientId, idLang)
   if (!consentText) {
-    // Le tenant n'a pas configuré de consent_text — on bloque pour éviter
-    // d'archiver un opt-in sans preuve de consentement (RGPD).
+    
+    
     throw createError({
       statusCode: 503,
       statusMessage: 'Newsletter non configurée',
@@ -110,6 +92,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Erreur enregistrement' })
   }
 
-  // Réponse uniforme — pas de signal sur "déjà inscrit"
+  
   return { ok: true }
 })

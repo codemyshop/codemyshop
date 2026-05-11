@@ -1,24 +1,4 @@
-<!--
-  Carrousel d'articles blog liés à une catégorie produit (réutilisable
-  multi-tenant). Source agnostique : prop endpoint + query, retour attendu
-  { articles: [...], total }.
 
-  Affiche un scroll horizontal natif (snap) — accessible clavier (←/→) et
-  rendu SSR (les liens restent dans le HTML pour le crawler).
-
-  Format article attendu :
-    { id, title, slug, excerpt, url, date_published }
-
-  Props :
-    - endpoint    : ex '/api/catalogue/articles'
-    - query       : objet ex { categoryId: 132, limit: 8 }
-    - keyPrefix   : préfixe useFetch key (ex 'articles-cat-132')
-    - title?      : titre du bloc (défaut "Articles liés")
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { localePath } = useLocalePath()
 interface ArticleCard {

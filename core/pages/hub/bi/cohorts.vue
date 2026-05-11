@@ -1,15 +1,8 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  BI — Cohortes clients. Matrice de rétention 12 mois, LTV par cohorte,
-  segmentation RFM (Champions, Loyaux, Nouveaux, À risque, Dormants, Perdus).
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -23,7 +16,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- Segmentation RFM -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Segmentation RFM</h2>
@@ -46,7 +39,7 @@
         </div>
       </div>
 
-      <!-- LTV par cohorte -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">LTV par cohorte</h2>
@@ -59,7 +52,7 @@
         </div>
       </div>
 
-      <!-- Retention matrix -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Matrice de rétention</h2>
@@ -131,7 +124,6 @@ const formatCohort = (ym: string) => {
   return `${MONTHS_FR[Number(m) - 1] ?? m} ${y.slice(2)}`
 }
 
-// Max number of month columns to display (based on the oldest cohort)
 const maxMonths = computed(() => {
   if (!data.value?.cohorts.length) return 11
   return Math.max(...data.value.cohorts.map(c =>
@@ -141,7 +133,6 @@ const maxMonths = computed(() => {
 
 const getCell = (row: CohortRow, m: number) => row.cells.find(c => c.monthDelta === m)
 
-// Heatmap: color based on retention (0 = transparent, 100 = dark primary)
 function cellStyle(row: CohortRow, m: number): Record<string, string> {
   const c = getCell(row, m)
   if (!c) return {}

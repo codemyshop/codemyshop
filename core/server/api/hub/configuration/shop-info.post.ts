@@ -1,14 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/hub/configuration/shop-info
- *
- * Body : { name: 'PS_SHOP_SIRET', value: '12345678900014' }
- *
- * Update a company field (ps_configuration). Strict whitelist. SIRET/SIREN
- * validated (digits only, 14/9 characters). Email validated for format.
- * PS_SHOP_COUNTRY_ID must be an integer (FK ps_country).
- */
 
 import { useClientDb } from '~/server/utils/db'
 import { upsertConfiguration } from '~/server/utils/ps-configuration'

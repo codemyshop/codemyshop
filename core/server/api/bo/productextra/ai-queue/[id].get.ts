@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/bo/productextra/ai-queue/:id
- * Remplace ac_productextra/ajaxgetaistatus (chantier #38 Phase B2).
- *
- * Polling every 5s on the Nuxt side. Statuses: pending | processing | done | failed.
- */
+
 import { getAiQueueStatus } from '~/modules/product-extra/server/utils/productextra'
 
 export default defineEventHandler(async (event) => {

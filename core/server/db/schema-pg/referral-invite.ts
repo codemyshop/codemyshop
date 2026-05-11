@@ -1,15 +1,4 @@
-/**
- *
- * Drizzle PG schema for `cs_referral_invite` — project #44 port-drizzle-mariadb-pg.
- *
- * Invitations referral MGM (programme Phase 3 Flywheel). Distinct de
- * `cs_referrals` (ambassador applications). Owned by `ac_referralinvite`.
- *
- * Mapping types MariaDB -> PG :
- *   - INT AUTO_INCREMENT          -> serial
- *   - ENUM('invited'…'deployed')  -> varchar(8) + $type<ReferralInviteStatus>
- *   - DATETIME                    -> timestamp(0) without time zone
- */
+
 
 import { index, pgSchema, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 

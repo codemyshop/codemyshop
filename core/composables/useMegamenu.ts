@@ -1,9 +1,4 @@
-/**
- *
- * Composable to load the megamenu from /api/megamenu (DB-first).
- * Transforms the API response to TheHeader.vue-compatible format
- * (megaMenu[], children[], isMegaMenu, bgColor, etc.)
- */
+
 
 interface ApiPsChild {
   id: number
@@ -31,14 +26,13 @@ interface ApiMegamenuItem {
   psChildren: ApiPsChild[]
 }
 
-/** Transforme un item API en format TheHeader.vue */
 function apiItemToHeaderFormat(root: ApiMegamenuItem): Record<string, any> {
   const item: Record<string, any> = {
     label: root.label,
     href: root.href,
   }
 
-  // Top-level badge (bubble above the label)
+  
   if (root.badge) item.badge = root.badge
   if (root.style?.badgeBg) item.badgeBg = root.style.badgeBg
   if (root.style?.badgeColor) item.badgeColor = root.style.badgeColor
@@ -57,9 +51,9 @@ function apiItemToHeaderFormat(root: ApiMegamenuItem): Record<string, any> {
 
   if (root.type === 'megamenu' && root.children.length) {
     item.isMegaMenu = true
-    // The groupTitle can be: plain string, i18n object {fr,en,de}, or null.
-    // We derive a stable canonical key (string) to group children
-    // that share the same group title, even in i18n.
+    
+    
+    
     const groupKeyOf = (gt: any): string => {
       if (!gt) return ''
       if (typeof gt === 'string') return gt
@@ -68,8 +62,8 @@ function apiItemToHeaderFormat(root: ApiMegamenuItem): Record<string, any> {
     }
     const groups = new Map<string, ApiMegamenuItem[]>()
     const groupOrder: string[] = []
-    // Preserves the original groupTitle (i18n object or string) by canonical key,
-    // to re-expose it as-is when rendering (i18nt will resolve it).
+    
+    
     const groupTitleByKey = new Map<string, any>()
 
     for (const child of root.children) {
@@ -82,8 +76,8 @@ function apiItemToHeaderFormat(root: ApiMegamenuItem): Record<string, any> {
       groups.get(key)!.push(child)
     }
 
-    // Normalizes an i18n-eligible field: pass the object as-is, wrap strings
-     // in { fr: ... } so that i18nt() can resolve in all cases.
+    
+     
     const normI18n = (v: any): any => {
       if (v === null || v === undefined || v === '') return undefined
       if (typeof v === 'object') return v
@@ -111,10 +105,10 @@ function apiItemToHeaderFormat(root: ApiMegamenuItem): Record<string, any> {
       }
     })
   } else if (root.type === 'dropdown' && (root.children.length || root.psChildren?.length)) {
-    // MegaMenu format (1 column without title) for stacked layout compatibility
+    
     item.isMegaMenu = false
 
-    // Liens explicites (children megamenu)
+    
     const explicitLinks = root.children.map((sub) => ({
       label: sub.label,
       href: sub.href,
@@ -126,9 +120,9 @@ function apiItemToHeaderFormat(root: ApiMegamenuItem): Record<string, any> {
       psCategoryId: sub.psCategoryId || undefined,
     }))
 
-    // Auto-generated links from PS categories (show_ps_children on the root)
-    // Sub-categories (grandchildren) only if the dropdown points to a deep level
-    // (ex: /marque/meyva = 2 segments → oui, /marque = 1 segment → non)
+    
+    
+    
     const hrefDepth = (root.href || '').replace(/^\/|\/$/g, '').split('/').filter(Boolean).length
     const showGrandchildren = hrefDepth >= 2
     const autoLinks = (root.psChildren || []).map(pc => ({
@@ -157,17 +151,17 @@ export function useMegamenu() {
     default: () => ({ items: [] }),
   })
 
-  // Local state editable by the builder (live preview)
+  
   const builderOverride = useState<Record<string, any>[] | null>('megamenu_builder_override', () => null)
 
-  /** Items for TheHeader: builder override > API DB > empty */
+  
   const menuItems = computed(() => {
     if (builderOverride.value?.length) return builderOverride.value
     if (!data.value?.items?.length) return []
     return data.value.items.map(apiItemToHeaderFormat)
   })
 
-  /** Loads the DB menu into the builder state (for live editing) */
+  
   function loadIntoBuilder() {
     if (data.value?.items?.length) {
       builderOverride.value = data.value.items.map(apiItemToHeaderFormat)
@@ -176,12 +170,12 @@ export function useMegamenu() {
     }
   }
 
-  /** Updates the builder state (immediate live preview in TheHeader) */
+  
   function setBuilderItems(items: Record<string, any>[]) {
     builderOverride.value = [...items]
   }
 
-  /** Syncs the builder menu to the DB via PUT /api/megamenu/sync */
+  
   async function syncToDb() {
     const items = builderOverride.value
     if (!items) return
@@ -189,17 +183,17 @@ export function useMegamenu() {
       method: 'PUT',
       body: { items },
     })
-    // Refreshes the useFetch cache so the non-builder frontend stays up-to-date
+    
     await refreshNuxtData('megamenu')
-    // Reloads the builder state from the fresh API: newly fetched PS psChildren
-    // fetched (following a showPsChildren toggle) must populate builderOverride,
-    // otherwise the live view (driven by builderOverride) won't display the sub-categories.
+    
+    
+    
     if (data.value?.items?.length) {
       builderOverride.value = data.value.items.map(apiItemToHeaderFormat)
     }
   }
 
-  /** Resets the builder override (when exiting edit mode) */
+  
   function clearBuilderOverride() {
     builderOverride.value = null
   }

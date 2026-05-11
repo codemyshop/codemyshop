@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { sql } from 'drizzle-orm'
@@ -12,25 +12,6 @@ import {
   resolvePsImgCategoryDir,
   writeCategoryImage,
 } from '~/server/utils/ps-fs'
-
-/**
- * POST /api/bo/categories/migrate-webp
- *
- * Phase 9b.3 — decouples FS Nuxt↔PS. Converts legacy JPG
- * `/img/c/{id}.jpg` en WebP responsive (400/600/800/1200) + JPG 800 fallback,
- * format identique aux uploads via `upload-cover`.
- *
- * Pipeline DB-direct (mode FS) :
- *   1. Scan FS `/img/c/*.jpg` (filtrage `{id}.jpg`, exclut `{id}_thumb.jpg`)
- *   2. SELECT slug `ps_category_lang.link_rewrite` id_lang=1
- * For each candidate: sharp clone + center crop 1:1 + 4 WebP + JPG 800
- * Purges old variants `{id}-*-*.webp` before write (idempotent)
- *   5. Write FS direct
- *
- * Fallback `psProxy` to ac_categorycovergen/migrate if no FS mount.
- *
- * Query params : force=1, limit=N, dry_run=1.
- */
 
 const COVER_WIDTHS = [400, 600, 800, 1200] as const
 const JPG_FALLBACK_WIDTH = 800
@@ -47,7 +28,7 @@ function slugify(s: string): string {
 }
 
 function rows<T = any>(result: any): T[] {
-  // postgres-js : `d.execute(sql\`…\`)` retourne directement un array de rows.
+  
   return ((result as any) as T[]) ?? []
 }
 
@@ -70,7 +51,7 @@ export default defineEventHandler(async (event) => {
   const dryRun = q.dry_run === '1' || q.dry_run === 'true'
   const limit = Math.max(0, Number(q.limit) || 0)
 
-  // ── Fallback legacy : pas de mount FS → psProxy ─────────────────────
+  
   if (!psFsCanWriteImgCategory(event)) {
     const forwarded: Record<string, string> = {}
     if (force) forwarded.force = '1'
@@ -90,7 +71,7 @@ export default defineEventHandler(async (event) => {
     return result
   }
 
-  // ── Pipeline DB-direct ──────────────────────────────────────────────
+  
   const dir = resolvePsImgCategoryDir(event)
   if (!dir || !existsSync(dir)) {
     throw createError({ statusCode: 500, message: 'Dossier /img/c introuvable côté Nuxt' })
@@ -122,7 +103,7 @@ export default defineEventHandler(async (event) => {
   const errors: Array<{ id: number; reason: string }> = []
 
   const sharp = (await import('sharp')).default
-  // Scan unique du dossier pour détecter les variantes WebP existantes par id.
+  
   const dirFiles = readdirSync(dir)
   const webpByCat = new Map<number, number>()
   for (const name of dirFiles) {
@@ -163,7 +144,7 @@ export default defineEventHandler(async (event) => {
       const srcBuffer = readFileSync(`${dir.replace(/\/+$/, '')}/${idCat}.jpg`)
       const base = sharp(srcBuffer).rotate()
 
-      // Purge anciennes variantes WebP (idempotent — re-run safe).
+      
       purgeCategoryImagesForId(event, idCat, 'cover')
 
       const written: string[] = []

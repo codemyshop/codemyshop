@@ -1,19 +1,4 @@
-<!--
-  Sommaire (Table of Contents) sticky générique pour pages catégorie/silo
-  (réutilisable multi-tenant). Colonne droite, sticky, highlight de la
-  section active via IntersectionObserver.
 
-  Règle : sommaire TOUJOURS en colonne droite sticky avec highlight actif
-  (cf feedback_sticky_toc.md, jamais inline).
-
-  Props :
-    - items : [{ id: 'sous-categories', label: 'Variétés' }, ...]
-              les `id` doivent matcher des id="..." dans la page parente.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { t } = useT()
 interface TocItem {
@@ -49,7 +34,7 @@ onMounted(() => {
       }
     },
     {
-      // A section is "active" as soon as its top enters the upper third
+      
       rootMargin: '-20% 0px -60% 0px',
       threshold: 0,
     },

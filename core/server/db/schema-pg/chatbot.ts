@@ -1,14 +1,4 @@
-/**
- *
- * Drizzle PG schema — chatbot domain (conversational lead capture).
- * Module ac_chatbot. Pattern :
- *   - 1 conversation = 1 visiteur, scenario_root + current_node_key trackent
- * progress in the tree. captured_* = identity fields captured.
- * - 1 message = 1 bubble (bot or user). type='buttons' = bot with options
- * clickable (options_json serializes [{label, nextKey}]).
- * - 1 answer = 1 response captured at a node, kept for the commercial summary
- * in /hub/leads (replays the complete flow without navigating through messages).
- */
+
 
 import {
   serial, integer, varchar, text, timestamp, boolean, pgSchema, index, uniqueIndex,
@@ -35,9 +25,9 @@ export const chatbotConversation = vaisseauMereAcSchema.table(
     capturedSiret:      varchar('captured_siret', { length: 14 }),
     status:             varchar('status', { length: 16 }).notNull().default('open'),
     idSmartlead:        integer('id_smartlead'),
-    // Handover bot → humain. Quand true, le moteur FSM cesse d'avancer :
-    // les messages user sont juste persistés (avec unread_for_admin=true)
-    // et c'est l'employé via /api/bo/chatbot/[token]/reply qui répond.
+    
+    
+    
     humanTakeover:      boolean('human_takeover').notNull().default(false),
     idEmployee:         integer('id_employee'),
     humanTakeoverAt:    timestamp('human_takeover_at', { mode: 'date', precision: 0 }),
@@ -60,9 +50,9 @@ export const chatbotMessage = vaisseauMereAcSchema.table(
   {
     idMessage:       serial('id_message').primaryKey(),
     idConversation:  integer('id_conversation').notNull(),
-    role:            varchar('role', { length: 16 }).notNull(), // 'bot' | 'user' | 'agent'
+    role:            varchar('role', { length: 16 }).notNull(), 
     content:         text('content').notNull(),
-    type:            varchar('type', { length: 16 }).notNull().default('text'), // 'text' | 'buttons'
+    type:            varchar('type', { length: 16 }).notNull().default('text'), 
     optionsJson:     text('options_json'),
     dateAdd:         timestamp('date_add', { mode: 'date', precision: 0 }).notNull().defaultNow(),
   },
@@ -94,9 +84,6 @@ export const chatbotAnswerLang = vaisseauMereAcSchema.table(
     answer:      text('answer'),
   },
 )
-
-// ─── Arbre conversationnel (DB-Only — un tenant = sa table seedée) ───
-// Pattern PS standard `_lang` : i18n strict via table jumelée, PK composite.
 
 export const chatbotNode = vaisseauMereAcSchema.table(
   'cs_chatbot_node',
@@ -150,9 +137,6 @@ export const chatbotOptionLang = vaisseauMereAcSchema.table(
   },
 )
 
-// Lien N-N produits ↔ conversation (multi-produits dans une seule négo).
-// Renseigné au fil du tunnel produit (qty/freq/target_price), récapitulé
-// dans le smartproject à l'envoi final.
 export const chatbotConversationProduct = vaisseauMereAcSchema.table(
   'cs_chatbot_conversation_product',
   {

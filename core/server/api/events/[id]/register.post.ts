@@ -1,9 +1,5 @@
-/**
- *
- * POST /api/events/:id/register
- * Registers a visitor to a published event — direct Drizzle DB access.
- * Email stub: console.log + extensible to Resend/SMTP.
- */
+
+
 import { readBody, getRouterParam, createError } from 'h3'
 import {
   createRegistration,
@@ -41,7 +37,7 @@ export default defineEventHandler(async (event) => {
   })
   await incrementEventCount(eventId, 1)
 
-  // BACKLOG #143: remplacer par appel SMTP / module newsletter AC
+  
   console.log(
     `[EMAIL STUB] Confirmation d'inscription envoyée à ${body.email}`,
     `pour l'événement "${ev.title}" (${ev.date})`,

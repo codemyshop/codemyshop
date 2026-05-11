@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { createAeClient } from '~/internal/aetracker/server/utils/aetracker'
 
-/**
- * POST /api/bo/finance/ae/clients — Creates a recurring or one-time client.
- *
- * Body : { label, monthlyHt, startDate, endDate?, status?, clientKind?, notes? }
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   if (!body?.label || typeof body.label !== 'string') {

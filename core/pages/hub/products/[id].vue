@@ -10,7 +10,7 @@
       </div>
       <div v-else class="flex-1" />
       <div class="flex items-center gap-2">
-        <!-- Sprint 12 — PIM language selector (multi-tenant) -->
+        
         <HubLangSelector aria-label="Langue d'édition du produit" />
 
         <span v-if="saved" class="text-xs text-green-600 font-medium">Sauvegardé</span>
@@ -51,9 +51,9 @@
     <div v-else-if="product" class="px-6 py-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- Colonne gauche : Tabs -->
+        
         <div class="lg:col-span-2 space-y-6">
-          <!-- Barre d'onglets PS8-style -->
+          
           <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm">
             <nav class="flex items-center gap-1 px-4 border-b border-gray-100 dark:border-slate-800" role="tablist">
               <button
@@ -75,7 +75,7 @@
             </nav>
           </div>
 
-          <!-- Tab : Essentiel -->
+          
           <div v-show="activeTab === 'essentiel'" class="space-y-6">
             <HubProductImages
               :images="images"
@@ -91,7 +91,7 @@
             />
             <HubProductCombinations ref="combinationsRef" :existing-combinations="productCombinations" />
 
-            <!-- Characteristics (read-only) -->
+            
             <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
               <div class="flex items-center justify-between mb-4">
                 <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Caractéristiques ({{ features.length }})</h2>
@@ -107,9 +107,9 @@
             </div>
           </div>
 
-          <!-- Tab : Description -->
+          
           <div v-show="activeTab === 'description'" class="space-y-6">
-            <!-- AI writing — Summary + Long description -->
+            
             <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
               <div class="flex items-center justify-between">
                 <div>
@@ -137,7 +137,7 @@
                 />
               </div>
 
-              <!-- Mode Centaure -->
+              
               <div v-if="aiMode === 'centaure'" class="mt-4 space-y-3">
                 <button
                   @click="generateCentaurePrompt"
@@ -177,7 +177,7 @@
                 </div>
               </div>
 
-              <!-- Mode API -->
+              
               <div v-if="aiMode === 'api'" class="mt-4 space-y-3">
                 <button
                   @click="requestProductContent"
@@ -210,12 +210,12 @@
             <HubProductAttachments v-if="product" :product-id="Number(product.id)" />
           </div>
 
-          <!-- Tab : Livraison -->
+          
           <div v-show="activeTab === 'livraison'" class="space-y-6">
             <HubProductShipping v-model="form" />
           </div>
 
-          <!-- Tab : Cross-selling (accessoires ps_accessory) -->
+          
           <div v-show="activeTab === 'crossell'" class="space-y-6">
             <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
               <div class="flex items-center justify-between">
@@ -226,7 +226,7 @@
                 <span class="text-[10px] uppercase tracking-wide text-gray-400">{{ accessories.length }} lié{{ accessories.length > 1 ? 's' : '' }}</span>
               </div>
 
-              <!-- Recherche + ajout -->
+              
               <div class="relative">
                 <input
                   v-model="addSearch"
@@ -259,7 +259,7 @@
 
               <p v-if="addFeedback" class="text-xs" :class="addFeedback.ok ? 'text-emerald-600' : 'text-amber-600'">{{ addFeedback.msg }}</p>
 
-              <!-- List of current accessories -->
+              
               <div v-if="accessoriesLoading" class="space-y-2">
                 <div v-for="i in 3" :key="i" class="h-10 bg-gray-100 dark:bg-slate-800 rounded-lg animate-pulse" />
               </div>
@@ -285,9 +285,9 @@
             </section>
           </div>
 
-          <!-- Tab: SEO -->
+          
           <div v-show="activeTab === 'seo'" class="space-y-6">
-            <!-- Optimisation SEO par IA (Centaure + API) -->
+            
             <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-3">
               <div class="flex items-center justify-between">
                 <div>
@@ -306,7 +306,7 @@
                 </div>
               </div>
 
-              <!-- Mode Centaure -->
+              
               <div v-if="seoMode === 'centaure'" class="space-y-3">
                 <div class="flex items-center gap-2">
                   <button
@@ -346,7 +346,7 @@
                 </div>
               </div>
 
-              <!-- Mode API -->
+              
               <div v-if="seoMode === 'api'" class="space-y-3">
                 <button
                   @click="requestProductContent"
@@ -385,12 +385,12 @@
           </div>
         </div>
 
-        <!-- Right column: Price + Stock + Status + Special prices -->
+        
         <div class="space-y-6">
           <HubProductPricing v-model="form" :tax-rules="taxRules" />
           <HubProductStock v-model="form" />
 
-          <!-- Status -->
+          
           <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
             <div class="flex items-center justify-between">
               <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">État</h2>
@@ -403,7 +403,7 @@
             <p class="text-[11px] text-gray-400">Poids, dimensions et visibilité : onglet <span class="font-semibold">Essentiel</span> → Logistique / Visibilité.</p>
           </div>
 
-          <!-- Special prices (read-only) -->
+          
           <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Prix spéciaux ({{ specificPrices.length }})</h2>
@@ -435,7 +435,6 @@ definePageMeta({ layout: 'hub', ssr: false, middleware: ['hub-auth'] })
 
 const route = useRoute()
 
-// Sprint 12 — multilang: PIM editing language (shared useState).
 const { currentLangId } = useHubLang()
 
 const product = ref<any>(null)
@@ -508,13 +507,6 @@ const tabs: Array<{ id: ProductTab; label: string }> = [
   { id: 'crossell', label: 'Cross-selling' },
   { id: 'seo', label: 'Référencement' },
 ]
-
-// NOTE sprint 5.1 : v-model="form" direct (form est reactive).
-// Computed slices created a new plain JS object on each get →
-// lost child mutations (defineModel only emits update:modelValue on
-// complete reassignment of model.value, not on property mutation).
-// GeneralForm/PricingForm/StockForm child types are a structural sub-
-// set of form, so the assignment passes in TS.
 
 async function load() {
   loading.value = true
@@ -643,7 +635,6 @@ function onCategoryAddRequest() {
   console.log('[hub/product] add categories requested — tree-picker à brancher')
 }
 
-// ── Cross-selling : accessoires produit (ps_accessory) ─────────
 interface AccessoryRule { src: number; dst: number; srcName: string; dstName: string; srcRef: string; dstRef: string }
 const accessories = ref<AccessoryRule[]>([])
 const accessoriesLoading = ref(false)
@@ -739,7 +730,6 @@ async function removeAccessory(dst: number) {
   }
 }
 
-// ── AI product writing ──────────────────────────────────────
 const prodInstructions = ref('')
 const prodRedactionGenerating = ref(false)
 const prodRedactionStatus = ref<string | null>(null)
@@ -800,7 +790,7 @@ async function checkProdRedactionStatus() {
       prodRedactionStatus.value = 'En file d\'attente'
       prodRedactionStatusClass.value = 'text-violet-400'
     }
-  } catch { /* silent */ }
+  } catch {  }
 }
 
 function applyProductContent() {
@@ -820,7 +810,6 @@ function applyProductSeo() {
   prodRedactionStatusClass.value = 'text-emerald-600'
 }
 
-// ── AI: Summary + Description (Description tab) ──────────────
 const aiMode = ref<'centaure' | 'api'>('centaure')
 const centaurePrompt = ref('')
 const centaureResponse = ref('')
@@ -870,7 +859,6 @@ function applyCentaureResponse() {
   prodRedactionStatusClass.value = 'text-emerald-600'
 }
 
-// ── AI: SEO (SEO tab) ───────────────────────────────────────
 const seoMode = ref<'centaure' | 'api'>('centaure')
 const seoPrompt = ref('')
 const seoResponse = ref('')
@@ -933,7 +921,7 @@ function applySeoResponse() {
 
 onMounted(() => {
   load()
-  // Check if a redaction already exists
+  
   if (route.params.id && route.params.id !== 'new') {
     checkProdRedactionStatus()
     loadAccessories()
@@ -944,7 +932,6 @@ onUnmounted(() => {
   if (prodRedactionPollTimer) clearInterval(prodRedactionPollTimer)
 })
 
-// Sprint 12 — reload on each language change.
 watch(currentLangId, (newId, oldId) => {
   if (newId !== oldId && !loading.value) load()
 })

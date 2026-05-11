@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-auto">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 flex items-center gap-4 shrink-0">
       <NuxtLink to="/hub/orders" class="text-gray-400 hover:text-primary-600 transition-colors">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -29,10 +29,10 @@
 
     <div v-else-if="order" class="px-6 py-6 space-y-6">
 
-      <!-- Row 1: Status + Financial summary -->
+      
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-        <!-- Changement de statut -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-3">Modifier le statut</h2>
           <select v-model="newStatusId" class="w-full text-sm border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-2 mb-3">
@@ -43,7 +43,7 @@
           </button>
         </div>
 
-        <!-- Financial summary -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-3">Montants</h2>
           <dl class="space-y-2 text-sm">
@@ -57,7 +57,7 @@
           </dl>
         </div>
 
-        <!-- Client -->
+        
         <div v-if="customer" class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-3">Client</h2>
           <p class="text-sm font-medium text-gray-800 dark:text-slate-100">{{ customer.firstname }} {{ customer.lastname }}</p>
@@ -68,7 +68,7 @@
         </div>
       </div>
 
-      <!-- Row 2 : Produits -->
+      
       <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl overflow-hidden">
         <div class="px-5 py-3 border-b border-gray-100 dark:border-slate-800">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Produits ({{ items.length }})</h2>
@@ -107,10 +107,10 @@
         </table>
       </div>
 
-      <!-- Row 3 : Adresses + Historique -->
+      
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-        <!-- Adresse livraison -->
+        
         <div v-if="addrDelivery" class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-2">Adresse de livraison</h2>
           <div class="text-xs text-gray-600 leading-relaxed">
@@ -124,7 +124,7 @@
           </div>
         </div>
 
-        <!-- Adresse facturation -->
+        
         <div v-if="addrInvoice" class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-2">Adresse de facturation</h2>
           <div class="text-xs text-gray-600 leading-relaxed">
@@ -137,7 +137,7 @@
           </div>
         </div>
 
-        <!-- Historique -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-3">Historique</h2>
           <div class="space-y-2 max-h-60 overflow-auto">

@@ -1,11 +1,4 @@
-<!--
-  Pagination nav — composant partagé (utilisée en haut ET en bas de grille catégorie).
-  Source unique : modifier ce composant propage aux 2 positions.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { localePath } = useLocalePath()
 const { t } = useT()

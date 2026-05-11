@@ -1,9 +1,4 @@
-/**
- * Drizzle PG schema — cs_bot_hits.
- *
- * Bot traffic analytics (~64k rows). OSS-safe (generic).
- * Extracted from core/server/db/schema-pg/step7-readonly.ts (oss-phase2 initiative).
- */
+
 
 import {
   index,

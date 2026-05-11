@@ -1,25 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { isValidActivityCode } from '~/utils/customerActivity'
 
-/**
- * PUT /api/bo/customers/:id — customer record editing.
- *
- * Touche trois zones :
- * 1. ps_customer        : identity + flags + siret + company
- *   2. ps_address         : adresse facturation principale (company,
- * vat_number). Update the first
- * active customer address (PS pattern
- * standard) ; create if the customer doesn't yet
- * have an address (CSV import case).
- * 3. ps_customer_group  : reset + insert B2B groups. The
- * id_default_group is forced in the set
- * to respect the PS constraint (a customer
- * MUST belong to their default group).
- *
- * No multilang — ps_customer has no localized columns.
- */
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, message: 'id requis' })
@@ -36,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
   const stats = { customerUpdated: false, addressUpdated: false, addressCreated: false, groupsSet: 0, activityUpdated: false }
 
-  // ─── 1. ps_customer ──────────────────────────────────────────────
+  
   const cf: string[] = []
   const cp: any[] = []
   if (body.firstname !== undefined) { cf.push('firstname = ?'); cp.push(String(body.firstname || '').trim()) }
@@ -56,10 +39,10 @@ export default defineEventHandler(async (event) => {
     stats.customerUpdated = true
   }
 
-  // ─── 2. ps_address — adresse facturation principale ──────────────
-  // Champs pilotés par le Bloc Profil B2B de la fiche : company,
-  // vat_number. Pas de mutation des autres colonnes (address1, ville…)
-  // depuis cet endpoint — elles ont leur propre éditeur d'adresses
+  
+  
+  
+  
   const hasAddrFields = body.company !== undefined || body.vatNumber !== undefined
   if (hasAddrFields) {
     const existing = await db.get<any>(`
@@ -79,10 +62,10 @@ export default defineEventHandler(async (event) => {
         stats.addressUpdated = true
       }
     } else if (body.company || body.vatNumber) {
-      // Aucune adresse encore — on seed une adresse minimale pour
-      // porter company/vat_number. Les colonnes NOT NULL sont
-      // complétera plus tard côté PS BO. alias='Facturation' pour
-      // distinguer des adresses normales.
+      
+      
+      
+      
       await db.run(`
         INSERT INTO ps_address
           (id_country, id_state, id_customer, id_manufacturer, id_supplier, id_warehouse,
@@ -90,7 +73,7 @@ export default defineEventHandler(async (event) => {
            phone, vat_number, date_add, date_upd, active, deleted)
         VALUES (?, 0, ?, 0, 0, 0, 'Facturation', ?, ?, ?, '—', '00000', '—', '', ?, NOW(), NOW(), 1, 0)
       `, [
-        Number(body.countryId) || 8, // 8 = France par défaut PS
+        Number(body.countryId) || 8, 
         customerId,
         String(body.company || ''),
         String(body.lastname || exists.id_customer || '—'),
@@ -101,11 +84,11 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // ─── 3. ps_customer_group ────────────────────────────────────────
-  // Reset complet puis insert. On force l'inclusion du
-  // id_default_group pour respecter la contrainte PS native (le
-  // groupe par défaut DOIT appartenir au set — sinon Customer::isUsed
-  // et le tarif B2B plantent).
+  
+  
+  
+  
+  
   if (Array.isArray(body.groupIds)) {
     const defaultGroup = Number(body.defaultGroupId) || Number(exists.id_default_group) || 3
     const set = new Set<number>(
@@ -113,10 +96,10 @@ export default defineEventHandler(async (event) => {
     )
     set.add(defaultGroup)
 
-    // ps_customer_group a une PK composite (id_customer, id_group) — pas de
-    // colonne id_customer_group. db.run() ajoute heuristiquement RETURNING
-    // id_customer_group et fait planter PG (cf feedback_db_run_returning_short_pks).
-    // db.query suffit ici, on n'a pas besoin de l'insertId.
+    
+    
+    
+    
     await db.query(`DELETE FROM ps_customer_group WHERE id_customer = ?`, [customerId])
     for (const gid of set) {
       await db.query(
@@ -127,11 +110,11 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // ─── 4. Profil B2B étendu (cs_customer_extra) ─────────────────
-  // Source de vérité unique — UPSERT sur id_customer via la façade Drizzle.
-  // Les codes sont sémantiques (gms, chr, grossiste, …) et validés côté serveur.
-  // Si la table n'existe pas (module ac_customerextra non installé),
-  // on remonte une 501 explicite : mieux que silent-fail sur un write.
+  
+  
+  
+  
+  
   if (body.activityCode !== undefined) {
     const raw = body.activityCode === null || body.activityCode === '' ? null : String(body.activityCode)
     if (raw !== null && !isValidActivityCode(raw)) {

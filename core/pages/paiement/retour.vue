@@ -1,11 +1,4 @@
-<!--
-  Page retour SystemPay — /paiement/retour
-  Affiche le résultat du paiement CB après redirection depuis SystemPay.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -28,7 +21,7 @@ const isCancelled = computed(() => ['CANCELLED', 'ABANDONED'].includes(transStat
   <NuxtLayout name="default">
     <div class="min-h-screen bg-gray-50 py-16 px-4">
       <div class="max-w-lg mx-auto">
-        <!-- Payment accepted -->
+        
         <div v-if="isSuccess" class="bg-white rounded-2xl p-8 shadow-sm text-center">
           <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -45,7 +38,7 @@ const isCancelled = computed(() => ['CANCELLED', 'ABANDONED'].includes(transStat
           </NuxtLink>
         </div>
 
-        <!-- Payment declined -->
+        
         <div v-else-if="isRefused" class="bg-white rounded-2xl p-8 shadow-sm text-center">
           <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -62,7 +55,7 @@ const isCancelled = computed(() => ['CANCELLED', 'ABANDONED'].includes(transStat
           </NuxtLink>
         </div>
 
-        <!-- Payment cancelled -->
+        
         <div v-else-if="isCancelled" class="bg-white rounded-2xl p-8 shadow-sm text-center">
           <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-8 h-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -79,7 +72,7 @@ const isCancelled = computed(() => ['CANCELLED', 'ABANDONED'].includes(transStat
           </NuxtLink>
         </div>
 
-        <!-- Statut inconnu -->
+        
         <div v-else class="bg-white rounded-2xl p-8 shadow-sm text-center">
           <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

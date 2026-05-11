@@ -1,9 +1,5 @@
-/**
- *
- * PUT /api/footer-config/sync — UPSERT footer config (master + _lang + social).
- * Accepts i18n values as plain strings (applied to all active languages
- * ) OR as an object { fr, en, … } (one value per iso_code, fallback fr).
- */
+
+
 import { resolveClientId } from '~/server/utils/db'
 import {
   upsertConfig,
@@ -28,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const clientId = resolveClientId(event)
   const langs = await getActiveLangs({ event })
 
-  // 1. Master config
+  
   await upsertConfig({
     clientId,
     footerTheme: f.theme || 'dark',
@@ -44,7 +40,7 @@ export default defineEventHandler(async (event) => {
   const idCfg = await getConfigIdByClient(clientId, { event })
   if (!idCfg) throw createError({ statusCode: 500, message: 'Impossible de résoudre id_footer_config' })
 
-  // 2. _lang (une ligne par langue active)
+  
   for (const l of langs) {
     await upsertConfigLang(idCfg, l.id_lang, {
       description: pickLang(f.description, l.iso_code),
@@ -60,7 +56,7 @@ export default defineEventHandler(async (event) => {
     }, { event })
   }
 
-  // 3. Social — DELETE ALL + INSERT (replace strategy)
+  
   const socialItems = Array.isArray(f.social) ? f.social : []
   const socials = []
   let pos = 0

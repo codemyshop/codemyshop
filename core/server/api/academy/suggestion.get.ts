@@ -1,8 +1,4 @@
-/**
- * GET /api/academy/suggestion?module_slug=X&lesson_index=Y
- * Return the suggested question for a lesson — direct Drizzle DB.
- *
- */
+
 
 import { getSuggestion } from '~/server/utils/academy-db'
 

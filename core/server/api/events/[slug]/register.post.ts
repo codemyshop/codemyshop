@@ -1,11 +1,4 @@
-/**
- *
- * POST /api/events/{slug}/register
- * Public registration (anonymous) to an event. V1 = free only,
- * no auth, no email confirmation (just DB record).
- *
- * Body : { email, name, phone?, attendeesCount?, note?, consentParticipantsList? }
- */
+
 
 import { randomBytes } from 'node:crypto'
 import { useClientDb } from '../../../utils/db'
@@ -36,7 +29,7 @@ export default defineEventHandler(async (event) => {
   const note = body?.note ? String(body.note).slice(0, 1000) : null
   const consent = body?.consentParticipantsList ? 1 : 0
 
-  // Charge l'event
+  
   const events = await db.query<any>(
     `SELECT id_event, registration_open, registration_deadline, max_participants, status
        FROM cs_event
@@ -52,7 +45,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 409, statusMessage: 'Deadline d\'inscription dépassée' })
   }
 
-  // Limite de places
+  
   if (ev.max_participants) {
     const counts = await db.query<{ total: string }>(
       `SELECT COUNT(*) AS total FROM cs_event_registration
@@ -65,7 +58,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Détecte doublon (email + event)
+  
   const dup = await db.query<any>(
     `SELECT id_registration, status FROM cs_event_registration
       WHERE id_event = ? AND email = ? LIMIT 1`,
@@ -75,7 +68,7 @@ export default defineEventHandler(async (event) => {
     if (dup[0].status === 'confirmed') {
       return { ok: true, alreadyRegistered: true, idRegistration: Number(dup[0].id_registration) }
     }
-    // pending/cancelled → réactiver
+    
     await db.run(
       `UPDATE cs_event_registration
           SET status = 'confirmed', name = ?, phone = ?, attendees_count = ?, note = ?,
@@ -86,7 +79,7 @@ export default defineEventHandler(async (event) => {
     return { ok: true, reactivated: true, idRegistration: Number(dup[0].id_registration) }
   }
 
-  // Nouvelle inscription
+  
   const token = randomBytes(24).toString('hex')
   const ip = String(getHeader(event, 'x-forwarded-for') || '').split(',')[0].trim() || null
   const ua = String(getHeader(event, 'user-agent') || '').slice(0, 512) || null
@@ -103,6 +96,6 @@ export default defineEventHandler(async (event) => {
   return {
     ok: true,
     idRegistration: Number(result[0]?.id_registration || 0),
-    cancelToken: token,  // l'inscrit peut revenir avec ce token pour annuler
+    cancelToken: token,  
   }
 })

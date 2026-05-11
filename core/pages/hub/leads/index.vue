@@ -45,9 +45,7 @@
       </div>
     </header>
 
-    <!-- Barre d'enrichissement — sources gratuites pour récupérer nom + email
-         Visuel = mémo permanent. Chaque pill ouvre une fiche méthode (legal, gratuité,
-         couverture estimée). Bouton "Lancer" actif uniquement si scraper codé. -->
+    
     <nav class="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-800 px-6 py-2 flex items-center gap-2 shrink-0 overflow-x-auto">
       <span class="text-[10px] uppercase tracking-wider font-semibold text-gray-500 dark:text-slate-400 mr-2 shrink-0">Enrichir (gratuit)</span>
       <button
@@ -66,7 +64,7 @@
       </button>
     </nav>
 
-    <!-- Modal fiche source d'enrichissement -->
+    
     <div
       v-if="enrichmentOpen"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -135,7 +133,7 @@
       @done="load"
     />
 
-    <!-- Lead creation modal -->
+    
     <HubCreateModal v-model="showCreate" title="Nouveau lead" :loading="creating" @submit="createLead">
       <div class="space-y-3">
         <div class="grid grid-cols-2 gap-3">
@@ -154,7 +152,7 @@
       @go="goPage" @update:per-page="setPerPage"
       class="border-b border-gray-100 dark:border-slate-800" />
 
-    <!-- Bulk action bar — appears as soon as at least 1 row is checked. -->
+    
     <div
       v-if="selection.size > 0"
       class="bg-primary-50 dark:bg-primary-950/40 border-b border-primary-200 dark:border-primary-800 px-6 py-2 flex items-center gap-3 shrink-0"
@@ -193,7 +191,7 @@
       </button>
     </div>
 
-    <!-- Modal confirmation suppression en lot -->
+    
     <div
       v-if="bulkDeleteOpen"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -215,7 +213,7 @@
           </ul>
         </div>
 
-        <!-- Mode de suppression compte boutique -->
+        
         <div v-if="selectionCounts.customerNoorder" class="rounded-lg border border-gray-200 dark:border-slate-700 p-3 space-y-2">
           <p class="text-[11px] uppercase tracking-wide text-gray-500 font-semibold">
             Mode pour {{ selectionCounts.customerNoorder }} compte{{ selectionCounts.customerNoorder > 1 ? 's' : '' }} boutique
@@ -246,7 +244,7 @@
       </div>
     </div>
 
-    <!-- Batch SMTP verification modal -->
+    
     <div
       v-if="bulkVerifyOpen"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -261,7 +259,7 @@
           </p>
         </div>
 
-        <!-- Barre de progression -->
+        
         <div v-if="bulkVerifyRunning || bulkVerifyDone > 0" class="space-y-1.5">
           <div class="flex justify-between text-[11px] text-gray-600 dark:text-slate-300 font-mono">
             <span>{{ bulkVerifyDone }} / {{ bulkVerifyTotal }}</span>
@@ -275,7 +273,7 @@
           </div>
         </div>
 
-        <!-- Count by status (live) -->
+        
         <div v-if="bulkVerifyDone > 0" class="grid grid-cols-3 gap-2 text-[11px]">
           <div class="rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 px-2 py-1.5 text-center">
             <div class="font-semibold text-base leading-tight">{{ bulkVerifyCounts.ok }}</div>
@@ -291,7 +289,7 @@
           </div>
         </div>
 
-        <!-- Current state -->
+        
         <p v-if="bulkVerifyRunning && bulkVerifyCurrent" class="text-[11px] text-gray-500 dark:text-slate-400 truncate">
           En cours : {{ bulkVerifyCurrent }}
         </p>
@@ -323,7 +321,7 @@
       </div>
     </div>
 
-    <!-- LinkedIn modal — verification + save profile URL -->
+    
     <div
       v-if="linkedinLead"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -340,7 +338,7 @@
           </p>
         </div>
 
-        <!-- Step 1: Google search -->
+        
         <div class="border border-gray-100 dark:border-slate-800 rounded-lg p-3 space-y-2">
           <p class="text-[10px] uppercase font-semibold text-gray-400 tracking-wider">Étape 1 — Trouver le profil</p>
           <a
@@ -356,7 +354,7 @@
           <p v-else class="text-xs text-gray-400">Nom incomplet — recherche indisponible.</p>
         </div>
 
-        <!-- Step 2: Verified URL -->
+        
         <div class="border border-gray-100 dark:border-slate-800 rounded-lg p-3 space-y-2">
           <p class="text-[10px] uppercase font-semibold text-gray-400 tracking-wider">Étape 2 — Coller l'URL du profil vérifié</p>
           <input
@@ -399,7 +397,7 @@
       </div>
     </div>
 
-    <!-- Modal Email — sonde SMTP RCPT TO + statut -->
+    
     <div
       v-if="emailLead"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -419,7 +417,7 @@
           </p>
         </div>
 
-        <!-- SMTP verification -->
+        
         <div class="border border-gray-100 dark:border-slate-800 rounded-lg p-3 space-y-2">
           <div class="flex items-start gap-2">
             <span class="text-base">✓</span>
@@ -437,7 +435,7 @@
             class="text-xs px-3 py-1.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
           >{{ emailVerifying ? 'Sondage en cours…' : 'Lancer la vérification SMTP' }}</button>
 
-          <!-- Result -->
+          
           <div v-if="emailVerifyResult" class="text-[11px] mt-2 space-y-0.5 bg-gray-50 dark:bg-slate-800 rounded p-2">
             <p>
               <span class="font-semibold">Statut :</span>
@@ -451,7 +449,7 @@
             </p>
           </div>
 
-          <!-- Last verification persisted -->
+          
           <p v-else-if="emailLead.emailVerifiedAt" class="text-[11px] text-gray-500 dark:text-slate-400">
             Dernière vérification : <b>{{ emailStatusLabel(emailLead.emailVerifiedStatus) }}</b>
             le {{ formatDate(emailLead.emailVerifiedAt) }}.
@@ -495,9 +493,7 @@
             <th @click="toggleSort('city')" class="px-4 py-2.5 font-medium cursor-pointer select-none hover:text-gray-700 dark:hover:text-slate-200"><span class="inline-flex items-center gap-1">Ville<span class="text-gray-300">{{ sortGlyph('city') }}</span></span></th>
             <th @click="toggleSort('website')" class="px-4 py-2.5 font-medium cursor-pointer select-none hover:text-gray-700 dark:hover:text-slate-200"><span class="inline-flex items-center gap-1">Site<span class="text-gray-300">{{ sortGlyph('website') }}</span></span></th>
             <th v-if="hasFeature('crm-leads-stack-detection')" @click="toggleSort('stack')" class="px-4 py-2.5 font-medium cursor-pointer select-none hover:text-gray-700 dark:hover:text-slate-200"><span class="inline-flex items-center gap-1">Stack<span class="text-gray-300">{{ sortGlyph('stack') }}</span></span></th>
-            <!-- Enterprise feature gating (POC 2026-05-10) : CA + Capa = lead.ca / lead.capa
-                 du marketplace_feature catalog. Community → colonnes masquées (hasFeature()
-                 retourne false par défaut sur tenants sans souscription Enterprise active). -->
+            
             <th v-if="hasFeature('lead.ca')" @click="toggleSort('ca')" class="px-4 py-2.5 font-medium text-right cursor-pointer select-none hover:text-gray-700 dark:hover:text-slate-200"><span class="inline-flex items-center gap-1">CA<span class="text-gray-300">{{ sortGlyph('ca') }}</span></span></th>
             <th v-if="hasFeature('lead.capa')" @click="toggleSort('capa')" class="px-4 py-2.5 font-medium cursor-pointer select-none hover:text-gray-700 dark:hover:text-slate-200"><span class="inline-flex items-center gap-1">Capa<span class="text-gray-300">{{ sortGlyph('capa') }}</span></span></th>
             <th v-if="hasFeature('crm-leads-generation-detection')" @click="toggleSort('generation')" class="px-4 py-2.5 font-medium cursor-pointer select-none hover:text-gray-700 dark:hover:text-slate-200"><span class="inline-flex items-center gap-1">Génération<span class="text-gray-300">{{ sortGlyph('generation') }}</span></span></th>
@@ -505,7 +501,7 @@
             <th class="px-4 py-2.5 font-medium">Tél</th>
             <th @click="toggleSort('date')" class="px-4 py-2.5 font-medium cursor-pointer select-none hover:text-gray-700 dark:hover:text-slate-200"><span class="inline-flex items-center gap-1">Date<span class="text-gray-300">{{ sortGlyph('date') }}</span></span></th>
           </tr>
-          <!-- Filter row per column (PrestaShop BO style) — auto-applies with 300ms debounce -->
+          
           <tr class="border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
             <th class="px-2 py-1.5">
               <button
@@ -667,7 +663,7 @@
 
     <HubPaginationBar v-if="totalPages > 1" :page="page" :total-pages="totalPages" :total="total" label="leads" @go="goPage" class="border-t border-gray-100 dark:border-slate-800" />
 
-    <!-- Modal config Capa (par tenant) -->
+    
     <div
       v-if="capaModalOpen"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
@@ -706,7 +702,7 @@
             </div>
           </div>
         </div>
-        <!-- Live preview: how many leads land in each bucket -->
+        
         <div class="text-xs bg-gray-50 dark:bg-slate-800 rounded-lg p-3 space-y-1">
           <p class="font-medium text-gray-700 dark:text-slate-200 mb-1">Aperçu sur les leads chargés :</p>
           <div class="flex flex-wrap gap-2">
@@ -724,7 +720,7 @@
       </div>
     </div>
 
-    <!-- Qualification editing modal (click on lead row) -->
+    
     <div
       v-if="editLead"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
@@ -794,15 +790,9 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
-// Reserved feature flags — ac_only=1:
-// - crm-leads-stack-detection      : "Stack" column (lead site tech stack)
-// - crm-leads-generation-detection : "Generation" column (business owner age from business registry)
-// A tenant does not see either the tech stack or the owner age of their
-// own leads — internal prospecting use case, outside customer scope.
 const { hasFeature, loadFeatures, loaded: featuresLoaded } = useFeatureFlag()
 
 const leads = ref<any[]>([])
@@ -823,11 +813,6 @@ const creating = ref(false)
 const createError = ref('')
 const newLead = reactive({ firstname: '', lastname: '', email: '', company: '', phone: '' })
 
-// ── Sources d'enrichissement gratuites ─────────────────────────
-// Permanent memo displayed in horizontal bar below header.
-// Each source = a free method to retrieve name/email/phone of a lead
-// from a company name or website. Core strategy:
-// targeted prospecting, no mass scraping.
 type EnrichmentSource = {
   key: string
   label: string
@@ -933,7 +918,6 @@ function openEnrichment(key: string) {
   enrichmentOpen.value = true
 }
 
-// ── Import CSV (UPSERT par email) ──────────────────────────────
 const importOpen = ref(false)
 const importTargetFields = [
   { key: 'email', label: 'Email', required: true },
@@ -985,8 +969,6 @@ async function goPage(p: number) {
   await load()
 }
 
-// Column filters (back-office style) — applied via query params,
-// debounce 300ms to avoid hammering the API on every keystroke.
 const colFilters = reactive({
   fSourceCol: '' as string,
   fName: '' as string,
@@ -1031,7 +1013,7 @@ async function load() {
         page: page.value, perPage: perPage.value,
         search: search.value, source: source.value,
         sort: sortKey.value || undefined, dir: sortDir.value || undefined,
-        // Column filters — undefined = not sent (cleaner URL)
+        
         fSourceCol:    colFilters.fSourceCol || undefined,
         fName:         colFilters.fName || undefined,
         fProfession:   colFilters.fProfession || undefined,
@@ -1051,8 +1033,6 @@ async function load() {
   } finally { loading.value = false }
 }
 
-// Debounce filter changes: 300ms after last keystroke
-// relaunch the request. Reset page=1 (otherwise we stay on an empty page).
 let colFilterTimer: any = null
 watch(colFilters, () => {
   if (colFilterTimer) clearTimeout(colFilterTimer)
@@ -1062,12 +1042,6 @@ watch(colFilters, () => {
   }, 300)
 }, { deep: true })
 
-// Server-side sorting — click on header toggles asc/desc, return to page 1.
-// Preference persisted in localStorage (hub:leads:sort) — rehydrated
-// before the first load() on the client side (page ssr:false).
-// Default revenue descending (largest revenue at top) — preference persisted in
-// localStorage (see loadSortPref below), so a user who clicks on
-// "date" keeps their choice across sessions.
 const sortKey = ref<string>('ca')
 const sortDir = ref<'asc' | 'desc'>('desc')
 
@@ -1079,22 +1053,22 @@ function loadSortPref() {
     const obj = JSON.parse(raw)
     if (obj?.key && typeof obj.key === 'string') sortKey.value = obj.key
     if (obj?.dir === 'asc' || obj?.dir === 'desc') sortDir.value = obj.dir
-  } catch { /* localStorage indispo / corrompu — on ignore */ }
+  } catch {  }
 }
 watch([sortKey, sortDir], ([k, d]) => {
   try {
     localStorage.setItem(SORT_PREF_KEY, JSON.stringify({ key: k, dir: d }))
-  } catch { /* quota plein, mode privé, etc. */ }
+  } catch {  }
 })
 function toggleSort(key: string) {
   if (sortKey.value === key) {
     sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
   } else {
     sortKey.value = key
-    // Sensible defaults:
-    // - numeric (revenue, generation, date) → desc (largest at top)
-    // - capacity → asc (bucket 1=Comfortable at top, 4=Risky at bottom)
-    // - text → asc (alphabetic)
+    
+    
+    
+    
     sortDir.value = ['ca', 'generation', 'date'].includes(key) ? 'desc' : 'asc'
   }
   page.value = 1
@@ -1125,17 +1099,12 @@ function stripScheme(u: string): string {
   return (u || '').replace(/^https?:\/\//i, '').replace(/\/$/, '')
 }
 
-// Role = profession (smartlead) or legal director role (from business registry) in
-// fallback. For shops with no orders, ps_customer does not have a
-// profession field so we use the director's role if available.
 function professionLabel(l: any): string {
   return (l?.profession && String(l.profession).trim())
     || (l?.dirigeantRole && String(l.dirigeantRole).trim())
     || ''
 }
 
-// LinkedIn search via Google (native LinkedIn search engine is bot-resistant,
-// Google query site:linkedin.com/in/ works without auth).
 function linkedinSearchUrl(l: any): string | null {
   const parts: string[] = []
   if (l?.firstname) parts.push(String(l.firstname))
@@ -1146,13 +1115,11 @@ function linkedinSearchUrl(l: any): string | null {
   return `https://www.google.com/search?q=${q}`
 }
 
-// Annuaire-entreprises.data.gouv.fr — fiche officielle INSEE/RNE.
-// If SIREN known: direct link to profile. Otherwise: search by name.
 function normalizePhone(p: string): string {
   return (p || '').replace(/[^\d+]/g, '')
 }
 function formatPhone(p: string): string {
-  // Format FR : "0612345678" → "06 12 34 56 78"
+  
   const digits = (p || '').replace(/[^\d]/g, '')
   if (digits.length === 10 && digits.startsWith('0')) {
     return digits.replace(/(\d{2})(?=\d)/g, '$1 ').trim()
@@ -1173,9 +1140,6 @@ function inseeUrl(l: any): string | null {
   return null
 }
 
-// Lead source documentation (origin mapping)
-// - key = lead_source column in DB (sl.lead_source or hardcoded per source)
-// - optional url: if present the badge becomes a link to the source documentation
 const LEAD_SOURCE_DOCS: Record<string, { label: string; url?: string }> = {
   'rungis-carnet-2025': {
     label: 'Carnet Rungis 2025',
@@ -1208,7 +1172,7 @@ function sourceLabelTitle(l: any): string {
 function sourceBadgeClass(l: any): string {
   if (l?.source === 'customer-noorder') return 'bg-orange-50 text-orange-700'
   if (l?.source === 'contact') return 'bg-amber-50 text-amber-600'
-  return 'bg-indigo-50 text-indigo-600' // lead (smartlead)
+  return 'bg-indigo-50 text-indigo-600' 
 }
 
 function formatCa(v: any): string {
@@ -1241,15 +1205,6 @@ function techBadgeClass(tech: string): string {
   return TECH_BADGE[(tech || '').toLowerCase()] ?? 'bg-gray-100 text-gray-600'
 }
 
-// Purchase capacity score — rule configured by tenant config.
-// See modal "Configure Capacity" and endpoint /api/bo/leads/capa-config.
-//
-// Sensible defaults (deal size ~10k€/year) if config was never
-// set:
-// deal=10k€, comfortable≥5M€, feasible≥1M€, max loss=10% of revenue
-//
-// "Risky" is measured by loss/revenue ratio, not absolute amount: a loss of
-// 200k€ is negligible on 30M€ (0.7%) but critical on 1M€ (20%).
 const capaConfig = reactive({
   ticketAnnuelEur: 10000,
   caConfortableMin: 5_000_000,
@@ -1262,22 +1217,22 @@ function computeCapacity(l: any): { label: string; level: 'high' | 'mid' | 'low'
   const ca = Number(l?.annualRevenue ?? 0)
   const net = l?.netResult != null ? Number(l.netResult) : null
   if (!ca && net == null) return { label: '?', level: 'na' }
-  // Severe loss as proportion of revenue → Risky regardless of absolute revenue
+  
   if (net != null && net < 0 && ca > 0 && Math.abs(net) / ca > capaConfig.lossRatioMax) {
     return { label: 'Risqué', level: 'low' }
   }
-  // Revenue < feasible threshold → deal not absorbable even if profitable
+  
   if (ca > 0 && ca < capaConfig.caFaisableMin) return { label: 'Risqué', level: 'low' }
-  // CA ≥ seuil confortable + net positif (ou inconnu) → Confortable
+  
   if (ca >= capaConfig.caConfortableMin && (net == null || net >= 0))
     return { label: 'Confortable', level: 'high' }
-  // Revenue ≥ feasible threshold with net positive/unknown → Feasible
+  
   if (ca >= capaConfig.caFaisableMin && (net == null || net >= 0))
     return { label: 'Faisable', level: 'mid' }
-  // Large revenue with slight loss → Feasible (struggling but absorbs)
+  
   if (ca >= capaConfig.caConfortableMin && net != null && net < 0)
     return { label: 'Faisable', level: 'mid' }
-  // Profitable company even without available revenue data (rare)
+  
   if (net != null && net > 100_000)
     return { label: 'Faisable', level: 'mid' }
   return { label: '?', level: 'na' }
@@ -1308,11 +1263,6 @@ function capacityTooltip(l: any): string {
   return parts.join(' · ') + ' — capacité estimée pour abo 800€/m + projet 10k€'
 }
 
-// Generation of legal representative from business registry — score "heir vs founder"
-// Young (<45 years) — recent successor, "modern heir" profile → ideal target
-// Pivot (45-60) — active entrepreneur, open to digital
-// Senior (>60) — historical founder, seek the operational heir
-//                      via LinkedIn manuel (cf doctrine atlas)
 const CURRENT_YEAR = new Date().getFullYear()
 function generationOf(l: any): { label: string; level: 'young' | 'pivot' | 'senior' | 'na'; age: number | null } {
   const year = l?.dirigeantBirthYear != null ? Number(l.dirigeantBirthYear) : null
@@ -1342,7 +1292,6 @@ function generationTooltip(l: any): string {
   return `${g.age} ans${role}${name}${ageWord}`
 }
 
-// ── Modal config Capa (par tenant) ─────────────────────────────
 const capaModalOpen = ref(false)
 const capaSaving = ref(false)
 const capaError = ref('')
@@ -1353,14 +1302,12 @@ const capaForm = reactive({
   caFaisableMin: 1_000_000,
   lossRatioMax: 0.10,
 })
-// Styling: enter as %, store as ratio (0-1)
+
 const capaLossPercent = computed({
   get: () => Math.round((capaForm.lossRatioMax ?? 0) * 100),
   set: (v: number) => { capaForm.lossRatioMax = Math.max(0, Math.min(100, Number(v) || 0)) / 100 },
 })
 
-// Live preview: recount buckets using form values
-// (not the saved config), to see the impact in real time.
 const capaPreview = computed(() => {
   const buckets = { high: 0, mid: 0, low: 0, na: 0 }
   const form = capaForm
@@ -1411,7 +1358,6 @@ async function submitCapaConfig() {
   }
 }
 
-// ── Qualification editing ──────────────────────────────────
 const router2 = useRouter()
 const editLead = ref<any | null>(null)
 const editSaving = ref(false)
@@ -1425,14 +1371,14 @@ const editForm = reactive({
 })
 
 function onRowClick(l: any) {
-  // Shop → dedicated detail page
+  
   if (l?.source === 'customer-noorder') {
     router2.push(`/hub/contacts/${l.id}`)
     return
   }
-  // Contact form → no editing for now
+  
   if (l?.source === 'contact') return
-  // Lead → qualification editing modal
+  
   editLead.value = l
   editError.value = ''
   Object.assign(editForm, {
@@ -1465,11 +1411,6 @@ async function submitEdit() {
   }
 }
 
-// ── LinkedIn: verification modal + save URL ─────────────────
-// Click on the "in" badge → opens the modal (instead of going directly
-// to Google). The modal exposes Google search + a URL input. For
-// source `lead` (smartlead) we persist profil_linkedIn; for other
-// sources saving is disabled but search remains useful.
 const linkedinLead = ref<any | null>(null)
 const linkedinUrlInput = ref('')
 const linkedinSaving = ref(false)
@@ -1532,10 +1473,6 @@ async function clearLinkedin() {
   }
 }
 
-// ── Email: SMTP verification modal RCPT TO ──────────────────
-// Click on the email opens the modal. "Start verification" button probes
-// the domain MX via /api/bo/leads/{id}/email-verify (handshake EHLO →
-// MAIL FROM → RCPT TO → QUIT, no sending). Smartlead persistence.
 const EMAIL_STATUS_LABELS: Record<string, string> = {
   ok: 'Vérifié',
   rejected: 'Rejeté',
@@ -1604,7 +1541,7 @@ async function runEmailVerify() {
       mxHost:    res?.mxHost ?? null,
       persisted: Boolean(res?.persisted),
     }
-    // Local patch so the badge refreshes without reload
+    
     if (res?.persisted && emailLead.value.source === 'lead') {
       const row = leads.value.find((r) => r.source === 'lead' && r.id === emailLead.value!.id)
       if (row) {
@@ -1621,9 +1558,6 @@ async function runEmailVerify() {
   }
 }
 
-// ── Multi-select + batch actions (deletion / CSV export) ──
-// A lead record has no global ID: it's the pair (source, id) that is
-// unique in the UNION view. So we store rowKeys "source-id".
 const selection = reactive<Set<string>>(new Set())
 function rowKey(l: any): string { return `${l.source}-${l.id}` }
 function toggleRow(l: any) {
@@ -1645,8 +1579,6 @@ function togglePage() {
   }
 }
 
-// Count by source — feeds the confirmation modal and allows warning
-// the user that shop accounts will be ignored (not deletable here).
 const selectionCounts = computed(() => {
   const counts = { lead: 0, contact: 0, customerNoorder: 0 }
   for (const l of leads.value) {
@@ -1658,9 +1590,6 @@ const selectionCounts = computed(() => {
   return counts
 })
 
-// How many emails are verifiable in the selection (all sources). Used
-// to disable the "Verify emails" button if the selection contains only
-// records without email.
 const selectionEmailCount = computed(() => {
   let n = 0
   for (const l of leads.value) {
@@ -1670,10 +1599,6 @@ const selectionEmailCount = computed(() => {
   return n
 })
 
-// ── Batch SMTP verification (worker pool concurrency 3) ──────────
-// No dedicated server endpoint: we iterate on the client side via the endpoint
-// /api/bo/leads/{id}/email-verify already existing. Advantage: incremental progress
-// visible + immediate interruption, no huge HTTP timeout.
 const bulkVerifyOpen = ref(false)
 const bulkVerifyRunning = ref(false)
 const bulkVerifyShouldStop = ref(false)
@@ -1727,7 +1652,7 @@ async function runBulkVerify() {
         if (status === 'ok') bulkVerifyCounts.ok++
         else if (status === 'rejected' || status === 'mx_missing') bulkVerifyCounts.rejected++
         else bulkVerifyCounts.unknown++
-        // Local patch to refresh the badge on the list
+        
         const row = leads.value.find((r) => r.source === l.source && r.id === l.id)
         if (row) {
           row.emailVerifiedStatus = status
@@ -1752,8 +1677,6 @@ async function runBulkVerify() {
   }
 }
 
-// CSV export of selected rows — purely client-side from the rows
-// already loaded. Separator ';' + UTF-8 BOM (consistent with /export.get.ts).
 function exportSelectionCsv() {
   const rows = leads.value.filter((l) => selection.has(rowKey(l)))
   if (!rows.length) return

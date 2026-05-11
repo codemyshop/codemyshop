@@ -36,11 +36,9 @@
       </div>
     </div>
 
-    <!-- Sprint 13 — Les champs Description courte / Description complète vivent
-         UNIQUEMENT dans l'onglet Description (composant HubProductDescription).
-         Les retirer d'ici évite le double binding sur les mêmes champs du form. -->
+    
 
-    <!-- Visibility -->
+    
     <div class="pt-5 border-t border-gray-100 dark:border-slate-800">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-xs font-semibold text-gray-700 dark:text-slate-200 uppercase tracking-wide">Visibilité</h3>

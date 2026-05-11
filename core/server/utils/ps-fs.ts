@@ -1,18 +1,4 @@
-/**
- *
- * Direct FS helpers for the PrestaShop volume — Phase 9b.3 task
- * headless-modules-ts. Used by 3 endpoints that need to write to
- * /var/www/html/{download,img/c} : attachments.post, upload-cover, migrate-webp.
- *
- * Paths are resolved from 2 optional environment variables (per tenant):
- *   - PS_DOWNLOAD_DIR_<KEY>      ex: /ps_fs/download
- *   - PS_IMG_CATEGORY_DIR_<KEY>  ex: /ps_fs/img/c
- *
- * If the variable is not defined on the Nuxt side (e.g., VPS without co-location with PS),
- * `resolve*` returns null and the calling endpoint falls back to `psProxyMultipart`.
- * This is intentional: we keep a compatibility path while all tenants
- * do not have cross-container mount or NFS.
- */
+
 
 import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -33,15 +19,10 @@ export function resolvePsImgCategoryDir(event: any): string | null {
   return readEnvDir(event, 'IMG_CATEGORY_DIR')
 }
 
-/** Crée le dossier si absent (mode 0755). No-op si existe déjà. */
 function ensureDir(dir: string): void {
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true, mode: 0o755 })
 }
 
-/**
- * Writes the buffer to `{dir}/{sha1}` (perms 0644). Overrides if exists.
- * Returns the absolute path written.
- */
 export function writeAttachmentFile(event: any, sha1: string, buffer: Buffer): string {
   const dir = resolvePsDownloadDir(event)
   if (!dir) throw new Error('PS_DOWNLOAD_DIR_<KEY> non défini — fallback psProxy requis')
@@ -52,10 +33,6 @@ export function writeAttachmentFile(event: any, sha1: string, buffer: Buffer): s
   return path
 }
 
-/**
- * Writes an image buffer to `/img/c/{filename}` (perms 0644). Overrides if exists.
- * Garde-fou : `filename` doit matcher /^[a-z0-9_.-]+$/i.
- */
 export function writeCategoryImage(event: any, filename: string, buffer: Buffer): string {
   const dir = resolvePsImgCategoryDir(event)
   if (!dir) throw new Error('PS_IMG_CATEGORY_DIR_<KEY> non défini — fallback psProxy requis')
@@ -66,11 +43,6 @@ export function writeCategoryImage(event: any, filename: string, buffer: Buffer)
   return path
 }
 
-/**
- * Deletes all existing variants for a category: `{id}-*.webp`,
- * `{id}.jpg`, `{id}_thumb.jpg`, `{id}-thumb.webp`. Tolerant of missing files.
- * Returns the list of actually deleted files.
- */
 export function purgeCategoryImagesForId(event: any, idCategory: number, variant: 'cover' | 'thumb' | 'all' = 'all'): string[] {
   const dir = resolvePsImgCategoryDir(event)
   if (!dir || !existsSync(dir) || idCategory <= 0) return []
@@ -98,12 +70,11 @@ export function purgeCategoryImagesForId(event: any, idCategory: number, variant
     try {
       unlinkSync(join(dir, name))
       removed.push(name)
-    } catch { /* tolérant */ }
+    } catch {  }
   }
   return removed
 }
 
-/** List of legacy JPG files in `/img/c/{id}.jpg` to migrate (for `migrate-webp`). */
 export function listLegacyCategoryJpgs(event: any): Array<{ idCategory: number; filename: string; absPath: string }> {
   const dir = resolvePsImgCategoryDir(event)
   if (!dir || !existsSync(dir)) return []
@@ -122,7 +93,6 @@ export function listLegacyCategoryJpgs(event: any): Array<{ idCategory: number; 
   return out
 }
 
-/** True if we can write directly to FS for the current tenant. */
 export function psFsCanWriteDownload(event: any): boolean {
   return !!resolvePsDownloadDir(event)
 }

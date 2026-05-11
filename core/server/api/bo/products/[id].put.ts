@@ -1,18 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * PUT /api/bo/products/:id — product editing (base fields + translations + stock + categories + existing combinations).
- *
- * Sprint 12 — multilang semantics:
- * - `?lang=1` (master): all editable (ps_product + ps_product_lang
- * FR + stock + categories + combinations + carriers).
- *   - `?lang>1` (traduction) : uniquement ps_product_lang via
- * INSERT…ON CONFLICT DO UPDATE. The rest of the body is ignored to
- * avoid « reset »ting prices or stock when the user has translated
- * only the name/description.
- */
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, message: 'id requis' })
@@ -28,7 +17,7 @@ export default defineEventHandler(async (event) => {
   const exists = await db.get<any>(`SELECT id_product FROM ps_product WHERE id_product = ?`, [productId])
   if (!exists) throw createError({ statusCode: 404, message: 'Produit introuvable' })
 
-  // ps_product — langue master uniquement
+  
   const pf: string[] = []
   const pp: any[] = []
   if (body.priceHT !== undefined) { pf.push('price = ?'); pp.push(Number(body.priceHT)) }
@@ -52,13 +41,13 @@ export default defineEventHandler(async (event) => {
     await db.run(`UPDATE ps_product_shop SET ${pf.join(', ')} WHERE id_product = ?`, [...pp, productId]).catch(() => {})
   }
 
-  // ps_product_lang — INSERT…ON CONFLICT DO UPDATE (multilang).
-  //
-  // On récupère d'abord la ligne FR (toujours présente) comme template
-  // pour les colonnes NOT NULL non éditées (available_now, tags, etc.),
-  // puis on applique les champs fournis par body. Évite l'erreur
-  // "Field X doesn't have a default value" à l'INSERT d'une nouvelle
-  // langue. Si aucun champ localisé n'est fourni, on ne touche rien.
+  
+  
+  
+  
+  
+  
+  
   const hasLangFields = [
     'name', 'description', 'descriptionShort', 'metaTitle', 'metaDescription',
     'linkRewrite', 'deliveryInStock', 'deliveryOutStock',
@@ -111,14 +100,14 @@ export default defineEventHandler(async (event) => {
     ])
   }
 
-  // Stock + catégories + combinaisons + transporteurs : langue master uniquement
+  
   const stats = { categoriesUpdated: 0, combinationsUpdated: 0, combinationsFailed: 0, carriersUpdated: 0 }
 
   if (!isMaster) {
     return { success: true, stats, langId, isMaster }
   }
 
-  // Stock de base (combinaison 0)
+  
   if (body.stock !== undefined) {
     await db.run(`UPDATE ps_stock_available SET quantity = ? WHERE id_product = ? AND id_product_attribute = 0`, [Number(body.stock), productId])
   }
@@ -141,11 +130,11 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Transporteurs autorisés : DELETE + INSERT sur ps_product_carrier.
-  // Clé composite (id_product, id_carrier_reference, id_shop). PS 1.7+ utilise
-  // id_carrier_reference (stable) et non id_carrier (versionné à chaque edit).
-  // Si body.carrierRefs est [] → supprime toutes les restrictions (PS considère
-  // alors que tous les transporteurs actifs sont autorisés — comportement natif).
+  
+  
+  
+  
+  
   if (Array.isArray(body.carrierRefs)) {
     await db.run(`DELETE FROM ps_product_carrier WHERE id_product = ?`, [productId])
     const uniqueRefs = Array.from(new Set(
@@ -160,7 +149,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Combinaisons existantes : UPDATE price impact + quantité (pas de création de nouvelles en sprint 5)
+  
   if (Array.isArray(body.combinations)) {
     for (const combo of body.combinations) {
       const comboId = Number(combo?.id)

@@ -1,13 +1,5 @@
-/**
- *
- * POST /api/cron/process-redaction
- *
- * AI content generation worker — dequeues 1 item from cs_cms_queue
- * and calls the LLM API (Gemini, Claude, GPT) based on the chosen model.
- *
- * Called by cron every 2 min: curl -s -X POST http://localhost:3000/api/cron/process-redaction
- * Protected: localhost only or secret header.
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 import {
   pickPendingItem,
@@ -31,7 +23,6 @@ interface LlmResponse {
   faq_count: number
 }
 
-// ── Prompt builder (same as Mode Centaure) ──────────────────────
 function buildPrompt(item: QueueItem, existingContent: string = ''): string {
   const context = `Tu rédiges pour Example Shop (grossiste fruits secs B2B).
 Cible : professionnels CHR, pâtissiers, épiciers, primeurs, magasins vrac.
@@ -93,7 +84,6 @@ Retourne le tout dans ce format exact :
 (le JSON array ici)`
 }
 
-// ── LLM API callers ─────────────────────────────────────────────
 async function callGemini(prompt: string, apiKey: string, model: string): Promise<string> {
   const modelId = model === 'gemini-2.5-flash' ? 'gemini-2.5-flash-preview-05-20' : model
   const res = await $fetch<any>(`https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`, {
@@ -145,7 +135,6 @@ async function callOpenAI(prompt: string, apiKey: string, model: string): Promis
   return res?.choices?.[0]?.message?.content || ''
 }
 
-// ── Response parser ─────────────────────────────────────────────
 function parseResponse(raw: string): LlmResponse {
   const contentMatch = raw.match(/---CONTENT---\s*\n([\s\S]*?)(?=---META_TITLE---|---SLUG---|---FAQ_JSON---|$)/i)
   const titleMatch = raw.match(/---META_TITLE---\s*\n([\s\S]*?)(?=---META_DESCRIPTION---|---SLUG---|---FAQ_JSON---|$)/i)
@@ -170,7 +159,7 @@ function parseResponse(raw: string): LlmResponse {
         faqJson = JSON.stringify(parsed)
         faqCount = parsed.length
       }
-    } catch { /* keep default */ }
+    } catch {  }
   }
 
   const plain = html.replace(/<[^>]+>/g, ' ')
@@ -179,36 +168,34 @@ function parseResponse(raw: string): LlmResponse {
   return { content_html: html, meta_title: metaTitle, meta_description: metaDesc, optimized_slug: slug, faq_json: faqJson, word_count: wordCount, faq_count: faqCount }
 }
 
-// ── Model → provider mapping ────────────────────────────────────
 function getProvider(model: string): 'google' | 'anthropic' | 'openai' {
   if (model.startsWith('gemini')) return 'google'
   if (model.startsWith('claude')) return 'anthropic'
   return 'openai'
 }
 
-// ── Main handler ────────────────────────────────────────────────
 export default defineEventHandler(async (event) => {
-  // Localhost-only protection
+  
   const host = getHeader(event, 'host') || ''
   const forwarded = getHeader(event, 'x-forwarded-for') || ''
   if (!host.startsWith('localhost') && !host.startsWith('127.0.0.1') && !forwarded.includes('127.0.0.1')) {
     throw createError({ statusCode: 403, message: 'Cron endpoint: localhost only' })
   }
 
-  // 1. Pick 1 pending item via facade ac_cmsqueue
+  
   const item = await pickPendingItem({ event })
   if (!item) {
     return { processed: false, message: 'Queue vide' }
   }
 
-  // 2. Mark as processing via facade
+  
   await markProcessing(item.id_redaction, { event })
 
-  // ps_cms_lang is PS native, no facade.
+  
   const db = useClientDb(event)
 
   try {
-    // 3. Get API keys from client config (facade ac_clientconfig)
+    
     const configJson = await getClientConfigJson(item.tenant, { event })
     const config = configJson ? JSON.parse(configJson) : {}
     const aiKeys = config.aiKeys || {}
@@ -220,7 +207,7 @@ export default defineEventHandler(async (event) => {
       throw new Error(`Clé API ${provider} non configurée. Ajoutez-la dans Hub > Admin > Features (aiKeys.${provider})`)
     }
 
-    // 4. Fetch existing content for enrichment
+    
     let existingContent = ''
     try {
       const cms = await db.query<{ content: string }>(
@@ -228,9 +215,9 @@ export default defineEventHandler(async (event) => {
         [item.id_cms]
       )
       if (cms.length) existingContent = cms[0].content || ''
-    } catch { /* ignore */ }
+    } catch {  }
 
-    // 5. Build prompt & call LLM
+    
     const prompt = buildPrompt(item, existingContent)
     let rawResponse: string
 
@@ -246,10 +233,10 @@ export default defineEventHandler(async (event) => {
       throw new Error('Réponse LLM vide')
     }
 
-    // 6. Parse response
+    
     const result = parseResponse(rawResponse)
 
-    // 7. Store result via facade
+    
     await storeResult(item.id_redaction, {
       contentHtml: result.content_html,
       faqJson: result.faq_json,

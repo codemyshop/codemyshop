@@ -1,24 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/marketing/promos — list of promo codes (cart rules).
- *
- * Sprint 14 — moteur de codes promo. Remplace l'ancien /api/bo/cart-rules.
- *
- * Parameters:
- *   - page, perPage : pagination
- * - search        : LIKE filter on code + crl.name + description
- * - filter        : '' (all) | 'active' | 'expired' | 'exhausted'
- * - lang          : id_lang to join ps_cart_rule_lang (default 1)
- *
- * Status calculated dynamically:
- *   - inactive  : cr.active = 0
- *   - expired   : date_to < NOW()
- *   - exhausted : quantity = 0
- *   - active    : sinon
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const page = Math.max(1, Number(q.page || 1))

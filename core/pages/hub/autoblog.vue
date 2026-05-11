@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
 
-    <!-- Page header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 flex items-center justify-between shrink-0">
       <div>
         <h1 class="text-base font-bold text-gray-800 dark:text-slate-100">File d'attente Blog IA</h1>
@@ -19,7 +19,7 @@
       </button>
     </header>
 
-    <!-- ─── Statistiques rapides ──────────────────────────────── -->
+    
     <div class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-3 flex items-center gap-6 shrink-0">
       <div v-for="stat in computedStats" :key="stat.label" class="flex items-center gap-2">
         <span class="w-2 h-2 rounded-full" :class="stat.dot" />
@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <!-- ─── Filtres par statut ────────────────────────────────── -->
+    
     <div class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-2.5 flex items-center gap-1 shrink-0">
       <button
         v-for="tab in STATUS_TABS"
@@ -52,7 +52,7 @@
       </div>
     </div>
 
-    <!-- ─── Tableau ───────────────────────────────────────────── -->
+    
     <div class="flex-1 overflow-auto px-6 py-4">
 
       <div v-if="loading && !queue.length" class="space-y-2">
@@ -138,11 +138,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- *
- * AI writing queue — connected to cs_cms_queue via Nuxt API
- * Replaces the old PS module ac_autoblogarticle (removed debt)
- */
 
 definePageMeta({ layout: 'hub', ssr: false, middleware: ['hub-auth'] })
 
@@ -231,10 +226,10 @@ async function retryArticle(article: QueueItem) {
         metaDescription: article.meta_description,
       },
     })
-    // Update local state
+    
     article.status = 'pending'
     article.error_msg = ''
-  } catch { /* silent */ }
+  } catch {  }
 }
 
 onMounted(loadQueue)

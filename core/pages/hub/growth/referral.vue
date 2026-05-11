@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -16,7 +16,7 @@
 
     <div class="p-6 max-w-4xl mx-auto space-y-8">
 
-      <!-- The Promise -->
+      
       <div class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-8 lg:p-10 text-white shadow-xl overflow-hidden">
         <div class="absolute top-0 right-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div class="relative">
@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <!-- Formulaire -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 lg:p-8">
         <h3 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-1">Introduire un confrère</h3>
         <p class="text-xs text-gray-400 mb-6">Nous le contacterons de votre part avec discr&eacute;tion et professionnalisme.</p>
@@ -112,7 +112,7 @@
           </button>
         </form>
 
-        <!-- Success toast -->
+        
         <Transition
           enter-active-class="transition-all duration-300"
           enter-from-class="opacity-0 -translate-y-2"
@@ -130,7 +130,7 @@
         </Transition>
       </div>
 
-      <!-- Introduction tracking -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
           <div>
@@ -161,7 +161,7 @@
             :key="r.id"
             class="flex items-center gap-4 px-6 py-4 border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors"
           >
-            <!-- Icone -->
+            
             <div
               class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-sm font-bold"
               :class="statusStyle(r.status).bg"
@@ -169,13 +169,13 @@
               {{ r.companyName.charAt(0).toUpperCase() }}
             </div>
 
-            <!-- Info -->
+            
             <div class="min-w-0 flex-1">
               <p class="text-sm font-semibold text-gray-800 dark:text-slate-100 truncate">{{ r.companyName }}</p>
               <p class="text-xs text-gray-400 truncate">{{ r.contactEmail }} &middot; {{ formatDate(r.createdAt) }}</p>
             </div>
 
-            <!-- Badge statut -->
+            
             <span
               class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full shrink-0"
               :class="statusStyle(r.status).badge"
@@ -192,8 +192,7 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
+
 import type { Referral, ReferralStatus } from '~/server/utils/referrals'
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
@@ -204,8 +203,6 @@ const { header } = useHeaderDb()
 const referrerName = computed(() =>
   header.value?.logo?.text ?? resolvedClientId.value
 )
-
-// ── Form ──────────────────────────────────────────────────────────────────────
 
 const form = reactive({
   companyName:  '',
@@ -246,8 +243,6 @@ async function submitInvite() {
   }
 }
 
-// ── Referrals list ────────────────────────────────────────────────────────────
-
 const referrals        = ref<Referral[]>([])
 const referralsLoading = ref(true)
 
@@ -266,8 +261,6 @@ async function loadReferrals() {
     referralsLoading.value = false
   }
 }
-
-// ── Status styles ─────────────────────────────────────────────────────────────
 
 function statusStyle(status: ReferralStatus) {
   switch (status) {

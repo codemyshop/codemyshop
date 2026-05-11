@@ -1,17 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession, isSuperAdminSaaS } from '~/server/utils/session'
 
-/**
- * GET /api/bo/team/:id — employee record (Sprint 17).
- *
- * `id=new` returns an empty skeleton for creation. Otherwise read
- * directe ps_employee + join profile_lang.
- *
- * Visibility filter: a non-SaaS admin cannot VIEW a
- * hidden employee (id=1 or SuperAdmin PS profile). 403 if attempted.
- */
 export default defineEventHandler(async (event) => {
   const session = requireEmployeeSession(event)
   const isSaas = isSuperAdminSaaS(session)

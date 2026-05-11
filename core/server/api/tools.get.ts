@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/tools — Drizzle DB direct (cs_main.cs_tools, PG).
- * Proprietary AI tools (active=1, sorted by position ASC).
- */
+
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 

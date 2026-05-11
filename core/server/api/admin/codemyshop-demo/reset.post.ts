@@ -1,9 +1,5 @@
-/**
- *
- * POST /api/admin/codemyshop-demo/reset
- * Manual reset of the demo database via the synedre/codemyshop-demo-reset.sh script.
- * Reserved for administrators of the codemyshop-demo tenant. Issue #80.
- */
+
+
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { resolve } from 'node:path'
@@ -21,7 +17,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, message: 'Endpoint réservé au tenant démo' })
   }
 
-  const script = resolve(process.cwd(), '..', 'synedre/codemyshop-demo-reset.sh')
+  const script = resolve(process.cwd(), 'scripts/codemyshop-demo-reset.sh')
   const startedAt = Date.now()
 
   try {

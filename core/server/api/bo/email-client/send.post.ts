@@ -1,16 +1,4 @@
-/**
- *
- * POST /api/bo/email-client/send — send via SMTP + IMAP APPEND to Sent
- * + INSERT folder='sent' into cs_email_message + persist attachments.
- *
- * Body :
- *   - to:      string ou string[]
- *   - subject: string
- *   - body:    string
- *   - replyTo? : string
- * - asHtml? : boolean (default false → wrap in <pre>)
- *   - attachments? : Array<{ filename, mimeType, contentBase64 }>
- */
+
 
 import MailComposer from 'nodemailer/lib/mail-composer'
 import { sendEmail } from '~/server/utils/email'
@@ -18,7 +6,7 @@ import { appendMessage } from '~/server/utils/imap'
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 
 const PG_SCHEMA = 'cs_main'
-const MAX_TOTAL_ATTACHMENT_BYTES = 25 * 1024 * 1024 // 25 MB
+const MAX_TOTAL_ATTACHMENT_BYTES = 25 * 1024 * 1024 
 
 interface IncomingAttachment {
   filename:      string
@@ -46,7 +34,7 @@ export default defineEventHandler(async (event) => {
     replyTo?:     string
     asHtml?:      boolean
     attachments?: IncomingAttachment[]
-    /** Si présent : DELETE le brouillon après succès SMTP. */
+    
     draftId?:     number
   }>(event)
 
@@ -58,7 +46,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Adresse email invalide.' })
   }
 
-  // Decode base64 attachments → Buffer
+  
   const attachments: ParsedAttachment[] = []
   let totalBytes = 0
   for (const a of (body.attachments || [])) {
@@ -98,7 +86,7 @@ export default defineEventHandler(async (event) => {
   const account = process.env.SMTP_USER || process.env.SMTP_FROM
   const fromHeader = process.env.EMAIL_FROM || account || ''
 
-  // ── IMAP APPEND to Sent (best-effort) ─────────────────────────────
+  
   let appendError: string | null = null
   if (account && process.env.SMTP_PASS) {
     try {
@@ -132,7 +120,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // ── INSERT folder='sent' + attachments into the mailbox DB ───────────
+  
   if (account) {
     try {
       const sql = getPgClient()
@@ -171,7 +159,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Drop the associated draft after SMTP success
+  
   if (body.draftId && account) {
     try {
       const sql = getPgClient()

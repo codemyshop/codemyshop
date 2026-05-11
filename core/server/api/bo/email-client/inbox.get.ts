@@ -1,14 +1,4 @@
-/**
- *
- * GET /api/bo/email-client/inbox — persistent DB read (cs_email_message).
- *
- * Filtre par compte SMTP courant (process.env.SMTP_USER), folder='inbox' ou
- * 'sent' according to ?folder=. IMAP sync is explicit via POST /sync.
- *
- * Query params :
- * - folder: 'inbox' (default) | 'sent'
- * - limit : pagination, default 100, max 500
- */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 

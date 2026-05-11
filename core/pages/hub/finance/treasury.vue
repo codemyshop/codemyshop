@@ -1,6 +1,4 @@
-<!--
-  @author CodeMyShop | FIN — Trésorerie & Prévisionnel 13 semaines
--->
+
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
@@ -18,7 +16,7 @@
     </header>
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
-      <!-- KPIs -->
+      
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm">
           <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Solde estimé</p>
@@ -40,7 +38,7 @@
         </div>
       </div>
 
-      <!-- Alertes -->
+      
       <div v-if="data?.alerts.length" class="space-y-2">
         <div v-for="a in data.alerts" :key="a.week"
           class="rounded-xl border px-4 py-3 flex items-center gap-3 text-sm"
@@ -57,7 +55,7 @@
         </div>
       </div>
 
-      <!-- Graphe (barres + ligne solde) -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
           <div>
@@ -109,7 +107,7 @@
         </div>
       </div>
 
-      <!-- Detailed table -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
           <h2 class="text-sm font-bold">Détail semaine par semaine</h2>
@@ -153,7 +151,7 @@
         </div>
       </div>
 
-      <!-- Methodological note -->
+      
       <div class="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 rounded-xl p-4 text-xs text-amber-800 dark:text-amber-300">
         <p class="font-bold mb-1">⚠️ Méthodologie</p>
         <p>Projection basée sur la médiane glissante des 13 dernières semaines de la boutique PrestaShop. Le carnet de commandes non finalisées (60 derniers jours) est injecté en S+1. Salaires, charges sociales et paiements fournisseurs ne sont pas inclus — à intégrer via votre logiciel de comptabilité.</p>
@@ -202,7 +200,6 @@ async function load() {
 }
 onMounted(load)
 
-/* ─── Chart geometry ─────────────────────────────────────────────── */
 const chartW = 800
 const chartH = 240
 const padTop = 18
@@ -235,7 +232,6 @@ const balancePath = computed(() => weeks.value.map((w, i) => `${balanceX(i)},${b
 
 const histDividerX = computed(() => histCount.value * slotW.value)
 
-/* ─── Export CSV ─────────────────────────────────────────────────── */
 function exportCsv() {
   if (!data.value?.weeks.length) return
   const headers = ['Semaine', 'Date début', 'Type', 'Encaissements', 'Décaissements', 'Net', 'Solde']

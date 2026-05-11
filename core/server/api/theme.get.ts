@@ -1,10 +1,5 @@
-/**
- *
- * GET /api/theme
- *
- * Serves the theme of the current tenant from cs_theme (PG cs_main).
- * The getThemeForTenant facade dispatches to usePocPg() via isDomainOnPg.
- */
+
+
 import { resolveClientId } from '~/server/utils/db'
 import { getThemeForTenant } from '~/modules/theme/server/utils/theme'
 

@@ -1,14 +1,5 @@
-/**
- *
- * Client-side composable for Commercial Mode (food-impersonate).
- * Exposes the reactive helpers needed by the UI without duplicating the session:
- * the source of truth remains useCustomerAuth (which calls /api/catalogue/customer/me,
- * which delegates to getCustomerSession and applies the hub_impersonation override).
- *
- * Usage typique :
- *   const { isImpersonating, sessionId, customerLabel } = useImpersonation()
- * <div v-if="isImpersonating">⚠ Action performed as {{ customerLabel }}</div>
- */
+
+
 export function useImpersonation() {
   const { customer } = useCustomerAuth()
 

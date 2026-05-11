@@ -1,23 +1,10 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { requireEmployeeSession, isSuperAdminSaaS } from '~/server/utils/session'
 import {
   profileSectionTableAvailable,
   replaceProfileSections,
 } from '~/modules/profile-section/server/utils/profile-section'
-
-/**
- * PUT /api/bo/team/profile-sections/:id
- *
- * Body : { sections: string[] } — exhaustive list of sections
- * authorized for this profile. Wipe + re-insert (wrapper).
- *
- * Garde-fous :
- * - Reserved for SaaS SuperAdmin and admin profiles (root, founder).
- * - Profile 1 (SuperAdmin PS) is editable only by the SaaS platform and
- * cannot lose access to all sections (safeguard
- *     implicite : on garantit qu'il garde au moins 'dashboard').
- */
 
 const ALLOWED_SECTIONS = new Set([
   'dashboard',

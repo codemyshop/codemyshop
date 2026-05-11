@@ -1,11 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  PRM — Annuaire Fournisseurs.
-  Liste ps_supplier + création/édition modale + navigation vers fiche détail.
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
@@ -122,7 +115,7 @@
       </div>
     </div>
 
-    <!-- Modal Create/Edit -->
+    
     <div v-if="modalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" @click.self="closeModal">
       <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-xl max-h-[90vh] overflow-auto">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
@@ -207,7 +200,6 @@ const data = ref<{ total: number; activeCount: number; suppliers: Supplier[] } |
 const loading = ref(true)
 const search = ref('')
 
-// ── Import CSV (UPSERT par nom) ────────────────────────────────
 const importOpen = ref(false)
 const importTargetFields = [
   { key: 'name', label: 'Nom', required: true },
@@ -244,7 +236,6 @@ async function load() {
 let debounceTimer: any = null
 function loadDebounced() { clearTimeout(debounceTimer); debounceTimer = setTimeout(load, 250) }
 
-// ── Modal create/edit ──
 const modalOpen = ref(false)
 const editId = ref<number | null>(null)
 const saving = ref(false)
@@ -273,17 +264,17 @@ function openCreate() {
 async function openEdit(s: Supplier) {
   editId.value = s.id
   resetForm()
-  // Pre-fill with already-listed data (sufficient for most fields)
+  
   Object.assign(form, {
     name: s.name, phone: s.phone, phoneMobile: s.phoneMobile,
     address1: s.address1, postcode: s.postcode, city: s.city,
     active: s.active,
   })
-  // Load detailed description
+  
   try {
     const detail = await $fetch<any>(`/api/bo/procurement/suppliers/${s.id}`)
     form.description = detail?.supplier?.description || ''
-  } catch { /* silencieux */ }
+  } catch {  }
   modalOpen.value = true
 }
 

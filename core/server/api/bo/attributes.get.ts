@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/** GET /api/bo/attributes — lists all attribute groups and their values.
- *  Source : ps_attribute_group + ps_attribute_group_lang + ps_attribute + ps_attribute_lang
- * in id_lang=1. Used by HubProductCombinations to dynamically generate
- * the columns of the Cartesian product generator. */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
 

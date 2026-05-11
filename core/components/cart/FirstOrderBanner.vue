@@ -1,17 +1,9 @@
-<!--
-  Bandeau « 1ère commande PROMO5 » réutilisable — drawer + /panier + /commander.
-  Visible si client logué + 0 commande validée + pas déjà appliqué.
-  Click "Appliquer" → applyPromoCode('PROMO5') direct, sans saisie utilisateur.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
-  /** Disables fetch (e.g., component not yet mounted). */
+  
   enabled?: boolean
-  /** Compact variant: button on the same line as the text (drawer). */
+  
   compact?: boolean
 }>(), {
   enabled: true,

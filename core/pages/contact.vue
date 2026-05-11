@@ -1,14 +1,4 @@
-<!--
-  Page contact générique — /contact
-  Contenu tenant via runtimeConfig.public :
-  - brandName, contactEmail, contactPhone (obligatoires)
-  - contactDescription (meta description, optionnel)
-  - warehouses[] (array { label, address_html }, optionnel — 0..N)
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 import { getApiErrorMessage } from '~/utils/api-error'
 
@@ -35,7 +25,6 @@ const sent      = ref(false)
 const submitting = ref(false)
 const errorMsg  = ref('')
 
-// ── SIRET live verify (recherche-entreprises gouv) — debounce 500ms ────────
 interface SiretLookup {
   status: 'idle' | 'pending' | 'ok' | 'error'
   companyName?: string
@@ -71,7 +60,6 @@ function onSiretInput() {
   }, 500)
 }
 
-// ── Email SMTP verify (RCPT TO without sending) — triggered on blur ─────────────
 interface EmailLookup {
   status: 'idle' | 'pending' | 'ok' | 'unknown' | 'rejected' | 'mx_missing' | 'invalid'
 }
@@ -87,13 +75,13 @@ async function onEmailBlur() {
     if (r.status === 'ok') emailLookup.status = 'ok'
     else if (r.status === 'rejected') emailLookup.status = 'rejected'
     else if (r.status === 'mx_missing') emailLookup.status = 'mx_missing'
-    else emailLookup.status = 'unknown'  // greylisting / port 25 bloqué → laisser passer
+    else emailLookup.status = 'unknown'  
   } catch {
     emailLookup.status = 'unknown'
   }
 }
 function onEmailInput() {
-  // reset the status as soon as you retype — validation re-triggers on blur
+  
   if (emailLookup.status !== 'idle') emailLookup.status = 'idle'
 }
 
@@ -137,7 +125,7 @@ async function onSubmit() {
 
         <div class="grid md:grid-cols-2 gap-12">
 
-          <!-- Infos -->
+          
           <div>
             <div class="space-y-6">
               <div v-if="contactPhone">
@@ -165,7 +153,7 @@ async function onSubmit() {
             </div>
           </div>
 
-          <!-- Formulaire -->
+          
           <div>
             <div v-if="sent" class="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center">
               <p class="text-emerald-700 font-semibold">{{ t('contact.contact_sent_title') }}</p>

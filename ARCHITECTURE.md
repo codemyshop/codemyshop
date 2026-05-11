@@ -187,7 +187,7 @@ For most installations, a single tenant is sufficient. The single-tenant `docker
 
 All custom tables are prefixed `cs_` (CodeMyShop). Tables are singular (`cs_theme`, not `cs_themes`). i18n columns live in sibling `<table>_lang` tables with composite primary keys `(id_<entity>, id_lang)` — the PrestaShop-native i18n pattern, kept for its proven mechanics.
 
-> **History.** Tables were prefixed `ps_ac_` until v0.2.0 (CodeMyShop was originally a PrestaShop extension named "ac"). The v0.2.0 release renamed every table from `ps_ac_*` to `cs_*` to reflect the rebrand and to remove confusion with native PrestaShop tables (`ps_product`, `ps_category`). See [documentation/SCHEMA_HISTORY.md](documentation/SCHEMA_HISTORY.md) for the migration story.
+> **History.** Tables were prefixed `cs_` until v0.2.0 (CodeMyShop was originally a PrestaShop extension named "ac"). The v0.2.0 release renamed every table from `cs_*` to `cs_*` to reflect the rebrand and to remove confusion with native PrestaShop tables (`ps_product`, `ps_category`). See [documentation/SCHEMA_HISTORY.md](documentation/SCHEMA_HISTORY.md) for the migration story.
 
 See [documentation/NAMING.md](documentation/NAMING.md) for the full convention.
 

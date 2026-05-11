@@ -1,12 +1,4 @@
-/**
- *
- * Facade ac_expertise on the Postgres side — Task #38 Phase 1 step 6,
- * flag PG_ENABLED_DOMAINS=expertise.
- *
- * Read-only surface (corresponding to expertise-db.ts MariaDB): list + detail
- * by slug. The table contains JSON technical debt (tags / ps_versions / faq) already
- * documented on the MariaDB side — we parse at the mapping layer, we don't normalize here.
- */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'

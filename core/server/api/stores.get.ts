@@ -1,8 +1,4 @@
-/**
- *
- * GET /api/stores?lang=fr
- * Returns all active stores of the current tenant + i18n description.
- */
+
 
 import { useClientDb } from '../utils/db'
 
@@ -53,7 +49,7 @@ export default defineEventHandler(async (event): Promise<{ stores: StoreApi[] }>
   const stores: StoreApi[] = rows.map((r) => {
     let hours: Record<string, string> | null = null
     if (r.hours_json) {
-      try { hours = JSON.parse(r.hours_json) } catch { /* ignore */ }
+      try { hours = JSON.parse(r.hours_json) } catch {  }
     }
     return {
       id: Number(r.id_store),

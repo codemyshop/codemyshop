@@ -1,9 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { randomUUID } from 'node:crypto'
 import type { DomainEvent } from '../bus/EventBus'
-
-// ── Typed payload ─────────────────────────────────────────────────────────
 
 export interface QuoteItem {
   id: number
@@ -23,7 +21,7 @@ export interface QuoteRequestedPayload {
   message: string
   items: QuoteItem[]
   totalItems: number
-  /** INSEE enrichment (populated if the company-search API responds). */
+  
   enrichment?: {
     legalName?:   string
     nafCode?:     string
@@ -35,11 +33,7 @@ export interface QuoteRequestedPayload {
   }
 }
 
-// ── Nom canonique ──────────────────────────────────────────────────────────
-
 export const QUOTE_REQUESTED = 'quote.requested' as const
-
-// ── Factory ────────────────────────────────────────────────────────────────
 
 export function createQuoteRequestedEvent(
   payload: QuoteRequestedPayload,

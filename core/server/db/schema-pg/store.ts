@@ -1,11 +1,4 @@
-/**
- *
- * Drizzle PG schemas for store (store locator).
- *
- * 2 tables (cs_main, multi-tenant row-level via client_id) :
- *   - cs_store      : 1 row par magasin physique (lat/lng + meta)
- * - cs_store_lang : i18n store description
- */
+
 
 import {
   decimal,

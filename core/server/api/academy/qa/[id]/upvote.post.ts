@@ -1,7 +1,4 @@
-/**
- * POST /api/academy/qa/:id/upvote — Drizzle DB direct.
- *
- */
+
 
 import { incrementQaUpvote } from '~/server/utils/academy-db'
 

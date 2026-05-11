@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- Header + Jauge -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-8 py-6 sticky top-0 z-10">
       <div class="max-w-4xl mx-auto">
         <div class="flex items-center justify-between mb-4">
@@ -12,7 +12,7 @@
               {{ completionHint }}
             </p>
           </div>
-          <!-- Save button -->
+          
           <AIActionButton
             label="Compiler le Cerveau IA"
             loading-label="Compilation..."
@@ -26,14 +26,14 @@
             </template>
           </AIActionButton>
         </div>
-        <!-- Barre de progression -->
+        
         <div class="h-2 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
           <div
             class="h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-700"
             :style="`width: ${completionPercent}%`"
           />
         </div>
-        <!-- Compilation result toast -->
+        
         <Transition enter-active-class="transition-all duration-300" enter-from-class="opacity-0 -translate-y-2">
           <div v-if="compileResult" class="mt-3 flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg"
             :class="compileResult.success ? 'bg-success-50 text-success-700 dark:bg-success-500/10 dark:text-success-400' : 'bg-danger-50 text-danger-600 dark:bg-danger-500/10 dark:text-danger-400'">
@@ -46,7 +46,7 @@
 
     <div class="max-w-4xl mx-auto px-8 py-8 space-y-8">
 
-      <!-- Tabs -->
+      
       <div class="flex gap-1 bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-1.5">
         <button
           v-for="tab in TABS" :key="tab.id" @click="activeTab = tab.id"
@@ -62,7 +62,7 @@
         </button>
       </div>
 
-      <!-- ═══ Onglet 1 : Fondation & Dirigeant ═══ -->
+      
       <template v-if="activeTab === 'foundation'">
         <BrandCard title="La Vision" placeholder="O&ugrave; voyez-vous votre entreprise dans 5 ans ? Quel impact voulez-vous avoir sur votre march&eacute; ?"
           v-model="brand.vision" :generating="genField === 'vision'" @generate="generateDraft('vision', 'une vision d\u2019entreprise B2B ambitieuse pour un grossiste alimentaire')" />
@@ -78,7 +78,7 @@
           v-model="brand.manifesto" :generating="genField === 'manifesto'" @generate="generateDraft('manifesto', 'un manifeste de dirigeant passionn\u00e9 par son m\u00e9tier de grossiste depuis 40 ans')" />
       </template>
 
-      <!-- ═══ Tab 2: Marketing & Operational ═══ -->
+      
       <template v-else-if="activeTab === 'marketing'">
         <BrandCard title="Persona Cible" subtitle="Par Aude Moyne, Resp. Marketing"
           placeholder="D&eacute;crivez votre client id&eacute;al : qui est-il, quels sont ses besoins, ses frustrations ?"
@@ -94,10 +94,10 @@
           v-model="brand.mix" :generating="genField === 'mix'" @generate="generateDraft('mix', 'un mix marketing 4P pour un grossiste alimentaire B2B en ligne')" />
       </template>
 
-      <!-- ═══ Tab 3: Customer Voice (Live) ═══ -->
+      
       <template v-else-if="activeTab === 'voice'">
 
-        <!-- Sync button -->
+        
         <div class="flex items-center justify-between">
           <p class="text-xs text-gray-500 dark:text-slate-400">Donn&eacute;es extraites de votre boutique PrestaShop</p>
           <button
@@ -112,7 +112,7 @@
           </button>
         </div>
 
-        <!-- Shimmer / Data -->
+        
         <template v-if="syncing">
           <div v-for="i in 3" :key="i" class="bg-white dark:bg-slate-900/50 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 p-6 space-y-3">
             <div class="h-4 bg-gray-100 dark:bg-slate-800 rounded w-1/4 shimmer" />
@@ -123,7 +123,7 @@
         </template>
 
         <template v-else>
-          <!-- Intentions de recherche -->
+          
           <div class="bg-white dark:bg-slate-900/50 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 p-6">
             <h3 class="text-sm font-extrabold tracking-tight text-gray-900 dark:text-slate-100 mb-4">Intentions de Recherche</h3>
             <div class="flex flex-wrap gap-2">
@@ -134,7 +134,7 @@
             </div>
           </div>
 
-          <!-- Frictions SAV -->
+          
           <div class="bg-white dark:bg-slate-900/50 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 p-6">
             <h3 class="text-sm font-extrabold tracking-tight text-gray-900 dark:text-slate-100 mb-4">Frictions SAV</h3>
             <ul class="space-y-2">
@@ -145,7 +145,7 @@
             </ul>
           </div>
 
-          <!-- Verbatims positifs -->
+          
           <div class="bg-white dark:bg-slate-900/50 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 p-6">
             <h3 class="text-sm font-extrabold tracking-tight text-gray-900 dark:text-slate-100 mb-4">Verbatims Positifs</h3>
             <div class="space-y-3">
@@ -164,13 +164,9 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 const { resolvedClientId } = useClientDetection()
-
-// ── Tabs ──────────────────────────────────────────────────────────────────────
 
 type TabId = 'foundation' | 'marketing' | 'voice'
 const TABS: { id: TabId; icon: string; label: string }[] = [
@@ -179,8 +175,6 @@ const TABS: { id: TabId; icon: string; label: string }[] = [
   { id: 'voice',      icon: '🎙️', label: 'Voix du Client (Live)' },
 ]
 const activeTab = ref<TabId>('foundation')
-
-// ── Brand data ────────────────────────────────────────────────────────────────
 
 const brand = reactive({
   vision: '',
@@ -192,8 +186,6 @@ const brand = reactive({
   tone: '',
   mix: '',
 })
-
-// ── Completion gauge ──────────────────────────────────────────────────────────
 
 const completionPercent = computed(() => {
   const fields = Object.values(brand)
@@ -208,13 +200,11 @@ const completionHint = computed(() => {
   return 'Commencez par documenter votre Vision pour d\u00e9bloquer l\u2019IA.'
 })
 
-// ── AI Draft generation ───────────────────────────────────────────────────────
-
 const genField = ref<string | null>(null)
 
 async function generateDraft(field: keyof typeof brand, instruction: string) {
   genField.value = field
-  // Simuler la génération (en prod : appel callAI via /api/ai/brand-draft)
+  
   await new Promise(r => setTimeout(r, 1500))
 
   const DRAFTS: Record<string, string> = {
@@ -231,8 +221,6 @@ async function generateDraft(field: keyof typeof brand, instruction: string) {
   brand[field] = DRAFTS[field] ?? ''
   genField.value = null
 }
-
-// ── Voice of Customer ─────────────────────────────────────────────────────────
 
 const syncing = ref(false)
 const voiceData = reactive({
@@ -259,8 +247,6 @@ async function syncVoice() {
   await new Promise(r => setTimeout(r, 2000))
   syncing.value = false
 }
-
-// ── Compile ───────────────────────────────────────────────────────────────────
 
 const compiling = ref(false)
 
@@ -303,7 +289,6 @@ async function compile() {
 }
 </script>
 
-<!-- ── BrandCard sub-component (inline) ────────────────────────────────────── -->
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 

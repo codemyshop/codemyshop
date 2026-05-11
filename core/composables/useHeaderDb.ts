@@ -1,7 +1,4 @@
-/**
- *
- * Composable for loading header config from /api/header-config (DB-first cs_header).
- */
+
 
 export interface HeaderDbData {
   logo: {
@@ -30,15 +27,13 @@ export interface HeaderDbData {
     stickyHeader?: boolean
     headerLayout?: string
   }
-  /** Nav bar thème sombre (Example Shop-like). Null si pas de couleurs en DB. */
+  
   navBar?: {
     backgroundColor?: string | null
     textColor?: string | null
   } | null
 }
 
-// Minimal default — must NOT contain values that would overwrite
-// the tenant config (logo.src, headerLayout, etc.) via deepMerge.
 const DEFAULT_HEADER: HeaderDbData = {
   logo: { href: '/' },
   topBar: {},
@@ -63,8 +58,8 @@ export function useHeaderDb() {
   })
 
   function loadIntoBuilder() {
-    // Only load if the API fetch returned actual data.
-    // Otherwise we risk overwriting the DB config (logo, headerLayout) with defaults.
+    
+    
     if (data.value?.header) {
       builderHeader.value = JSON.parse(JSON.stringify(data.value.header))
     }

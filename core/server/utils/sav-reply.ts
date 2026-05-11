@@ -1,21 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Customer support reply helpers — Drizzle direct on ps_customer_thread + ps_customer_message.
- * Phase 9b.4e chantier headless-modules-ts (option C-hard). Remplace
- * `psProxy ac_savapi/reply` on the Nuxt side:
- *   1. Lookup thread + customer
- *   2. INSERT ps_customer_message
- *   3. UPDATE ps_customer_thread.status
- *   4. sendEmail() via Resend (config tenant : shop_email/shop_name lus
- *      depuis ps_configuration)
- *
- * The ac_savapi module remains active — used by other consumers
- * (ps_customer_message in native back office, etc.) — but the Nuxt → DB path
- * direct becomes authoritative for /api/bo/sav/:id/reply.
- *
- * Project #44 (2026-04-30): migrated MariaDB → PostgreSQL (cs_main).
- */
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -90,8 +73,8 @@ async function getThreadContext(d: any, idThread: number): Promise<ThreadContext
 }
 
 async function getShopIdentity(d: any, idShop: number): Promise<{ shopName: string; shopEmail: string; shopUrl: string }> {
-  // ps_configuration peut avoir des values shop-scoped — on cherche
-  // d'abord la value shop=idShop puis fallback global.
+  
+  
   const fetch = async (key: string): Promise<string> => {
     const r1 = await d.execute(sql`
       SELECT value FROM cs_main.ps_configuration
@@ -107,7 +90,7 @@ async function getShopIdentity(d: any, idShop: number): Promise<{ shopName: stri
     fetch('PS_SHOP_NAME'),
     fetch('PS_SHOP_EMAIL'),
   ])
-  // ps_shop_url donne le domaine
+  
   const urlRow = await d.execute(sql`
     SELECT domain, physical_uri FROM cs_main.ps_shop_url WHERE id_shop = ${idShop} AND main = 1 LIMIT 1
   `) as Array<{ domain: string; physical_uri: string }>
@@ -152,10 +135,10 @@ export async function savReply(input: SavReplyInput, event?: any): Promise<SavRe
     return { success: false, idThread, status, mailSent: false, error: 'Ticket introuvable', statusCode: 404 }
   }
 
-  // 1. INSERT message (id_employee = 1, super admin tenant par défaut)
-  //    PG : RETURNING au lieu de LAST_INSERT_ID, NOW() au lieu de string format,
-  //    "read" en guillemets (mot non-réservé en PG mais on garde la quote pour
-  //    éviter toute ambiguïté de quoting cross-DB).
+  
+  
+  
+  
   const inserted = await d.execute(sql`
     INSERT INTO cs_main.ps_customer_message
       (id_customer_thread, id_employee, message, private, "read", date_add, date_upd)
@@ -168,13 +151,13 @@ export async function savReply(input: SavReplyInput, event?: any): Promise<SavRe
     return { success: false, idThread, status, mailSent: false, error: 'INSERT ps_customer_message KO', statusCode: 500 }
   }
 
-  // 2. UPDATE thread
+  
   await d.execute(sql`
     UPDATE cs_main.ps_customer_thread SET status = ${status}, date_upd = NOW()
      WHERE id_customer_thread = ${idThread}
   `)
 
-  // 3. Mail via Resend (config tenant lue en DB)
+  
   const { shopName, shopEmail, shopUrl } = await getShopIdentity(d, ctx.idShop)
   const link = shopUrl ? `${shopUrl.replace(/\/+$/, '')}/contact` : ''
 
@@ -189,9 +172,9 @@ export async function savReply(input: SavReplyInput, event?: any): Promise<SavRe
 
   const subject = shopName ? `[${shopName}] Réponse à votre demande SAV` : 'Réponse à votre demande SAV'
   const fromName = shopName || 'Service client'
-  // From doit être un domaine vérifié sur Resend. On préfère le shopEmail
-  // tenant ; si non vérifié sur Resend, ça plantera et l'erreur sera visible.
-  // Sinon fallback noreply@ + domaine inféré + replyTo shopEmail.
+  
+  
+  
   const from = shopEmail
     ? `${fromName} <${shopEmail}>`
     : (process.env.RESEND_DEFAULT_FROM || 'Service client <noreply@codemyshop.com>')

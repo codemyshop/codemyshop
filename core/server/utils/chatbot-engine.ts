@@ -1,23 +1,4 @@
-/**
- *
- * Moteur conversationnel chatbot — start / reply / persistance + lead INSERT.
- *
- * Source of truth for the tree: database (`cs_chatbot_node` + `_node_lang` +
- * `_option` + `_option_lang`), tenant-aware via useClientDb. Aucun arbre
- * hardcoded in the code (database-only doctrine). Each tenant can therefore have
- * ses propres tunnels en seed SQL (cf synedre/migrations/seed-chatbot-*.sql).
- *
- * In-memory cache per database instance: the tree is loaded once per process
- * Nuxt and invalidated after TTL (60 s in dev, 300 s in prod).
- *
- * FSM rule:
- * 1. bot sends the current node (question + options or free text)
- * 2. user responds (click option or free-form input)
- * 3. persist in `_chatbot_answer` + optional capture in
- *      `_chatbot_conversation.captured_*`
- * 4. compute the next node (option lookup OR `next_question` direct)
- * 5. if terminal → INSERT smartlead, status 'closed', last bot message
- */
+
 
 import { useClientDb } from './db'
 import { verifySiret, isEmailFormat } from './siret-verify'
@@ -47,9 +28,8 @@ export interface BotMessageDTO {
   content:           string
   options?:          string[]
   terminal:          boolean
-  /** Quand true : conversation en mode takeover, le storefront doit
-   * stop waiting for an FSM response and start polling state.get
-   * to retrieve agent messages. */
+  
+
   humanTakeover?:    boolean
 }
 
@@ -60,18 +40,16 @@ function genToken(): string {
   return randomBytes(24).toString('hex')
 }
 
-// ─── Tree cache per database instance (WeakMap) with TTL ─────────────────
 interface CachedTree { tree: ChatTree; loadedAt: number }
 const TREE_CACHE = new WeakMap<object, CachedTree>()
-// Short TTL (60 s) so reseeds propagate quickly. Negligible cost
-// (1 SELECT/min/process). If the tree grows large, bump to 300 s.
+
 const TREE_TTL_MS = 60 * 1000
 
 async function loadTree(db: any, idLang = 1): Promise<ChatTree> {
   const cached = TREE_CACHE.get(db)
   if (cached && Date.now() - cached.loadedAt < TREE_TTL_MS) return cached.tree
 
-  // 1. All nodes + their language
+  
   const nodes = await db.query<any>(
     `SELECT n.id_node, n.node_key, n.type, n.capture, n.next_question,
             n.terminal, n.scenario_root,
@@ -83,7 +61,7 @@ async function loadTree(db: any, idLang = 1): Promise<ChatTree> {
       ORDER BY n.position ASC, n.id_node ASC`,
     [idLang],
   )
-  // 2. All options + their language
+  
   const opts = await db.query<any>(
     `SELECT o.id_option, o.id_node, o.position, o.next_node_key,
             COALESCE(ol.label_text, '') AS label_text
@@ -122,15 +100,8 @@ async function loadTree(db: any, idLang = 1): Promise<ChatTree> {
   return tree
 }
 
-/** Call from an admin endpoint after seed update to force reload. */
 export function invalidateChatbotTreeCache(db: any) { TREE_CACHE.delete(db) }
 
-/**
- * Persists a captured response: 1 parent row (id_conversation, node_key) +
- * 1 _lang row (question/recap_label/answer). RETURNING id_answer because the
- * short PK (id_answer) doesn't match the adapter's auto-RETURNING heuristic
- * l'adapter.
- */
 export async function persistAnswer(
   db: any,
   idConversation: number,
@@ -164,25 +135,22 @@ function pickRoot(input?: string): string {
   return 'global'
 }
 
-/** Trouve le node racine d'un scenario donné. Fallback sur 'global'. */
 function rootStartKey(tree: ChatTree, scenario: string): string {
   for (const k of Object.keys(tree)) {
     if (tree[k].scenarioRoot === scenario) return k
   }
   if (tree['global']) return 'global'
-  // No root → first node of the dict (defensive)
+  
   const firstKey = Object.keys(tree)[0]
   if (!firstKey) throw new Error('[chatbot-engine] arbre vide en DB — seed manquant ?')
   return firstKey
 }
 
-// ─── start / reply ─────────────────────────────────────────────────────
-
 export interface StartOpts {
   scenario?:      string
   productId?:     number | null
-  /** Quantity pre-filled via the +/- button on the product card. If > 1,
-   * persist it in the link table and skip the qty question. */
+  
+
   initialQty?:    number | null
   ipAddress?:     string
   userAgent?:     string
@@ -195,8 +163,8 @@ export async function startConversation(opts: StartOpts, ctx: Ctx): Promise<BotM
   const tree = await loadTree(db, idLang)
   const root = pickRoot(opts.scenario)
   let startKey = rootStartKey(tree, root)
-  // If there's a pre-filled quantity (> 1) on the product funnel, skip
-  // product_q1_qty and go directly to product_q2_freq.
+  
+  
   const skipQty = root === 'product'
     && Number(opts.initialQty || 0) > 1
     && tree['product_q2_freq']
@@ -208,11 +176,11 @@ export async function startConversation(opts: StartOpts, ctx: Ctx): Promise<BotM
 
   const token = genToken()
 
-  // PK = id_conversation (adapter heuristic doesn't match) → RETURNING
-  // explicit + db.get to retrieve the id.
-  // unread_for_admin=TRUE from the start: the topbar bell must
-  // alert the agent of a new conversation initiated.
-  // last_message_at=NOW() so it appears at the top of the list.
+  
+  
+  
+  
+  
   const ins = await db.get<any>(
     `INSERT INTO cs_main.cs_chatbot_conversation
        (conversation_token, source, scenario_root, current_node_key,
@@ -230,9 +198,9 @@ export async function startConversation(opts: StartOpts, ctx: Ctx): Promise<BotM
   const idConversation = Number(ins?.id_conversation || 0)
   if (!idConversation) throw new Error('[chatbot-engine] insert conversation failed')
 
-  // If quantity pre-filled: immediately persist the product line and
-  // add a bot message user-side to show "Qty: X" in the timeline
-  // (otherwise the user sees only the frequency without context).
+  
+  
+  
   if (skipQty && opts.productId) {
     const qtyStr = String(opts.initialQty)
     await upsertProductCol(idConversation, opts.productId, 'qty', qtyStr, ctx)
@@ -251,7 +219,7 @@ export async function startConversation(opts: StartOpts, ctx: Ctx): Promise<BotM
     )
   }
 
-  // Dynamic placeholders (e.g. {{PRODUCT_NAME}} on product_q1_qty)
+  
   const renderedQuestion = await renderQuestionPlaceholders(idConversation, node.question, ctx, idLang)
   const renderedNode: ChatNode = renderedQuestion === node.question ? node : { ...node, question: renderedQuestion }
   await persistBotMessage(idConversation, renderedNode, ctx)
@@ -279,11 +247,11 @@ export async function replyConversation(opts: ReplyOpts, ctx: Ctx): Promise<BotM
   if (String(conv.conversation_token) !== opts.conversationToken) throw new Error('Token invalide')
   if (conv.status === 'closed') throw new Error('Conversation déjà clôturée')
 
-  // ─── Takeover mode: bot disabled, user message persisted raw ───
-  // The agent receives the notification (unread_for_admin=true) and replies via
-  // /api/bo/chatbot/[token]/reply. Return a neutral DTO (no
-  // bot node) so the storefront widget doesn't refresh anything
-  // unusual — it polls state.get to receive agent messages.
+  
+  
+  
+  
+  
   if (conv.human_takeover) {
     const userMessageTk = (opts.message || '').trim().slice(0, 2000)
     if (!userMessageTk) throw new Error('Message vide')
@@ -317,18 +285,18 @@ export async function replyConversation(opts: ReplyOpts, ctx: Ctx): Promise<BotM
   const userMessage = (opts.message || '').trim().slice(0, 2000)
   if (!userMessage) throw new Error('Message vide')
 
-  // 1. Persist the user message + the captured response (q+r for recap).
-  // db.query (not db.run) because the adapter's auto-RETURNING heuristic
-  // expects `id_chatbot_message` long while the PK is `id_message`.
+  
+  
+  
   await db.query(
     `INSERT INTO cs_main.cs_chatbot_message
        (id_conversation, role, content, type, date_add)
      VALUES (?, 'user', ?, 'text', NOW())`,
     [opts.conversationId, userMessage],
   )
-  // Bump unread + last_message_at: every visitor message (bot mode OR
-  // takeover) must re-light the topbar bell as long as not reviewed
-  // in /hub/chatbot.
+  
+  
+  
   await db.run(
     `UPDATE cs_main.cs_chatbot_conversation
         SET unread_for_admin = TRUE, last_message_at = NOW()
@@ -343,9 +311,9 @@ export async function replyConversation(opts: ReplyOpts, ctx: Ctx): Promise<BotM
     opts.idLang || 1,
   )
 
-  // 2. Optional capture. If validation fails (SIRET not found, email
-  // malformed, etc.), push an error bot message and STAY on the
-  // same node — the user re-enters their response. No progression.
+  
+  
+  
   if (currentNode.capture) {
     const cap = await captureAnswer(opts.conversationId, currentNode.capture, userMessage, ctx)
     if (!cap.valid) {
@@ -368,16 +336,16 @@ export async function replyConversation(opts: ReplyOpts, ctx: Ctx): Promise<BotM
     }
   }
 
-  // 3. Determine nextKey + node, drift-safe vs stale cache.
-  //
-  // Pipeline en 3 temps :
-  // a) Initial computation on the current tree (may be stale)
-  // b) If nextKey doesn't exist → reload cache and re-derive nextKey from
-  // the refreshed current node (the tree was just seeded, the current
-  // may point elsewhere now)
-  // c) Semantic interceptions (invisible routers, UI signals) on the
-  // final nextKey — otherwise interceptions don't apply after
-  // a reload (cf. incidents "..." 2026-05-02)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   let nextKey: string | null = null
   let awaitMoreProduct = false
 
@@ -392,10 +360,10 @@ export async function replyConversation(opts: ReplyOpts, ctx: Ctx): Promise<BotM
     return currentTree['human_q1_subject'] ? 'human_q1_subject' : Object.keys(currentTree)[0] || null
   }
 
-  // (a) Initial
+  
   nextKey = deriveFromNode(currentNode, tree)
 
-  // (b) Reload if not found
+  
   let nextNode: ChatNode | undefined = nextKey ? tree[nextKey] : undefined
   if (!nextNode) {
     invalidateChatbotTreeCache(db)
@@ -405,7 +373,7 @@ export async function replyConversation(opts: ReplyOpts, ctx: Ctx): Promise<BotM
     nextNode = nextKey ? tree[nextKey] : undefined
   }
 
-  // (c) Semantic interceptions on final nextKey
+  
   if (nextKey === 'product_route_after') {
     const hasIdentity = await hasCapturedIdentity(opts.conversationId, ctx)
     nextKey = hasIdentity ? 'review' : 'common_ask_siret'
@@ -426,9 +394,9 @@ export async function replyConversation(opts: ReplyOpts, ctx: Ctx): Promise<BotM
       WHERE id_conversation = ?`,
     [nextKey, opts.conversationId],
   )
-  // For the review node, inject the dynamic recap (placeholder
-  // {{RECAP}} in the seeded question). For other nodes, render
-  // the global placeholders (e.g. {{PRODUCT_NAME}} on product_q1_qty).
+  
+  
+  
   let renderedNode: ChatNode
   if (nextKey === 'review') {
     renderedNode = await renderReviewNode(opts.conversationId, nextNode, ctx)
@@ -438,7 +406,7 @@ export async function replyConversation(opts: ReplyOpts, ctx: Ctx): Promise<BotM
   }
   await persistBotMessage(opts.conversationId, renderedNode, ctx)
 
-  // 4. Terminal → INSERT smartlead + smartproject + close
+  
   if (renderedNode.terminal) {
     await finalizeAsLead(opts.conversationId, ctx)
   }
@@ -448,7 +416,6 @@ export async function replyConversation(opts: ReplyOpts, ctx: Ctx): Promise<BotM
   return dto
 }
 
-/** True if SIRET + email + fullname are all captured. */
 async function hasCapturedIdentity(idConversation: number, ctx: Ctx): Promise<boolean> {
   const db = useClientDb(ctx.event)
   const r = await db.get<any>(
@@ -464,15 +431,6 @@ async function hasCapturedIdentity(idConversation: number, ctx: Ctx): Promise<bo
   )
 }
 
-/** Builds the multi-product recap displayed in the `review` node. */
-/**
- * Renders the dynamic placeholders for a question. Today:
- * - {{PRODUCT_NAME}} → product name in conversation context
- * (ps_product_lang.name via product_id_context). If no product context,
- * cleanly remove the quoted segment to
- * keep a clean sentence (« on this product "X", … » → « on this
- *     produit, … »).
- */
 async function renderQuestionPlaceholders(
   idConversation: number, question: string, ctx: Ctx, idLang = 1,
 ): Promise<string> {
@@ -489,7 +447,7 @@ async function renderQuestionPlaceholders(
     name = String(row?.name || '').trim()
   }
   if (name) return question.replace(/\{\{PRODUCT_NAME\}\}/g, name)
-  // Pas de nom : on retire les guillemets/espaces qui entourent le placeholder
+  
   return question
     .replace(/\s*«\s*\{\{PRODUCT_NAME\}\}\s*»\s*/g, ' ')
     .replace(/\s*"\{\{PRODUCT_NAME\}\}"\s*/g, ' ')
@@ -499,7 +457,6 @@ async function renderQuestionPlaceholders(
     .trim()
 }
 
-/** Exported for reuse by /api/chatbot/add-product (which doesn't go through replyConversation). */
 export async function renderQuestionForConversation(
   idConversation: number, question: string, ctx: Ctx, idLang = 1,
 ): Promise<string> {
@@ -529,11 +486,8 @@ async function renderReviewNode(idConversation: number, base: ChatNode, ctx: Ctx
   return { ...base, question: base.question.replace('{{RECAP}}', recap) }
 }
 
-// ─── helpers ───────────────────────────────────────────────────────────
-
 interface CaptureResult { valid: boolean; error?: string }
 
-/** Retrieves the current id_product (conversation context). */
 async function getProductContext(idConversation: number, ctx: Ctx): Promise<number | null> {
   const db = useClientDb(ctx.event)
   const r = await db.get<any>(
@@ -543,14 +497,13 @@ async function getProductContext(idConversation: number, ctx: Ctx): Promise<numb
   return r?.product_id_context ? Number(r.product_id_context) : null
 }
 
-/** Insert or update the current product line for the conversation+product. */
 async function upsertProductCol(
   idConversation: number, idProduct: number, column: 'qty' | 'freq' | 'target_price',
   value: string, ctx: Ctx,
 ): Promise<void> {
   const db = useClientDb(ctx.event)
-  // Manual upsert: try UPDATE then INSERT if absent (PostgreSQL without ON CONFLICT
-  // as there's no UNIQUE constraint — the same product can be re-edited).
+  
+  
   const colName = column === 'qty' ? 'qty' : column === 'freq' ? 'freq' : 'target_price'
   const upd = await db.run(
     `UPDATE cs_main.cs_chatbot_conversation_product
@@ -559,7 +512,7 @@ async function upsertProductCol(
     [value.slice(0, 64), idConversation, idProduct],
   )
   if (upd.affectedRows) return
-  // Initial INSERT: fill the touched column + null for the others
+  
   await db.query(
     `INSERT INTO cs_main.cs_chatbot_conversation_product
        (id_conversation, id_product, ${colName}, date_add)
@@ -601,8 +554,8 @@ async function captureAnswer(
   if (kind === 'siret') {
     const r = await verifySiret(value)
     if (!r.valid) return { valid: false, error: r.error || 'SIRET invalide.' }
-    // Valid SIRET → also store the auto-retrieved company name to
-    // pre-fill the smartlead (the user no longer needs to re-enter it).
+    
+    
     await db.run(
       `UPDATE cs_main.cs_chatbot_conversation
           SET captured_siret = ?, captured_company = ?
@@ -641,10 +594,10 @@ async function captureAnswer(
     )
     return { valid: true }
   }
-  // Special captures for the product funnel (link in the N-N table)
+  
   if (kind === 'product_qty' || kind === 'product_freq' || kind === 'product_price') {
     const idProduct = await getProductContext(idConversation, ctx)
-    if (!idProduct) return { valid: true }  // pas de contexte : on persist rien, mais on ne bloque pas l'avancement
+    if (!idProduct) return { valid: true }  
     const col = kind === 'product_qty' ? 'qty' : kind === 'product_freq' ? 'freq' : 'target_price'
     await upsertProductCol(idConversation, idProduct, col as any, value, ctx)
     return { valid: true }
@@ -657,14 +610,14 @@ async function persistBotMessage(idConversation: number, node: ChatNode, ctx: Ct
   const optionsJson = node.type === 'buttons' && node.options?.length
     ? JSON.stringify(node.options.map((o) => o.label))
     : null
-  // db.query — cf. note in replyConversation, short PK `id_message`.
+  
   await db.query(
     `INSERT INTO cs_main.cs_chatbot_message
        (id_conversation, role, content, type, options_json, date_add)
      VALUES (?, 'bot', ?, ?, ?, NOW())`,
     [idConversation, node.question, node.type, optionsJson],
   )
-  // Denormalized bump for hub list sorting (idx_chatbot_conversation_last_msg).
+  
   await db.run(
     `UPDATE cs_main.cs_chatbot_conversation
         SET last_message_at = NOW() WHERE id_conversation = ?`,
@@ -672,13 +625,6 @@ async function persistBotMessage(idConversation: number, node: ChatNode, ctx: Ct
   )
 }
 
-/**
- * Send an agent message (sender='agent') on a conversation
- * in takeover mode. Mark the conversation as read (the agent
- * just replied) and bump last_message_at.
- *
- * Used by /api/bo/chatbot/[token]/reply.
- */
 export async function sendAgentMessage(
   ctx: Ctx,
   idConversation: number,
@@ -705,11 +651,6 @@ export async function sendAgentMessage(
   )
 }
 
-/**
- * Switch a conversation to takeover mode: set flag to TRUE, employee
- * owner recorded, system bot message announcing the handoff
- * (visible to the visitor). Idempotent: re-call = noop.
- */
 export async function takeoverConversation(
   ctx: Ctx,
   idConversation: number,
@@ -744,7 +685,6 @@ export async function takeoverConversation(
   )
 }
 
-/** Marque une conversation comme lue côté admin (sans envoyer de message). */
 export async function markConversationRead(ctx: Ctx, idConversation: number): Promise<void> {
   const db = useClientDb(ctx.event)
   await db.run(
@@ -754,7 +694,6 @@ export async function markConversationRead(ctx: Ctx, idConversation: number): Pr
   )
 }
 
-/** Manual close (agent). Different from finalizeAsLead (FSM terminal). */
 export async function closeConversation(ctx: Ctx, idConversation: number): Promise<void> {
   const db = useClientDb(ctx.event)
   await db.run(
@@ -805,9 +744,9 @@ async function finalizeAsLead(idConversation: number, ctx: Ctx): Promise<void> {
   const siret     = String(conv.captured_siret || '').trim()
   const scenario  = String(conv.scenario_root || 'global')
 
-  // Pre-flight check: create smartlead+project ONLY if email is valid AND SIRET is valid.
-  // Otherwise close the conversation without persisting (case where the tree would be
-  // configured without mandatory final capture).
+  
+  
+  
   if (!email || !isEmailFormat(email) || siret.replace(/\D/g, '').length !== 14) {
     await db.run(
       `UPDATE cs_main.cs_chatbot_conversation
@@ -819,8 +758,8 @@ async function finalizeAsLead(idConversation: number, ctx: Ctx): Promise<void> {
     return
   }
 
-  // - list of negotiated products (qty/freq/price per product)
-  // - then contextual Q/A (establishment type, volume, reason, etc.)
+  
+  
   const productRows = await db.query<any>(
     `SELECT id_product, qty, freq, target_price
        FROM cs_main.cs_chatbot_conversation_product
@@ -835,8 +774,8 @@ async function finalizeAsLead(idConversation: number, ctx: Ctx): Promise<void> {
     return '• ' + parts.join(' · ')
   })
 
-  // conversation switched to English one day, add id_lang to the conversation
-  // and propagate it here.
+  
+  
   const answers = await db.query<any>(
     `SELECT al.recap_label, al.answer
        FROM cs_main.cs_chatbot_answer a
@@ -847,7 +786,7 @@ async function finalizeAsLead(idConversation: number, ctx: Ctx): Promise<void> {
   ) as any[]
   const answerLines = answers
     .filter((a) => a.recap_label && a.answer
-      // exclude individual product Q/A: already summarized via productLines
+      
       && !['Quantité visée', 'Fréquence livraison', 'Prix cible', 'SIRET', 'Email', 'Contact'].includes(String(a.recap_label)))
     .map((a) => `• ${a.recap_label} : ${a.answer}`)
 
@@ -861,7 +800,7 @@ async function finalizeAsLead(idConversation: number, ctx: Ctx): Promise<void> {
   noteParts.push(`Conversation #${idConversation}.`)
   const note = noteParts.join(' ')
 
-  // ── 1. Smartlead (merge if email already known) ──
+  
   let idSmartlead = 0
   const existing = await db.get<any>(
     `SELECT id_ac_smartlead FROM cs_main.cs_smartlead WHERE email = ? LIMIT 1`,
@@ -886,9 +825,9 @@ async function finalizeAsLead(idConversation: number, ctx: Ctx): Promise<void> {
     idSmartlead = Number(r?.id_ac_smartlead || 0)
   }
 
-  // ── 2. Smartproject (visible in /hub/projects pipeline) ──
-  // id_owner = 1 (system, cf. existing rows). The agent assigns later
-  // from the pipeline. Initial stage 'lead_entrant' = « Incoming » column.
+  
+  
+  
   const projectTitle = makeProjectTitle(scenario, company, conv.product_id_context)
   let idSmartproject = 0
   try {

@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <!-- Modal -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" @click.self="closeModal">
@@ -76,7 +76,7 @@
       </Transition>
     </Teleport>
 
-    <!-- Delete confirm -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="deleteTarget" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" @click.self="deleteTarget = null">
@@ -96,7 +96,6 @@
 
 <script setup lang="ts">
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
-
 
 const templates   = ref<any[]>([])
 const loading     = ref(true)

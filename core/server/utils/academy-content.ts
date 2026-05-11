@@ -1,8 +1,4 @@
-/**
- * Shared utility to read modules/lessons from the database (cs_academy_module + cs_academy_lesson).
- * Source unique : DB (cs_academy_module + cs_academy_lesson).
- *
- */
+
 
 export interface AcademyLesson {
   title: string
@@ -57,7 +53,6 @@ interface AcademyData {
   mentors: Record<string, AcademyMentor>
 }
 
-// Stop words FR à supprimer des slugs
 const STOP_WORDS = new Set([
   'le', 'la', 'les', 'de', 'du', 'des', 'un', 'une', 'et', 'en', 'au', 'aux',
   'ce', 'ces', 'par', 'pour', 'sur', 'dans', 'avec', 'est', 'son', 'sa', 'ses',
@@ -68,19 +63,18 @@ const STOP_WORDS = new Set([
 
 export function slugifyLesson(title: string): string {
   return title
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')  // remove accents
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')  
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')                      // keep alphanumeric + spaces
-    .split(/[\s-]+/)                                    // split on spaces/hyphens
-    .filter(w => w.length > 0 && !STOP_WORDS.has(w))   // remove stop words
-    .slice(0, 5)                                        // max 5 words
+    .replace(/[^a-z0-9\s-]/g, '')                      
+    .split(/[\s-]+/)                                    
+    .filter(w => w.length > 0 && !STOP_WORDS.has(w))   
+    .slice(0, 5)                                        
     .join('-')
-    .slice(0, 60)                                       // max 60 chars
+    .slice(0, 60)                                       
 }
 
-// ── DB cache par client (évite une connexion par requête) ────────────────────
 const _dbCacheMap = new Map<string, { data: AcademyData; ts: number }>()
-const DB_CACHE_TTL = 300_000 // 5 min — academy data changes rarely
+const DB_CACHE_TTL = 300_000 
 
 async function loadFromDb(): Promise<AcademyData | null> {
   const config = useRuntimeConfig()
@@ -94,7 +88,7 @@ async function loadFromDb(): Promise<AcademyData | null> {
       listActiveModules,
     } = await import('~/internal/academy/server/utils/academy')
 
-    // Pas d'event ici (utilitaire chargé en background) → on cible la DB globale.
+    
     const [modRows, lessonRows, mentorRows] = await Promise.all([
       listActiveModules(clientId, { global: true }),
       listActiveLessons(clientId, { global: true }),
@@ -159,7 +153,6 @@ export async function getAllModulesAsync(): Promise<AcademyData> {
   return await loadFromDb() ?? _emptyData
 }
 
-// Sync (cache only — DB must have been loaded at least once)
 export function getAllModules(): AcademyData {
   const config = useRuntimeConfig()
   const clientId = (config.clientId as string) || 'ac-hub'
@@ -182,10 +175,10 @@ export function findModuleByPartialSlug(slug: string): AcademyModuleWithMeta | n
   const config = useRuntimeConfig()
   const clientId = (config.clientId as string) || 'ac-hub'
   const data = _dbCacheMap.get(clientId)?.data ?? _emptyData
-  // Match exact d'abord
+  
   const exact = data.modules.find(m => m.slug === slug)
-  if (exact) return null // pas un partial match
-  // Slug partiel : cherche un module dont le slug commence par ou contient le slug demandé
+  if (exact) return null 
+  
   const partial = data.modules.find(m => m.slug.startsWith(slug + '-') || m.slug === `le-${slug}`)
   return partial ?? null
 }

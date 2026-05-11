@@ -1,26 +1,4 @@
-/**
- *
- * Drizzle PG schemas for the Routing cluster — project #38 Phase 1 step 8.
- *
- * 3 core tables (continuation of routing_driver / routing_vehicle already
- * provisioned as read-only at step 7) :
- * - cs_routing_tour       : tour (label, date, vehicle, driver, depot, status)
- * - cs_routing_tour_stop  : ordered stops of a tour
- *   - cs_availability       : compteur slot prestataire (max/current par mois)
- *
- * Cutover writes Nuxt only (bucket B) : createTour, updateTour, deleteTour,
- * addStopToTour, updateStop, deleteStop, optimizeTour, set/get availability.
- *
- * Mapping types notable :
- *   - INT UNSIGNED AUTO_INCREMENT  -> serial (id_tour, id_stop, id_availability)
- *   - DECIMAL(10,6) coords         -> numeric(10, 6) en string
- *   - DECIMAL(10,2) poids/km       -> numeric(10, 2) en string
- *   - DATE tour_date                -> date (mode 'string' YYYY-MM-DD)
- * - TIME window_*                 -> varchar(8) (PG `time` doesn't serialize
- * properly via postgres-js without a wrapper ;
- * the facade already reads DATE_FORMAT(.., '%H:%i'))
- * - ENUM status                   -> varchar(16) (CHECK constraint at DDL level)
- */
+
 
 import {
   date,

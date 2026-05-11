@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col h-[calc(100vh-3rem)]">
-    <!-- ─── Tabs mode: Chat | Scenario ─── -->
+    
     <nav class="flex border-b border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0">
       <button
         v-for="m in modes"
@@ -15,15 +15,13 @@
       </button>
     </nav>
 
-    <!-- ─── Scenario mode: flow editor ─── -->
+    
     <ChatbotScenarioEditor v-if="activeMode === 'scenario'" />
 
-    <!-- ─── Mode Chat (existant) ─── -->
-  <!-- h-[calc(100vh-3rem)] : la sidebar hub peut dépasser 100vh et faire
-       scroller le body global ; on ancre la page à la hauteur du viewport
-       moins le topbar (h-12 = 3rem) pour garder le composer atteignable. -->
+    
+  
   <div v-show="activeMode === 'chat'" class="flex min-h-0 overflow-hidden flex-1">
-    <!-- ─── Liste conversations (panneau gauche) ─── -->
+    
     <aside class="w-96 shrink-0 flex flex-col bg-white dark:bg-slate-900 border-r border-gray-100 dark:border-slate-800">
       <header class="px-4 py-3 border-b border-gray-100 dark:border-slate-800 shrink-0">
         <div class="flex items-center justify-between mb-2">
@@ -41,7 +39,7 @@
         />
       </header>
 
-      <!-- Tabs filtres -->
+      
       <nav class="flex border-b border-gray-100 dark:border-slate-800 shrink-0 text-[11px]">
         <button
           v-for="tab in tabs"
@@ -59,7 +57,7 @@
         </button>
       </nav>
 
-      <!-- Liste -->
+      
       <div class="flex-1 overflow-y-auto">
         <p v-if="loadingList && items.length === 0" class="text-xs text-gray-400 px-4 py-8 text-center">Chargement…</p>
         <p v-else-if="items.length === 0" class="text-xs text-gray-400 px-4 py-8 text-center">Aucune conversation.</p>
@@ -112,7 +110,7 @@
       </div>
     </aside>
 
-    <!-- ─── Conversation detail (right panel) ─── -->
+    
     <main class="flex-1 flex flex-col min-w-0 min-h-0 bg-gray-50 dark:bg-slate-950">
       <div v-if="!detail" class="flex-1 flex items-center justify-center text-xs text-gray-400">
         <div class="text-center">
@@ -124,7 +122,7 @@
       </div>
 
       <template v-else>
-        <!-- Detail header -->
+        
         <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-3 flex items-center justify-between shrink-0">
           <div class="min-w-0">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 truncate">
@@ -157,7 +155,7 @@
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" /></svg>
               Reprendre la main
             </button>
-            <!-- Pipeline item: if already created → direct link; otherwise create button -->
+            
             <NuxtLink
               v-if="detail.linkedProject"
               :to="`/hub/projects/${detail.linkedProject.idSmartproject}`"
@@ -186,9 +184,9 @@
           </div>
         </header>
 
-        <!-- Body: thread + side summary -->
+        
         <div class="flex-1 flex min-h-0 min-w-0">
-          <!-- Fil messages -->
+          
           <div class="flex-1 flex flex-col min-w-0 min-h-0">
             <div ref="threadEl" class="flex-1 overflow-y-auto px-6 py-4 space-y-3 min-h-0">
               <div v-for="m in detail.messages" :key="m.idMessage"
@@ -210,7 +208,7 @@
               </div>
             </div>
 
-            <!-- Composer (visible only if takeover is active) -->
+            
             <div v-if="detail.conversation.humanTakeover && detail.conversation.status !== 'closed'"
               class="border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 shrink-0">
               <form @submit.prevent="sendReply" class="flex gap-2">
@@ -236,7 +234,7 @@
             </div>
           </div>
 
-          <!-- Side summary (answers + products) -->
+          
           <aside class="w-72 shrink-0 bg-white dark:bg-slate-900 border-l border-gray-100 dark:border-slate-800 overflow-y-auto p-4 space-y-4 text-xs">
             <div v-if="detail.products.length > 0">
               <h3 class="text-[10px] uppercase tracking-wider font-semibold text-gray-500 dark:text-slate-400 mb-2">Produits négociés ({{ detail.products.length }})</h3>
@@ -276,7 +274,7 @@
       </template>
     </main>
 
-    <!-- ─── Modal "Create pipeline item" ─── -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="projectModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" @click.self="projectModalOpen = false">
@@ -356,15 +354,14 @@
         </div>
       </Transition>
     </Teleport>
-    </div><!-- /chat mode -->
-  </div><!-- /page wrapper -->
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import ChatbotScenarioEditor from '~/components/chatbot/ScenarioEditor.vue'
 
-// Tabs mode: Chat (conversations) vs Scenario (bot flow editor)
 type Mode = 'chat' | 'scenario'
 const modes: { key: Mode; label: string }[] = [
   { key: 'chat',     label: '💬 Conversations' },
@@ -421,8 +418,6 @@ const closeLoading = ref(false)
 const createProjectLoading = ref(false)
 const sending = ref(false)
 
-// Modal "Create pipeline item" — opens on button click, pre-filled
-// with captured_* + auto summary. Submit POSTs the create-project endpoint.
 const projectModalOpen = ref(false)
 const projectModalError = ref('')
 const projectForm = ref({
@@ -437,7 +432,7 @@ const threadEl = ref<HTMLElement | null>(null)
 async function reload(resetSelection = false) {
   loadingList.value = true
   try {
-    // Mapping tab → params API
+    
     let status = 'open', takeover = 'all'
     if (activeTab.value === 'open')     { status = 'open';   takeover = '0' }
     if (activeTab.value === 'takeover') { status = 'open';   takeover = '1' }
@@ -463,7 +458,7 @@ async function loadDetail(token: string) {
   try {
     const r = await $fetch<any>(`/api/bo/chatbot/${token}`)
     detail.value = r
-    // Mark as read if conversation is unread (does not affect ongoing poll)
+    
     if (r?.conversation?.unreadForAdmin) {
       $fetch(`/api/bo/chatbot/${token}/mark-read`, { method: 'POST' }).catch(() => {})
     }
@@ -478,7 +473,7 @@ async function loadDetail(token: string) {
 async function select(token: string) {
   selectedToken.value = token
   await loadDetail(token)
-  // Refresh the list to decrement the unread badge on the selected card
+  
   reload()
 }
 
@@ -499,7 +494,7 @@ async function takeover() {
 function openProjectModal() {
   if (!detail.value?.conversation) return
   const c = detail.value.conversation
-  // Title suggestion = scenario + company/name/email
+  
   const scenarioPrefix = ({
     product: 'Demande produit',
     order:   'SAV commande',
@@ -510,7 +505,7 @@ function openProjectModal() {
     || c.capturedEmail
     || 'prospect'
 
-  // Pre-filled summary: products + qualification + latest visitor message
+  
   const lines: string[] = []
   if (detail.value.products?.length) {
     lines.push(`🛒 Produits négociés (${detail.value.products.length}) :`)
@@ -600,7 +595,6 @@ async function sendReply() {
   }
 }
 
-// Polling 3s: list + detail (if open)
 let pollTimer: any = null
 function startPolling() {
   stopPolling()
@@ -620,7 +614,6 @@ watch(threadEl, async () => {
   if (threadEl.value) threadEl.value.scrollTop = threadEl.value.scrollHeight
 })
 
-// ─── Presentation helpers ─────────────────────────────────────────────
 function displayName(c: any): string {
   const n = `${c.capturedFirstname || ''} ${c.capturedLastname || ''}`.trim()
   if (n) return n

@@ -1,19 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Page Mode Commercial — verticale food, brique food-impersonate.
-
-  3 panneaux :
-    1. Session active (si présente) avec bouton Quitter
-    2. Recherche client + raison + bouton "Prendre la main"
-    3. Audit RGPD — 50 dernières sessions (filtre status)
-
-  ACL côté API : sales / commercial / founder / root / SaaS.
-  Cette page est gatée côté sidebar par feature flag food-impersonate ;
-  les non-habilités obtiendront un 403 sur les endpoints (et l'UI le reflète).
--->
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 flex items-center justify-between shrink-0">
@@ -28,7 +13,7 @@
 
     <div class="flex-1 overflow-auto p-6 space-y-6">
 
-      <!-- Panneau 1 — Session active -->
+      
       <section v-if="active" class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl p-4">
         <div class="flex items-center gap-3">
           <span class="text-2xl">🎭</span>
@@ -48,7 +33,7 @@
         </div>
       </section>
 
-      <!-- Panel 2 — Start -->
+      
       <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
         <h2 class="text-sm font-semibold mb-4 text-gray-700 dark:text-slate-200">Prendre la main sur un client</h2>
 
@@ -112,7 +97,7 @@
         </div>
       </section>
 
-      <!-- Panneau 3 — Audit -->
+      
       <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
         <div class="flex items-center justify-between mb-3">
           <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200">Audit · {{ sessions.length }} dernière{{ sessions.length > 1 ? 's' : '' }} session{{ sessions.length > 1 ? 's' : '' }}</h2>

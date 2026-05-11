@@ -1,14 +1,5 @@
-/**
- *
- * GET /api/catalogue/category-by-slug?slug=diy&clientId=example-vape-v2&lang=fr
- *
- * Fast lookup of a PS category by its link_rewrite (slug). Used for
- * SSR resolution of the root category page (core/pages/[...path].vue)
- * without depending on menu config which may not include the psId for
- * all workspaces (some workspaces don't have psId in their menu items).
- *
- * Returns null if not found. Direct DB read.
- */
+
+
 import { useClientDbById, useClientDb } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 
@@ -20,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const db = clientId ? useClientDbById(String(clientId)) : useClientDb(event)
 
   try {
-    // Cherche par link_rewrite exact dans la langue courante puis fallback FR.
+    
     const cat = await db.get<{
       id_category: number
       id_parent: number

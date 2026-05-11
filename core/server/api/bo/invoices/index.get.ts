@@ -1,17 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/bo/invoices — paginated invoice list with filters.
- * Source : cs_invoice + cs_invoice_client (module ac_invoice).
- * Read through the Drizzle facade.
- *
- * Query:
- *   page, perPage
- * search    : invoice number, subject, company, SIRET
- * month     : 'YYYY-MM' — filters on issue_date
- * paidMonth : 'YYYY-MM' — filters on paid_at (URSSAF collection month)
- *   status    : draft|sent|paid|overdue|cancelled
- */
+
 import {
   listInvoicesWithClient,
   type InvoiceFilters,

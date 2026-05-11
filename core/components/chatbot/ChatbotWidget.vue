@@ -1,10 +1,5 @@
 <template>
-  <!-- Widget chatbot — bouton flottant + carte de chat. Mount unique côté
-       layout. Conversation persistante en localStorage : si l'user navigue
-       entre les pages OU ferme le widget sans cliquer "Envoyer", on reprend
-       la conversation au prochain accès. Multi-produits : chaque clic sur
-       "Négocier" depuis un produit ajoute le produit à la conversation
-       existante, jusqu'au CTA final "Envoyer ma demande". -->
+  
   <div class="fixed bottom-6 right-4 z-50 flex items-end gap-2 pointer-events-none">
     <div
       v-if="open"
@@ -22,7 +17,7 @@
         <button @click="closeWidget" class="text-white/80 hover:text-white text-xl leading-none p-1" :aria-label="t('chatbot.chatbot_close_button_aria')">×</button>
       </header>
 
-      <!-- Banner takeover (sales representative took control) -->
+      
       <div v-if="humanTakeover"
         class="bg-emerald-50 dark:bg-emerald-900/20 border-b border-emerald-100 dark:border-emerald-800 px-3 py-2 text-[11px] text-emerald-800 dark:text-emerald-200 flex items-center gap-2 shrink-0">
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -93,7 +88,7 @@
       <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
       </svg>
-      <!-- Badge number of products under negotiation (visible if conversation pending) -->
+      
       <span
         v-if="hasPendingSession && pendingProductsCount > 0"
         class="absolute -top-1 -right-1 min-w-[20px] h-5 rounded-full bg-emerald-500 text-white text-[11px] font-bold flex items-center justify-center px-1 shadow"
@@ -103,7 +98,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 import { getApiErrorMessage } from '~/utils/api-error'
 
@@ -113,24 +107,17 @@ const brandName = String((runtimeConfig.public as any).brandName || 'Boutique')
 
 interface ChatMsg { role: 'bot' | 'user' | 'agent'; content: string }
 
-/**
- * Renders a sanitized mini-subset of markdown for bot/agent messages.
- * Escape HTML d'abord (anti XSS), puis transforme :
- *   - **gras**  → <strong>gras</strong>
- *   - [label](/url) → <a href="/url">label</a> (URLs internes uniquement, /xxx)
- * Other characters remain unchanged.
- */
 function renderMarkdown(raw: string): string {
   if (!raw) return ''
-  // 1. Escape HTML
+  
   const esc = String(raw)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-  // 2. **gras** → <strong>
+  
   let out = esc.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
-  // 3. [label](/url) → <a> (URLs internes seulement, no protocol allowed)
+  
   out = out.replace(
     /\[([^\]]+)\]\((\/[^\s)]+)\)/g,
     '<a href="$2" class="underline font-semibold">$1</a>',
@@ -168,7 +155,7 @@ const headerSubtitle = computed(() => {
   if (currentScenario.value === 'human')   return t('chatbot.chatbot_subtitle_human')
   return t('chatbot.chatbot_subtitle_default')
 })
-// During takeover: text input always active (the bot no longer asks questions).
+
 const canType = computed(() => (humanTakeover.value || expectsText.value) && !terminal.value)
 const textPlaceholder = computed(() =>
   humanTakeover.value
@@ -187,7 +174,7 @@ function readSession(): ChatbotSession | null {
     if (!raw) return null
     const s = JSON.parse(raw)
     if (s?.conversationId && s?.conversationToken) return s as ChatbotSession
-  } catch { /* ignore */ }
+  } catch {  }
   return null
 }
 function saveSession(s: ChatbotSession) {
@@ -248,12 +235,12 @@ async function resumeFromSession(session: ChatbotSession, scenario: string, prod
     pendingProductsCount.value = (state.products || []).length
     humanTakeover.value = Boolean(state.humanTakeover)
     agentFirstname.value = String(state.agentFirstname || '')
-    // Unconditional poll: we must detect the sales takeover even
-    // if the conversation started in pure bot mode.
+    
+    
     startStatePolling()
 
-    // If we reopen via a click "Negotiate" on a new product, we call
-    // add-product to add this product to the conversation.
+    
+    
     if (scenario === 'product' && productId && productId !== state.productIdContext) {
       botTyping.value = true
       const r = await $fetch<any>('/api/chatbot/add-product', {
@@ -267,8 +254,8 @@ async function resumeFromSession(session: ChatbotSession, scenario: string, prod
       })
       productIdContext.value = productId
       currentScenario.value = 'product'
-      // If qty pre-filled: the backend pushed a user message "Target qty: X"
-      // that the state doesn't have yet. We add it optimistically on the frontend.
+      
+      
       if (qty && qty > 1) {
         messages.value.push({ role: 'user', content: t('chatbot.chatbot_user_qty_msg').replace('{qty}', String(qty)) })
       }
@@ -314,7 +301,7 @@ async function startConv(scenario: string, productId: number | null, qty: number
       method: 'POST',
       body: { scenario, productId, qty: qty && qty > 1 ? qty : undefined },
     })
-    // If qty pre-filled, we inject the user bubble into the timeline
+    
     if (qty && qty > 1) {
       messages.value.push({ role: 'user', content: `Qté visée : ${qty}` })
     }
@@ -327,8 +314,8 @@ async function startConv(scenario: string, productId: number | null, qty: number
     })
     hasPendingSession.value = true
     handleBotMessage(res.message)
-    // Poll from the start: allows the visitor to see a takeover
-    // triggered by the sales representative while browsing/thinking.
+    
+    
     startStatePolling()
   } catch (err: any) {
     botTyping.value = false
@@ -354,8 +341,8 @@ async function sendReply(message: string) {
       },
     })
     handleBotMessage(res.message)
-    // Special case: click "Add another product" → close widget,
-    // keep the session, wait for the next click on a product's Negotiate button.
+    
+    
     if ((res.message as any)?.awaitMoreProduct || res?.awaitMoreProduct) {
       open.value = false
     }
@@ -376,8 +363,8 @@ function submitText() {
 
 function handleBotMessage(msg: { type: 'buttons' | 'text'; content: string; options?: string[]; terminal?: boolean; nodeKey?: string; humanTakeover?: boolean }) {
   botTyping.value = false
-  // In takeover mode, the backend returns content='' — we push nothing
-  // (agent messages will arrive via polling state.get).
+  
+  
   if (msg.humanTakeover) {
     humanTakeover.value = true
     pendingOptions.value = []
@@ -392,17 +379,12 @@ function handleBotMessage(msg: { type: 'buttons' | 'text'; content: string; opti
   expectsText.value = msg.type === 'text' && !msg.terminal
   terminal.value = Boolean(msg.terminal)
   if (terminal.value) {
-    // Conversation sent → local cleanup
+    
     setTimeout(() => clearSession(), 500)
   }
   scrollToBottom()
 }
 
-// ─── Polling state.get while conversation is open ──────────────
-// Starts at start/resume and runs continuously (4s). Allows the visitor
-// to see the sales takeover in real-time even if the conversation was in
-// bot mode. Stopped when widget closed (closeWidget) or conversation closes
-// (terminal/server status='closed').
 let statePollTimer: any = null
 function startStatePolling() {
   if (statePollTimer || !import.meta.client) return
@@ -418,7 +400,7 @@ async function refreshState() {
       query: { conversationId: conversationId.value, token: conversationToken.value },
     })
     if (!state?.open) {
-      // Conversation closed on the server side (e.g.: sales representative clicked "Close")
+      
       stopStatePolling()
       humanTakeover.value = false
       return
@@ -429,17 +411,17 @@ async function refreshState() {
     agentFirstname.value = String(state.agentFirstname || '')
 
     if (nowTakeover) {
-      // First-time switch: we hide the FSM options, we disable
-      // waiting for text input prompted by the bot. The composer remains
-      // unrestricted because canType is true via humanTakeover.
+      
+      
+      
       if (!wasTakeover) {
         humanTakeover.value = true
         pendingOptions.value = []
         expectsText.value = false
         botTyping.value = false
       }
-      // Reconciliation timeline (nouveaux messages agent + greeting bot
-      // injected by takeoverConversation server-side).
+      
+      
       const serverMessages = (state.messages || []).map((m: any) => ({
         role: m.role as 'bot' | 'user' | 'agent', content: String(m.content || ''),
       }))
@@ -448,12 +430,12 @@ async function refreshState() {
         scrollToBottom()
       }
     } else if (wasTakeover) {
-      // Very rare: sales representative canceled the takeover (no UI yet
-      // but possible via DB). We remain in "unrestricted input" mode for
-      // now — the bot doesn't resume on its own.
+      
+      
+      
       humanTakeover.value = false
     }
-  } catch { /* silent — re-essayé au prochain tick */ }
+  } catch {  }
 }
 
 function onChatbotOpenEvent(e: Event) {

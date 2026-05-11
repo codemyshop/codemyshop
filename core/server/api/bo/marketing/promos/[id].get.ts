@@ -1,18 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/marketing/promos/:id — detail of a promo code.
- *
- * Returns the cart rule + the localized name via `?lang=X`.
- * Structural fields (dates, amounts, quantities, %/€) live on
- * ps_cart_rule (non-localized). Only `name` is multilingual
- * (ps_cart_rule_lang) — master/translation semantics.
- *
- * Special case: `id=new` returns an empty skeleton to pre-fill
- * the editor during creation.
- */
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, message: 'id requis' })

@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/products — paginated product list via direct database.
- * Query: ?page=1&perPage=30&search=…&category=id
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const page = Math.max(1, Number(q.page || 1))
@@ -21,8 +17,8 @@ export default defineEventHandler(async (event) => {
     const params: any[] = []
 
     if (search) {
-      // ILIKE (case-insensitive PG) + CAST AS TEXT (CAST AS CHAR sans longueur
-      // est MariaDB-only, PG throw silencieusement et catch retourne 0 rows).
+      
+      
       conditions.push(`(pl.name ILIKE ? OR p.reference ILIKE ? OR p.ean13 ILIKE ? OR CAST(p.id_product AS TEXT) ILIKE ?)`)
       const s = `%${search}%`
       params.push(s, s, s, s)
@@ -71,17 +67,17 @@ export default defineEventHandler(async (event) => {
       LIMIT ? OFFSET ?
     `, [...params, perPage, offset])
 
-    // Construit l'URL d'image directe via buildProductImage (path Titus
-    // /img/p/<digits>/<id>-<slug>-400.webp servi par nginx static-heavy).
-    // Plus fiable que le proxy /api/catalogue/image/X qui cherche le
-    // format PS legacy <id>-home_default.jpg absent ici.
+    
+    
+    
+    
     const { buildProductImage } = await import('~/server/utils/ps-image')
     for (const p of products) {
       const img = buildProductImage(p.coverImageId, p.linkRewrite)
       p.imageUrl = img?.src ?? null
     }
 
-    // Charger toutes les images par produit (pour le carrousel modal)
+    
     if (products.length) {
       const productIds = products.map((p: any) => p.id)
       const placeholders = productIds.map(() => '?').join(',')

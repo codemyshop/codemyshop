@@ -1,19 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * GET /api/bo/marketing/blog-categories — complete hierarchy of
- * CMS categories for the admin hub.
- *
- * Returns the flat list, already ordered by level_depth then position —
- * the UI displays indentation via level_depth. Also counts the number
- * of articles directly attached to each category.
- *
- * Excludes the root id=1 (Home): the admin must not be able to
- * modify it, it is reserved for landing pages.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 

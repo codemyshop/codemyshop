@@ -1,10 +1,4 @@
-/**
- * Drizzle PG schema — cs_moduleslist.
- *
- * CodeMyShop modules catalog (~40 rows). OSS-safe (generic).
- * exclusiveToAc = flag technique (0 = community/enterprise, 1 = internal).
- * Extracted from core/server/db/schema-pg/step7-readonly.ts (oss-phase2 initiative).
- */
+
 
 import {
   index,

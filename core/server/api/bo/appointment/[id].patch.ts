@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { updateAppointmentStatus } from '~/enterprise/base/appointment/server/utils/appointment'
 
-/**
- * PATCH /api/bo/appointment/{id} — admin changes an appointment's status.
- * Body : { status: 'pending' | 'confirmed' | 'cancelled' | 'done' }
- */
 const ALLOWED = ['pending', 'confirmed', 'cancelled', 'done'] as const
 
 export default defineEventHandler(async (event) => {

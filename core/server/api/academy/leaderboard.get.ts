@@ -1,11 +1,4 @@
-/**
- * GET /api/academy/leaderboard
- * Ranking of learners (humans + AI agents) via the ac_academy facade.
- *
- * ?type=human|agent  — filtrer par type
- * ?limit=20          — number of results
- *
- */
+
 
 import {
   countLearnersFiltered,

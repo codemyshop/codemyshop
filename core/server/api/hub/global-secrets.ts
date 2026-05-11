@@ -1,14 +1,4 @@
-/**
- *
- * GET /api/hub/global-secrets — global secrets metadata (SuperAdmin SaaS only)
- * POST /api/hub/global-secrets — write a global secret (SuperAdmin SaaS only)
- *
- * SECURITY:
- * - Read/write reserved for SuperAdmin SaaS (root@/founder@/contact@).
- * - GET never returns values in plaintext, only
- * `{ exists, email?, projectId?, updatedAt }` for the Google service account.
- * - POST encrypts before writing via writeGlobalSecret().
- */
+
 
 import { getSession, isSuperAdminSaaS } from '~/server/utils/session'
 import { readGlobalSecret, writeGlobalSecret, hasGlobalSecret } from '~/server/utils/secrets'
@@ -27,7 +17,7 @@ export default defineEventHandler(async (event) => {
   const method = getMethod(event)
   requireSuperAdmin(event)
 
-  // ── GET : métadonnées (jamais le JSON brut) ────────────────────────────
+  
   if (method === 'GET') {
     const exists = await hasGlobalSecret(SLUG_GSC)
     let email: string | null = null
@@ -42,7 +32,7 @@ export default defineEventHandler(async (event) => {
           projectId = parsed.project_id ?? null
         }
       } catch {
-        // JSON corrompu — on signale juste l'existence
+        
       }
     }
 
@@ -55,7 +45,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // ── POST : écriture chiffrée ───────────────────────────────────────────
+  
   if (method === 'POST') {
     const body = await readBody<{ gscServiceAccountJson?: string }>(event)
     const raw = (body.gscServiceAccountJson ?? '').trim()
@@ -64,7 +54,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, message: 'gscServiceAccountJson requis' })
     }
 
-    // Validation : doit être un JSON SA Google valide
+    
     let parsed: any
     try {
       parsed = JSON.parse(raw)
@@ -88,7 +78,7 @@ export default defineEventHandler(async (event) => {
         email: parsed.client_email,
         projectId: parsed.project_id ?? null,
       },
-      propagation,  // { written: ['_local','example-shop',...], failed: [...] }
+      propagation,  
     }
   }
 

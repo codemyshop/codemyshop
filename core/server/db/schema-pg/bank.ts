@@ -1,22 +1,4 @@
-/**
- *
- * Drizzle PG schemas for ac_bank — project #38 Phase 1 step 3.
- *
- * 2 tables (cs_main, AC-only) :
- *   - cs_bank_accounts       : 1 row par compte (provider, label, IBAN…)
- *   - cs_bank_transactions   : journal complet (124 rows actuellement)
- *
- * Mapping types notable :
- *   - BIGINT AUTO_INCREMENT  -> bigserial (transactions.id_bank_transaction)
- *   - DECIMAL(15,2)          -> numeric(15, 2) (Drizzle: numeric)
- * - DATE (without time)      -> date (mode 'string' YYYY-MM-DD)
- *   - DATETIME               -> timestamp
- *
- * Reminder: this module is the FIRST cutover with WRITE path
- * (updateBankTransaction). Live writes on Nuxt BO finance/bank side.
- * The Powens sync (which INSERTs new transactions) remains on Python +
- * MariaDB jusqu'au chantier #43.
- */
+
 
 import {
   bigserial,

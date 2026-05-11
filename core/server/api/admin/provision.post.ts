@@ -1,15 +1,11 @@
-/**
- *
- * POST /api/admin/provision
- * Triggers the provisioning of a new CodeMyShop client.
- * Reserved for authenticated administrators.
- */
+
+
 import { provisionClient } from '~/server/services/infrastructure'
 import type { ProvisionRequest } from '~/server/services/infrastructure'
 import { verifyToken } from '~/server/utils/session-crypto'
 
 export default defineEventHandler(async (event) => {
-  // Vérification admin (cookie hub_session, signé HMAC backlog #249)
+  
   const session = verifyToken<any>(getCookie(event, 'hub_session'))
   if (!session) {
     throw createError({ statusCode: 401, message: 'Non authentifié' })

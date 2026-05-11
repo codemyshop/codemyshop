@@ -1,11 +1,4 @@
 <script setup lang="ts">
-/**
- *
- * Multi-entity autocomplete
- * Endpoint : /api/catalogue/suggest → { products, categories, cms, dictionary }
- * Produits via moteur natif PS (ps_search_index + ps_search_word),
- * Categories / CMS / dictionary via direct DB queries (useClientDbById).
- */
 
 interface SuggestProduct {
   id: number
@@ -261,7 +254,7 @@ onUnmounted(() => {
           role="listbox"
           class="max-h-[32rem] overflow-y-auto"
         >
-          <!-- ── Produits ────────────────────────────────────────── -->
+          
           <div v-if="products.length" class="py-1">
             <div class="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-slate-400 bg-gray-50 dark:bg-slate-800/50">
               {{ t('search.section_products') }}
@@ -292,8 +285,7 @@ onUnmounted(() => {
                   <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ p.name }}</p>
                   <p v-if="p.ref" class="text-[11px] text-gray-500 dark:text-slate-400 truncate">{{ t('common.item_ref', { ref: p.ref }) }}</p>
                 </div>
-                <!-- Hiérarchie alignée sur ProductCard (Aude 04/05 P2) :
-                     prix HT/K en gros si dispo, prix colis en sous-ligne. -->
+                
                 <div class="text-right shrink-0 tabular-nums">
                   <template v-if="p.pricePerUnitFormatted">
                     <span class="block text-sm font-bold text-primary-700 dark:text-primary-400">
@@ -315,7 +307,7 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- ── Catégories ─────────────────────────────────────── -->
+          
           <div v-if="categories.length" class="py-1 border-t border-gray-100 dark:border-slate-800">
             <div class="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-slate-400 bg-gray-50 dark:bg-slate-800/50">
               {{ t('search.section_categories') }}
@@ -344,7 +336,7 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- ── Dictionnaire (moat food) ───────────────────────── -->
+          
           <div v-if="dictionary.length" class="py-1 border-t border-gray-100 dark:border-slate-800">
             <div class="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-slate-400 bg-gray-50 dark:bg-slate-800/50">
               {{ t('search.section_dictionary') }}
@@ -376,7 +368,7 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- ── Pages CMS ──────────────────────────────────────── -->
+          
           <div v-if="cmsPages.length" class="py-1 border-t border-gray-100 dark:border-slate-800">
             <div class="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-slate-400 bg-gray-50 dark:bg-slate-800/50">
               {{ t('search.section_pages') }}

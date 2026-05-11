@@ -1,21 +1,5 @@
-/**
- *
- * Google Search Console service — the SEO engine of the platform.
- *
- * Queries the Google Search Console API via Service Account to identify:
- * - Keywords on page 2 (positions 11-20) with search volume → conquest opportunities
- * - Pages losing traffic → candidates for AI rewriting
- *
- * Architecture (DB-Only depuis 2026-04-25) :
- * - 1 global Google Service Account for all clients (ac-indexing@…),
- * encrypted and stored in `cs_client_config[_global].secrets.gscServiceAccount`.
- * - 1 GSC siteUrl per tenant, stored in
- *     `cs_client_config[<tenant>].config_json.gscSiteUrl`.
- * - Disk file fallback (legacy) tolerated only if the DB is non-responsive
- *     (chemin: `../secrets/gsc-service-account.json` ou env GSC_SERVICE_ACCOUNT_PATH).
- *
- * If Google Search Console is unreachable, return an empty array (non-blocking).
- */
+
+
 import { resolve } from 'node:path'
 import { existsSync, readFileSync } from 'node:fs'
 import { readGlobalSecret } from '~/server/utils/secrets'
@@ -27,21 +11,17 @@ export interface GscOpportunity {
   impressions: number
   ctr: number
   page: string
-  score: number         // Score de priorité (impressions × (21 - position))
-  type: 'conquest'      // Page 2, fort volume → à conquérir
-      | 'defend'        // Page 1 en chute → à défendre
-      | 'rewrite'       // Faible CTR → à réécrire
+  score: number         
+  type: 'conquest'      
+      | 'defend'        
+      | 'rewrite'       
 }
 
-/**
- * Create an authenticated Google Search Console client via Service Account.
- * Priority: encrypted DB > disk file (legacy fallback).
- */
 async function createGscClient() {
   const { google } = await import('googleapis')
   const scopes = ['https://www.googleapis.com/auth/webmasters.readonly']
 
-  // 1. DB-First : lire le JSON SA depuis la row globale chiffrée
+  
   let credentials: any = null
   try {
     const json = await readGlobalSecret('gscServiceAccount')
@@ -55,7 +35,7 @@ async function createGscClient() {
     return google.searchconsole({ version: 'v1', auth })
   }
 
-  // 2. Fallback fichier disque (legacy)
+  
   const keyPath = process.env.GSC_SERVICE_ACCOUNT_PATH
     ?? resolve(process.cwd(), '../secrets/gsc-service-account.json')
 
@@ -68,15 +48,6 @@ async function createGscClient() {
   throw new Error('[gsc] Aucun Service Account configuré (DB row _global.secrets.gscServiceAccount absent ET fichier disque introuvable)')
 }
 
-/**
- * Retrieve SEO conquest opportunities:
- * - Keywords at positions 11-20 (page 2) with impressions
- * - Sorted by score = impressions × (21 - position)
- *
- * @param siteUrl - URL du site GSC (obligatoire — résolu par le caller depuis la config tenant)
- * @param days - Nombre de jours à analyser (défaut: 28)
- * @param limit - Nombre max de résultats (défaut: 20)
- */
 export async function getTopOpportunities(
   siteUrl?: string,
   days = 28,
@@ -90,7 +61,7 @@ export async function getTopOpportunities(
     const endDate = new Date().toISOString().slice(0, 10)
     const startDate = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10)
 
-    // Requête page 2 (position 11-20) avec volume
+    
     const response = await gsc.searchanalytics.query({
       siteUrl: site,
       requestBody: {
@@ -101,7 +72,7 @@ export async function getTopOpportunities(
           filters: [{
             dimension: 'query',
             operator: 'notContains',
-            expression: 'alexandre carette',  // Exclure les requêtes de marque
+            expression: 'alexandre carette',  
           }],
         }],
         rowLimit: 500,
@@ -122,9 +93,9 @@ export async function getTopOpportunities(
         const clicks = r.clicks ?? 0
         const ctr = r.ctr ?? 0
 
-        // Déterminer le type
+        
         let type: GscOpportunity['type'] = 'conquest'
-        if (position <= 10 && ctr < 0.02) type = 'rewrite'  // Page 1 mais CTR < 2%
+        if (position <= 10 && ctr < 0.02) type = 'rewrite'  
         else if (position <= 10) type = 'defend'
 
         return {
@@ -149,14 +120,6 @@ export async function getTopOpportunities(
   }
 }
 
-/**
- * Retrieve total organic traffic over a period (clicks + impressions).
- * Used for asset valuation (asset-value) — the SEO value
- * of a site is based on its organic traffic flow over a rolling 12-month period.
- *
- * Return `{ clicks: 0, impressions: 0 }` if Google Search Console is unavailable (the caller
- * then displays the SEO component as 0 in the valuation range).
- */
 export async function getTotalTraffic(
   siteUrl?: string,
   days = 365,
@@ -186,14 +149,11 @@ export async function getTotalTraffic(
   }
 }
 
-/**
- * Retrieve high-traffic pages losing positions (defend).
- */
 export async function getDecliningPages(
   siteUrl?: string,
   limit = 10
 ): Promise<GscOpportunity[]> {
-  // Compare les 14 derniers jours vs les 14 jours d'avant
+  
   const site = siteUrl ?? ''
   if (!site) return []
 
@@ -227,7 +187,7 @@ export async function getDecliningPages(
         const page = r.keys?.[0] ?? ''
         const prevClicks = prevMap.get(page) ?? 0
         const currentClicks = r.clicks ?? 0
-        return prevClicks > 5 && currentClicks < prevClicks * 0.7  // -30% de clics
+        return prevClicks > 5 && currentClicks < prevClicks * 0.7  
       })
       .map(r => ({
         query: '',

@@ -1,10 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/bo/products/:id/stock
- * Set stock on ps_stock_available (quantity + usable + physical).
- * DB direct (doctrine: Zero PrestaShop webservice, 2026-04-22).
- */
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
@@ -23,7 +18,7 @@ export default defineEventHandler(async (event) => {
     [Number(quantity), Number(quantity), Number(quantity), id],
   )
   if (!affectedRows) {
-    // Aucune ligne : on en crée une
+    
     await db.run(
       `INSERT INTO ps_stock_available
           (id_product, id_product_attribute, id_shop, id_shop_group, quantity,

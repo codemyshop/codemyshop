@@ -1,12 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * SSR-only plugin: pre-loads OSS storefront translations before component
- * render so the HTML emitted by SSR contains real strings (not raw keys
- * like "cart.loyalty.title"). Mirrors the pattern of hub-translations.server.ts
- * but reads `domain='oss'` (the storefront UI strings seeded from
- * core/i18n/locales/*.yaml).
- */
+
 export default defineNuxtPlugin(async () => {
   const translations = useState<Record<string, string>>('oss_translations', () => ({}))
   const loaded = useState<boolean>('oss_translations_loaded', () => false)

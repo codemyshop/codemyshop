@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { setAvatarProductTargets } from '~/server/utils/hub-avatars-db'
 
-/**
- * PUT /api/hub/avatars/{id}/products
- * Body : { items: [{ idProduct: number, position: number, reason?: string }] }
- * Replace-all: the received list replaces the old one (DELETE then INSERT).
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!Number.isFinite(id) || id <= 0) {

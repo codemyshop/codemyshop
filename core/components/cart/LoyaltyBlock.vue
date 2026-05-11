@@ -1,12 +1,4 @@
-<!--
-  Bloc fidélité affiché dans le résumé du panier (B2B connecté).
-  - Visiteur non connecté : ne rend rien.
-  - Connecté : solde actuel + estimation gain pour la commande en cours + lien.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 import type { LoyaltyAccountResponse } from '~/server/api/loyalty/account.get'
 

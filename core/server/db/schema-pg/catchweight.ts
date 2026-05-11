@@ -1,18 +1,4 @@
-/**
- *
- * Drizzle PG schemas for ac_catchweight — task #44 port-drizzle-mariadb-pg.
- *
- * 2 tables (cs_main, AC-only) — produits au poids variable (B2B food) :
- *   - cs_product_catch_weight : config catch weight par produit
- * - cs_order_line_weight    : actual weight measured per order line
- *
- * Mapping types MariaDB -> PG :
- *   - INT AUTO_INCREMENT  -> serial
- *   - INT (PK 1:1)        -> integer().primaryKey() (cf. customer-extra pattern)
- *   - TINYINT(1)          -> integer
- *   - DECIMAL(p,s)        -> numeric(p, s)
- *   - DATETIME            -> timestamp(0) without time zone
- */
+
 
 import {
   index,

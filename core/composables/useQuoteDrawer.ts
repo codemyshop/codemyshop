@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Shared state for the quote drawer opening (QuoteDrawer.vue).
- * Same pattern as useCartDrawer.
- */
+
 export function useQuoteDrawer() {
   const isOpen = useState<boolean>('quote-drawer-open', () => false)
 

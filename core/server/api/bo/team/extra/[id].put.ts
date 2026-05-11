@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { requireEmployeeSession } from '~/server/utils/session'
 import {
@@ -7,17 +7,6 @@ import {
   upsertEmployeeExtra,
 } from '~/internal/employeeextra/server/utils/employeeextra'
 
-/**
- * PUT /api/bo/team/extra/:id — upsert employee author page via facade
- * ac_employeeextra.
- *
- * Body : { slug, display_name?, bio?, expertise?, photo_url?,
- *          linkedin_url?, active? }
- *
- * Slug unique (UNIQUE KEY idx_slug). On normalise en lowercase
- * without space or special character (a-z 0-9 -). If empty, we derive
- * from firstname/lastname of ps_employee.
- */
 export default defineEventHandler(async (event) => {
   requireEmployeeSession(event)
 

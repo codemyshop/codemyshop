@@ -1,22 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * IPN (Instant Payment Notification) SystemPay — server-to-server callback.
- * POST /api/payment/systempay-ipn
- *
- * SystemPay sends vads_* fields signed with HMAC-SHA256. We:
- * 1. Verify the signature (Test or Prod key depending on SYSTEMPAY_MODE)
- * 2. Verify that vads_ctx_mode matches the current mode (prevent test/prod confusion)
- * 3. Verify that vads_amount matches the order's total_paid (prevent client tampering)
- * 4. Update ps_orders.current_state (idempotent: skip if already in correct state)
- * 5. Insert ps_order_history for traceability
- *
- * Mode read from ps_configuration.SYSTEMPAY_MODE (UI override) with fallback to env.
- *
- * HTTP codes: SystemPay replays the notification if we return 4xx/5xx — that's what we
- * want in case of transient error. For invalid signature we return 401
- * (permanent rejection). For OK: 200.
- */
 
 import { createHmac, createHash } from 'node:crypto'
 import { sql } from 'drizzle-orm'
@@ -38,14 +20,14 @@ export default defineEventHandler(async (event) => {
   const mode = (dbMode?.value || env.SYSTEMPAY_MODE || 'TEST').toUpperCase()
   const key = mode === 'TEST' ? (env.SYSTEMPAY_TEST_KEY || '') : (env.SYSTEMPAY_PROD_KEY || '')
 
-  // ── 1. Signature ──────────────────────────────────────────────────────────
+  
   const receivedSig = body.signature
   if (!receivedSig) {
     console.error('[systempay-ipn] Pas de signature dans la notification')
     throw createError({ statusCode: 401, message: 'Missing signature' })
   }
 
-  // Algo signature aligné avec systempay-form (incidents 2026-05-06).
+  
   const signAlgo = (env.SYSTEMPAY_SIGN_ALGO || 'sha256_hmac').toLowerCase()
   const sortedKeys = Object.keys(body).filter(k => k.startsWith('vads_')).sort()
   const payload = sortedKeys.map(k => body[k]).join('+')
@@ -58,7 +40,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, message: 'Invalid signature' })
   }
 
-  // ── 2. Mode cohérent (anti-confusion TEST notif reçue par instance PROD) ──
+  
   if (body.vads_ctx_mode && body.vads_ctx_mode !== mode) {
     console.error(`[systempay-ipn] Mode mismatch : notif=${body.vads_ctx_mode} instance=${mode}`)
     throw createError({ statusCode: 400, message: 'Mode mismatch' })
@@ -71,7 +53,7 @@ export default defineEventHandler(async (event) => {
 
   console.log(`[systempay-ipn] order=${orderRef} id=${orderId} status=${transStatus} amount=${amountCents}c mode=${mode}`)
 
-  // Statuts PS : 2 = paiement accepté, 8 = erreur paiement, 6 = annulé
+  
   const statusMap: Record<string, number> = {
     AUTHORISED: 2,
     CAPTURED: 2,
@@ -83,11 +65,11 @@ export default defineEventHandler(async (event) => {
   const newState = statusMap[transStatus]
 
   if (!newState || !orderId) {
-    // Statut inconnu / pas d'order_id : on accuse réception sans rien changer
+    
     return { status: 'ignored', reason: 'Status non mappé ou order_id manquant' }
   }
 
-  // ── 3. Anti-tampering : montant payé vs commande ──────────────────────────
+  
   const order = await db.get<{ id_order: number; total_paid: string; current_state: number }>(
     `SELECT id_order, total_paid, current_state FROM ps_orders WHERE id_order = ? LIMIT 1`,
     [orderId],
@@ -97,8 +79,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Order not found' })
   }
 
-  // Si paiement accepté (CAPTURED/AUTHORISED), montant doit matcher total_paid
-  // (tolérance 1 centime pour arrondi).
+  
+  
   if (newState === 2) {
     const expectedCents = Math.round(Number(order.total_paid || 0) * 100)
     if (Math.abs(expectedCents - amountCents) > 1) {
@@ -107,13 +89,13 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // ── 4. Idempotence ────────────────────────────────────────────────────────
+  
   if (Number(order.current_state) === newState) {
     console.log(`[systempay-ipn] Order #${orderId} déjà au state ${newState} — skip`)
     return { status: 'ok', reason: 'already at target state' }
   }
 
-  // ── 5. Update state + history ─────────────────────────────────────────────
+  
   try {
     const { affectedRows } = await db.run(
       `UPDATE ps_orders SET current_state = ?, date_upd = NOW() WHERE id_order = ?`,
@@ -132,17 +114,17 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, message: 'DB error' })
   }
 
-  // ── 6. Crédit loyalty si paiement accepté (state=2 = paid) ────────────────
-  // Idempotent par id_order — cf core/server/utils/loyalty.ts.
+  
+  
   if (newState === 2) {
     creditLoyaltyForOrder(orderId).catch((err: any) => {
       console.error(`[systempay-ipn] Loyalty credit failed for order ${orderId}:`, err?.message || err)
     })
   }
 
-  // ── 7. Email confirmation pour CB (state=2 = Paiement accepté) ────────────
-  // Le mail est différé jusqu'ici (cf orders/create.post.ts) pour ne pas
-  // confirmer une commande qui pourrait échouer côté SystemPay.
+  
+  
+  
   if (newState === 2) {
     try {
       const fullOrder = await getOrderFromDb(orderId, { event })
@@ -175,8 +157,8 @@ export default defineEventHandler(async (event) => {
         ).catch(err => console.error('[systempay-ipn] Email confirmation failed:', err?.message || err))
       }
     } catch (err: any) {
-      // Email failure ne doit pas faire échouer l'IPN — SystemPay rejouerait
-      // alors que le state est déjà OK. On log et on continue.
+      
+      
       console.error('[systempay-ipn] Erreur préparation email confirmation:', err?.message)
     }
   }

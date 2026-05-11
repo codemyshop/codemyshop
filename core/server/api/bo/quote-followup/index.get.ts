@@ -1,18 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/quote-followup?ageMinDays=3&ageMaxDays=90&valueMin=0
- *
- * List of unconverted quote requests (status='pending') to follow up on.
- * Counterpart to abandoned cart but for B2B leads: a visitor submitted a
- * quote via /devis and did not convert to an order/project. Volume metrics
- * Example Shop v2 : ~23 pending au 2026-05-06.
- *
- * Return: counters by age bracket + filtered list. Items + estimated total
- * via JOIN cs_quote_request_item × ps_product (prix catalogue B2B).
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event)
   const ageMinDays = Math.max(0, Number(q.ageMinDays) || 0)
@@ -21,8 +10,8 @@ export default defineEventHandler(async (event) => {
 
   const db = useClientDb(event)
 
-  // Counters par tranche d'âge (jours).
-  // age_days = TIMESTAMPDIFF(DAY, qr.date_add, NOW()) — adapter PG porte.
+  
+  
   const buckets = await db.query<any>(`
     SELECT
       SUM(CASE WHEN aged < 3 THEN 1 ELSE 0 END)               AS bucket_0_3d,
@@ -44,7 +33,7 @@ export default defineEventHandler(async (event) => {
   `)
   const counters = buckets[0] || {}
 
-  // Liste devis pending filtrés.
+  
   const ageFilter = `TIMESTAMPDIFF(DAY, qr.date_add, NOW()) BETWEEN ${ageMinDays} AND ${ageMaxDays}`
   const valueFilter = valueMin > 0 ? `AND COALESCE(SUM(qri.quantity * pp.price), 0) >= ${valueMin}` : ''
 

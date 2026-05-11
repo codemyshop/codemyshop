@@ -1,8 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
@@ -37,7 +33,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-4">
 
-      <!-- Skeleton loading -->
+      
       <div v-if="loading" class="space-y-3">
         <div v-for="i in 3" :key="i"
           class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5 animate-pulse">
@@ -46,7 +42,7 @@
         </div>
       </div>
 
-      <!-- Empty state -->
+      
       <div v-else-if="!chantiers.length"
         class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-10 text-center">
         <p class="text-sm text-gray-400">Aucun chantier dans cette vue.</p>
@@ -56,7 +52,7 @@
         </button>
       </div>
 
-      <!-- Liste -->
+      
       <div v-else class="space-y-3">
         <NuxtLink v-for="c in chantiers" :key="c.idChantier"
           :to="`/hub/chantiers/${c.codename}`"
@@ -91,7 +87,7 @@
         </NuxtLink>
       </div>
 
-      <!-- Creation modal -->
+      
       <div v-if="creating" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" @click.self="creating = false">
         <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-lg w-full p-6">
           <h2 class="text-lg font-bold text-gray-800 dark:text-slate-100 mb-4">Nouveau chantier</h2>

@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- ── Header ──────────────────────────────────────────────────────────── -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -14,7 +14,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- ── KPI Cards ────────────────────────────────────────────────────── -->
+      
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-4 text-center">
           <p class="text-2xl font-extrabold text-gray-900 dark:text-slate-100">{{ formatEur(totalCostPerVideo) }}</p>
@@ -36,10 +36,10 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- ── Panneau gauche : Param&egrave;tres vid&eacute;o ─────────────────────────── -->
+        
         <div class="lg:col-span-1 space-y-5">
 
-          <!-- Dur&eacute;e & Sc&egrave;nes -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">Param&egrave;tres vid&eacute;o</h2>
 
@@ -83,7 +83,7 @@
             </div>
           </div>
 
-          <!-- Models -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">Mod&egrave;les IA</h2>
 
@@ -124,7 +124,7 @@
             </div>
           </div>
 
-          <!-- Offre client -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">Projection mensuelle</h2>
 
@@ -150,10 +150,10 @@
           </div>
         </div>
 
-        <!-- ── Panneau droit : R&eacute;sultats ───────────────────────────────────── -->
+        
         <div class="lg:col-span-2 space-y-5">
 
-          <!-- Cost breakdown by video -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">D&eacute;composition du co&ucirc;t par vid&eacute;o</h2>
 
@@ -174,7 +174,7 @@
                 <span class="text-[10px] text-gray-400 w-10 text-right shrink-0">{{ node.percent.toFixed(0) }}%</span>
               </div>
 
-              <!-- Total -->
+              
               <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-800">
                 <span class="text-sm font-bold text-gray-800 dark:text-slate-100">TOTAL</span>
                 <span class="text-lg font-extrabold text-primary-600">{{ formatEur(totalCostPerVideo) }}</span>
@@ -182,7 +182,7 @@
             </div>
           </div>
 
-          <!-- Comparatif march&eacute; -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">Comparatif march&eacute; (vid&eacute;o {{ config.durationSeconds }}s)</h2>
 
@@ -205,7 +205,7 @@
             </div>
           </div>
 
-          <!-- Tableau projection mensuelle -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800">
               <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200">Projection mensuelle &mdash; {{ offerLabel }}</h2>
@@ -226,7 +226,7 @@
             </table>
           </div>
 
-          <!-- GPU Time breakdown -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">Temps GPU estim&eacute; par vid&eacute;o</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -250,12 +250,8 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
-
-// ── Types ────────────────────────────────────────────────────────────────────
 
 interface CostNode {
   id: string
@@ -267,26 +263,24 @@ interface CostNode {
   barClass: string
 }
 
-// ── Constantes tarifs ────────────────────────────────────────────────────────
-
 const RESOLUTIONS = [
   { value: '720p' as const, label: '720p', multiplier: 0.7 },
   { value: '1080p' as const, label: '1080p', multiplier: 1.0 },
 ]
 
 const TTS_RATES: Record<string, number> = {
-  xttsv2:    0.02,   // €/min audio
+  xttsv2:    0.02,   
   cosyvoice: 0.015,
 }
 
 const IMAGE_RATES: Record<string, number> = {
-  'flux-schnell': 0.005,  // €/image
+  'flux-schnell': 0.005,  
   'flux-dev':     0.015,
   sdxl:           0.008,
 }
 
 const VIDEO_RATES: Record<string, number> = {
-  'cogvideox-5b': 0.10,  // €/clip de 5s
+  'cogvideox-5b': 0.10,  
   svd:            0.06,
 }
 
@@ -308,9 +302,7 @@ const OFFER_LABELS: Record<string, string> = {
   starter:  'Starter (39 €/mois)',
 }
 
-const STORAGE_COST_PER_GB = 0.023 // €/GB MinIO/S3
-
-// ── Config réactive ──────────────────────────────────────────────────────────
+const STORAGE_COST_PER_GB = 0.023 
 
 const config = reactive({
   durationSeconds: 60,
@@ -323,8 +315,6 @@ const config = reactive({
   offer:           'premium',
   videosPerMonth:  10,
 })
-
-// ── Calculs de coûts ─────────────────────────────────────────────────────────
 
 const resMultiplier = computed(() => config.resolution === '720p' ? 0.7 : 1.0)
 
@@ -344,7 +334,7 @@ const videoCost = computed(() => {
   return totalClips * VIDEO_RATES[config.videoModel] * resMultiplier.value
 })
 
-const assemblyCost = computed(() => 0) // CPU local
+const assemblyCost = computed(() => 0) 
 
 const storageCost = computed(() => {
   const sizeGb = config.resolution === '1080p' ? 0.2 : 0.1
@@ -370,8 +360,6 @@ const marginPercent = computed(() => {
 
 const offerLabel = computed(() => OFFER_LABELS[config.offer])
 
-// ── Breakdown barres ─────────────────────────────────────────────────────────
-
 const costBreakdown = computed((): CostNode[] => {
   const total = totalCostPerVideo.value || 1
   const nodes = [
@@ -384,8 +372,6 @@ const costBreakdown = computed((): CostNode[] => {
   ]
   return nodes.map(n => ({ ...n, percent: (n.cost / total) * 100 }))
 })
-
-// ── Comparatif concurrent ────────────────────────────────────────────────────
 
 const competitors = computed(() => {
   const mine = totalCostPerVideo.value
@@ -403,8 +389,6 @@ const competitors = computed(() => {
     multiplier: c.highlight ? '' : `×${(c.cost / mine).toFixed(0)}`,
   }))
 })
-
-// ── Projection mensuelle ─────────────────────────────────────────────────────
 
 const projectionRows = computed(() => {
   const rows = [
@@ -428,10 +412,8 @@ const projectionRows = computed(() => {
   return rows
 })
 
-// ── GPU Time ─────────────────────────────────────────────────────────────────
-
 const gpuTimeBreakdown = computed(() => {
-  const ttsSeconds = Math.ceil(config.durationSeconds * 0.15) // ~15% du temps audio en GPU
+  const ttsSeconds = Math.ceil(config.durationSeconds * 0.15) 
   const imageSeconds = config.scenes * (config.imageModel === 'flux-schnell' ? 5 : config.imageModel === 'flux-dev' ? 20 : 10)
   const clipDuration = 5
   const clipsPerScene = Math.ceil((config.durationSeconds / config.scenes) / clipDuration)
@@ -450,8 +432,6 @@ const totalGpuTime = computed(() =>
   gpuTimeBreakdown.value.reduce((sum, g) => sum + g.seconds, 0)
 )
 
-// ── Utils ────────────────────────────────────────────────────────────────────
-
 function formatEur(n: number): string {
   return new Intl.NumberFormat('fr-FR', {
     style: 'currency',
@@ -460,8 +440,6 @@ function formatEur(n: number): string {
     maximumFractionDigits: n < 1 ? 3 : 2,
   }).format(n)
 }
-
-// ── Watchers ─────────────────────────────────────────────────────────────────
 
 watch(() => config.offer, (offer) => {
   if (offer === 'starter')  config.videosPerMonth = 2

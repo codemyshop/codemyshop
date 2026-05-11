@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -22,7 +22,7 @@
 
     <div class="p-6 max-w-5xl mx-auto space-y-6">
 
-      <!-- Channel selector -->
+      
       <div class="grid grid-cols-3 gap-3">
         <button
           v-for="ch in CHANNELS"
@@ -51,20 +51,20 @@
         </button>
       </div>
 
-      <!-- Body: Form + Preview -->
+      
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- ── Panneau gauche : Formulaire ──────────────────────────────── -->
+        
         <div class="space-y-5">
 
-          <!-- Subject / Theme -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">
               {{ channel === 'email' ? 'Contenu du message' : 'Sujet du message' }}
             </h2>
             <div class="space-y-4">
 
-              <!-- Sujet -->
+              
               <div>
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                   {{ channel === 'email' ? 'Sujet / thème' : 'De quoi s\'agit-il ?' }}
@@ -77,7 +77,7 @@
                 />
               </div>
 
-              <!-- Tracked link (WhatsApp / SMS) -->
+              
               <div v-if="channel !== 'email'">
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                   Lien tracké
@@ -91,7 +91,7 @@
                 />
               </div>
 
-              <!-- Cible avatar (Email uniquement) -->
+              
               <div v-if="channel === 'email'">
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Cible avatar</label>
                 <div class="flex flex-wrap gap-2">
@@ -122,7 +122,7 @@
                 </div>
               </div>
 
-              <!-- Ton -->
+              
               <div>
                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Ton</label>
                 <div class="flex gap-2">
@@ -145,7 +145,7 @@
             </div>
           </div>
 
-          <!-- Bouton IA Magic Glow -->
+          
           <AIActionButton
             :label="`Générer via Claude \u2014 ${CHANNELS.find(c => c.id === channel)?.label}`"
             loading-label="Génération en cours…"
@@ -156,7 +156,7 @@
             @click="generate"
           />
 
-          <!-- Tip canal -->
+          
           <div class="flex items-start gap-2.5 bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-4">
             <span class="text-lg shrink-0">{{ CHANNELS.find(c => c.id === channel)?.icon }}</span>
             <div>
@@ -166,10 +166,10 @@
           </div>
         </div>
 
-        <!-- Right panel: Preview -->
+        
         <div>
 
-          <!-- Vide -->
+          
           <div v-if="!result" class="flex flex-col items-center justify-center h-80 text-gray-300">
             <svg class="w-14 h-14 mb-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
               <path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 0 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 1 8.835-2.535m0 0A23.74 23.74 0 0 1 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m-14.456 0c.045.597.068 1.198.068 1.8 0 1.194-.083 2.369-.24 3.519" />
@@ -178,10 +178,10 @@
             <p class="text-xs text-gray-300 mt-1">Saisissez un sujet et générez</p>
           </div>
 
-          <!-- Email Preview -->
+          
           <div v-else-if="result.channel === 'email'" class="space-y-4">
 
-            <!-- Barre d’actions -->
+            
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Aperçu Email</span>
               <div class="flex items-center gap-2">
@@ -199,26 +199,26 @@
               </div>
             </div>
 
-            <!-- Maquette email -->
+            
             <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden">
-              <!-- Barre inbox -->
+              
               <div class="bg-gray-50 dark:bg-slate-950 px-4 py-2.5 border-b border-gray-200 dark:border-slate-700 flex items-center gap-2">
                 <div class="w-3 h-3 rounded-full bg-danger-400" />
                 <div class="w-3 h-3 rounded-full bg-warning-400" />
                 <div class="w-3 h-3 rounded-full bg-success-400" />
                 <span class="ml-2 text-xs text-gray-400 font-mono truncate">Inbox · Aperçu</span>
               </div>
-              <!-- Email header -->
+              
               <div class="px-5 pt-4 pb-3 border-b border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-950">
                 <p class="text-xs text-gray-400 mb-0.5">Objet</p>
                 <p class="text-sm font-bold text-gray-800 dark:text-slate-100">{{ result.subject }}</p>
                 <p class="text-xs text-gray-400 mt-2 mb-0.5">Aperçu inbox</p>
                 <p class="text-xs text-gray-500 italic">{{ result.preview }}</p>
               </div>
-              <!-- Corps email -->
+              
               <div class="px-5 py-5">
                 <pre class="text-sm text-gray-700 dark:text-slate-200 whitespace-pre-wrap leading-relaxed font-sans">{{ result.body }}</pre>
-                <!-- CTA button -->
+                
                 <div class="mt-6 flex justify-center">
                   <div
                     class="inline-block px-6 py-2.5 rounded-xl text-sm font-bold text-white"
@@ -231,16 +231,16 @@
             </div>
           </div>
 
-          <!-- Preview WhatsApp / SMS -->
+          
           <div v-else class="space-y-4">
 
-            <!-- Barre d’actions -->
+            
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 Aperçu {{ result.channel === 'whatsapp' ? 'WhatsApp' : 'SMS' }}
               </span>
               <div class="flex items-center gap-2">
-                <!-- Character counter -->
+                
                 <span
                   class="text-xs font-mono font-bold px-2 py-1 rounded-lg"
                   :class="result.charCount > 160
@@ -265,13 +265,13 @@
               </div>
             </div>
 
-            <!-- Phone mockup -->
+            
             <div class="flex justify-center">
               <div
                 class="w-72 rounded-3xl shadow-2xl overflow-hidden border-4 border-gray-800"
                 :class="result.channel === 'whatsapp' ? 'bg-[#ECE5DD]' : 'bg-gray-100 dark:bg-slate-800'"
               >
-                <!-- Status bar -->
+                
                 <div class="flex items-center justify-between px-4 py-1.5 text-white text-[10px] font-medium"
                   :class="result.channel === 'whatsapp' ? 'bg-[#075E54]' : 'bg-gray-700'"
                 >
@@ -282,7 +282,7 @@
                     <span>100%</span>
                   </div>
                 </div>
-                <!-- App bar (WhatsApp ou SMS) -->
+                
                 <div
                   class="flex items-center gap-2 px-3 py-2 text-white"
                   :class="result.channel === 'whatsapp' ? 'bg-[#075E54]' : 'bg-gray-700'"
@@ -301,9 +301,9 @@
                   </div>
                 </div>
 
-                <!-- Zone de chat -->
+                
                 <div class="px-3 py-4 min-h-32 flex items-end">
-                  <!-- Bulle message sortant (droite) -->
+                  
                   <div class="ml-auto max-w-[85%]">
                     <div
                       class="rounded-2xl rounded-br-sm px-3 py-2.5 shadow-sm"
@@ -325,7 +325,7 @@
                   </div>
                 </div>
 
-                <!-- Input bar (decorative) -->
+                
                 <div
                   class="flex items-center gap-2 px-3 py-2 border-t"
                   :class="result.channel === 'whatsapp' ? 'bg-[#ECE5DD] border-gray-300' : 'bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700'"
@@ -344,9 +344,9 @@
               </div>
             </div>
 
-            <!-- Actions export -->
+            
             <div class="grid grid-cols-2 gap-2">
-              <!-- WhatsApp Web -->
+              
               <button
                 v-if="result.channel === 'whatsapp'"
                 @click="openWhatsApp"
@@ -387,15 +387,12 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
+
 import { AVATAR_META, AC_HUB_AVATARS } from '~/utils/avatar'
 import type { AvatarType } from '~/types/avatar'
 import type { BroadcastResult } from '~/server/api/ai/generate-broadcast.post'
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
-
-// ── Canaux ────────────────────────────────────────────────────────────────────
 
 type ChannelId = 'email' | 'whatsapp' | 'sms'
 
@@ -429,8 +426,6 @@ const CHANNELS = [
   },
 ]
 
-// ── Tons par canal ────────────────────────────────────────────────────────────
-
 const TONES_EMAIL = [
   { value: 'professionnel', label: 'Pro' },
   { value: 'décontracté',   label: 'Décontracté' },
@@ -443,8 +438,6 @@ const TONES_SHORT = [
   { value: 'cool et urbain',      label: 'Cool' },
   { value: 'professionnel',       label: 'Pro' },
 ]
-
-// ── État ──────────────────────────────────────────────────────────────────────
 
 const { resolvedClientId } = useClientDetection()
 
@@ -460,8 +453,6 @@ const form = reactive({
   tone:        'professionnel',
   trackedLink: '',
 })
-
-// ── Computed ──────────────────────────────────────────────────────────────────
 
 const visibleTones = computed(() =>
   channel.value === 'email' ? TONES_EMAIL : TONES_SHORT,
@@ -479,8 +470,6 @@ const now = computed(() => {
   const d = new Date()
   return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
 })
-
-// ── Actions ───────────────────────────────────────────────────────────────────
 
 function switchChannel(ch: ChannelId) {
   channel.value = ch
@@ -533,7 +522,7 @@ async function copyResult() {
     copied.value = true
     setTimeout(() => { copied.value = false }, 2500)
   } catch {
-    //
+    
   }
 }
 
@@ -552,7 +541,7 @@ async function checkApiKey() {
     const s = await $fetch<{ ai: { enabled: boolean } }>('/api/hub/system-status')
     hasApiKey.value = s.ai?.enabled ?? false
   } catch {
-    //
+    
   }
 }
 

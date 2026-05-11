@@ -1,21 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { verifyEmailViaSmtp } from '~/server/utils/smtp-verify'
 
-/**
- * POST /api/bo/leads/{id}/email-verify — SMTP RCPT TO probe on the email of a
- * lead/customer-noorder/contact + persistence of the status on the source table side.
- *
- * Body { source, email }. The target table depends on the source:
- *   - lead              → cs_smartlead.email_verified_status (PK = id_ac_smartlead)
- *   - customer-noorder  → cs_customer_extra.email_verified_status (PK = id_customer,
- * UPSERT because the extra record may not exist yet)
- *   - contact           → cs_headlesscontact_message.email_verified_status (PK = id_message)
- *
- * For each source, we re-read the canonical email server-side (anti-cheat
- * client-side). Returns the raw details for the modal.
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!Number.isFinite(id) || id <= 0) {
@@ -26,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   const db = useClientDb(event)
 
-  // Email canonique côté serveur, par source.
+  
   let email = ''
   if (source === 'lead') {
     const row = await db.get<any>(
@@ -69,8 +56,8 @@ export default defineEventHandler(async (event) => {
       )
       persisted = Boolean(affectedRows)
     } else if (source === 'customer-noorder') {
-      // UPSERT : la fiche customer_extra peut ne pas exister encore (ex:
-      // boutique sans enrichissement INSEE qui aurait déjà créé le row).
+      
+      
       const upd = await db.run(
         `UPDATE cs_main.cs_customer_extra
             SET email_verified_status = ?, email_verified_at = NOW(),
@@ -100,8 +87,8 @@ export default defineEventHandler(async (event) => {
       persisted = Boolean(affectedRows)
     }
   } catch (err: any) {
-    // Drift schéma (colonnes pas encore propagées au tenant) → on remonte
-    // le résultat sans persistance plutôt que de 500.
+    
+    
     console.warn('[bo/leads/email-verify] persist skipped:', err?.message)
   }
 

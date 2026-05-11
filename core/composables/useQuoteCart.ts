@@ -1,10 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Panier de devis B2B — localStorage uniquement.
- * For unauthenticated visitors on B2B tenants (Example Shop).
- * No price stored (the visitor doesn't see prices).
- */
 
 export interface QuoteItem {
   id: number
@@ -19,14 +13,14 @@ export function useQuoteCart() {
   const storageKey = `${(publicCfg.clientId as string) || 'default'}-quote`
   const items = useState<QuoteItem[]>('quote-cart', () => [])
 
-  // Restore from localStorage on client
+  
   if (import.meta.client) {
     const saved = localStorage.getItem(storageKey)
     if (saved && !items.value.length) {
       try {
         const parsed = JSON.parse(saved)
         if (Array.isArray(parsed)) items.value = parsed
-      } catch { /* ignore */ }
+      } catch {  }
     }
     watch(items, (val) => {
       localStorage.setItem(storageKey, JSON.stringify(val))

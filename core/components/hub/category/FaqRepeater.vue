@@ -168,14 +168,6 @@ function move(idx: number, delta: number) {
   model.value = next.map((f, i) => ({ ...f, position: i }))
 }
 
-// Repopulates the contenteditable when the list changes.
-// Watch the ref array itself (not just the length):
-//   - load initial : [] → [...] ✓
-//   - add/remove/move : nouvelle array (spread/filter) ✓
-// - apply JSON FAQ: form.faqs = [...] (same number possible) ← case that didn't work
-// (length watch doesn't fire if N → N).
-// flush:'post' guarantees that the new ref callbacks have finished registering
-// before we traverse editorRefs.
 watch(
   () => model.value,
   () => {

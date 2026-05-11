@@ -1,23 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/homepage-sections
- *
- * Homepage sections from cs_homepage_section JOIN _lang, with payload
- * rebuilt from cs_homepage_block + _lang (pattern DB-first
- * strict, no more i18n JSON).
- *
- * Reconstruction par type :
- *   hero-slider     → { interval_ms, slides[], side_blocks[] }
- *   features        → { items[] }
- *   categories      → { items[] }
- *   narrative-blocks → { blocks[] }
- *   banners         → { cols, height, items[] }
- *   faq             → { groups: [{ id, title, items: [{q, a}] }] }
- *   blog            → { limit, cta_to, cta_label }
- *   promotions / new-products / bestsellers / instagram → base (colonnes
- * typed top-level)
- */
+
 import { ensureTrailingSlash, isCategoryHref } from '~/server/utils/category-url'
 import { listSectionsWithLang } from '~/modules/homepage-section/server/utils/homepage-section'
 import { listBlocksForSections, type BlockWithLangRow } from '~/modules/homepage-block/server/utils/homepage-block'
@@ -72,12 +54,6 @@ export default defineEventHandler(async (event): Promise<{ sections: HomepageSec
   }
 })
 
-/**
- * Rebuilds the base payload from the typed columns of the section
- * (architecture debt #157 resolved: no more payload_json). Each section type
- * consumes a subset of these columns; the non-relevant ones remain
- * NULL without impact.
- */
 function rowToBase(r: any): Record<string, any> {
   const base: Record<string, any> = {}
   if (r.limit_items   != null) base.limit       = Number(r.limit_items)
@@ -93,29 +69,25 @@ function rowToBase(r: any): Record<string, any> {
   return base
 }
 
-/**
- * Rebuilds the historical JSON payload from typed columns + blocks.
- * Keeps backward-compatibility of existing components (hero-slider, features, …).
- */
 function buildPayload(type: string, base: any, blocks: BlockWithLangRow[]): any {
   const out: any = { ...(base || {}) }
   const extraOf = (b: BlockWithLangRow) => { try { return b.extra_config_json ? JSON.parse(b.extra_config_json) : {} } catch { return {} } }
 
   switch (type) {
     case 'hero': {
-      // Hero simple : image de fond via un block unique `block_kind='hero_image'`.
-      // Le block.href est l'URL cliquable de la bannière (imageHref) — le CTA
-      // a sa propre URL stockée dans la cta sub-config (payload top-level).
-      // Optionnel — sans block la section rend le layout sans image (min-h 280px).
+      
+      
+      
+      
       const img = blocks.find((b) => b.block_kind === 'hero_image')
       if (img?.image) out.image = img.image
       if (img?.href)  out.imageHref = img.href
       return out
     }
     case 'iframe-embed': {
-      // Widget iframe externe (avis-garantis, trustpilot, calendly, ...).
-      // Block unique block_kind='iframe' avec href=src, extra={title}.
-      // height_px lu sur la section (champ natif).
+      
+      
+      
       const iframe = blocks.find((b) => b.block_kind === 'iframe')
       if (iframe) {
         out.src = iframe.href || null
@@ -162,11 +134,11 @@ function buildPayload(type: string, base: any, blocks: BlockWithLangRow[]): any 
       }))
       return out
     case 'categories':
-      // `image` (URL picto PNG/WebP) a priorité sur `icon` (nom SVG interne).
-      // Le composant HomeUniverseGrid fait v-if="cat.icon" puis v-else-if="cat.image".
-      // On émet uniquement le champ pertinent pour que le v-if du front résolve
-      // sans ambiguïté.
-      // Trailing slash canonical sur les hrefs catégorie (convention 2026-04-21).
+      
+      
+      
+      
+      
       out.items = blocks.filter((b) => b.block_kind === 'category').map((b) => ({
         ...(b.image ? { image: b.image } : b.icon ? { icon: b.icon } : {}),
         label: b.label,
@@ -174,9 +146,9 @@ function buildPayload(type: string, base: any, blocks: BlockWithLangRow[]): any 
       }))
       return out
     case 'brand-strip':
-      // Bandeau marquee de marques distribuées (pattern Skate Deluxe / Vans).
-      // Item shape : { label, href, image? }. Si image absent → wordmark
-      // textuel côté HomeBrandStrip.vue (typo Archivo Black uppercase).
+      
+      
+      
       out.items = blocks.filter((b) => b.block_kind === 'brand').map((b) => ({
         label: b.label,
         href: b.href,
@@ -224,7 +196,7 @@ function buildPayload(type: string, base: any, blocks: BlockWithLangRow[]): any 
       return out
     }
     default:
-      // promotions, new-products, bestsellers, instagram — base seul
+      
       return base || null
   }
 }

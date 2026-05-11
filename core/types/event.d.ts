@@ -1,5 +1,4 @@
-/**
- */
+
 
 export type EventType   = 'physique' | 'online'
 export type EventStatus = 'draft' | 'published' | 'cancelled'
@@ -8,16 +7,16 @@ export interface EventRecord {
   id:            string
   title:         string
   description:   string
-  date:          string          // ISO 8601
+  date:          string          
   endDate?:      string
   type:          EventType
-  capacity:      number          // 0 = illimité
-  registrations: number          // compteur dénormalisé
+  capacity:      number          
+  registrations: number          
   status:        EventStatus
   location?:     string
   meetingUrl?:   string
   coverImage?:   string
-  clientId?:     string          // namespace white-label
+  clientId?:     string          
   createdAt:     string
 }
 

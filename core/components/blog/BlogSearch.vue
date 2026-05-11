@@ -1,6 +1,4 @@
 <script setup lang="ts">
-/**
- */
 
 interface SearchResult {
   id: number
@@ -15,8 +13,6 @@ interface SearchResult {
 
 const { t } = useT()
 
-// Category / subcategory labels resolved via t('blog.categories.X' / 'blog.subcategories.X').
-// Falls back to the raw slug if the key is missing.
 const SUBCAT_KEYS = [
   'architecture', 'performance', 'developpement', 'automatisation',
   'referencement', 'flywheel', 'positionnement', 'docker',
@@ -108,7 +104,7 @@ onUnmounted(() => {
 
 <template>
   <div ref="containerRef" class="relative w-full max-w-xl">
-    <!-- Search input -->
+    
     <div class="relative">
       <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
         <svg
@@ -132,7 +128,7 @@ onUnmounted(() => {
         @input="onInput"
         @focus="results.length && (isOpen = true)"
       />
-      <!-- Clear button -->
+      
       <button
         v-if="query"
         class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-slate-400 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
@@ -145,7 +141,7 @@ onUnmounted(() => {
       </button>
     </div>
 
-    <!-- Results dropdown -->
+    
     <Transition
       enter-active-class="transition duration-150 ease-out"
       enter-from-class="opacity-0 translate-y-1"
@@ -158,7 +154,7 @@ onUnmounted(() => {
         v-if="isOpen"
         class="absolute z-50 mt-2 w-full rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl overflow-hidden"
       >
-        <!-- Loading -->
+        
         <div v-if="isLoading" class="px-4 py-6 text-center text-sm text-gray-500 dark:text-slate-400">
           <svg class="mx-auto mb-2 h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
@@ -167,7 +163,7 @@ onUnmounted(() => {
           {{ t('blog.search.loading') }}
         </div>
 
-        <!-- Results list -->
+        
         <ul v-else-if="results.length" class="max-h-96 overflow-y-auto divide-y divide-gray-100 dark:divide-slate-800">
           <li v-for="result in results" :key="result.id">
             <NuxtLink
@@ -188,7 +184,7 @@ onUnmounted(() => {
           </li>
         </ul>
 
-        <!-- No results -->
+        
         <div v-else class="px-4 py-6 text-center text-sm text-gray-500 dark:text-slate-400">
           {{ t('blog.search.empty', { query }) }}
         </div>

@@ -1,20 +1,4 @@
-/**
- *
- * Direct DB helpers for /api/bo/products/[id]/attachments — architectural principle
- * Zero PrestaShop webservice — 2026-04-22.
- *
- * Affected tables (3 native PrestaShop, owned by the attachment API module v1.2.0):
- *   - ps_attachment           (fichier physique sha1, mime, taille)
- *   - ps_attachment_lang      (nom + description i18n, PK composite)
- *   - ps_product_attachment   (pivot n-n id_product ↔ id_attachment)
- *   - ps_product.cache_has_attachments (bit-flag, sinon FT invisibles front)
- *
- * The physical file lives in `_PS_DOWNLOAD_DIR_/<sha1>` on the PrestaShop side. When
- * the environment variable `PS_DOWNLOAD_DIR_<KEY>` is mounted on the Nuxt side
- * (shared volume with PrestaShop), we can do direct filesystem access; otherwise the helper
- * `attemptUnlinkOrphan` graceful no-op (the rationale is tracked in
- * incidents cs_backlog Phase 9b.3 — decoupling /download/).
- */
+
 
 import { existsSync, unlinkSync } from 'node:fs'
 import { join } from 'node:path'
@@ -49,13 +33,6 @@ export interface AttachmentRow {
   publicUrl: string
 }
 
-/**
- * Resolves the public shop URL to prefix /download/<sha1> links.
- * Priority (in order):
- *   1. PS_FRONT_URL_<KEY> (env var tenant — ex: https://example-shop.com)
- * 2. PS_URL_<KEY> reformatted (https://hostname)
- * 3. current request host (dev fallback)
- */
 function resolvePublicShopUrl(event: any): string {
   const clientId = resolveTenantClientId(event)
   const envKey = clientIdToEnvKey(clientId)
@@ -67,17 +44,16 @@ function resolvePublicShopUrl(event: any): string {
     try {
       const u = new URL(apiUrl)
       return `${u.protocol}//${u.host}`
-    } catch { /* noop */ }
+    } catch {  }
   }
 
   try {
     const host = (event && getRequestHost(event)) || ''
     if (host) return `https://${host}`
-  } catch { /* noop */ }
+  } catch {  }
   return ''
 }
 
-/** Lists attachments for a product in a given language. */
 export async function listForProduct(
   idProduct: number,
   idLang: number,
@@ -116,7 +92,6 @@ export interface RenameResult {
   status?: number
 }
 
-/** UPSERT ps_attachment_lang (PK composite id_attachment+id_lang). */
 export async function renameAttachment(
   idAttachment: number,
   idLang: number,
@@ -155,7 +130,6 @@ export interface DeleteAttachmentResult {
   status?: number
 }
 
-/** Attempts physical file deletion. No-op if /download/ is not mounted. */
 function attemptUnlinkOrphan(event: any, sha1: string): boolean {
   if (!sha1) return false
   const clientId = resolveTenantClientId(event)
@@ -174,11 +148,6 @@ function attemptUnlinkOrphan(event: any, sha1: string): boolean {
   return false
 }
 
-/**
- * Unassigns an attachment from a product, purges orphaned rows
- * (ps_attachment + _lang), attempts disk deletion, updates the
- * cache_has_attachments flag for the product.
- */
 export async function deleteAttachment(
   idProduct: number,
   idAttachment: number,

@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { resolveClientId } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
@@ -7,15 +7,6 @@ import {
   insertCarouselJob,
 } from '~/enterprise/ai/covergen/server/utils/covergen'
 
-/**
- * POST /api/bo/marketing/blog/generate-carousel
- *
- * Inserts a request to generate a LinkedIn PDF carousel into
- * cs_carousel_queue via the ac_covergen facade.
- * The ac_carouselgen cron processes the queue.
- *
- * Body : { id_cms, title, slug, slides: [{title, text}] }
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-/**
- */
+
 interface CmsArticle {
   id: number
   title: string
@@ -32,7 +31,6 @@ const pilier = getPillar(category)
 const subcatLabel = getSubcatLabel(subcategory)
 const seo = getSubcatMeta(category, subcategory)
 
-// Convention PS : <body id="cms-category-X" class="cms-category cms-category-X">
 useListingBodyId('cms-category', () => getSubcatId(category, subcategory))
 
 const pageTitle = seo.title || `${subcatLabel} — ${pilier.label} | ${blogTitle.value}`
@@ -120,7 +118,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
 <template>
   <div class="py-12">
 
-    <!-- Fil d'Ariane -->
+    
     <nav aria-label="Fil d'Ariane" class="text-sm text-gray-600 dark:text-slate-400 mb-6 flex items-center gap-2">
       <NuxtLink to="/" class="hover:text-primary-600 transition-colors">Accueil</NuxtLink>
       <span aria-hidden="true">/</span>
@@ -131,7 +129,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
       <span>{{ subcatLabel }}</span>
     </nav>
 
-    <!-- En-tête -->
+    
     <header class="mb-10">
       <div class="flex items-center gap-4 mb-4">
         <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shrink-0" :class="pilier.tagBg">{{ pilier.icon }}</div>
@@ -146,7 +144,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
         </div>
       </div>
 
-      <!-- Navigation sous-catégories soeurs -->
+      
       <div v-if="siblingSubcats.length" class="flex flex-wrap gap-2 mt-4">
         <NuxtLink
           :to="`/blog/${category}/`"
@@ -166,7 +164,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
       </div>
     </header>
 
-    <!-- Loading -->
+    
     <div v-if="status === 'pending'" class="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div v-for="n in 4" :key="n" class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-6 animate-pulse">
         <div class="h-40 bg-gray-100 dark:bg-slate-800 rounded-xl mb-4" /><div class="h-4 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-3" /><div class="h-3 bg-gray-100 dark:bg-slate-800 rounded w-full" />
@@ -174,7 +172,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
     </div>
 
     <template v-else-if="articles.length">
-      <!-- Article vedette (full-width) -->
+      
       <NuxtLink
         v-if="featured"
         :to="featured.nuxtUrl"
@@ -203,7 +201,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
         </div>
       </NuxtLink>
 
-      <!-- Articles suivants -->
+      
       <div v-if="rest.length" class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <NuxtLink
           v-for="article in rest" :key="article.id" :to="article.nuxtUrl"
@@ -236,7 +234,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
       </div>
     </template>
 
-    <!-- Vide -->
+    
     <div v-else class="text-center py-20 text-gray-500 dark:text-slate-500">
       <p class="text-5xl mb-4">📂</p>
       <p class="text-lg font-medium">Aucun article dans cette sous-cat&eacute;gorie.</p>

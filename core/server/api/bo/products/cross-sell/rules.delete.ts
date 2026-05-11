@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * DELETE /api/bo/products/cross-sell/rules?src=X&dst=Y
- * Deletes a specific accessory pair.
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const src = Number(q.src || 0)

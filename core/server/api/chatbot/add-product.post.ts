@@ -1,25 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { persistAnswer, renderQuestionForConversation } from '~/server/utils/chatbot-engine'
 
-/**
- * POST /api/chatbot/add-product — adds a new product to an already
- * open conversation. Used when the user navigates to another product after clicking
- * "Add another product".
- *
- * Body { conversationId, conversationToken, productId }
- *
- * Effets :
- * - update product_id_context (the current context for the captures
- * `product_*` that follow)
- * - reset current_node_key = 'product_q1_qty' to restart the flow
- *     produit
- * - push an introductory bot message "What quantity for this product…"
- *
- * The front reopens the widget after the call and re-runs startConversation
- * to fetch the current node.
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event) as {
     conversationId?: number | string
@@ -50,8 +33,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Conversation déjà clôturée', data: { code: 'CHATBOT_CONVERSATION_CLOSED' } })
   }
 
-  // Si qty pré-saisie > 1 → skip product_q1_qty, on persiste qté + on
-  // démarre directement sur product_q2_freq (label fréquence).
+  
+  
   const skipQty = initialQty > 1
   const startKey = skipQty ? 'product_q2_freq' : 'product_q1_qty'
   await db.run(
@@ -62,14 +45,14 @@ export default defineEventHandler(async (event) => {
   )
 
   if (skipQty) {
-    // Persiste la qty + trace côté timeline + answer (récap)
+    
     await db.run(
       `UPDATE cs_main.cs_chatbot_conversation_product
           SET qty = ?
         WHERE id_conversation = ? AND id_product = ?`,
       [String(initialQty).slice(0, 64), conversationId, productId],
     )
-    // Si pas de row encore, on insère
+    
     const exists = await db.get<any>(
       `SELECT id_link FROM cs_main.cs_chatbot_conversation_product
         WHERE id_conversation = ? AND id_product = ? LIMIT 1`,
@@ -104,7 +87,7 @@ export default defineEventHandler(async (event) => {
     )
   }
 
-  // Lit la question du node de départ
+  
   const node = await db.get<any>(
     `SELECT n.node_key, n.type, COALESCE(nl.question, '') AS question
        FROM cs_main.cs_chatbot_node n
@@ -113,13 +96,13 @@ export default defineEventHandler(async (event) => {
       WHERE n.node_key = ? LIMIT 1`,
     [startKey],
   )
-  // Rend les placeholders dynamiques ({{PRODUCT_NAME}} pour product_q1_qty).
-  // Le product_id_context vient d'être maj juste au-dessus, donc le helper
-  // pioche bien le nouveau produit.
+  
+  
+  
   const rawQuestion = String(node?.question || 'À quelle fréquence ?')
   const question = await renderQuestionForConversation(conversationId, rawQuestion, { event }, 1)
     .catch(() => rawQuestion)
-  // Pour 'buttons', on doit retourner les options
+  
   let options: string[] = []
   if (String(node?.type || 'text') === 'buttons') {
     const rows = await db.query<any>(

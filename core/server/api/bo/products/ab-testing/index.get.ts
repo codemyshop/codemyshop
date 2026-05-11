@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { experimentStats, listExperiments } from '~/enterprise/misc/ab-testing/server/utils/ab-testing'
 
-/** GET /api/bo/products/ab-testing — list of A/B experiments. */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const status = (q.status || '').trim() || undefined

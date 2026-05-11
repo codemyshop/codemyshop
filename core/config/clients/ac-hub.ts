@@ -4,14 +4,14 @@ const config: HeaderConfig = {
   clientId: 'ac-hub',
   domain:   ['codemyshop.com', 'www.codemyshop.com', 'localhost'],
 
-  // ── Graphic theme ───────────────────────────────────────────────────────
+  
   theme: {
     colors: {
-      primary:    '#4F46E5',   // indigo-600
-      secondary:  '#0D9488',   // teal-600
-      background: '#F9FAFB',   // gray-50
-      foreground: '#111827',   // gray-900
-      muted:      '#6B7280',   // gray-500
+      primary:    '#4F46E5',   
+      secondary:  '#0D9488',   
+      background: '#F9FAFB',   
+      foreground: '#111827',   
+      muted:      '#6B7280',   
       headerBg:   '#ffffff',
       footerBg:   '#ffffff',
       topBarBg:   '#111827',
@@ -19,8 +19,8 @@ const config: HeaderConfig = {
     },
     typography: {
       fontFamily: 'Inter, system-ui, sans-serif',
-      // Combo Inter (body) + Playfair Display (titles font-serif) in a single
-      // Google Fonts call → 1 blocking request instead of 2.
+      
+      
       fontUrl: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&display=swap',
     },
     ui: {
@@ -31,7 +31,7 @@ const config: HeaderConfig = {
 
   defaultColorMode: 'light',
 
-  // No top bar for a minimalist professional portfolio
+  
   topBar: undefined,
 
   logo: {
@@ -69,7 +69,7 @@ const config: HeaderConfig = {
     ],
   },
 
-  // ── Blog (marque blanche) ─────────────────────────────────────────────────
+  
   blog: {
     title:       'Blog — CodeMyShop | PrestaShop Headless, SEO IA, Stratégie e-commerce',
     description: "Articles sur PrestaShop Headless, l'architecture souveraine, le SEO automatisé par IA et la stratégie e-commerce.",
@@ -107,7 +107,7 @@ const config: HeaderConfig = {
     limit: 3,
   },
 
-  // ── Homepage (activates white-label layout + builder sidebar) ────────────
+  
   homepage: {
     hero: {
       layout:   'portfolio',
@@ -225,10 +225,10 @@ const config: HeaderConfig = {
     malt: { show: true },
   },
 
-  // ── Footer ───────────────────────────────────────────────────────────────
-  // Strict DB-first rule (see feedback_everything_ac_module_db.md):
-  // the link columns are served by /api/footer from cs_footer (DB).
-  // NO static columns here — they are fetched at runtime.
+  
+  
+  
+  
   footer: {
     theme:       'dark',
     description: 'Architecte IA & Expert PrestaShop Headless. Fondateur de CodeMyShop — la souveraineté e-commerce et l\'IA qui va avec.',

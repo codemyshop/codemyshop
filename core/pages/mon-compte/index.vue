@@ -1,9 +1,4 @@
-<!--
-  Mon compte — Dashboard client
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <script setup lang="ts">
 import type { OrderData, AddressData } from '~/server/connectors/base'
 
@@ -38,7 +33,7 @@ async function loadData() {
     addresses.value = addrsRes || []
     const lists = wlRes?.lists || wlRes?.data?.lists || []
     wishlistCount.value = Array.isArray(lists) ? lists.reduce((s: number, l: any) => s + Number(l.item_count || l.itemCount || 0), 0) : 0
-  } catch { /* ignore */ }
+  } catch {  }
   finally { loading.value = false }
 }
 
@@ -57,7 +52,7 @@ useHead({ title: 'Mon compte — Example Shop' })
     <div class="min-h-screen bg-gray-50">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
 
-        <!-- Header -->
+        
         <div class="flex items-center justify-between mb-8">
           <div>
             <h1 class="text-2xl font-bold text-gray-900">{{ t('account.account_title') }}</h1>
@@ -70,7 +65,7 @@ useHead({ title: 'Mon compte — Example Shop' })
 
         <div v-else class="grid md:grid-cols-2 gap-6">
 
-          <!-- Navigation rapide -->
+          
           <NuxtLink to="/mon-compte/commandes" class="bg-white rounded-xl p-6 border border-gray-100 hover:border-primary-600 transition-colors group">
             <h2 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary-600">{{ t('account.account_orders') }}</h2>
             <p class="text-sm text-gray-500">{{ orders.length }} commande{{ orders.length > 1 ? 's' : '' }}</p>

@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sync pipeline scrubber (private side, not shipped in OSS): added **tier-0c** that catches `Alexandre Carette` mentions in inline content (template strings, JSON, fallbacks, webmanifest) — not just `@author`/`@copyright` headers. Closes the leak that produced 7 residual mentions in v0.2.4.
 - Sync pipeline FR→EN translate (private side): the regex now extracts the closing `*/` of multiline JSDoc as a separate suffix instead of bundling it into the translatable text. Prevents the v0.2.4 build failure where Haiku silently dropped `*/` and Vite SFC choked on unclosed comments.
 
+## [0.0.2] — 2026-05-11
+
+### Synced from private monolith b583141d
+
+- *(describe what changed)*
+
 ## [0.2.8] — 2026-05-10
 
 ### Fixed
@@ -254,7 +260,8 @@ the SBOM attestation are all generated end-to-end from a single command.
 - The Stripe / SystemPay payment integration is bundled but requires manual API key configuration.
 - The Discord community channel is not yet open.
 
-[Unreleased]: https://github.com/codemyshop/codemyshop/compare/v0.2.7...HEAD
+[Unreleased]: https://github.com/codemyshop/codemyshop/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/codemyshop/codemyshop/releases/tag/v0.0.2
 [0.2.7]: https://github.com/codemyshop/codemyshop/releases/tag/v0.2.7
 [0.2.6]: https://github.com/codemyshop/codemyshop/releases/tag/v0.2.6
 [0.2.5]: https://github.com/codemyshop/codemyshop/releases/tag/v0.2.5

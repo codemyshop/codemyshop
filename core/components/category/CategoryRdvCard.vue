@@ -1,29 +1,16 @@
-<!--
-  CategoryRdvCard — cartouche prise de RDV inspiré voguimmo.com.
-  Layout 3 colonnes : avatar + intro / bullets de réassurance / CTA Calendly-like.
-  Réutilisé dans CategoryPage (#contact) ET intercalé dans CategoryProductGrid
-  toutes les N produits.
 
-  Contenu via i18n keys (ps_translation), fallback générique FR.
-  Chaque tenant remplit ses propres traductions DB (silo.rdv.*).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { t } = useT()
 
 withDefaults(
   defineProps<{
     ctaHref?: string
-    /** Visual variant: 'card' (default) = bordered shadow, 'flat' = bg-light without border. */
+    
     variant?: 'card' | 'flat'
   }>(),
   { ctaHref: '/rdv', variant: 'card' },
 )
 
-// Bullets: 6 keys, empty ones are skipped on the DB side (allows a tenant with 4 bullets).
 const bulletKeys = ['1', '2', '3', '4', '5', '6'] as const
 const bullets = computed<string[]>(() =>
   bulletKeys
@@ -45,7 +32,7 @@ const hasAvatar = computed(() => !!avatarUrl.value && !avatarUrl.value.startsWit
     ]"
   >
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-center">
-      <!-- Col 1 — Avatar + intro -->
+      
       <div class="lg:col-span-5">
         <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
           <NuxtLink
@@ -53,13 +40,7 @@ const hasAvatar = computed(() => !!avatarUrl.value && !avatarUrl.value.startsWit
             :to="ctaHref"
             class="shrink-0"
           >
-            <!-- Avatar agent : asset 192x192 dans le volume nginx static
-                 (example_static_img), hors public/ Nuxt → IPX KO.
-                 width/height alignés sur la taille CSS rendue (h-24 w-24
-                 = 96 CSS px) pour que le 192px serve naturellement de
-                 source DPR2 sans warning Lighthouse "image plus grosse
-                 que nécessaire". Pour DPR3+ ou écran retina large, on
-                 conserve le 192 unique côté volume. -->
+            
             <img
               :src="avatarUrl"
               :alt="t('silo.rdv.avatar_alt')"
@@ -86,7 +67,7 @@ const hasAvatar = computed(() => !!avatarUrl.value && !avatarUrl.value.startsWit
         </div>
       </div>
 
-      <!-- Col 2 — Reassurance bullets -->
+      
       <ul
         v-if="bullets.length"
         class="hidden space-y-1.5 text-sm font-medium text-slate-700 dark:text-slate-300 lg:col-span-4 lg:block"
@@ -97,7 +78,7 @@ const hasAvatar = computed(() => !!avatarUrl.value && !avatarUrl.value.startsWit
         </li>
       </ul>
 
-      <!-- Col 3 — CTA -->
+      
       <div class="text-center lg:col-span-3 lg:text-right">
         <NuxtLink
           :to="ctaHref"

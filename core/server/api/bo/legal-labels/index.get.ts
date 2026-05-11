@@ -1,15 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { listLegalLabelsAll } from '~/enterprise/vertical-food/product-food/server/utils/product-food'
 
-/**
- * GET /api/bo/legal-labels — Complete list of legal notices + inheritance preview.
- *
- * Returns for each product × language:
- * - cs_product_food fields + _lang (if present)
- * - inherited: { origin, caliber } from the active FIFO batch (cs_lot)
- * - effective: resolved final value (product > inherited > null)
- */
 export default defineEventHandler(async (event) => {
   const rows = await listLegalLabelsAll(1, { event })
 

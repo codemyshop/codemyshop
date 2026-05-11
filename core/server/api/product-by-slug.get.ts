@@ -1,24 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { resolveIdLang } from '~/server/utils/lang'
 
-/**
- * GET /api/product-by-slug?slug=medjool-premium-1kg&siloPath=fruit-sec/datte&lang=fr
- *
- * Resolves a native PS product link_rewrite and returns the id_product.
- * Used by the catch-all /wholesaler + /brand routes to distinguish category
- * vs product sheet (the last URL segment).
- *
- * siloPath is accepted for backward-compat but ignored: PS guarantees uniqueness
- * of link_rewrite per shop → only one product matches, no need for silo filter.
- * If multiple matches exist (exceptional collision), the first one is returned.
- *
- * Returns { found, id_product, name, pillar, breadcrumb } where `breadcrumb`
- * is the DB chain of ancestors from `id_category_default` starting from the pillar
- * (level_depth=2). `pillar` is the slug of this root, `breadcrumb[0]` its
- * label (path=''). No guessing label from the URL slug: everything comes from
- * ps_category_lang.name for all tenants.
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event)
   const slug = String(q.slug ?? '').trim()
@@ -30,11 +13,11 @@ export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
   const idLang = await resolveIdLang(event)
 
-  // Format `{slug}-{id}` (suffixe id PrestaShop, garantit l'unicité après
-  // slug-cleaning). Lookup par id d'abord, MAIS on vérifie que le préfixe
-  // slug matche le link_rewrite du produit — sinon un slug légitime se
-  // terminant par `-{nombre}` (ex "version-2") nous ferait servir le mauvais
-  // produit. Si pas de match strict, on retombe sur le lookup link_rewrite.
+  
+  
+  
+  
+  
   const m = slug.match(/^(.+)-(\d+)$/)
   const slugPrefix = m ? m[1] : null
   const idFromSlug = m ? Number(m[2]) : null

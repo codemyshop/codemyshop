@@ -1,12 +1,5 @@
-/**
- *
- * PUT /api/account/password
- * Changes the password of the connected user (employee or customer) after
- * verification of `current_password` (defense-in-depth).
- *
- * Remplace l'ancien endpoint PHP /module/ac_base/ajaxupdateprofile?action=change_password
- * (PHP removal phase 1, related migration work).
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 import { getSession } from '~/server/utils/session'
 

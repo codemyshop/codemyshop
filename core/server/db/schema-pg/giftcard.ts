@@ -1,10 +1,4 @@
-/**
- *
- * Drizzle PG schema for cs_giftcard.
- *
- * Stores issued gift cards (sold in the store). Multi-tenant
- * row-level via `client_id`. Code public unique par tenant (case-insensitive).
- */
+
 
 import {
   index,

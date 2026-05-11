@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/procurement/suppliers/:id — supplier details.
- * Retourne : fiche (ps_supplier + ps_supplier_lang id_lang=1 + ps_address),
- * attached products (ps_product_supplier), recent purchase order history (ps_supply_order).
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id') || 0)
   if (!id) throw createError({ statusCode: 400, statusMessage: 'id requis' })

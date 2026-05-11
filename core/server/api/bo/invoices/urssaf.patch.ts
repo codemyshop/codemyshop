@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import {
   findUrssafDeclarationByPeriod,
@@ -9,11 +9,6 @@ import {
   markUrssafUnpaid,
 } from '~/enterprise/banking/urssaf/server/utils/urssaf'
 
-/**
- * PATCH /api/bo/invoices/urssaf — marks a URSSAF declaration as paid/filed or clears the status.
- *
- * Body : { periodMonth: 'YYYY-MM', action: 'mark_paid' | 'mark_unpaid' | 'mark_declared' | 'mark_undeclared', receiptPath?: string }
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ periodMonth: string; action: string; receiptPath?: string }>(event)
   const { periodMonth, action, receiptPath } = body || {}

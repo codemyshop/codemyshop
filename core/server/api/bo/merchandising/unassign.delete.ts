@@ -1,14 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * DELETE /api/bo/merchandising/unassign?id_product=N&id_category=M
- *
- * Removes ONE `ps_category_product` association (selected category only —
- * other product categories untouched, see UI spec: drag to column 1 = remove
- * from the active category only).
- */
 export default defineEventHandler(async (event) => {
   const { id_product, id_category } = getQuery(event)
   const idProduct = Number(id_product)

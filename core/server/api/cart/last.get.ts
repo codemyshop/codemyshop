@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/cart/last?customerId=123&clientId=...
- * DB direct (doctrine: Zero PrestaShop webservice, 2026-04-22).
- */
+
 import { getLastActiveCartFromDb } from '~/server/utils/cart-db'
 import { resolveCustomerIdForRequest } from '~/server/utils/customer-session'
 

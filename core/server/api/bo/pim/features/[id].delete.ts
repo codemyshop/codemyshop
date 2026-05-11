@@ -1,13 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * DELETE /api/bo/pim/features/:id — deletes a feature + its
- * values + all its _lang/_shop. Rejects if at least one product uses
- * one of its values.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 

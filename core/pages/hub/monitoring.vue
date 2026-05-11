@@ -1,5 +1,4 @@
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({
   layout: 'hub',
@@ -67,10 +66,6 @@ watch(data, () => {
   if (!lastRefresh.value) lastRefresh.value = new Date()
 })
 
-// Auto-refresh every 30s while the tab is active. ac_monitoring
-// writes the DB snapshot every 2 min, so 30s is enough to capture each
-// new snapshot without hammering the DB. Pause if the tab doesn't have focus
-// (saving battery/CPU on the front-end).
 let autoRefreshTimer: ReturnType<typeof setInterval> | null = null
 function startAutoRefresh() {
   if (autoRefreshTimer) return
@@ -94,7 +89,6 @@ const lastRefreshLabel = computed(() => {
   return lastRefresh.value.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 })
 
-// Filter
 type FilterMode = 'all' | 'new' | 'persistent' | 'resolved'
 const activeFilter = ref<FilterMode>('all')
 
@@ -109,7 +103,7 @@ const filteredSections = computed(() => {
     )
   }
 
-  if (activeFilter.value === 'resolved') return [] // handled separately
+  if (activeFilter.value === 'resolved') return [] 
 
   const targetStatus = activeFilter.value === 'new' ? 'new' : 'active'
   return data.value.sections
@@ -138,7 +132,7 @@ function ageLabel(firstSeen: string): string {
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- Header -->
+    
     <header class="sticky top-0 z-10 px-8 py-5 border-b backdrop-blur-xl
                     bg-white/80 dark:bg-slate-900/80
                     border-gray-200 dark:border-slate-800">
@@ -167,12 +161,12 @@ function ageLabel(firstSeen: string): string {
 
     <div class="p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
 
-      <!-- Loading -->
+      
       <div v-if="pending && !data" class="text-center py-20">
         <p class="text-gray-500 dark:text-slate-500 text-sm">Chargement...</p>
       </div>
 
-      <!-- Error -->
+      
       <div v-else-if="error" class="rounded-2xl border border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-500/5 p-6">
         <p class="text-red-600 dark:text-red-400 font-medium">Erreur de chargement</p>
         <p class="text-sm text-red-500/70 mt-1">{{ error.message || 'Impossible de recuperer les donnees.' }}</p>
@@ -181,10 +175,10 @@ function ageLabel(firstSeen: string): string {
         </button>
       </div>
 
-      <!-- Data -->
+      
       <template v-else-if="data">
 
-        <!-- Summary cards -->
+        
         <div class="grid grid-cols-3 gap-4 lg:gap-6">
           <div class="rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-5 flex items-center gap-4 shadow-sm">
             <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
@@ -215,7 +209,7 @@ function ageLabel(firstSeen: string): string {
           </div>
         </div>
 
-        <!-- Lifecycle filter bar -->
+        
         <div v-if="data.lifecycle" class="flex items-center gap-2 flex-wrap">
           <button
             v-for="f in [
@@ -235,10 +229,10 @@ function ageLabel(firstSeen: string): string {
           </button>
         </div>
 
-        <!-- Sections -->
+        
         <template v-for="section in filteredSections" :key="section.id || section.title">
 
-          <!-- Critical / Warning: always open -->
+          
           <div
             v-if="section.severity !== 'ok'"
             class="rounded-2xl border bg-white dark:bg-slate-900/50 p-5 shadow-sm"
@@ -282,7 +276,7 @@ function ageLabel(firstSeen: string): string {
             </div>
           </div>
 
-          <!-- OK: collapsed -->
+          
           <details v-else class="rounded-2xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-sm group">
             <summary class="flex items-center gap-3 px-5 py-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
@@ -303,7 +297,7 @@ function ageLabel(firstSeen: string): string {
           </details>
         </template>
 
-        <!-- Resolved today (when filter = resolved) -->
+        
         <template v-if="activeFilter === 'resolved'">
           <div v-if="data.resolved_today?.length" class="rounded-2xl border border-emerald-200 dark:border-emerald-500/30 bg-white dark:bg-slate-900/50 p-5 shadow-sm">
             <div class="flex items-center gap-3 mb-4">
@@ -334,7 +328,7 @@ function ageLabel(firstSeen: string): string {
           </div>
         </template>
 
-        <!-- Empty state for filtered views -->
+        
         <div v-if="filteredSections.length === 0 && activeFilter !== 'resolved'" class="text-center py-12">
           <p class="text-gray-500 dark:text-slate-500 text-sm">
             {{ activeFilter === 'new' ? 'Aucun nouveau probleme.' : activeFilter === 'persistent' ? 'Aucun probleme persistant.' : 'Aucune donnee.' }}

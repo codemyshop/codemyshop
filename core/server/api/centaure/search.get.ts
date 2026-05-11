@@ -1,11 +1,4 @@
-/**
- *
- * GET /api/centaure/search?q=<query>&limit=<n>
- *
- * POC pgvector — similarity search live on the indexed corpus via
- * cs_centaure_embedding. Demonstrates the end-to-end pipeline.
- * (chantier #38 criterion #2).
- */
+
 
 import { searchSimilar } from '~/server/utils/centaure-embed'
 

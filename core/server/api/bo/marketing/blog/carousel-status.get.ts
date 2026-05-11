@@ -1,15 +1,9 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { resolveClientId } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 import { getLatestCarouselStatus } from '~/enterprise/ai/covergen/server/utils/covergen'
 
-/**
- * GET /api/bo/marketing/blog/carousel-status?id_cms=227
- *
- * Returns the latest status of PDF carousel generation for an article
- * via the cover generation service.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 

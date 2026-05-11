@@ -1,15 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/admin/faq/:parentType/:parentId
- * Remplace ac_base/ajaxfaqmanager?action=save (chantier #38 Phase B4).
- *
- * Body : { id_faq?, question, answer, position?, active?, lang? }
- * - `id_faq=0` or absent → creation
- * - `id_faq>0` → upsert `i18n` (and update flags if provided)
- *
- * Auth admin obligatoire (cookie hub_session).
- */
+
 import { saveSingleFaq } from '~/modules/faq/server/utils/faq'
 import { verifyToken } from '~/server/utils/session-crypto'
 

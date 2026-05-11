@@ -1,13 +1,4 @@
-/**
- *
- * POST /api/client/send-feedback
- * Satellite bridge → central hub.
- *
- * This endpoint is called by the customer feedback form.
- * It forwards the request to the central hub via a secure webhook.
- *
- * SECURITY.md R1: the webhook secret is in .env, never exposed to the frontend.
- */
+
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
@@ -18,7 +9,7 @@ export default defineEventHandler(async (event) => {
     priority:     string
   }>(event)
 
-  // R4 : validation
+  
   if (!(body.message ?? '').trim()) {
     throw createError({ statusCode: 400, message: 'Message requis' })
   }
@@ -26,9 +17,9 @@ export default defineEventHandler(async (event) => {
   const motherUrl = process.env.MOTHER_HUB_URL ?? ''
   const secret    = process.env.WEBHOOK_SECRET ?? ''
 
-  // ── Mode local : pas de Hub distant configuré → sauvegarder localement ──
+  
   if (!motherUrl) {
-    // Fallback : sauvegarder dans le backlog local (mode standalone)
+    
     const { randomUUID } = await import('node:crypto')
     const item: FeedbackItem = {
       id:          randomUUID(),
@@ -48,7 +39,7 @@ export default defineEventHandler(async (event) => {
     return { ok: true, mode: 'local', feedbackId: item.id }
   }
 
-  // ── Mode satellite : forward vers le Vaisseau Mère ──────────────────────
+  
   try {
     const res = await $fetch<{ ok: boolean; feedbackId?: string }>(
       `${motherUrl}/api/webhooks/incoming-feedback`,
@@ -73,7 +64,7 @@ export default defineEventHandler(async (event) => {
   } catch (err: any) {
     console.error('[send-feedback] Erreur communication Hub central:', err?.message || err)
 
-    // Fallback : sauvegarder localement si le Hub est injoignable
+    
     const { randomUUID } = await import('node:crypto')
     const item: FeedbackItem = {
       id:          randomUUID(),

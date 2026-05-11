@@ -1,17 +1,4 @@
-<!--
-  Bandeau "features" — 4 éléments de réassurance avec icônes SVG.
-  Payload DB attendu (type='features') :
-  {
-    "items": [
-      { "image": "/img/hero/features/reassurance_shipping.svg", "label": "Livraison gratuite", "description": "Dès 990 € HT" },
-      ...
-    ]
-  }
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 import type { I18nString } from '~/composables/useI18nField'
 

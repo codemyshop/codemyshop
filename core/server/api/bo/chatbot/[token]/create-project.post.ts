@@ -1,25 +1,9 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession } from '~/server/utils/session'
 import { createSmartProject } from '~/enterprise/base/smartproject/server/utils/smartproject'
 
-/**
- * POST /api/bo/chatbot/[token]/create-project — converts the conversation
- * chatbot en item de pipeline (smartproject + smartlead).
- *
- * Body { email, siret?, project_title, needs? } — staff fills in /
- * completes from a hub modal. email is required (lead merge key).
- *
- * Logique :
- * - email required (unique merge key on cs_smartlead.email)
- * - existing lead → reuse, bump missing captured_* on the database side
- * - missing lead → INSERT with captured_* + form values
- * - smartproject always created (staff may want to launch a
- * second distinct opportunity on the same lead) — no project idempotency,
- * idempotency lives on the lead side (email).
- * - conv.id_smartlead anchored for tracking.
- */
 export default defineEventHandler(async (event) => {
   const session = requireEmployeeSession(event)
   const token = String(getRouterParam(event, 'token') || '').trim()
@@ -65,7 +49,7 @@ export default defineEventHandler(async (event) => {
   const siret     = formSiret || String(conv.captured_siret || '').replace(/\D/g, '').slice(0, 14)
   const scenario  = String(conv.scenario_root || 'global')
 
-  // ─── Smartlead : merge par email (clef unique) ──────────────────────
+  
   let idSmartlead = 0
   const existing = await db.get<any>(
     `SELECT id_ac_smartlead, firstname, lastname, phone, company_name, siret
@@ -80,8 +64,8 @@ export default defineEventHandler(async (event) => {
 
   if (existing?.id_ac_smartlead) {
     idSmartlead = Number(existing.id_ac_smartlead)
-    // Bump champs vides côté DB avec ce qu'on a (chatbot + form), sans
-    // jamais écraser une valeur existante.
+    
+    
     const sets: string[] = []
     const params: any[] = []
     const bumpIfEmpty = (col: string, dbVal: any, newVal: string) => {
@@ -118,7 +102,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Échec création/lookup smartlead' })
   }
 
-  // ─── needs : form si fourni, sinon récap auto ──────────────────────
+  
   let needs = formNeeds
   if (!needs) {
     const productRows = await db.query<any>(
@@ -162,7 +146,7 @@ export default defineEventHandler(async (event) => {
     needs,
   }, { event })
 
-  // Ancrage côté conversation
+  
   if (Number(conv.id_smartlead || 0) !== idSmartlead) {
     await db.run(
       `UPDATE cs_main.cs_chatbot_conversation

@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
 
-    <!-- ─── Header ────────────────────────────────────────────── -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 flex items-center gap-4 shrink-0">
       <NuxtLink
         to="/hub/products"
@@ -17,7 +17,7 @@
       </div>
     </header>
 
-    <!-- ─── Barre de progression ──────────────────────────────── -->
+    
     <div class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-3 shrink-0">
       <div class="flex items-center gap-0 max-w-lg">
         <template v-for="(s, i) in STEPS" :key="s.id">
@@ -47,14 +47,14 @@
       </div>
     </div>
 
-    <!-- ─── Form body ───────────────────────────────── -->
+    
     <div class="flex-1 overflow-auto">
       <div class="max-w-2xl mx-auto px-6 py-8">
 
-        <!-- ──────────── STEP 1: Basic info ──────────────── -->
+        
         <div v-if="step === 1" class="space-y-5">
 
-          <!-- Load form data -->
+          
           <div v-if="loadingForm" class="flex items-center justify-center py-16 gap-3 text-gray-400">
             <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -62,7 +62,7 @@
             <span class="text-sm">Chargement du formulaire…</span>
           </div>
 
-          <!-- Alert if categories are empty after loading -->
+          
           <div
             v-if="!loadingForm && formData.categories.length === 0"
             class="flex items-start gap-3 bg-warning-50 border border-warning-200 rounded-xl px-4 py-3 text-sm text-warning-800"
@@ -165,7 +165,7 @@
           </div>
         </div>
 
-        <!-- ──────────── STEP 2: Price & Stock ───────────────── -->
+        
         <div v-if="step === 2" class="space-y-5">
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 space-y-5">
             <h2 class="text-sm font-bold text-gray-700 dark:text-slate-200 flex items-center gap-2">
@@ -205,7 +205,7 @@
               </div>
             </div>
 
-            <!-- Estimated total price -->
+            
             <div class="bg-primary-50 border border-primary-100 rounded-xl px-4 py-3 flex items-center justify-between">
               <span class="text-xs text-primary-700 font-medium">Prix TTC estimé (TVA 20% appliquée si règle sélectionnée)</span>
               <span class="text-sm font-bold text-primary-700">
@@ -246,10 +246,10 @@
           </div>
         </div>
 
-        <!-- ──────────── STEP 3: AI Copywriting ─────────────── -->
+        
         <div v-if="step === 3" class="space-y-5">
 
-          <!-- Context for AI -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 space-y-4">
             <h2 class="text-sm font-bold text-gray-700 dark:text-slate-200 flex items-center gap-2">
               <span class="w-6 h-6 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center text-xs font-bold">3</span>
@@ -289,7 +289,7 @@
               <span v-else>Générer les descriptions avec Claude</span>
             </button>
 
-            <!-- Statut file d'attente -->
+            
             <div v-if="aiQueued && !aiGenerated" class="flex items-center gap-2 text-xs text-primary-700 bg-primary-50 border border-primary-100 rounded-lg px-3 py-2">
               <svg class="w-3.5 h-3.5 animate-spin shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -302,7 +302,7 @@
             </p>
           </div>
 
-          <!-- Generated / editable descriptions -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 space-y-5">
             <div class="flex items-center justify-between">
               <h3 class="text-sm font-semibold text-gray-700 dark:text-slate-200">Descriptions</h3>
@@ -337,7 +337,7 @@
             </div>
           </div>
 
-          <!-- Summary before submission -->
+          
           <div class="bg-gray-50 dark:bg-slate-950 rounded-2xl border border-gray-100 dark:border-slate-800 p-5">
             <h3 class="text-xs font-semibold text-gray-600 uppercase tracking-widest mb-3">Récapitulatif</h3>
             <dl class="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
@@ -370,7 +370,7 @@
 
         </div>
 
-        <!-- ──────────── STEP 4: FAQ SEO ────────────────────────── -->
+        
         <div v-if="step === 4" class="space-y-5">
           <div class="bg-success-50 border border-success-200 rounded-2xl px-5 py-4 flex items-center gap-3">
             <svg class="w-5 h-5 text-success-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -399,7 +399,7 @@
       </div>
     </div>
 
-    <!-- ─── Toast ──────────────────────────────────────────────── -->
+    
     <Teleport to="body">
       <Transition enter-active-class="transition duration-200" enter-from-class="translate-y-2 opacity-0" leave-active-class="transition duration-150" leave-to-class="translate-y-2 opacity-0">
         <div
@@ -416,12 +416,9 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
 
 definePageMeta({ layout: 'hub', ssr: false, middleware: ['hub-auth'] })
 
-// ── Types ──────────────────────────────────────────────────────────────────
 interface Category     { id_category: number; name: string; level: number }
 interface Manufacturer { id_manufacturer: number; name: string }
 interface TaxRule      { id_tax_rules_group: number; name: string }
@@ -431,7 +428,6 @@ interface FormData {
   tax_rules:     TaxRule[]
 }
 
-// ── Constantes ─────────────────────────────────────────────────────────────
 const STEPS = [
   { id: 1, title: 'Infos de base' },
   { id: 2, title: 'Prix & Stock'  },
@@ -439,7 +435,6 @@ const STEPS = [
   { id: 4, title: 'FAQ SEO'       },
 ]
 
-// ── État ───────────────────────────────────────────────────────────────────
 const router   = useRouter()
 
 const step        = ref(1)
@@ -474,18 +469,15 @@ const form = reactive({
   description:         '',
 })
 
-// ── Computed ───────────────────────────────────────────────────────────────
 const estimatedTTC = computed(() => {
   const p = Number(form.price) || 0
-  // Approximation : applique 20% si une règle de taxe est sélectionnée
+  
   return form.id_tax_rules_group ? p * 1.2 : p
 })
 
-// ── Méthodes ───────────────────────────────────────────────────────────────
 const formatPrice = (v: number) =>
   new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(v)
 
-/** Génère une référence automatique depuis le nom si le champ est vide. */
 const autoRef = () => {
   if (form.reference || !form.name) return
   form.reference = form.name
@@ -501,7 +493,7 @@ const nextStep = () => {
   stepError.value = ''
   if (step.value === 1) {
     if (!form.name.trim()) { stepError.value = 'Le nom est requis'; return }
-    // If no category is selected (empty select), use "Home" (id=2)
+    
     if (!form.id_category_default) form.id_category_default = 2
   }
   if (step.value === 2) {
@@ -524,17 +516,16 @@ const loadFormData = async () => {
       }
     }
   } catch {
-    // Module not yet installed — continue with the fallback
+    
   } finally {
     loadingForm.value = false
-    // Auto-selects the first available category, or "Home" (id=2) by default
+    
     if (!form.id_category_default) {
       form.id_category_default = formData.value.categories[0]?.id_category ?? 2
     }
   }
 }
 
-/** Sends the context to the AI queue and starts polling. */
 const queueAiGeneration = async () => {
   aiError.value = ''
   aiQueued.value = true
@@ -559,7 +550,6 @@ const queueAiGeneration = async () => {
   }
 }
 
-/** Queries the queue status every 5 seconds. */
 const schedulePoll = () => {
   aiPolling.value = true
   pollTimer = setTimeout(pollStatus, 5000)
@@ -603,7 +593,7 @@ const pollStatus = async () => {
       return
     }
 
-    // pending ou processing → on repoll
+    
     schedulePoll()
   } catch {
     aiError.value   = 'Erreur lors du polling — réessayez'
@@ -655,7 +645,6 @@ const saveProduct = async () => {
   }
 }
 
-// ── Init ───────────────────────────────────────────────────────────────────
 onMounted(loadFormData)
 </script>
 

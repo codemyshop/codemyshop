@@ -1,25 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb, resolveClientId } from '~/server/utils/db'
 import { sendCartRecoveryEmail } from '~/server/utils/order-emails'
-
-/**
- * POST /api/bo/abandoned-carts/send
- * Body : { id_carts: number[], test_email?: string }
- *
- * Pushes reminders to cs_email_queue via the DB template
- * `cart_recovery` (refactored 2026-05-06 — previously: hardcoded direct SMTP).
- *
- * Benefits of moving to queue:
- * - traceability in /hub/crm/email tab Queue + History
- * - automatic retry on failure
- * - natural rate limit (1 email/min via cron drain — preserves
- * SMTP reputation)
- * - template editable via /hub/crm/email/template/cart_recovery
- *
- * Test mode: test_email overrides the recipient for all carts,
- * no cs_cart_recovery DB log, subject prefixed [TEST {id_cart}].
- */
 
 interface CartRow {
   id_cart: number
@@ -72,8 +54,8 @@ export default defineEventHandler(async (event) => {
   const shopName  = SHOP_NAMES[tenant]  || 'Boutique'
   const shopColor = SHOP_COLORS[tenant] || '#4F46E5'
 
-  // Fetch les paniers à relancer. db.query convertit `?` → $N et schéma-prefix
-  // les ps_* (db-pg-adapter). On reste sur des `?` même pour les Number.
+  
+  
   const idsCsv = ids.map(Number).join(',')
   const carts = await db.query<CartRow>(`
     SELECT c.id_cart,
@@ -105,7 +87,7 @@ export default defineEventHandler(async (event) => {
                 VALUES (?, ?, NOW(), 'error', 'email vide')`,
           [cart.id_cart, cart.id_customer],
         )
-      } catch { /* table absente — ignore */ }
+      } catch {  }
       errors++
       continue
     }
@@ -140,7 +122,7 @@ export default defineEventHandler(async (event) => {
             [cart.id_cart, cart.id_customer],
           )
         } catch (err: any) {
-          // Table absent if module not installed — log warning, still queued.
+          
           console.warn('[abandoned-carts] log INSERT skipped:', err?.message)
         }
       }
@@ -154,15 +136,15 @@ export default defineEventHandler(async (event) => {
                   VALUES (?, ?, NOW(), 'error', ?)`,
             [cart.id_cart, cart.id_customer, String(err?.message || err).slice(0, 500)],
           )
-        } catch { /* table absente */ }
+        } catch {  }
       }
     }
   }
 
   return {
     ok: true,
-    queued,           // poussés en queue (sera drainé par le cron 1/min)
-    sent: queued,     // alias pour compat ascendante côté UI
+    queued,           
+    sent: queued,     
     errors,
     total: carts.length,
     test_mode: isTest,

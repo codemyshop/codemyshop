@@ -1,8 +1,4 @@
-/**
- *
- * Composable for homepage config from /api/homepage-config (DB-first
- * cs_homepage_section + cs_homepage_block, master cs_homepage dropped #200).
- */
+
 
 export interface HomepageDbData {
   hero?: any

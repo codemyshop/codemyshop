@@ -1,26 +1,22 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <template>
-  <!-- FULLWIDTH — background that breaks monotony -->
+  
   <section class="relative py-20 lg:py-28 overflow-hidden bg-gradient-to-br from-indigo-50 via-purple-50/30 to-rose-50/40 dark:from-transparent dark:via-transparent dark:to-transparent dark:bg-slate-900">
 
-    <!-- Mesh gradient background -->
+    
     <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
       <div class="absolute -top-40 -left-20 w-[600px] h-[600px] rounded-full blur-[140px] opacity-30 bg-indigo-600 dark:opacity-20" />
       <div class="absolute -bottom-32 right-[-10%] w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 bg-violet-600 dark:opacity-15" />
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[100px] opacity-10 bg-rose-500 dark:opacity-10" />
-      <!-- Grid pattern -->
+      
       <div class="absolute inset-0 gsc-grid-pattern opacity-[0.03] dark:opacity-[0.04]" />
-      <!-- Gloss sweep -->
+      
       <div class="absolute inset-0 gsc-gloss" />
     </div>
 
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6">
 
-      <!-- Header -->
+      
       <div class="text-center mb-14">
         <span class="inline-flex items-center gap-2 bg-white/80 dark:bg-white/[0.06] backdrop-blur-sm text-success-700 dark:text-success-400 text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-4 border border-success-200/50 dark:border-success-500/20">
           <span class="w-1.5 h-1.5 rounded-full bg-success-400 animate-pulse" />
@@ -34,13 +30,13 @@
         </p>
       </div>
 
-      <!-- Card principale — glass morphism -->
+      
       <div class="relative rounded-3xl overflow-hidden border border-white/20 dark:border-white/[0.08] shadow-[0_8px_40px_rgba(79,70,229,0.08),0_0_0_1px_rgba(255,255,255,0.1)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.3),0_0_0_1px_rgba(255,255,255,0.05)]">
-        <!-- Glass bg -->
+        
         <div class="absolute inset-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl" />
 
         <div class="relative">
-          <!-- Header -->
+          
           <div class="px-6 lg:px-8 py-5 border-b border-gray-200/50 dark:border-white/[0.06] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 to-violet-600 flex items-center justify-center shadow-lg shadow-primary-600/20">
@@ -59,7 +55,7 @@
             </div>
           </div>
 
-          <!-- KPIs -->
+          
           <div class="grid grid-cols-2 md:grid-cols-4">
             <div
               v-for="kpi in kpis"
@@ -84,34 +80,34 @@
             </div>
           </div>
 
-          <!-- Graphique -->
+          
           <div class="px-4 lg:px-8 py-8">
             <div class="relative h-64 sm:h-80 lg:h-96">
-              <!-- Y gauche -->
+              
               <div class="absolute left-0 top-0 bottom-6 w-8 flex flex-col justify-between text-[10px] text-primary-500 dark:text-primary-400 font-semibold">
                 <span>300</span><span>200</span><span>100</span><span>0</span>
               </div>
-              <!-- Y droite -->
+              
               <div class="absolute right-0 top-0 bottom-6 w-8 flex flex-col justify-between text-[10px] text-violet-500 dark:text-violet-400 font-semibold text-right">
                 <span>30k</span><span>20k</span><span>10k</span><span>0</span>
               </div>
 
-              <!-- SVG -->
+              
               <svg class="absolute left-9 right-9 top-0 bottom-0" viewBox="0 0 800 280" preserveAspectRatio="none" fill="none">
-                <!-- Grid -->
+                
                 <line v-for="i in 4" :key="'g'+i" x1="0" :y1="(i-1)*93" x2="800" :y2="(i-1)*93" stroke="currentColor" stroke-width="0.5" class="text-gray-200/50 dark:text-white/[0.06]" />
 
-                <!-- Impressions -->
+                
                 <path :d="impressionsArea" fill="url(#impFill)" />
                 <path :d="impressionsLine" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="gsc-line-draw" style="--line-len: 3000" />
 
-                <!-- Clics -->
+                
                 <path :d="clicsArea" fill="url(#clicFill)" />
                 <path :d="clicsLine" stroke="#4F46E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="gsc-line-draw" style="--line-len: 2500" />
 
-                <!-- Dot final clics -->
+                
                 <circle :cx="800" :cy="280 - (280/300)*280" r="5" fill="#4F46E5" class="gsc-dot-pulse" />
-                <!-- Dot final impressions -->
+                
                 <circle :cx="800" :cy="280 - (28000/30000)*280" r="5" fill="#8B5CF6" class="gsc-dot-pulse" style="animation-delay: 0.5s" />
 
                 <defs>
@@ -126,13 +122,13 @@
                 </defs>
               </svg>
 
-              <!-- X axis -->
+              
               <div class="absolute left-9 right-9 bottom-0 flex justify-between text-[10px] text-gray-500 dark:text-slate-400 font-medium">
                 <span>Jan 2025</span><span>Avr 2025</span><span>Juil 2025</span><span>Oct 2025</span><span>Jan 2026</span>
               </div>
             </div>
 
-            <!-- Legend -->
+            
             <div class="flex items-center justify-center gap-8 mt-6">
               <div class="flex items-center gap-2">
                 <span class="w-4 h-1 bg-primary-600 rounded-full" />
@@ -145,7 +141,7 @@
             </div>
           </div>
 
-          <!-- Footer -->
+          
           <div class="px-6 lg:px-8 py-4 border-t border-gray-200/30 dark:border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-3">
             <p class="text-xs text-gray-500 dark:text-slate-400">
               POC version alpha <span class="text-gray-500 dark:text-slate-400">(sans PrestaShop Headless ni Nuxt)</span> — trafic organique <strong class="text-gray-800 dark:text-white">×15 en 12 mois</strong>
@@ -163,8 +159,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
 
 const kpis = [
   { label: 'Clics totaux', value: '20,2 k', color: '#4F46E5', active: true },
@@ -173,7 +167,6 @@ const kpis = [
   { label: 'Position moy.', value: '24,2', color: '#6B7280', active: false },
 ]
 
-// Courbe calquée sur la vraie capture GSC voguimmo.com
 const clicsData = [
   1, 2, 1, 3, 2, 5, 3, 8, 4, 6, 12, 8, 10, 18, 12,
   15, 25, 20, 35, 30, 50, 38, 55, 45, 70, 55, 80,

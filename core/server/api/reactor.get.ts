@@ -1,10 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/reactor
- * Returns the state of the pipeline in real-time: agents + activity + stats.
- * PUBLIC endpoint (no auth) — this is the visible heart of the pipeline.
- */
+
 import {
   listAgentsForReactor,
   listHeartbeats,
@@ -30,7 +25,7 @@ export default defineEventHandler(async (event) => {
     const heartbeatRows = await listHeartbeats({ event })
     const activityRows = await listRecentActivity(200, { event })
 
-    // Reconstruire le format attendu
+    
     const heartbeats: Record<string, any> = {}
     for (const hb of heartbeatRows) {
       heartbeats[hb.agent_codename] = { lastSeen: hb.last_seen, status: hb.status }
@@ -54,14 +49,14 @@ export default defineEventHandler(async (event) => {
     }))
     const activity = { heartbeats, activity: activityList }
 
-    // ── Filtrage sécurité : ne jamais exposer CVE, versions, headers en public ──
+    
     const REDACTED_PATTERNS = [
-      /CVE-\d{4}-\d+[^—;]*/gi,           // CVE identifiers + descriptions
-      /nginx\/[\d.]+[^;—]*/gi,            // Nginx version leaks
-      /Node v?[\d.]+\s*vulnérable[^;—]*/gi, // Node vulnerability details
-      /Node v?[\d.]+\s*en EOL[^;—]*/gi,   // Node EOL warnings
-      /X-Powered-By[^;—]*/gi,             // Stack exposure
-      /Server header bavard[^;—]*/gi,     // Server header leak details
+      /CVE-\d{4}-\d+[^—;]*/gi,           
+      /nginx\/[\d.]+[^;—]*/gi,            
+      /Node v?[\d.]+\s*vulnérable[^;—]*/gi, 
+      /Node v?[\d.]+\s*en EOL[^;—]*/gi,   
+      /X-Powered-By[^;—]*/gi,             
+      /Server header bavard[^;—]*/gi,     
     ]
 
     function sanitizeSummary(agent: string, summary: string): string {
@@ -70,7 +65,7 @@ export default defineEventHandler(async (event) => {
       for (const pattern of REDACTED_PATTERNS) {
         clean = clean.replace(pattern, '[redacted]')
       }
-      // Clean up orphaned separators
+      
       clean = clean.replace(/\s*[—;]\s*\[redacted\]/g, '')
       clean = clean.replace(/\[redacted\]\s*[—;]\s*/g, '')
       clean = clean.replace(/\[redacted\]/g, '')
@@ -80,9 +75,9 @@ export default defineEventHandler(async (event) => {
       return clean.trim() || 'Audit sécurité terminé'
     }
 
-    // Join agents + heartbeats + last activity
+    
     const now = Date.now()
-    const ACTIVE_WINDOW_MS = 10 * 60 * 1000 // 10 minutes
+    const ACTIVE_WINDOW_MS = 10 * 60 * 1000 
     const agents = agentsList.map((a) => {
       const hb = activity.heartbeats[a.codename]
       const lastAct = activity.activity.find((act) => act.agent === a.codename)
@@ -115,12 +110,12 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    // Stats DB-first : agents depuis cs_agents, automates depuis cs_automates
+    
     const h24 = now - 24 * 60 * 60 * 1000
     const recent24h = activity.activity.filter((a) => new Date(a.ts).getTime() > h24)
     const lastError = activity.activity.find((a) => a.severity === 'error')
 
-    // Automation stats (source of truth: cs_automates) via Drizzle facade.
+    
     const autoRow = await countAutomates({ event })
 
     return {

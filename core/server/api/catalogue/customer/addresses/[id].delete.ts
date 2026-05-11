@@ -1,10 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * DELETE /api/catalogue/customer/addresses/:id
- * Soft-delete: sets deleted=1 on ps_address (PS convention).
- * DB direct (doctrine: Zero PrestaShop webservice, 2026-04-22).
- */
+
 import { useClientDb } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {

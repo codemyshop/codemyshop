@@ -1,8 +1,4 @@
-/**
- *
- * Edit/Preview mode — enabled by BuilderToolbar or ?edit_mode=1.
- * Persists in localStorage to survive page refresh.
- */
+
 
 export const useEditMode = () => {
   const route = useRoute()
@@ -10,10 +6,10 @@ export const useEditMode = () => {
   const user = (auth as any).user as Ref<{ is_admin?: boolean; user_type?: string } | null> | undefined
   const editState = useState('edit_mode', () => false)
 
-  // Toute l'équipe (admins ROOT/FOUNDER + employés tous rôles confondus) peut
-  // activer le builder. Restreindre à is_admin cachait les boutons aux EMPLOYEE
-  // qui doivent pouvoir éditer le contenu de leur site (cf. incidents
-  // 2026-04-25 : employé Example Shop bloqué sur /grossiste/fruit-sec/).
+  
+  
+  
+  
   const canEdit = computed(() => {
     const u = user?.value
     if (!u) return false
@@ -21,7 +17,7 @@ export const useEditMode = () => {
   })
 
   const isEditMode = computed(() => {
-    // Iframe builder preview : toujours OFF (preview propre, sans edit badges)
+    
     if (route.query['builder-preview'] === '1') return false
     if (!canEdit.value) return false
     if (route.query.edit_mode === '1') return true

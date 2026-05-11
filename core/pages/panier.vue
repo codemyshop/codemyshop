@@ -1,12 +1,4 @@
-<!--
-  Panier B2B — /panier
-  Hybride : localStorage (visiteur) + panier serveur PS (client connecté).
-  clientId via useRuntimeConfig().public.clientId.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -18,10 +10,6 @@ const { items, updateQuantity, removeFromCart, totalHT, totalTTC, totalFormatted
 const { t } = useHubT()
 const { loggedIn, customer, checkSession } = useCustomerAuth()
 
-// `?recover=<id>` — CTA for abandoned cart recovery email (cart_recovery).
-// We force loading of THIS specific cart (not the last cart) if the user
-// is logged in; otherwise we redirect to /login?next=… to preserve
-// l'intent post-login.
 const route = useRoute()
 const router = useRouter()
 const recoverCartId = computed(() => {
@@ -38,13 +26,10 @@ async function bootstrapCart() {
   }
 }
 
-// Initialize server cart on mount if client is logged in — otherwise applyPromoCode
-// throw "Login required" because isServerMode remains false (see
-// order.vue which does the same).
 onMounted(async () => {
   await checkSession()
   if (!loggedIn.value && recoverCartId.value) {
-    // Cart recovery email + logged-out visitor → redirect to login preserving intent.
+    
     const next = `/panier?recover=${recoverCartId.value}`
     router.push(`/connexion?next=${encodeURIComponent(next)}`)
     return
@@ -77,7 +62,6 @@ const freeShipping = computed(() => totalHT.value >= 300)
 
 const formatPrice = (n: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
 
-// Convention PS : <body id="cart" class="cart">
 useListingBodyId('cart')
 
 useHead({ title: _brand ? `Panier — ${_brand}` : 'Panier' })
@@ -87,7 +71,7 @@ useHead({ title: _brand ? `Panier — ${_brand}` : 'Panier' })
   <NuxtLayout name="checkout">
     <div class="min-h-screen bg-white">
 
-      <!-- Breadcrumb -->
+      
       <div class="bg-gray-50 border-b border-gray-100">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
           <nav class="flex items-center gap-2 text-xs text-gray-400">
@@ -101,11 +85,11 @@ useHead({ title: _brand ? `Panier — ${_brand}` : 'Panier' })
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <h1 class="text-2xl font-bold text-gray-900 mb-8">{{ t('cart.cart_title') }} <span v-if="totalItems" class="text-gray-400 font-normal text-base">({{ totalItems }} {{ totalItems > 1 ? t('cart.articles') : t('cart.article') }})</span></h1>
 
-        <!-- Loading -->
+        
         <div v-if="cartLoading" class="text-center py-12 text-gray-400 text-sm">{{ t('cart.cart_loading') }}</div>
 
         <div v-else-if="items.length" class="grid lg:grid-cols-3 gap-8">
-          <!-- Liste articles -->
+          
           <div class="lg:col-span-2 space-y-4">
             <div
               v-for="item in items"
@@ -118,7 +102,7 @@ useHead({ title: _brand ? `Panier — ${_brand}` : 'Panier' })
               <div class="flex-1 min-w-0">
                 <h3 class="text-sm font-semibold text-gray-900 line-clamp-2">{{ item.name }}</h3>
 
-                <!-- Pills format / packaging / size — parity with `ProductCard.vue`. -->
+                
                 <div
                   v-if="item.format || item.packaging || item.caliber"
                   class="mt-1 flex flex-wrap gap-1"
@@ -139,9 +123,7 @@ useHead({ title: _brand ? `Panier — ${_brand}` : 'Panier' })
 
                 <p v-if="item.ref" class="text-[10px] text-gray-400 mt-0.5">{{ t('cart.label_ref') }} {{ item.ref }}</p>
 
-                <!-- Hiérarchie inversée Aude P2 : HT/K en gros + mention TVA pour
-                     N colis. Si promo (specific_price) active : HT/K barré +
-                     label "-X%" en badge. Fallback sans pricePerKg : prix colis. -->
+                
                 <template v-if="item.pricePerKgFormatted">
                   <div class="mt-1 flex items-baseline gap-1.5 flex-wrap">
                     <span class="text-base font-bold text-primary-600">{{ item.pricePerKgFormatted }}</span>
@@ -188,15 +170,15 @@ useHead({ title: _brand ? `Panier — ${_brand}` : 'Panier' })
             </div>
           </div>
 
-          <!-- Summary -->
+          
           <div class="lg:col-span-1">
             <div class="bg-gray-50 rounded-2xl p-6 sticky top-24">
               <h2 class="text-lg font-bold text-gray-900 mb-4">{{ t('cart.cart_summary') }}</h2>
 
-              <!-- Banner "First order 5% discount" — visible if client is logged in + 0 validated orders -->
+              
               <CartFirstOrderBanner class="mb-4" />
 
-              <!-- Bandeau TVA Corse 2,1 % — adresse de livraison 20xxx -->
+              
               <div v-if="appliedCorseTva" class="mb-4 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm">
                 <p class="font-semibold text-blue-900">TVA Corse appliquée — 2,1 %</p>
                 <p class="text-xs text-blue-800 mt-1">
@@ -228,9 +210,7 @@ useHead({ title: _brand ? `Panier — ${_brand}` : 'Panier' })
                 </div>
               </div>
 
-              <!-- Code promo (la ligne « Remise » du récap au-dessus indique
-                   déjà le code appliqué + montant déduit). On garde uniquement
-                   le formulaire de saisie, masqué dès qu'un code est actif. -->
+              
               <div v-if="!discountCode" class="border-t border-gray-200 mt-4 pt-4">
                 <div class="flex gap-2">
                   <input
@@ -278,7 +258,7 @@ useHead({ title: _brand ? `Panier — ${_brand}` : 'Panier' })
           </div>
         </div>
 
-        <!-- Panier vide -->
+        
         <div v-else class="text-center py-20">
           <svg class="w-16 h-16 mx-auto text-gray-200 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />

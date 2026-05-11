@@ -1,10 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  /favoris/[id] — Détail d'une liste : items + CTA "Envoyer par email".
--->
 <template>
   <div class="min-h-screen bg-gray-50">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -97,7 +91,7 @@
 
     </div>
 
-    <!-- Modal envoi email -->
+    
     <Transition
       enter-active-class="transition-opacity" enter-from-class="opacity-0" enter-to-class="opacity-100"
       leave-active-class="transition-opacity" leave-from-class="opacity-100" leave-to-class="opacity-0"

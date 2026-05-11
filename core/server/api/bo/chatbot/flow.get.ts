@@ -1,8 +1,5 @@
-/**
- *
- * GET /api/bo/chatbot/flow — Complete chatbot flow tree for the editor.
- * Returns: { nodes: [...], options: [...] } with translations in all languages.
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 
 interface NodeRow {
@@ -49,7 +46,7 @@ export default defineEventHandler(async (event) => {
     `SELECT id_option, id_lang, label_text FROM cs_chatbot_option_lang`,
   )
 
-  // Group langs par parent
+  
   const langsByNode = new Map<number, NodeLangRow[]>()
   for (const l of nodeLangs) {
     if (!langsByNode.has(l.id_node)) langsByNode.set(l.id_node, [])

@@ -1,7 +1,4 @@
-/**
- *
- * GET `/api/admin/modules/:codename` — module detail (registry + manifest).
- */
+
 
 import { getModule } from '../../../utils/module-registry'
 import { verifyToken } from '~/server/utils/session-crypto'

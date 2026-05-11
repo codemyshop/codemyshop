@@ -49,7 +49,7 @@
     <form v-else-if="loaded" @submit.prevent="save" class="px-6 py-6">
       <div class="max-w-3xl mx-auto space-y-6">
 
-        <!-- ── Structure (master-only) ───────────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6" :class="!isMaster ? 'opacity-60' : ''">
           <header class="mb-4">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Structure</h2>
@@ -91,7 +91,7 @@
           </div>
         </section>
 
-        <!-- ── Contenu (lang) ────────────────────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-4">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Contenu</h2>
@@ -139,7 +139,7 @@
           </div>
         </section>
 
-        <!-- ── SEO ──────────────────────────────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-4">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">SEO</h2>
@@ -182,7 +182,7 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
 const { canAccess } = useRoles()
@@ -320,7 +320,6 @@ function slugify(input: string): string {
     .slice(0, 128)
 }
 
-// Auto-derive the slug from the name as long as no manual slug has been set
 watch(() => form.name, (n) => {
   if (isNew.value && isMaster.value && !form.linkRewrite) {
     form.linkRewrite = slugify(n)

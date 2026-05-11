@@ -1,16 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Handler: Sends a receipt acknowledgment to the visitor after quote submission.
- *
- * Must be subscribed AFTER SaveToDatabaseHandler — the quote reference (Q-{id})
- * is read from `event._quoteRequestId` injected by SaveToDatabase. If the
- * persistence fails, we fall back to "Request sent" to avoid
- * breaking the chain.
- *
- * Lookup shop_name: ps_configuration.PS_SHOP_NAME (same patterns as
- * register.post.ts). Silent DB error — we keep "Shop" as default.
- */
 
 import type { DomainEvent } from '../../bus/EventBus'
 import type { QuoteRequestedPayload } from '../../events/QuoteRequestedEvent'
@@ -23,17 +11,12 @@ import { sql } from 'drizzle-orm'
 
 const formatPrice = (n: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
 
-/**
- * Loads catalog prices (ex-tax) from ps_product. Returns a Map id→price.
- * B2B catalog prices (Example Shop is exclusively B2B). Sales staff negotiates
- * discounts from this baseline during the final pricing proposal.
- */
 async function loadCatalogPrices(itemIds: number[]): Promise<Map<number, number>> {
   const map = new Map<number, number>()
-  // Filtre strict integer pour autoriser le sql.raw IN (...) — zéro risque
-  // d'injection (ids déjà validés en amont par Zod). Le pattern ANY(${arr})
-  // avec drizzle-orm + postgres-js binde mal les arrays JS dans certains cas
-  // → IN (raw csv) est le plus fiable.
+  
+  
+  
+  
   const safeIds = itemIds.filter((n) => Number.isInteger(n) && n > 0)
   if (!safeIds.length) return map
   try {
@@ -52,11 +35,6 @@ async function loadCatalogPrices(itemIds: number[]): Promise<Map<number, number>
   return map
 }
 
-/**
- * Builds the HTML block for items to fill the {quote_items_html} placeholder.
- * Shows ex-tax unit price from catalog + subtotal per line + TOTAL ex-tax line.
- * Note disclaimer "catalog pricing — subject to commercial negotiation".
- */
 async function buildItemsHtml(items: QuoteRequestedPayload['items'], prices: Map<number, number>, idLang: number): Promise<{ html: string; totalHt: number }> {
   if (!items?.length) return { html: '', totalHt: 0 }
   let totalHt = 0
@@ -75,8 +53,8 @@ async function buildItemsHtml(items: QuoteRequestedPayload['items'], prices: Map
       <td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;text-align:right;color:#0f172a;font-weight:600;">${subFmt}</td>
     </tr>`
   }).join('')
-  // Headers de table + disclaimer i18n via ps_translation (fallback FR
-  // si key non seedée). Cf seed /tmp/seed_funnel_i18n.sql.
+  
+  
   const [hProduct, hRef, hQty, hPu, hSub, disclaimer] = await Promise.all([
     t('quote_email_th_product',    idLang, 'Produit'),
     t('quote_email_th_ref',        idLang, 'Réf.'),
@@ -108,8 +86,8 @@ export async function NotifyCustomerHandler(event: DomainEvent<QuoteRequestedPay
     let shopName = 'Boutique'
     let shopDomain = ''
     try {
-      // Schéma explicite cs_main (search_path tenant n'inclut pas
-      // ce schéma par défaut côté example_v2_postgres).
+      
+      
       const rows = await usePocPg().execute<any>(sql`
         SELECT name, value FROM cs_main.ps_configuration
          WHERE name IN ('PS_SHOP_NAME','PS_SHOP_DOMAIN')
@@ -122,15 +100,15 @@ export async function NotifyCustomerHandler(event: DomainEvent<QuoteRequestedPay
       console.warn('[NotifyCustomer] config lookup KO:', err?.message)
     }
 
-    // Vars supplémentaires pour le template cs_email_template_lang
-    // (slug=quote_request) : items HTML + total + valid_until + lien PDF signé.
+    
+    
     const validUntil = new Date(Date.now() + 30 * 24 * 3600 * 1000)
       .toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
 
-    // Tarif catalogue HT depuis ps_product (Example Shop 100% B2B). Le commercial
-    // applique ses remises sur la proposition tarifaire finale.
-    // idLang figé à 1 (FR) pour l'instant — à étendre si payload.email est
-    // associé à un customer avec id_lang autre. Fallback FR sinon.
+    
+    
+    
+    
     const idLang = 1
     const prices = await loadCatalogPrices(payload.items.map(i => i.id))
     const { html: itemsHtml, totalHt } = await buildItemsHtml(payload.items, prices, idLang)
@@ -141,34 +119,34 @@ export async function NotifyCustomerHandler(event: DomainEvent<QuoteRequestedPay
         )
       : await t('quote_email_total_pending', idLang, 'Sur devis — proposition tarifaire à venir')
 
-    // Fallback hardcodé si PS_SHOP_DOMAIN absent (cas dégénéré, garantit
-    // qu'aucun email ne part avec un href="" cassé). Les liens publics
-    // restent fonctionnels dans 100% des cas.
+    
+    
+    
     const FALLBACK_DOMAIN = 'example-shop-nuxt.codemyshop.com'
     const domain = shopDomain || FALLBACK_DOMAIN
 
-    // URL signée vers le PDF accusé (re-téléchargement plus tard).
+    
     let quotePdfUrl = ''
     if (idQuoteRequest) {
       const token = signQuotePdfToken(idQuoteRequest)
       quotePdfUrl = `https://${domain}/api/quote/${idQuoteRequest}/pdf?token=${token}`
     }
 
-    // URL /rdv pré-remplie depuis les infos du devis. Format signé court :
-    // `?quote=<id>&t=<hmac>` — la page fetch /api/rdv/prefill côté serveur
-    // pour récupérer le payload depuis cs_quote_request. On évite ainsi
-    // l'ancien format ouvert `?prospectName=…&prospectEmail=…&prospectPhone=…
-    // &prospectSiret=…&quoteRef=Q-N` qui se faisait casser par les clients
-    // mail (troncature, encodage `&` mal interprété, longueur max URL).
+    
+    
+    
+    
+    
+    
     let rdvUrl = `https://${domain}/rdv`
     if (idQuoteRequest) {
       const rdvToken = signQuoteRdvToken(idQuoteRequest)
       rdvUrl += `?quote=${idQuoteRequest}&t=${rdvToken}`
     }
 
-    // Génération PDF différée : on transmet juste l'id à la queue, le
-    // worker generateQuoteRequestPdf au moment du send (~600ms PDFKit
-    // sortis du chemin event handler → visiteur HTTP non bloqué).
+    
+    
+    
     await sendQuoteRequestEmail({
       customerEmail: payload.email,
       firstname:     payload.firstname,

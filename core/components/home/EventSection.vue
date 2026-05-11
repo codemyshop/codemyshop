@@ -7,19 +7,19 @@
         <span class="text-sm text-muted">{{ events.length }} événement(s)</span>
       </div>
 
-      <!-- Vide -->
+      
       <div v-if="!events.length" class="text-center py-16 text-muted text-sm">
         Aucun événement à venir pour le moment.
       </div>
 
-      <!-- Grille de cards -->
+      
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
           v-for="ev in events"
           :key="ev.id"
           class="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col"
         >
-          <!-- Cover image -->
+          
           <div class="aspect-video bg-gray-100 overflow-hidden relative shrink-0">
             <img
               v-if="ev.coverImage"
@@ -33,7 +33,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 9v7.5" />
               </svg>
             </div>
-            <!-- Type badge overlay -->
+            
             <span
               class="absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full"
               :class="ev.type === 'online' ? 'bg-primary-100 text-primary-700' : 'bg-gray-800/75 text-white'"
@@ -42,7 +42,7 @@
             </span>
           </div>
 
-          <!-- Contenu -->
+          
           <div class="p-5 flex flex-col flex-1 gap-2">
             <h3 class="font-bold text-gray-800 text-base leading-snug">{{ ev.title }}</h3>
 
@@ -62,7 +62,7 @@
               {{ ev.description }}
             </p>
 
-            <!-- Capacity bar -->
+            
             <div v-if="ev.capacity > 0" class="mt-1">
               <div class="flex justify-between text-xs text-gray-400 mb-1">
                 <span>{{ ev.registrations }} inscrit(s)</span>
@@ -76,7 +76,7 @@
               </div>
             </div>
 
-            <!-- CTA -->
+            
             <button
               @click="openRegister(ev)"
               :disabled="ev.capacity > 0 && ev.registrations >= ev.capacity"
@@ -89,7 +89,7 @@
       </div>
     </div>
 
-    <!-- ── Modal inscription ──────────────────────────────────────────────── -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div
@@ -99,7 +99,7 @@
         >
           <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
 
-            <!-- Success state -->
+            
             <div v-if="success" class="text-center py-6">
               <div class="w-14 h-14 rounded-full bg-success-50 flex items-center justify-center mx-auto mb-4">
                 <svg class="w-8 h-8 text-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -116,7 +116,7 @@
               </button>
             </div>
 
-            <!-- Formulaire d'inscription -->
+            
             <template v-else>
               <div class="flex items-start justify-between mb-5">
                 <div>
@@ -209,7 +209,7 @@ async function submitRegistration() {
       body: regForm,
     })
     success.value = true
-    // Optimistic update of the local counter
+    
     const local = props.events.find(e => e.id === selectedEvent.value!.id)
     if (local) local.registrations++
   } catch (e: any) {

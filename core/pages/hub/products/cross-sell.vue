@@ -1,12 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  PIM — Cross-sell / Upsell.
-  Tab 1 : Suggestions IA (co-achats fréquents depuis ps_order_detail)
-  Tab 2 : Règles manuelles (CRUD ps_accessory PrestaShop natif)
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
@@ -35,7 +27,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- ═══ TAB: Suggestions IA ═══════════════════════════════════════════ -->
+      
       <template v-if="activeTab === 'suggestions'">
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
@@ -93,9 +85,9 @@
         </div>
       </template>
 
-      <!-- ═══ TAB: Manual rules ═════════════════════════════════════════ -->
+      
       <template v-if="activeTab === 'rules'">
-        <!-- Rule creation -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Créer une règle</h2>
@@ -148,7 +140,7 @@
           </div>
         </div>
 
-        <!-- List of existing rules -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
             <div>
@@ -202,7 +194,6 @@ interface Product    { id: number; name: string }
 
 const activeTab   = ref<'suggestions' | 'rules'>('suggestions')
 
-// ── Onglet Suggestions ──
 const minCo              = ref(2)
 const suggestions        = ref<{ minCoOccurrences: number; total: number; suggestions: Suggestion[] } | null>(null)
 const loadingSuggestions = ref(true)
@@ -225,7 +216,7 @@ async function acceptSuggestion(s: Suggestion) {
       method: 'POST',
       body: { src: s.src, dst: s.dst },
     })
-    // Removes the suggestion from the list (rule now created)
+    
     if (suggestions.value) {
       suggestions.value.suggestions = suggestions.value.suggestions.filter(x => !(x.src === s.src && x.dst === s.dst))
       suggestions.value.total = suggestions.value.suggestions.length
@@ -235,7 +226,6 @@ async function acceptSuggestion(s: Suggestion) {
   finally { savingPair.value = null }
 }
 
-// ── Rules tab ──
 const rules          = ref<{ total: number; rules: Rule[] } | null>(null)
 const loadingRules   = ref(true)
 const rulesSearch    = ref('')
@@ -270,7 +260,6 @@ async function deleteRule(r: Rule) {
   finally { deletingPair.value = null }
 }
 
-// ── Rule creation (product picker) ──
 const srcQuery    = ref('')
 const dstQuery    = ref('')
 const srcResults  = ref<Product[]>([])
@@ -298,7 +287,7 @@ function searchProducts(which: 'src' | 'dst') {
       const results = (data?.products || []).map((p: any) => ({ id: p.id, name: p.name }))
       if (which === 'src') srcResults.value = results
       else dstResults.value = results
-    } catch { /* silent */ }
+    } catch {  }
   }
   if (which === 'src') srcTimer = setTimeout(run, 250)
   else                 dstTimer = setTimeout(run, 250)

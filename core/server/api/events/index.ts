@@ -1,10 +1,5 @@
-/**
- *
- * GET  /api/events          → liste (params: clientId, status)
- * POST /api/events → creation (admin)
- *
- * Drizzle DB direct (cs_events).
- */
+
+
 import { getMethod, readBody, createError, getQuery } from 'h3'
 import type { EventRecord } from '~/types/event'
 import { createEvent, readEvents } from '~/server/utils/events'

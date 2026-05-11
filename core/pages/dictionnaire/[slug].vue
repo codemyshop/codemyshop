@@ -1,11 +1,4 @@
-<!--
-  Page définition — Dictionnaire technique tenant-neutre.
-  JSON-LD DefinedTerm pour SEO. Contenu tenant-aware via /api/dictionary?slug=.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -66,7 +59,7 @@ function getRelated(slugs: string[]) {
 
       <div class="relative max-w-3xl mx-auto px-6" v-if="entry">
 
-        <!-- Breadcrumb -->
+        
         <nav class="mb-8">
           <ol class="flex items-center gap-2 text-xs text-gray-400 dark:text-slate-400">
             <li><NuxtLink to="/dictionnaire" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">{{ t('dictionary.breadcrumb', 'Dictionnaire') }}</NuxtLink></li>
@@ -75,7 +68,7 @@ function getRelated(slugs: string[]) {
           </ol>
         </nav>
 
-        <!-- Dictionary header -->
+        
         <div class="mb-10">
           <div class="flex items-center gap-3 flex-wrap mb-3">
             <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">
@@ -94,24 +87,24 @@ function getRelated(slugs: string[]) {
           </p>
         </div>
 
-        <!-- Etymology -->
+        
         <div class="mb-8 rounded-xl border border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-900/30 p-5">
           <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-slate-400 mb-2">{{ t('dictionary.origin_label', 'Origine') }}</p>
           <p class="text-sm text-gray-600 dark:text-slate-300 leading-relaxed italic">{{ entry.origin }}</p>
         </div>
 
-        <!-- Definition -->
+        
         <div class="mb-8">
           <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-slate-400 mb-3">{{ t('dictionary.definition_label', 'Définition') }}</p>
           <p class="text-base text-gray-700 dark:text-slate-200 leading-relaxed">{{ entry.definition }}</p>
         </div>
 
-        <!-- Exemple -->
+        
         <div v-if="entry.example" class="mb-8 border-l-3 border-primary-400 dark:border-primary-500 pl-5">
           <p class="text-sm text-gray-600 dark:text-slate-300 leading-relaxed italic">{{ entry.example }}</p>
         </div>
 
-        <!-- Related articles -->
+        
         <div v-if="entry.linkedArticles?.length" class="mb-8">
           <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-slate-400 mb-3">{{ t('dictionary.linked_articles', 'Articles liés') }}</p>
           <div class="space-y-2">
@@ -127,7 +120,7 @@ function getRelated(slugs: string[]) {
           </div>
         </div>
 
-        <!-- Related courses -->
+        
         <div v-if="entry.linkedModules?.length" class="mb-8">
           <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-slate-400 mb-3">{{ t('dictionary.linked_modules', 'Cours Academy liés') }}</p>
           <div class="space-y-2">
@@ -143,7 +136,7 @@ function getRelated(slugs: string[]) {
           </div>
         </div>
 
-        <!-- See also -->
+        
         <div v-if="entry.seeAlso?.length" class="mb-8">
           <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-slate-400 mb-3">{{ t('dictionary.see_also', 'Voir aussi') }}</p>
           <div class="flex flex-wrap gap-2">
@@ -158,7 +151,7 @@ function getRelated(slugs: string[]) {
           </div>
         </div>
 
-        <!-- Copyright -->
+        
         <div class="mt-12 pt-6 border-t border-gray-100 dark:border-slate-800">
           <p class="text-[9px] text-gray-400 dark:text-slate-600">
             &copy; {{ new Date().getFullYear() }} {{ brandName }} — {{ t('dictionary.copyright_suffix', 'Dictionnaire professionnel.') }} {{ t('dictionary.published_on', 'Définition publiée le') }} {{ entry.datePublished }}.
@@ -167,7 +160,7 @@ function getRelated(slugs: string[]) {
 
       </div>
 
-      <!-- 404 -->
+      
       <div v-else class="relative max-w-3xl mx-auto px-6 text-center">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ t('dictionary.not_found', 'Terme introuvable') }}</h1>
         <NuxtLink to="/dictionnaire" class="text-primary-600 dark:text-primary-400 hover:underline">

@@ -1,14 +1,4 @@
-/**
- *
- * Drizzle PG schemas for ac_event (online/in-person/hybrid events + registrations).
- *
- * 3 tables (cs_main, multi-tenant via client_id) :
- *   - cs_event              : 1 row par event (date, lieu, prix, status)
- *   - cs_event_lang         : i18n (titre, description, meta SEO)
- *   - cs_event_registration : 1 row par inscription (email, qty, status)
- *
- * Naming convention: singular name, strict _lang, no JSON i18n.
- */
+
 
 import {
   decimal,

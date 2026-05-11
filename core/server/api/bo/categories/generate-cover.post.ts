@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { resolveClientId } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
@@ -7,16 +7,6 @@ import {
   enqueueCoverJob,
 } from '~/enterprise/ai/category-covergen/server/utils/category-covergen'
 
-/**
- * POST /api/bo/categories/generate-cover
- *
- * Inserts a category cover generation request into cs_category_covergen_queue.
- * The dedicated cron job processes the queue.
- *
- * Body : { id_category, name, slug, keywords? }
- * - keywords (optional): if provided, bypasses the FR/EN/parent cascade and directly queries
- * Pexels/Unsplash. Otherwise, default behavior.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -24,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const idCategory = Number(body.id_category)
   const name = String(body.name || '').trim()
   const slug = String(body.slug || '').trim()
-  // Le cron parse les rows au format tab-séparé, donc on neutralise tabs/newlines.
+  
   const keywordsRaw = String(body.keywords || '').replace(/[\t\r\n]+/g, ' ').trim()
   const keywords = keywordsRaw ? keywordsRaw.slice(0, 255) : null
 
@@ -35,7 +25,7 @@ export default defineEventHandler(async (event) => {
   const tenant = resolveClientId(event) || 'ac-hub'
 
   try {
-    // Dédoublonnage : si un pending/processing existe déjà, on ne re-insère pas
+    
     const existing = await findExistingPendingProcessing(tenant, idCategory, { event })
     if (existing) {
       return {

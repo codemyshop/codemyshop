@@ -1,7 +1,4 @@
-/**
- *
- * Composable for footer config from /api/footer-config (DB-first cs_footer_config).
- */
+
 
 export interface FooterDbData {
   theme?: string

@@ -7,7 +7,7 @@
       aria-label="Graphique d'évolution du chiffre d'affaires"
       role="img"
     >
-      <!-- Lignes de grille horizontales -->
+      
       <g class="grid-lines">
         <line
           v-for="(tick, i) in yTicks"
@@ -19,7 +19,7 @@
           stroke="#e5e7eb"
           stroke-width="1"
         />
-        <!-- Labels Y -->
+        
         <text
           v-for="(tick, i) in yTicks"
           :key="`yt-${i}`"
@@ -31,7 +31,7 @@
         >{{ formatY(tick) }}</text>
       </g>
 
-      <!-- Barres -->
+      
       <g>
         <rect
           v-for="(pt, i) in props.data"
@@ -50,7 +50,7 @@
         />
       </g>
 
-      <!-- Tooltip valeur au survol -->
+      
       <g v-if="hovered !== null">
         <rect
           :x="barX(hovered) + barW / 2 - 28"
@@ -70,7 +70,7 @@
         >{{ formatTooltip(props.data[hovered].value) }}</text>
       </g>
 
-      <!-- Labels X -->
+      
       <g>
         <text
           v-for="(pt, i) in props.data"
@@ -91,10 +91,9 @@ export interface ChartPoint { label: string; value: number }
 
 const props = defineProps<{
   data:   ChartPoint[]
-  unit?:  string   // ex: '€' ou ''
+  unit?:  string   
 }>()
 
-// ── Dimensions ───────────────────────────────────────────────────────────────
 const W    = 600
 const H    = 220
 const padL = 48
@@ -105,13 +104,11 @@ const chartH = H - padT - padB
 
 const hovered = ref<number | null>(null)
 
-// ── Calculs barres ────────────────────────────────────────────────────────────
 const n       = computed(() => props.data.length)
 const gap     = computed(() => 8)
 const barW    = computed(() => (W - padL - padR - gap.value * (n.value - 1)) / n.value)
 const barX    = (i: number) => padL + i * (barW.value + gap.value)
 
-// ── Y Axis ─────────────────────────────────────────────────────────────────
 const maxVal  = computed(() => Math.max(...props.data.map(d => d.value), 1))
 const yPos    = (v: number) => padT + chartH - (v / maxVal.value) * chartH
 const yTicks  = computed(() => {
@@ -119,7 +116,6 @@ const yTicks  = computed(() => {
   return [0, 1, 2, 3, 4].map(i => Math.round(step * i))
 })
 
-// ── Formatage ─────────────────────────────────────────────────────────────────
 const unit = computed(() => props.unit ?? '€')
 const formatY       = (v: number) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v)
 const formatTooltip = (v: number) => unit.value ? `${v.toLocaleString('fr-FR')} ${unit.value}` : v.toLocaleString('fr-FR')

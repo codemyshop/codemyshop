@@ -1,19 +1,4 @@
-/**
- *
- * POST /api/admin/cover/preview
- *
- * Generates a cover preview on the fly (resvg + sharp) — Wave 3 #3 Phase D.
- * Usage: visually validate parity between Pillow and resvg+sharp in preprod
- * without going through the cs_covergen_queue.
- *
- * Auth duale (cookie hub_session admin OU Bearer AC_ADMIN_TASK_TOKEN).
- *
- * Body JSON :
- *   { title: string, tenant?: string, usePhotoBg?: boolean,
- *     withAvatar?: boolean, forcePerso?: string }
- *
- * 200 response: binary PNG (Content-Type image/png).
- */
+
 
 import { timingSafeEqual } from 'node:crypto'
 import { verifyToken } from '~/server/utils/session-crypto'

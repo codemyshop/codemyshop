@@ -1,11 +1,5 @@
-/**
- *
- * GET    /api/events/:id  → details
- * PUT    /api/events/:id  → update (admin)
- * DELETE /api/events/:id  → suppression (admin)
- *
- * Drizzle DB direct (cs_events).
- */
+
+
 import { getMethod, readBody, createError, getRouterParam } from 'h3'
 import type { EventRecord } from '~/types/event'
 import { deleteEvent, getEventById, updateEvent } from '~/server/utils/events'

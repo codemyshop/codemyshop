@@ -1,14 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/bi/sales — sales KPIs, 12-month trend, top products, status distribution.
- * Query: ?period=7|30|90|365 (days), default 30.
- *
- * KPIs calculated over [now - period, now], compared to [now - 2*period, now - period].
- * Only orders with valid=1 (paid) count.
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const periodDays = [7, 30, 90, 365].includes(Number(q.period)) ? Number(q.period) : 30
@@ -16,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const [current, previous, monthly, topProducts, byStatus] = await Promise.all([
-      // Période courante
+      
       db.get<any>(`
         SELECT
           COUNT(*)                                AS orders,
@@ -28,7 +21,7 @@ export default defineEventHandler(async (event) => {
           AND date_add >= DATE_SUB(NOW(), INTERVAL ? DAY)
       `, [periodDays]),
 
-      // Période précédente (pour delta)
+      
       db.get<any>(`
         SELECT
           COUNT(*)                                AS orders,
@@ -41,7 +34,7 @@ export default defineEventHandler(async (event) => {
           AND date_add <  DATE_SUB(NOW(), INTERVAL ? DAY)
       `, [periodDays * 2, periodDays]),
 
-      // Évolution 12 derniers mois
+      
       db.query<any>(`
         SELECT
           DATE_FORMAT(date_add, '%Y-%m')              AS ym,
@@ -55,7 +48,7 @@ export default defineEventHandler(async (event) => {
         ORDER BY ym ASC
       `),
 
-      // Top 10 produits sur la période
+      
       db.query<any>(`
         SELECT
           od.product_id                                     AS productId,
@@ -71,7 +64,7 @@ export default defineEventHandler(async (event) => {
         LIMIT 10
       `, [periodDays]),
 
-      // Répartition par statut (toutes commandes sur la période, pas seulement valid=1)
+      
       db.query<any>(`
         SELECT
           o.current_state                                   AS statusId,

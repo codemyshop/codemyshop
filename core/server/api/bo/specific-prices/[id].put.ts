@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/bo/specific-prices/:id — edits an existing promotion.
- * Champs modifiables : reduction, reductionType, reductionTax, fromQuantity,
- * idGroup, dateFrom, dateTo. id_product non modifiable (delete + recreate
- * if we want to change the target).
- */
+
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession } from '~/server/utils/session'
 

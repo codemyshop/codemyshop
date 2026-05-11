@@ -1,15 +1,4 @@
-/**
- *
- * `cs_availability` facade on the Postgres side — phase 1 step 8,
- * flag PG_ENABLED_DOMAINS=availability.
- *
- * One single row (single-tenant hub). Monthly auto-reset: if the month
- * current differs from the stored month, `current_clients` resets to 0.
- *
- * Same interfaces as the private helpers in `core/server/api/availability.ts`:
- * - `getOrCreateRowPg()`: retrieves or creates the single row, applies the reset.
- * - `updateAvailabilityPg()`: applies a partial patch (`currentClients`/`maxClients`).
- */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -67,10 +56,6 @@ export interface AvailabilityPatch {
   maxClients?: number
 }
 
-/**
- * Applies a partial patch on the single row. Returns the updated row
- * (consistent with the shape exposed by GET).
- */
 export async function updateAvailabilityPg(
   idAvailability: number,
   patch: AvailabilityPatch,

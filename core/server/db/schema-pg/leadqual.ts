@@ -1,16 +1,4 @@
-/**
- *
- * Drizzle PG schema for `cs_leadqual` — project #44 port-drizzle-mariadb-pg.
- *
- * B2B lead qualification (segment + score). Owned by `ac_leadqual`.
- *
- * Mapping types MariaDB -> PG :
- *   - INT AUTO_INCREMENT     -> serial
- *   - DECIMAL(p,s)           -> numeric(p, s)
- *   - ENUM('low'…'elite')    -> varchar(5) + $type<LeadqualSegment>
- *   - ENUM('new'…'lost')     -> varchar(9) + $type<LeadqualStatus>
- *   - DATETIME               -> timestamp(0) without time zone
- */
+
 
 import {
   index,

@@ -1,15 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/catalogue/customer/password
- * Changes the password of the logged-in customer.
- * DB direct (doctrine: Zero PrestaShop webservice, 2026-04-22).
- * Bcrypt $2y$ format, native standard (consistent with register.post.ts).
- *
- * Auth: relies on the session (requireCustomer). The logged-in customer does not
- * need to re-enter their current password — for self-service usage
- * post-login uniquement.
- */
+
 import { useClientDb } from '~/server/utils/db'
 import { requireCustomer } from '~/server/utils/customer-session'
 

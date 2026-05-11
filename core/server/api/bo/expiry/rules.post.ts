@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { createExpiryRule } from '~/enterprise/vertical-food/expiry/server/utils/expiry'
 
-/** POST /api/bo/expiry/rules — Creates an expiry discount rule. */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     label: string

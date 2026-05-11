@@ -1,19 +1,4 @@
-/**
- *
- * Drizzle PG schema for `cs_freight_rule` — task #44 port-drizzle-mariadb-pg.
- *
- * Shipping rules (B2B), owned by `ac_freightrule`. A rule declares a
- * scope (all/carrier/zone/customer_group) + a threshold (amount_ht/weight_kg/pallets)
- * and a priority — resolution chooses the winning rule (highest
- * priority among eligible ones).
- *
- * Mapping types MariaDB -> PG :
- *   - INT AUTO_INCREMENT     -> serial
- *   - TINYINT(1)             -> integer
- *   - ENUM('all'…)           -> varchar + $type<…>
- *   - DECIMAL(p,s)           -> numeric(p, s)
- *   - DATETIME               -> timestamp(0) without time zone (defaultNow)
- */
+
 
 import { index, integer, numeric, pgSchema, serial, timestamp, varchar } from 'drizzle-orm/pg-core'
 

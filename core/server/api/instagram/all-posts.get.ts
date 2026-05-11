@@ -1,17 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/instagram/all-posts?max=200
- *
- * Fetches ALL Instagram account posts by paginating through
- * paging.next of the Graph API (Instagram Login). Used for a gallery
- * exhaustive or an export/archive.
- *
- * Garde-fous :
- * - default cap of 200 posts (max 500) to avoid flooding the API
- *   - cache 1h (defineCachedEventHandler)
- * - abandon as soon as paging.next is absent or the cap is exceeded
- */
 
 interface IgMediaRaw {
   id:              string

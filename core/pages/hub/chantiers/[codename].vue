@@ -1,8 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
@@ -41,7 +37,7 @@
 
     <div v-else class="p-6 max-w-5xl mx-auto space-y-4">
 
-      <!-- Live state -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5">
         <h2 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-3">État vivant</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -92,7 +88,7 @@
         </div>
       </div>
 
-      <!-- Conduite (playbook) -->
+      
       <div v-if="conduite" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5">
         <div class="flex items-center justify-between mb-3">
           <h2 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">
@@ -103,12 +99,12 @@
             cue {{ (chantier.currentCuePosition || 0) + 1 }}/{{ conduite.cues?.length || 0 }}
           </span>
         </div>
-        <!-- Progress bar -->
+        
         <div class="w-full h-1.5 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden mb-4">
           <div class="h-full bg-primary-500 transition-all duration-300"
                :style="{ width: progressPct + '%' }" />
         </div>
-        <!-- Cues list -->
+        
         <ol class="space-y-1.5">
           <li v-for="(cue, i) in conduite.cues" :key="i"
               :class="cueClass(i)"
@@ -136,7 +132,7 @@
         </ol>
       </div>
 
-      <!-- Decisions -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5">
         <h2 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-3">
           Décisions ({{ chantier.decisions?.length || 0 }})
@@ -151,7 +147,7 @@
         </div>
       </div>
 
-      <!-- Discoveries -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5">
         <h2 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-3">
           Découvertes ({{ chantier.discoveries?.length || 0 }})
@@ -165,13 +161,13 @@
         </div>
       </div>
 
-      <!-- Context (raw JSON) -->
+      
       <div v-if="chantier.context" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5">
         <h2 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-3">Contexte technique</h2>
         <pre class="text-[11px] text-gray-600 dark:text-slate-300 bg-gray-50 dark:bg-slate-950 rounded p-3 overflow-x-auto">{{ JSON.stringify(chantier.context, null, 2) }}</pre>
       </div>
 
-      <!-- Liens -->
+      
       <div v-if="chantier.repoPaths || chantier.relatedVps || chantier.relatedBacklog"
         class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5">
         <h2 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-3">Liens</h2>
@@ -182,7 +178,7 @@
         </div>
       </div>
 
-      <!-- Notes libres -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5">
         <h2 class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide mb-3">Notes</h2>
         <textarea v-model="form.notes" @input="dirty = true" rows="4"
@@ -243,7 +239,7 @@ async function load() {
       form.notes            = res.chantier.notes || ''
       dirty.value = false
 
-      // If linked to a scenario, fetch the complete playbook
+      
       if (res.chantier.conduiteSlug) {
         await loadConduite(res.chantier.conduiteSlug)
       } else {

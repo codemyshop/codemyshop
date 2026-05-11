@@ -1,19 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession, isSuperAdminSaaS } from '~/server/utils/session'
 import { loadProfileSectionsMap } from '~/modules/profile-section/server/utils/profile-section'
-
-/**
- * GET /api/bo/team/profile-sections
- *
- * Returns the complete permissions matrix profile × section:
- *   { profiles: [{ id, name }], sections: ['dashboard', ...],
- *     map: { [id_profile]: ['dashboard', 'orders', ...] } }
- *
- * Used by useRoles.ts (dynamic canAccess) and by the page
- * /hub/team/profiles (UI matrice).
- */
 
 const ALL_SECTIONS = [
   'dashboard',

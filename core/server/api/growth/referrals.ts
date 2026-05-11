@@ -1,9 +1,4 @@
-/**
- *
- * GET /api/growth/referrals?referrerId=example-shop
- *
- * Phase 9b.4c: Direct Drizzle on cs_referral_invite.
- */
+
 
 import { readReferrals, readReferralsByReferrer } from '~/server/utils/referrals'
 

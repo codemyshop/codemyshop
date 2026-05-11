@@ -43,7 +43,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
@@ -96,7 +95,7 @@ onMounted(async () => {
     const slug = route.params.slug as string
     const data = await $fetch<any>(`/api/bo/playbooks/${slug}`)
     playbook.value = data.playbook
-  } catch { /* 404 handled by template */ }
+  } catch {  }
   finally { loading.value = false }
 })
 </script>

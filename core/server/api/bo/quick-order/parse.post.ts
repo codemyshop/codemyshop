@@ -1,24 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/quick-order/parse — Parse texte libre / CSV / email → paires (SKU, qty).
- *
- * Body : { text: string }
- *
- * Supported patterns (line by line):
- *   - "SKU;qty"      (CSV FR)
- *   - "SKU,qty"      (CSV EN)
- *   - "SKU\tqty"     (tabulation, copier-coller Excel)
- *   - "SKU qty"      (espace)
- *   - "SKU x qty"    (ex: "3611 x 10")
- *   - "qty x SKU"    (ex: "10 x 3611")
- *   - "SKU : qty"    (prose email)
- *   - "qty SKU"      (prose inverse)
- *
- * SKU is detected as an alphanumeric token (letters/digits/-/_).
- * Quantity is a number (integer or decimal, comma or period).
- * Unparsable lines returned in `skipped` for UI debug.
- */
+
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ text: string }>(event)
   const raw = String(body?.text || '').trim()

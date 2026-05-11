@@ -1,18 +1,4 @@
-/**
- *
- * Drizzle PG schemas for quickorder — project #44 port-drizzle-mariadb-pg.
- *
- * 2 tables (cs_main) — listes de commande rapide B2B
- * (customer reorders their favorite products in 1 click) :
- *   - cs_quick_order_list
- *   - cs_quick_order_line
- *
- * Mapping types MariaDB -> PG :
- *   - INT AUTO_INCREMENT  -> serial
- *   - TINYINT(1)          -> integer
- *   - DECIMAL(p,s)        -> numeric(p, s)
- *   - DATETIME            -> timestamp(0) without time zone
- */
+
 
 import {
   index,

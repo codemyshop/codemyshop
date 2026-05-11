@@ -1,23 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 
-/**
- * POST /api/bo/categories/:id/delete-and-merge
- * Body : { target_category_id?: number, hard_delete?: boolean }
- *
- * Deletes a category and migrates its products to another category.
- *
- * If target_category_id: INSERT IGNORE products into the target category
- * (additive), then DELETE their associations from the source category.
- *
- * If hard_delete: also deletes the category from ps_category, ps_category_lang,
- * ps_category_shop, ps_category_group. Rejected if the category has active children.
- *
- * If !hard_delete: the category is disabled (active=0), remains in the database for
- * audit/restauration.
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!id || id < 2) {
@@ -46,9 +31,9 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Étape 1 : migration produits (additive — préserve les autres cats).
-  // PG : INSERT … ON CONFLICT DO NOTHING + RETURNING pour compter les rows
-  // effectivement insérées (≠ MySQL INSERT IGNORE + affectedRows).
+  
+  
+  
   let migratedCount = 0
   if (targetId > 0 && targetId !== id) {
     const targetResult: any = await d.execute(sql`SELECT id_category FROM cs_main.ps_category WHERE id_category = ${targetId}`)
@@ -66,15 +51,15 @@ export default defineEventHandler(async (event) => {
     migratedCount = Number((((insertRes as any) as any[]) ?? []).length)
   }
 
-  // Étape 2 : retire les associations produits de la cat source.
-  // PG : RETURNING pour compter les rows supprimées.
+  
+  
   const removedRes: any = await d.execute(sql`
     DELETE FROM cs_main.ps_category_product WHERE id_category = ${id}
     RETURNING id_product
   `)
   const removedAffected = Number((((removedRes as any) as any[]) ?? []).length)
 
-  // Étape 3 : delete ou désactivation
+  
   if (hardDelete) {
     await d.execute(sql`DELETE FROM cs_main.ps_category_lang WHERE id_category = ${id}`)
     await d.execute(sql`DELETE FROM cs_main.ps_category_shop WHERE id_category = ${id}`)

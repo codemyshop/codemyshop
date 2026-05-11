@@ -1,9 +1,4 @@
-/** @author CodeMyShop | @license   AGPL-3.0-or-later
- *
- * POST /api/bo/email-client/draft — creates a draft (folder='draft').
- * Returns the id for future PUT calls (auto-save). MVP: no attachments
- * in draft (session-scope on UI side).
- */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 const PG_SCHEMA = 'cs_main'

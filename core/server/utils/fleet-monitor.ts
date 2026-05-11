@@ -1,37 +1,29 @@
-/**
- *
- * Fleet Monitor — Monitoring of all satellite instances.
- * Ping each instance, aggregate metrics, calculate headroom.
- *
- * PostgreSQL-only runtime — project #38/#44 (MariaDB migration).
- * Cible : `cs_main.cs_ai_telemetry` (Postgres).
- */
+
+
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface InstanceStatus {
   clientId:      string
   clientName:    string
   domain:        string
-  // Santé
+  
   dockerStatus:  'running' | 'stopped' | 'unreachable'
   nuxtHealthy:   boolean
   latencyMs:     number
   httpStatus:    number
-  // Versions
+  
   acBaseVersion: string
   nuxtVersion:   string
-  // Backup
+  
   lastBackup:    string | null
-  // FinOps
+  
   monthlyFee:    number
-  aiCostMtd:     number      // Month-To-Date
+  aiCostMtd:     number      
   vpsCost:       number
-  grossMargin:   number      // fee - aiCost - vpsCost
+  grossMargin:   number      
   marginPercent: number
-  // Meta
+  
   checkedAt:     string
 }
 
@@ -49,12 +41,8 @@ export interface FleetSummary {
   generatedAt:     string
 }
 
-// ── Coûts fixes ───────────────────────────────────────────────────────────────
-
 const DEFAULT_MONTHLY_FEE = 800
-const DEFAULT_VPS_COST    = 30     // OVH VPS ~30€/mois par instance
-
-// ── Ping une instance ─────────────────────────────────────────────────────────
+const DEFAULT_VPS_COST    = 30     
 
 export async function pingInstance(client: {
   id: string; name: string; domain: string; nuxt_port?: number
@@ -67,7 +55,7 @@ export async function pingInstance(client: {
   let acBaseVersion = 'unknown'
   let nuxtVersion = 'unknown'
 
-  // Tenter un ping HTTP vers le system-status
+  
   const url = client.nuxt_port
     ? `http://localhost:${client.nuxt_port}/api/hub/system-status`
     : `https://${client.domain}/api/hub/system-status`
@@ -85,7 +73,7 @@ export async function pingInstance(client: {
     httpStatus = err?.statusCode ?? 0
 
     if (httpStatus === 403) {
-      // License expired mais le serveur répond
+      
       dockerStatus = 'running'
     } else if (httpStatus > 0) {
       dockerStatus = 'running'
@@ -94,7 +82,7 @@ export async function pingInstance(client: {
     }
   }
 
-  // FinOps : lire la consommation IA depuis la télémétrie Redis
+  
   const aiCostMtd = await getClientAiCostMtd(client.id)
 
   const monthlyFee   = DEFAULT_MONTHLY_FEE
@@ -112,7 +100,7 @@ export async function pingInstance(client: {
     httpStatus,
     acBaseVersion,
     nuxtVersion,
-    lastBackup:    null,  // à brancher sur le système de backup
+    lastBackup:    null,  
     monthlyFee,
     aiCostMtd:     Math.round(aiCostMtd * 100) / 100,
     vpsCost,
@@ -122,13 +110,11 @@ export async function pingInstance(client: {
   }
 }
 
-// ── Scan de toute la flotte ───────────────────────────────────────────────────
-
 export async function scanFleet(): Promise<FleetSummary> {
   const { listFleetVps } = await import('~/internal/hub/server/utils/hub')
   const clients = await listFleetVps()
 
-  // Ping en parallèle (max 10 concurrents)
+  
   const instances: InstanceStatus[] = []
   const batchSize = 10
 
@@ -168,8 +154,6 @@ export async function scanFleet(): Promise<FleetSummary> {
     generatedAt:      new Date().toISOString(),
   }
 }
-
-// ── Coût IA MTD par client (depuis DB cs_ai_telemetry) ────────────────────
 
 async function getClientAiCostMtd(clientId: string): Promise<number> {
   try {

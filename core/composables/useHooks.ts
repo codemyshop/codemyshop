@@ -1,15 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Composable useHooks — retrieves runtime hooks for a given target.
- *
- * Usage :
- *   const { hooks, pending } = useHooks('page', 'contact')
- *   const { hooks } = useHooks('page', 'contact', 'after_content')
- *
- * Hooks are sorted by slot then position. The <HookSlot /> component
- * consumes this composable to render components dynamically.
- */
 
 export interface HookMount {
   id: number

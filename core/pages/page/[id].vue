@@ -1,10 +1,4 @@
-<!--
-  Page CMS Example Shop — /page/:id (Livraison, CGV, Mentions, etc.)
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -23,7 +17,6 @@ const { data: pageData } = await useFetch(`/api/catalogue/cms/${cmsId.value}`, {
 
 const page = computed(() => pageData.value ?? null)
 
-// Convention PS : <body id="cms" class="cms cms-id-{X}">
 useListingBodyId('cms', () => cmsId.value || null)
 
 useHead({

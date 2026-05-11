@@ -1,11 +1,4 @@
-<!--
-  Section "Derniers articles de blog" — grille CMS.
-  Alimenté par GET /api/cms?limit=N (lecture ps_cms + ps_cms_lang).
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { localePath } = useLocalePath()
 const { t: i18nt } = useI18nField()

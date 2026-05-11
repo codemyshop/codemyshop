@@ -202,7 +202,7 @@ npx drizzle-kit migrate
 ```
 
 > If you're upgrading from a v0.1.x install where tables were prefixed
-> `ps_ac_*`, see [documentation/SCHEMA_HISTORY.md](documentation/SCHEMA_HISTORY.md)
+> `cs_*`, see [documentation/SCHEMA_HISTORY.md](documentation/SCHEMA_HISTORY.md)
 > for the v0.2.0 rename procedure.
 
 ### "Error: You can't specify 'public' as schema name"

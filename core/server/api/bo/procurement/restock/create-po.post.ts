@@ -1,18 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * POST /api/bo/procurement/restock/create-po — creates a purchase order from restocking suggestions.
- *
- * Body: {
- *   idSupplier: number,
- *   items: [{ idProduct: number, quantity: number, unitPriceTE?: number }]
- * }
- *
- * Redirects to standard creation logic (ps_supply_order + details + state 1).
- * Reuses default supplier prices if unitPriceTE is absent.
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<any>(event)
   const idSupplier = Number(body?.idSupplier || 0)
@@ -27,10 +16,10 @@ export default defineEventHandler(async (event) => {
     const supplier = await db.get<any>(`SELECT id_supplier, name FROM ps_supplier WHERE id_supplier = ? LIMIT 1`, [idSupplier])
     if (!supplier) throw createError({ statusCode: 404, statusMessage: 'Fournisseur introuvable' })
 
-    // Warehouse par défaut
+    
     const idWarehouse = await ensureDefaultWarehouse(db)
 
-    // Enrichir + normaliser
+    
     const cleanedLines: any[] = []
     for (const raw of items) {
       const idProduct = Number(raw?.idProduct || 0)

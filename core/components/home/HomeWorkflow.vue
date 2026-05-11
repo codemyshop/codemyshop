@@ -1,13 +1,9 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <template>
   <section class="relative py-16 lg:py-24 overflow-hidden bg-white dark:bg-slate-900">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
 
-      <!-- Header -->
+      
       <div class="text-center mb-16">
         <span class="inline-block bg-primary-50 text-primary-600 dark:bg-primary-600/15 dark:text-primary-400 text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-4">
           Méthodologie e-commerce
@@ -21,20 +17,20 @@
         <NuxtLink to="/flywheel" class="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:underline">Lire la théorie complète →</NuxtLink>
       </div>
 
-      <!-- ══ ORBITAL LAYOUT — Desktop ══════════════════════════════════════ -->
+      
       <div class="hidden lg:block">
         <div class="relative w-[720px] h-[720px] mx-auto">
 
-          <!-- Cercle orbital principal (SVG) -->
+          
           <svg class="absolute inset-0 w-full h-full" viewBox="0 0 720 720" fill="none">
-            <!-- Base dotted circle -->
+            
             <circle cx="360" cy="360" r="280" stroke="currentColor" stroke-width="1" stroke-dasharray="8 6"
                     class="text-gray-200 dark:text-slate-700" />
-            <!-- Animated glowing arc that rotates -->
+            
             <circle cx="360" cy="360" r="280" stroke="url(#orbitalGrad)" stroke-width="2.5"
                     stroke-dasharray="200 1560" stroke-linecap="round"
                     class="orbital-arc" />
-            <!-- Particles on the orbit -->
+            
             <circle r="3" fill="url(#orbitalGrad)" class="orbital-particle">
               <animateMotion dur="12s" repeatCount="indefinite">
                 <mpath href="#orbitPath" />
@@ -50,9 +46,9 @@
                 <mpath href="#orbitPath" />
               </animateMotion>
             </circle>
-            <!-- Reference path for animateMotion -->
+            
             <path id="orbitPath" d="M640,360 A280,280 0 1,1 639.99,359.99" fill="none" />
-            <!-- Gradient -->
+            
             <defs>
               <linearGradient id="orbitalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="#4F46E5" />
@@ -62,7 +58,7 @@
             </defs>
           </svg>
 
-          <!-- Noyau central — Flywheel -->
+          
           <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 z-20">
             <div class="absolute inset-0 rounded-full bg-gradient-to-br from-primary-600 to-purple-600 opacity-20 blur-2xl animate-pulse" />
             <div class="relative w-full h-full rounded-full bg-white dark:bg-slate-900 border border-gray-100 dark:border-indigo-500/20 shadow-[0_0_40px_rgba(79,70,229,0.1)] dark:shadow-[0_0_40px_rgba(99,102,241,0.15)] flex flex-col items-center justify-center text-center p-4">
@@ -72,14 +68,14 @@
             </div>
           </div>
 
-          <!-- 4 steps positioned on the orbit -->
+          
           <div
             v-for="(step, i) in steps"
             :key="step.number"
             class="absolute z-10 w-56 group"
             :style="stepPositions[i]"
           >
-            <!-- Connector to the circle -->
+            
             <div class="absolute w-px h-8 bg-gradient-to-b from-transparent via-gray-200 dark:via-slate-600 to-transparent" :style="connectorStyle[i]" />
 
             <div
@@ -92,7 +88,7 @@
                 'hover:-translate-y-1',
               ]"
             >
-              <!-- Watermark number -->
+              
               <span class="absolute top-2 right-3 text-5xl font-black text-gray-900/[0.03] dark:text-white/[0.04] leading-none select-none pointer-events-none">
                 {{ step.number }}
               </span>
@@ -110,14 +106,14 @@
                 </div>
               </div>
               <p class="text-[11px] text-gray-500 dark:text-slate-400 leading-relaxed mb-3">{{ step.text }}</p>
-              <!-- What this step injects into the next one -->
+              
               <div class="flex items-center gap-1.5 pt-2 border-t border-gray-100 dark:border-white/[0.06]">
                 <span class="text-[10px] font-bold uppercase tracking-wider" :style="{ color: step.color }">{{ step.feeds }}</span>
               </div>
             </div>
           </div>
 
-          <!-- Directional arrows between steps (SVG arcs) -->
+          
           <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 720 720" fill="none">
             <path v-for="(arrow, i) in arrowPaths" :key="i"
                   :d="arrow" stroke="url(#orbitalGrad)" stroke-width="1.5"
@@ -133,14 +129,14 @@
         </div>
       </div>
 
-      <!-- ══ MOBILE LAYOUT — Vertical timeline ═════════════════════════════ -->
+      
       <div class="lg:hidden space-y-6">
         <div
           v-for="(step, i) in steps"
           :key="step.number"
           class="relative flex gap-4"
         >
-          <!-- Timeline verticale -->
+          
           <div class="flex flex-col items-center shrink-0">
             <div
               class="w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 z-10"
@@ -151,7 +147,7 @@
             <div v-if="i < 3" class="flex-1 w-px bg-gradient-to-b from-gray-200 dark:from-slate-600 to-transparent mt-2" />
           </div>
 
-          <!-- Card -->
+          
           <div class="flex-1 rounded-2xl p-5 border border-gray-100 dark:border-white/[0.06] bg-white dark:bg-white/[0.03] dark:backdrop-blur-sm pb-8">
             <p class="text-[10px] font-bold uppercase tracking-widest mb-1" :style="{ color: step.color }">Étape {{ step.number }} — {{ step.subtitle }}</p>
             <h3 class="text-sm font-extrabold text-gray-900 dark:text-white mb-2">{{ step.title }}</h3>
@@ -160,7 +156,7 @@
           </div>
         </div>
 
-        <!-- Noyau Flywheel mobile -->
+        
         <div class="text-center pt-4">
           <div class="inline-flex flex-col items-center gap-2 rounded-2xl border border-primary-200 dark:border-indigo-500/20 bg-white dark:bg-slate-900 px-8 py-5 shadow-[0_0_30px_rgba(79,70,229,0.08)] dark:shadow-[0_0_30px_rgba(99,102,241,0.12)]">
             <div class="text-3xl flywheel-icon">&#x267E;&#xFE0F;</div>
@@ -214,15 +210,13 @@ const steps = [
   },
 ]
 
-// Positions of 4 cards around the circle (top, right, bottom, left)
 const stepPositions = [
-  'top: -20px; left: 50%; transform: translateX(-50%);',         // top
-  'top: 50%; right: -30px; transform: translateY(-50%);',        // right
-  'bottom: -20px; left: 50%; transform: translateX(-50%);',      // bottom
-  'top: 50%; left: -30px; transform: translateY(-50%);',         // left
+  'top: -20px; left: 50%; transform: translateX(-50%);',         
+  'top: 50%; right: -30px; transform: translateY(-50%);',        
+  'bottom: -20px; left: 50%; transform: translateX(-50%);',      
+  'top: 50%; left: -30px; transform: translateY(-50%);',         
 ]
 
-// Position of connectors (small lines to the circle)
 const connectorStyle = [
   'bottom: -32px; left: 50%; transform: translateX(-50%);',
   'left: -32px; top: 50%; transform: translateY(-50%) rotate(90deg);',
@@ -230,17 +224,16 @@ const connectorStyle = [
   'right: -32px; top: 50%; transform: translateY(-50%) rotate(90deg);',
 ]
 
-// Directional arcs between steps (simplified)
 const arrowPaths = [
-  'M360,80 A280,280 0 0,1 640,360',   // top → right
-  'M640,360 A280,280 0 0,1 360,640',   // right → bottom
-  'M360,640 A280,280 0 0,1 80,360',    // bottom → left
-  'M80,360 A280,280 0 0,1 360,80',     // left → top
+  'M360,80 A280,280 0 0,1 640,360',   
+  'M640,360 A280,280 0 0,1 360,640',   
+  'M360,640 A280,280 0 0,1 80,360',    
+  'M80,360 A280,280 0 0,1 360,80',     
 ]
 </script>
 
 <style scoped>
-/* Animated arc that rotates around the orbit */
+/* Arc animé qui tourne autour de l'orbite */
 .orbital-arc {
   transform-origin: center;
   animation: orbit-spin 12s linear infinite;
@@ -249,7 +242,7 @@ const arrowPaths = [
   to { transform: rotate(360deg); }
 }
 
-/* Flywheel icon that rotates slowly */
+/* Icône flywheel qui tourne doucement */
 .flywheel-icon {
   animation: flywheel-rotate 8s linear infinite;
   display: inline-block;

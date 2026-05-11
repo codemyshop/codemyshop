@@ -1,4 +1,4 @@
-<!-- @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later -->
+
 <template>
   <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
     <div class="flex items-center justify-between">
@@ -11,7 +11,7 @@
       </span>
     </div>
 
-    <!-- Dropzone -->
+    
     <div
       :class="[
         'relative border-2 border-dashed rounded-xl transition-colors',
@@ -48,7 +48,7 @@
         </p>
       </label>
 
-      <!-- Progress overlay -->
+      
       <div
         v-if="uploading"
         class="absolute inset-0 flex flex-col items-center justify-center bg-white/80 dark:bg-slate-900/80 rounded-xl gap-2"
@@ -62,7 +62,7 @@
 
     <p v-if="uploadError" class="text-xs text-red-600 font-medium">{{ uploadError }}</p>
 
-    <!-- List of existing attachments -->
+    
     <div v-if="loading" class="text-xs text-gray-400">Chargement des pièces jointes…</div>
     <div v-else-if="!attachments.length" class="text-xs text-gray-400 italic">
       Aucune pièce jointe pour ce produit.
@@ -73,12 +73,12 @@
         :key="a.id_attachment"
         class="group flex items-start gap-3 p-3 rounded-lg border border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-950/50 transition-colors"
       >
-        <!-- Icon mime -->
+        
         <div class="w-9 h-9 flex items-center justify-center rounded-lg bg-primary-50 dark:bg-primary-950/30 text-lg shrink-0">
           {{ mimeIcon(a.mime) }}
         </div>
 
-        <!-- Editable name in the current language -->
+        
         <div class="flex-1 min-w-0 space-y-1">
           <div class="flex items-start gap-2">
             <input
@@ -108,7 +108,7 @@
           </div>
         </div>
 
-        <!-- Actions -->
+        
         <div class="flex items-center gap-1 shrink-0">
           <a
             :href="a.public_url"
@@ -138,16 +138,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Sprint 13 — HubProductAttachments
- *
- * Dropzone + product attachment list. Integrates the selector
- * Language selector to name files in FR/EN/DE without reloading.
- *
- * The component manages its own lifecycle (load on mount, watch
- * currentLangId → refetch, upload → append, delete → filter). Parent
- * passe uniquement productId.
- */
 
 interface Attachment {
   id_attachment: number
@@ -220,7 +210,7 @@ async function uploadOne(file: File) {
   try {
     const fd = new FormData()
     fd.append('file', file)
-    // Nom client par défaut = nom du fichier sans extension, tronqué 32.
+    
     const baseName = file.name.replace(/\.[^.]+$/, '').slice(0, 32)
     fd.append('name', baseName)
     await $fetch(`/api/bo/products/${props.productId}/attachments`, {
@@ -272,7 +262,7 @@ async function onRenameAttachment(a: Attachment, newName: string) {
   const clean = newName.slice(0, 32)
   if (clean === a.name) return
   const prev = a.name
-  a.name = clean // optimistic
+  a.name = clean 
   try {
     await $fetch(`/api/bo/products/${props.productId}/attachments`, {
       method: 'PATCH',

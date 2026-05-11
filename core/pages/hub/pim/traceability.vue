@@ -17,7 +17,7 @@
       </div>
     </header>
 
-    <!-- KPI strip -->
+    
     <div class="grid grid-cols-4 gap-3 px-6 py-3 border-b border-gray-100 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/20 shrink-0">
       <div class="bg-white dark:bg-slate-900 rounded-lg border border-gray-100 dark:border-slate-800 p-3">
         <p class="text-[10px] text-gray-400 uppercase tracking-wider">Lots actifs</p>
@@ -99,7 +99,7 @@
       </div>
     </div>
 
-    <!-- ─── Batch creation modal ────────────────────────────────────── -->
+    
     <div v-if="createOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="createOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
@@ -154,7 +154,7 @@
       </div>
     </div>
 
-    <!-- ─── Modal rappel sanitaire ───────────────────────────────────── -->
+    
     <div v-if="recallOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="recallOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
@@ -245,7 +245,6 @@ const loading = ref(true)
 const search = ref('')
 const expiryWindow = ref<'all' | '7' | '30'>('all')
 
-// Creation
 const createOpen = ref(false)
 const creating = ref(false)
 const createError = ref('')
@@ -261,7 +260,6 @@ const form = ref({
   notes: '',
 })
 
-// Rappel
 const recallOpen = ref(false)
 const recallLoading = ref(false)
 const recallLot = ref<Lot | null>(null)

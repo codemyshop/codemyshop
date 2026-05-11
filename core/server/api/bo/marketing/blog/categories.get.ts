@@ -1,16 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * GET /api/bo/marketing/blog/categories — blog categories for the
- * Parameters Block dropdown (Sprint 18.1).
- *
- * Filter: excludes the root category (id = 1) — it is reserved
- * for landing pages. The blog UI thus forces the author to choose a
- * subdirectory (Blog/Tech, Blog/E-commerce, etc.).
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 

@@ -1,10 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Éditeur Catégories — image, label, lien par catégorie, multilang.
--->
 <template>
   <div class="space-y-3">
     <div class="flex items-center justify-between">
@@ -119,7 +113,6 @@ const localPayload = computed(() => props.payload ?? { items: [] })
 const items = computed(() => localPayload.value.items ?? [])
 const expandedItem = ref<number | null>(null)
 
-// Local upload per item — fileInput ref + state (uploading, error)
 const fileInputs = ref<Record<number, HTMLInputElement>>({})
 const uploading  = ref<Record<number, boolean>>({})
 const uploadError = ref<Record<number, string>>({})
@@ -148,7 +141,7 @@ async function onFileChange(i: number, event: Event) {
     uploadError.value = { ...uploadError.value, [i]: err?.data?.message || err?.message || 'Échec upload' }
   } finally {
     uploading.value = { ...uploading.value, [i]: false }
-    if (input) input.value = ''  // reset → permet de re-uploader le même fichier
+    if (input) input.value = ''  
   }
 }
 

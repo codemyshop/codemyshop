@@ -1,13 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { countQuoteRequests, listQuoteRequests } from '~/modules/quote-request/server/utils/quote-request'
 
-/**
- * GET /api/bo/quotes — paginated list of quote requests.
- * Table backend : cs_quote_request (module ac_quoterequest).
- * URL kept at /api/bo/quotes for existing UI compatibility.
- * Query: ?page=1&perPage=30&search=…&status=pending
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const page = Math.max(1, Number(q.page || 1))

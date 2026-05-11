@@ -1,8 +1,4 @@
-/**
- *
- * Feedback persistence — Redis (primary) with JSON fallback.
- * SECURITY.md R2: Redis on internal Docker network, not exposed.
- */
+
 
 export type FeedbackType     = 'feature' | 'improvement' | 'bug'
 export type FeedbackStatus   = 'pending' | 'todo' | 'in_progress' | 'refused' | 'deployed'
@@ -39,7 +35,7 @@ export async function readFeedbacks(): Promise<FeedbackItem[]> {
     try {
       const data = await redis.getItem<FeedbackItem[]>(REDIS_KEY)
       if (data) return data
-    } catch { /* fallback */ }
+    } catch {  }
   }
   return []
 }

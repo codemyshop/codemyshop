@@ -1,12 +1,4 @@
-<!--
-  Academy — Page module (cluster page SEO) tenant-neutre.
-  Liste les leçons avec liens vers /academy/[slug]/[lesson].
-  Contenu : /api/academy/:slug (tenant-aware côté serveur).
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -25,7 +17,6 @@ if (error.value) {
 
 const mentor = computed(() => mod.value?.mentorData || null)
 
-// PDF Download
 const generatingPdf = ref(false)
 
 async function downloadPdf() {
@@ -208,14 +199,14 @@ useHead({
 <template>
   <NuxtLayout name="white-label">
 
-    <!-- HERO -->
+    
     <section class="relative pt-28 md:pt-36 pb-16 overflow-hidden bg-white dark:bg-[#0f172a]">
       <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div class="absolute top-10 left-1/3 w-[500px] h-[500px] bg-primary-500/6 dark:bg-primary-500/4 rounded-full blur-[140px]" />
       </div>
 
       <div class="relative max-w-3xl mx-auto px-6">
-        <!-- Breadcrumb -->
+        
         <nav :aria-label="t('silo.breadcrumb_aria', 'Fil d\'Ariane')" class="text-sm text-gray-600 dark:text-slate-400 mb-8 flex items-center gap-2 flex-wrap">
           <NuxtLink to="/" class="hover:text-primary-600 transition-colors">{{ t('silo.breadcrumb_home', 'Accueil') }}</NuxtLink>
           <span>/</span>
@@ -242,7 +233,7 @@ useHead({
           </div>
         </div>
 
-        <!-- Badge Mentor -->
+        
         <div v-if="mentor" class="flex items-center gap-4 p-4 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/[0.06]">
           <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-500/15 flex items-center justify-center text-lg font-bold text-primary-700 dark:text-primary-400 shrink-0">
             {{ mentor.name?.charAt(0) }}
@@ -256,7 +247,7 @@ useHead({
           <span class="text-[10px] font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-500/10 px-2.5 py-1 rounded-full shrink-0 whitespace-nowrap">{{ mentor.domain }}</span>
         </div>
 
-        <!-- Download PDF button -->
+        
         <button
           @click="downloadPdf"
           :disabled="generatingPdf"
@@ -272,7 +263,7 @@ useHead({
       </div>
     </section>
 
-    <!-- LESSONS LIST -->
+    
     <section class="pb-20 bg-white dark:bg-[#0f172a]">
       <div class="max-w-3xl mx-auto px-6">
         <h2 class="text-sm font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-widest">{{ mod?.lessons?.length }} {{ t('academy.stat_lessons', 'leçons') }}</h2>
@@ -301,7 +292,7 @@ useHead({
       </div>
     </section>
 
-    <!-- MAILLAGE TRIDIRECTIONNEL -->
+    
     <section v-if="mod?.relatedArticles?.length || mod?.relatedExpertise?.length" class="pb-16 bg-white dark:bg-[#0f172a]">
       <div class="max-w-3xl mx-auto px-6">
 
@@ -366,7 +357,7 @@ useHead({
       </div>
     </section>
 
-    <!-- NAV MODULES PREV/NEXT -->
+    
     <section class="py-12 bg-gray-50 dark:bg-[#111827]">
       <div class="max-w-3xl mx-auto px-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

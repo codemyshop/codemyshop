@@ -1,16 +1,10 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 import { resolveClientId } from '~/server/utils/db'
 import { listLatestStatusByCategoryIds } from '~/enterprise/ai/category-queue/server/utils/category-queue'
 
-/**
- * GET /api/bo/categories — paginated categories via direct database.
- * Query: ?page=1&perPage=30&search=…
- *
- * Enriched with thumbUrl (cover) and redactionStatus from optional queues.
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const page = Math.max(1, Number(q.page || 1))
@@ -19,10 +13,10 @@ export default defineEventHandler(async (event) => {
   const d = usePocPg()
 
   try {
-    // id_category > 2 : exclut Root (1) ET Accueil (2). Accueil est la racine
-    // technique du shop PrestaShop (parent implicite de toutes les cats
-    // top-level) — elle ne doit pas apparaître comme éditable dans le BO.
-    // PG : ILIKE (case-insensitive) ≈ MySQL LIKE (collation ci par défaut).
+    
+    
+    
+    
     const searchClause = search ? sql`AND cl.name ILIKE ${'%' + search + '%'}` : sql``
     const where = sql`WHERE c.id_category > 2 ${searchClause}`
 
@@ -34,8 +28,8 @@ export default defineEventHandler(async (event) => {
     const total = Number(((countResult as any) as any[])[0]?.total ?? 0)
     const offset = (page - 1) * perPage
 
-    // Ordre arborescent via recursive CTE sur (id_parent, position).
-    // PG : LPAD/CONCAT existent ; on assemble en TEXT (≠ MySQL CAST AS CHAR(500)).
+    
+    
     const categoriesResult: any = await d.execute(sql`
       WITH RECURSIVE cat_tree AS (
         SELECT c.id_category,
@@ -63,24 +57,24 @@ export default defineEventHandler(async (event) => {
     `)
     const categories = ((categoriesResult as any) as any[]) ?? []
 
-    // --- Enrichissement optionnel : thumbUrl/coverUrl ---
-    // Priorité PS natif : /img/c/{id}.jpg existe si ac_covergen l'a poussé
-    // (mirror silo→PS). On fait un HEAD via fs-check côté tenant impossible
-    // depuis Nuxt — à la place on retourne toujours le chemin PS canonique,
-    // le <img @error> côté front bascule sur placeholder si 404.
-    // Fallback : cs_category_covergen_queue legacy via façade ac_categorycovergen.
+    
+    
+    
+    
+    
+    
     let legacyMap = new Map<number, { thumbUrl: string | null; coverUrl: string | null }>()
     try {
       const { listLatestDoneCovers } = await import('~/enterprise/ai/category-covergen/server/utils/category-covergen')
       const coverRows = await listLatestDoneCovers({ event })
       legacyMap = new Map(coverRows.map((r) => [r.id_category, { thumbUrl: r.thumbUrl, coverUrl: r.coverUrl }]))
     } catch {
-      // Table may not exist yet — on reste sur le fallback PS
+      
     }
-    // Slug SEO (id_lang=1 master) pour forger le filename WebP — même
-    // convention que upload-cover.post.ts. On a déjà cat.slug en lang courante,
-    // mais le filename sur disque suit id_lang=1 master, donc on le récupère
-    // en bulk en une seule query.
+    
+    
+    
+    
     const idsForSlug = categories.map((c: any) => Number(c.id)).filter(Boolean)
     const masterSlugs = new Map<number, string>()
     if (idsForSlug.length) {
@@ -99,18 +93,18 @@ export default defineEventHandler(async (event) => {
     }
     for (const cat of categories) {
       const legacy = legacyMap.get(cat.id)
-      // Cache bust via date_upd (changé par upload-cover). Force le browser à
-      // recharger après un remplacement, même si l'URL sémantique est stable.
+      
+      
       const bust = cat.dateUpdTs ? `?v=${cat.dateUpdTs}` : ''
       const masterSlug = slugifyForFilename(masterSlugs.get(cat.id) || cat.slug || '')
       const webpThumb = `/img/c/${cat.id}-${masterSlug}-400.webp${bust}`
       const webpCover = `/img/c/${cat.id}-${masterSlug}-800.webp${bust}`
       const jpgFallback = `/img/c/${cat.id}.jpg${bust}`
-      // thumbUrl prioritaire WebP PS natif (/img/c/{id}-{slug}-XXX.webp produit
-      // par upload-cover ou migrate-webp). La queue covergen legacy
-      // (cq.thumb_url pointant /blog-covers/) sert de fallback ultime pour
-      // les catégories jamais migrées vers le chemin PS canonique. Le @error
-      // côté front bascule sur jpgFallback puis placeholder si 404.
+      
+      
+      
+      
+      
       ;(cat as any).thumbUrl = webpThumb || legacy?.thumbUrl
       ;(cat as any).coverUrl = webpCover || legacy?.coverUrl
       ;(cat as any).jpgFallback = jpgFallback
@@ -118,7 +112,7 @@ export default defineEventHandler(async (event) => {
       ;(cat as any).legacyCoverUrl = legacy?.coverUrl || null
     }
 
-    // --- Enrichissement optionnel : redactionStatus via façade ac_categoryqueue ---
+    
     try {
       if (categories.length) {
         const tenant = resolveClientId(event) || 'ac-hub'
@@ -130,7 +124,7 @@ export default defineEventHandler(async (event) => {
         }
       }
     } catch {
-      // Table may not exist yet — graceful degradation
+      
       for (const cat of categories) {
         ;(cat as any).redactionStatus = null
       }

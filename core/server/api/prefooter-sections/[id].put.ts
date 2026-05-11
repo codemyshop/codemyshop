@@ -1,9 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/prefooter-sections/:id
- * Updates title/subtitle (in _lang) and/or limit_items (master).
- */
 
 import {
   updateLimitItems,

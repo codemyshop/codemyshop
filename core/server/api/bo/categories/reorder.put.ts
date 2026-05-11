@@ -1,26 +1,9 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * PUT /api/bo/categories/reorder
- *
- * Reorders two sibling categories via drag & drop.
- *
- * Body : { draggedId: number, targetId: number, placement?: 'before' | 'after' }
- *
- * The server loads the complete sibling list from the database
- * and recalculates the order — the client doesn't need to have the entire
- * sibling set loaded (avoids 422 errors when perPage truncates the listing).
- *
- * Garde-fous :
- * - draggedId and targetId must exist.
- * - They must have the same id_parent (no reparenting via drag).
- * - The hierarchical order of the listing is calculated via CTE on (id_parent,
- * position) — no need to rebuild ntree on the backend.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 

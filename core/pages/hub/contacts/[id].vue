@@ -42,7 +42,7 @@
     <div v-else-if="customer" class="px-6 py-6">
       <div class="max-w-3xl mx-auto space-y-6">
 
-        <!-- Block 1 — Identity ────────────────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-5">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Identité</h2>
@@ -98,7 +98,7 @@
           </div>
         </section>
 
-        <!-- Bloc 2 — Profil B2B ────────────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-5">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Profil B2B</h2>
@@ -152,7 +152,7 @@
           </div>
         </section>
 
-        <!-- Bloc 3 — Gouvernance B2B ────────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-5">
             <div class="flex items-center justify-between">
@@ -218,7 +218,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 import { CUSTOMER_ACTIVITIES } from '~/utils/customerActivity'
 
@@ -254,8 +253,8 @@ const totalSpent = computed(() =>
 function toggleGroup(id: number) {
   const idx = form.groupIds.indexOf(id)
   if (idx >= 0) {
-    // Do not uncheck the default group — the user must first
-    // designate another. PrestaShop constraint (cf. `[id].put.ts`).
+    
+    
     if (form.defaultGroupId === id) return
     form.groupIds.splice(idx, 1)
   } else {
@@ -289,8 +288,8 @@ async function load() {
     form.activityCode = data.extra?.activityCode || ''
     form.groupIds = Array.isArray(data.groupIds) ? [...data.groupIds] : []
     form.defaultGroupId = Number(data.defaultGroupId) || 3
-    // The default group must ALWAYS appear in the selection
-    // (PrestaShop constraint also applied on PUT side — double-check).
+    
+    
     if (!form.groupIds.includes(form.defaultGroupId)) {
       form.groupIds.push(form.defaultGroupId)
     }

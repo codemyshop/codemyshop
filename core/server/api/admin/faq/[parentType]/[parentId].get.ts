@@ -1,14 +1,4 @@
-/**
- *
- * GET /api/admin/faq/:parentType/:parentId — pilote headless-modules-ts.
- *
- * Returns the FAQs attached to a parent (`cms`/`category`/`product`/...) for the
- * requested language (`?lang=1` by default). Admin auth required (`hub_session` cookie).
- *
- * Query params optionnels :
- *   ?lang=<id_lang>            (default: 1)
- *   ?onlyActive=0|1            (default: 1)
- */
+
 
 import { listFaqsByParent } from '../../../../../modules/faq/server/utils/faq'
 import { verifyToken } from '~/server/utils/session-crypto'

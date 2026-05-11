@@ -1,23 +1,4 @@
-<!--
-  /hub/informations — Réglages métier tenant.
 
-  Quatre onglets :
-    - Entreprise : identité légale (nom, SIRET, SIREN, tel, email, adresse)
-    - Préférences : flags B2B, catalogue, commande
-    - Système : versions stack open source + ressources serveur
-    - Sauvegardes : dumps PG quotidiens sur Scaleway
-
-  Source de vérité : ps_configuration (table héritage, runtime 100%
-  PostgreSQL via useClientDb sur la DB du tenant courant). Toute
-  modification va directement en DB, pas de redeploy nécessaire.
-
-  Les paiements (CB SystemPay + virement bancaire) ont leur propre vue
-  dédiée : /hub/payments (item OMS du sidebar).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: 'hub' })
 
@@ -31,8 +12,6 @@ const tabs: Array<{ id: TabId; label: string }> = [
   { id: 'systeme', label: t('hub.tab_systeme', 'Système') },
   { id: 'sauvegardes', label: t('hub.tab_sauvegardes', 'Sauvegardes') },
 ]
-
-// -------- Entreprise (ps_configuration : PS_SHOP_*) --------
 
 interface ShopInfo {
   PS_SHOP_NAME: string
@@ -96,15 +75,12 @@ async function saveField(key: keyof ShopInfo) {
   }
 }
 
-// Header "Save" button: sweep all ShopInfo fields (idempotent
-// API-side via UPSERT ON CONFLICT). The B2B/Catalog flags have their own
-// auto-save on click, they are already persisted.
 async function saveAll() {
   savingAll.value = true
   savedMessage.value = ''
   errorMessage.value = ''
-  // Force blur of the current field (in case the user clicks the button
-  // while an input is still focused → auto-save already triggered by blur).
+  
+  
   if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
     document.activeElement.blur()
   }
@@ -124,8 +100,6 @@ async function saveAll() {
     savingAll.value = false
   }
 }
-
-// -------- Preferences (flags) --------
 
 interface Flags {
   PS_B2B_ENABLE: string
@@ -165,8 +139,6 @@ async function toggle(key: keyof Flags) {
     savingFlag.value = null
   }
 }
-
-// -------- Profil business (vertical + channel) --------
 
 const VERTICALS = [
   { value: 'food',        label: 'Food' },
@@ -217,8 +189,6 @@ async function saveProfile(field: 'vertical' | 'channel') {
   }
 }
 
-// -------- System (open source components + server info) --------
-
 interface SystemInfo {
   os: { name: string; kernel: string; type: string; arch: string }
   runtime: { node: string; nuxt: string }
@@ -234,8 +204,6 @@ const { data: systemData, pending: systemPending, refresh: refreshSystem } = awa
   lazy: true,
   default: () => ({ info: null as unknown as SystemInfo }),
 })
-
-// -------- Valorisation site seul (revente, fourchette basse) --------
 
 interface AssetValueComponents {
   codeValue: number
@@ -320,8 +288,6 @@ function usageColor(pct: number): string {
   return 'bg-emerald-500'
 }
 
-// -------- Sauvegardes (bucket Scaleway ac-db-backups) --------
-
 interface BackupObject {
   key: string
   date: string
@@ -352,7 +318,7 @@ function formatDateFr(iso: string): string {
 }
 
 function downloadBackup(date: string) {
-  // 302 redirect to presigned Scaleway URL (browser downloads directly)
+  
   window.location.href = `/api/hub/backups/download?date=${encodeURIComponent(date)}`
 }
 
@@ -378,7 +344,7 @@ useHead({ title: `Informations — Hub` })
       </button>
     </div>
 
-    <!-- Tabs -->
+    
     <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm mb-6">
       <nav class="flex items-center gap-1 px-4 border-b border-gray-100 dark:border-slate-800" role="tablist">
         <button
@@ -400,7 +366,7 @@ useHead({ title: `Informations — Hub` })
       </nav>
     </div>
 
-    <!-- Toast save / error -->
+    
     <div v-if="savedMessage" class="mb-4 px-4 py-3 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-sm">
       {{ savedMessage }}
     </div>
@@ -408,9 +374,9 @@ useHead({ title: `Informations — Hub` })
       {{ errorMessage }}
     </div>
 
-    <!-- =============================================================== -->
-    <!-- TAB : Entreprise                                                 -->
-    <!-- =============================================================== -->
+    
+    
+    
     <div v-show="activeTab === 'entreprise'" class="space-y-6">
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ t('hub.section_identity_title', 'Identité légale') }}</h2>
@@ -419,7 +385,7 @@ useHead({ title: `Informations — Hub` })
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Business name -->
+          
           <div class="md:col-span-2">
             <label class="block text-xs font-semibold text-gray-700 dark:text-slate-200 mb-1">
               {{ t('hub.field_shop_name', 'Dénomination sociale') }}
@@ -433,7 +399,7 @@ useHead({ title: `Informations — Hub` })
             >
           </div>
 
-          <!-- SIRET -->
+          
           <div>
             <label class="block text-xs font-semibold text-gray-700 dark:text-slate-200 mb-1">
               SIRET
@@ -451,7 +417,7 @@ useHead({ title: `Informations — Hub` })
             >
           </div>
 
-          <!-- SIREN -->
+          
           <div>
             <label class="block text-xs font-semibold text-gray-700 dark:text-slate-200 mb-1">
               SIREN
@@ -469,7 +435,7 @@ useHead({ title: `Informations — Hub` })
             >
           </div>
 
-          <!-- Phone -->
+          
           <div>
             <label class="block text-xs font-semibold text-gray-700 dark:text-slate-200 mb-1">
               {{ t('hub.field_phone', 'Téléphone') }}
@@ -484,7 +450,7 @@ useHead({ title: `Informations — Hub` })
             >
           </div>
 
-          <!-- Email -->
+          
           <div>
             <label class="block text-xs font-semibold text-gray-700 dark:text-slate-200 mb-1">
               {{ t('hub.field_email', 'Email') }}
@@ -567,11 +533,11 @@ useHead({ title: `Informations — Hub` })
       </p>
     </div>
 
-    <!-- =============================================================== -->
-    <!-- TAB: Preferences                                                -->
-    <!-- =============================================================== -->
+    
+    
+    
     <div v-show="activeTab === 'preferences'" class="space-y-6">
-      <!-- Section Profil business — vertical + channel (pilote PIM/MDM/UI) -->
+      
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ t('hub.section_business_title', 'Profil business') }}</h2>
         <p class="text-sm text-gray-500 dark:text-slate-400 mb-6">
@@ -619,7 +585,7 @@ useHead({ title: `Informations — Hub` })
         </p>
       </section>
 
-      <!-- AI Audience section — brief injected into all prompts -->
+      
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ t('hub.section_audience_title', 'Audience IA') }}</h2>
         <p class="text-sm text-gray-500 dark:text-slate-400 mb-4">
@@ -646,7 +612,7 @@ useHead({ title: `Informations — Hub` })
         </div>
       </section>
 
-      <!-- Section B2B / B2C -->
+      
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ t('hub.section_b2b_title', 'Mode B2B') }}</h2>
         <p class="text-sm text-gray-500 dark:text-slate-400 mb-6">
@@ -714,7 +680,7 @@ useHead({ title: `Informations — Hub` })
         </div>
       </section>
 
-      <!-- Section Commande -->
+      
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ t('hub.section_order_title', 'Commande') }}</h2>
         <p class="text-sm text-gray-500 dark:text-slate-400 mb-6">
@@ -767,9 +733,9 @@ useHead({ title: `Informations — Hub` })
       </p>
     </div>
 
-    <!-- =============================================================== -->
-    <!-- TAB: System                                                    -->
-    <!-- =============================================================== -->
+    
+    
+    
     <div v-show="activeTab === 'systeme'" class="space-y-6">
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <div class="flex items-start justify-between mb-4">
@@ -852,7 +818,7 @@ useHead({ title: `Informations — Hub` })
         </dl>
       </section>
 
-      <!-- Resources: disk + memory + CPU -->
+      
       <section v-if="systemData?.info" class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ t('hub.section_resources_title', 'Ressources') }}</h2>
         <p class="text-sm text-gray-500 dark:text-slate-400 mb-6">
@@ -860,7 +826,7 @@ useHead({ title: `Informations — Hub` })
         </p>
 
         <div class="space-y-5">
-          <!-- Disque -->
+          
           <div>
             <div class="flex items-baseline justify-between mb-1.5">
               <div class="text-sm font-medium text-gray-700 dark:text-slate-200">
@@ -880,7 +846,7 @@ useHead({ title: `Informations — Hub` })
             </div>
           </div>
 
-          <!-- Memory -->
+          
           <div>
             <div class="flex items-baseline justify-between mb-1.5">
               <div class="text-sm font-medium text-gray-700 dark:text-slate-200">{{ t('hub.field_memory', 'Mémoire (RAM)') }}</div>
@@ -897,7 +863,7 @@ useHead({ title: `Informations — Hub` })
             </div>
           </div>
 
-          <!-- CPU -->
+          
           <div class="pt-2 border-t border-gray-100 dark:border-slate-800">
             <dl class="divide-y divide-gray-100 dark:divide-slate-800">
               <div class="flex items-center justify-between py-3">
@@ -954,7 +920,7 @@ useHead({ title: `Informations — Hub` })
         {{ t('hub.system_note', 'Lecture directe node:os (CPU, RAM, uptime) + node:fs.statfs (disque rootfs) + SELECT VERSION() PostgreSQL + extensions (pgvector). Aucun secret ni donnée privée exposée.') }}
       </p>
 
-      <!-- ─── Site value (digital asset, low range) ─────── -->
+      
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <div class="flex items-start justify-between mb-6">
           <div>
@@ -978,7 +944,7 @@ useHead({ title: `Informations — Hub` })
         </div>
 
         <template v-else-if="valueData">
-          <!-- Carte total -->
+          
           <div class="rounded-xl border-2 border-primary-300 dark:border-primary-600/60 bg-primary-50 dark:bg-primary-900/20 p-6 text-center mb-6">
             <div class="text-xs uppercase tracking-wider font-semibold text-primary-600 dark:text-primary-300 mb-2">
               {{ t('hub.value_total', 'Valeur estimée — fourchette basse') }}
@@ -991,7 +957,7 @@ useHead({ title: `Informations — Hub` })
             </div>
           </div>
 
-          <!-- Composantes (4 lignes) -->
+          
           <dl class="divide-y divide-gray-100 dark:divide-slate-800">
             <div class="flex items-center justify-between py-3">
               <div class="flex-1">
@@ -1057,9 +1023,9 @@ useHead({ title: `Informations — Hub` })
       </section>
     </div>
 
-    <!-- =============================================================== -->
-    <!-- TAB : Sauvegardes                                                -->
-    <!-- =============================================================== -->
+    
+    
+    
     <div v-show="activeTab === 'sauvegardes'" class="space-y-6">
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <div class="flex items-start justify-between mb-4">
@@ -1079,22 +1045,22 @@ useHead({ title: `Informations — Hub` })
           </button>
         </div>
 
-        <!-- Erreur -->
+        
         <div v-if="backupsError" class="px-4 py-3 rounded-lg bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-700 dark:text-rose-400 text-sm">
           {{ backupsError.data?.message ?? backupsError.message ?? 'Erreur chargement sauvegardes' }}
         </div>
 
-        <!-- Loading -->
+        
         <div v-else-if="backupsPending && !backupsData?.count" class="text-sm text-gray-400 dark:text-slate-500 py-8 text-center">
           {{ t('hub.loading', 'Chargement…') }}
         </div>
 
-        <!-- Liste vide -->
+        
         <div v-else-if="!backupsData?.count" class="text-sm text-gray-400 dark:text-slate-500 py-8 text-center">
           {{ t('hub.backups_empty', 'Aucune sauvegarde disponible pour ce tenant. Le cron tourne chaque nuit à 03:00 UTC.') }}
         </div>
 
-        <!-- Liste -->
+        
         <table v-else class="w-full text-sm">
           <thead>
             <tr class="text-left text-xs uppercase tracking-wide text-gray-400 dark:text-slate-500 border-b border-gray-100 dark:border-slate-800">

@@ -1,16 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/cms/search?q=...&limit=20
- *
- * CMS article autocomplete (ps_cms) for the BlogPostLinker.
- * Tenant-aware via useClientDb(event) — on Example Shop reads from ps_example-shop.ps_cms.
- *
- * LIKE search on meta_title + link_rewrite (id_lang=1, id_shop=1).
- * Hard limit of 50 to avoid large payloads.
- */
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const q = String(query.q ?? '').trim()
@@ -19,7 +10,7 @@ export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
 
   if (q.length < 2) {
-    // Sans terme de recherche : on renvoie les articles les plus récents
+    
     const rows = await db.query<any>(`
       SELECT c.id_cms AS id, c.active,
              cl.meta_title AS title, cl.link_rewrite AS slug,

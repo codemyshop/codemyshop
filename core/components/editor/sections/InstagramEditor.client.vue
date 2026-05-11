@@ -1,15 +1,8 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Éditeur section Instagram — config CTA + statut connexion Graph API +
-  bouton Re-sync (invalide cache Nitro).
--->
 <template>
   <div class="space-y-3">
 
-    <!-- ── Config CTA (url / handle) ────────────────────────────── -->
+    
     <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
       <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">CTA bouton</legend>
       <div>
@@ -30,7 +23,7 @@
       </div>
     </fieldset>
 
-    <!-- ── Statut connexion Graph API ───────────────────────────── -->
+    
     <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
       <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Connexion API</legend>
 
@@ -92,7 +85,7 @@
       </div>
     </fieldset>
 
-    <!-- ── Re-sync cache ────────────────────────────────────────── -->
+    
     <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
       <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Cache feed</legend>
       <p class="text-[11px] text-gray-500 leading-snug">
@@ -157,7 +150,6 @@ function updateField(key: string, value: any) {
   emit('update:payload', { ...localPayload.value, [key]: value })
 }
 
-// Statut connexion
 const statusLoading = ref(true)
 const status        = ref<InstagramStatus | null>(null)
 
@@ -172,7 +164,6 @@ async function fetchStatus() {
   }
 }
 
-// Re-sync
 const resyncLoading = ref(false)
 const resyncResult  = ref<{ ok: boolean; purgedKeys: number; refetchedItems: number } | null>(null)
 
@@ -184,7 +175,7 @@ async function doResync() {
       method: 'POST',
     })
     resyncResult.value = res
-    // Refresh the status (token may have been updated)
+    
     await fetchStatus()
   } catch {
     resyncResult.value = { ok: false, purgedKeys: 0, refetchedItems: 0 }

@@ -1,17 +1,10 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/instagram/resync
- *
- * Invalidates the Nitro cache for /api/instagram/feed and forces an immediate re-fetch.
- * Used by the "Re-sync" button in the homepage builder.
- */
 
 export default defineEventHandler(async (event) => {
   const storage = useStorage('cache')
 
-  // Purge toutes les entrées cachées par defineCachedEventHandler de instagram-feed
-  // Nitro stocke sous : nitro:functions:instagram-feed:{key}.json
+  
+  
   let purged = 0
   try {
     const keys = await storage.getKeys('nitro:functions:instagram-feed:')
@@ -23,7 +16,7 @@ export default defineEventHandler(async (event) => {
     console.warn('[instagram/resync] cache purge error:', err?.message)
   }
 
-  // Force un refetch immédiat (populate le cache avec frais)
+  
   let itemsCount = 0
   try {
     const cfg = useRuntimeConfig(event)

@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Local cart — shared state with localStorage persistence.
- * Generic reusable composable for any e-commerce instance.
- */
+
 export interface CartItem {
   id: number
   name: string
@@ -17,7 +13,7 @@ export interface CartItem {
 export function useCart() {
   const cart = useState<CartItem[]>('shop-cart', () => [])
 
-  // Restaurer depuis localStorage au mount
+  
   if (import.meta.client) {
     const saved = localStorage.getItem('shop-cart')
     if (saved) {
@@ -26,10 +22,10 @@ export function useCart() {
         if (Array.isArray(parsed) && parsed.length && !cart.value.length) {
           cart.value = parsed
         }
-      } catch { /* ignore */ }
+      } catch {  }
     }
 
-    // Persist on every change
+    
     watch(cart, (val) => {
       localStorage.setItem('shop-cart', JSON.stringify(val))
     }, { deep: true })

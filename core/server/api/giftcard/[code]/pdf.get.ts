@@ -1,13 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/giftcard/[code]/pdf?token=… — serves the gift card PDF.
- *
- * Auth: unique pdf_token stored in DB on creation (URL non-enumerable).
- * Generation via pdfkit (Phase 2 — currently, minimal A6 landscape PDF
- * with code + amount + expiration). Custom design (brand visuals,
- * choix template) viendra en Phase 3.
- */
 
 import PDFDocument from 'pdfkit'
 import { resolveClientId } from '~/server/utils/db'
@@ -24,13 +15,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Carte introuvable' })
   }
 
-  // Le tenant ne peut pas accéder aux PDF d'un autre tenant.
+  
   const clientId = resolveClientId(event)
   if (card.client_id !== clientId) {
     throw createError({ statusCode: 404, statusMessage: 'Carte introuvable' })
   }
 
-  // ── Génération PDF A6 paysage (148mm × 105mm) ─────────────────────────
+  
   const doc = new PDFDocument({ size: 'A6', layout: 'landscape', margin: 24 })
   const chunks: Buffer[] = []
   doc.on('data', (c: Buffer) => chunks.push(c))

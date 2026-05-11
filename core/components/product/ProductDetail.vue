@@ -1,14 +1,4 @@
-<!--
-  Fiche produit unifiée B2B — galerie + prix + panier + attachments + specs MDM.
-  Utilisée par /grossiste/[...path] (route SEO canonique) et /produit/[id] (legacy,
-  transformée en 301). Source de vérité UI pour le single-product B2B.
 
-  clientId / cartTenant : fallback sur runtimeConfig.public.clientId si non fournis.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { localePath } = useLocalePath()
 interface AttachmentRow {
@@ -65,7 +55,7 @@ interface ProductLike {
   features?: Array<{ id?: number; name: string; value: string }>
   attachments?: AttachmentRow[]
   spec?: ProductSpec
-  // Promo + product card parity (see ProductCard.vue / cart)
+  
   priceFormattedBeforeDiscount?: string
   priceRawBeforeDiscount?: number
   pricePerKgRaw?: number
@@ -73,9 +63,9 @@ interface ProductLike {
   pricePerKgFormattedBeforeDiscount?: string
   reductionLabel?: string
   taxRate?: number
-  /** Suffixe court prix unitaire (HT/K, HT/L, HT/U) — DB-First. */
+  
   unitLabel?: string
-  /** Variants (size, color…) with stock per variant. */
+  
   combinations?: Array<{
     id: number
     reference?: string
@@ -104,20 +94,14 @@ const props = withDefaults(defineProps<{
 const { t } = useT()
 const { showPrices } = useB2bVisibility()
 
-// Quantity + cart
 const quantity = ref(1)
 function increment() { quantity.value++ }
 function decrement() { if (quantity.value > 1) quantity.value-- }
 
-// ── Variants (sizes, colors…) ─────────────────────────────────────
-// If the product has combinations, we constrain add to cart to a
-// selected variant and we display available stock live.
 const combinations = computed(() => Array.isArray(props.product.combinations) ? props.product.combinations : [])
 const hasCombinations = computed(() => combinations.value.length > 0)
 const selectedCombinationId = ref<number | null>(null)
 
-// Initial selection: default_on if it exists and has stock, otherwise first
-// variant in stock, otherwise the first one.
 watchEffect(() => {
   if (!hasCombinations.value) return
   if (selectedCombinationId.value !== null) return
@@ -130,9 +114,6 @@ const selectedCombination = computed(() => combinations.value.find(c => c.id ===
 const selectedStock = computed(() => selectedCombination.value?.quantity ?? 0)
 const isOutOfStock = computed(() => hasCombinations.value && selectedStock.value <= 0)
 
-// Groups variants by attribute group ("Size: 36 / 37 / ...").
-// For the skate demo: 1 single group (Shoe size). Multi-group (color + size)
-// is supported in read mode but the selector remains flat — to extend later.
 const attributeGroups = computed(() => {
   const map = new Map<number, { id: number; name: string; values: Array<{ id: number; value: string; combinationId: number; quantity: number }> }>()
   for (const c of combinations.value) {
@@ -171,7 +152,6 @@ async function addToCart() {
   setTimeout(() => { addedToCart.value = false }, 2000)
 }
 
-// Cross-selling : qty + add par accessoire (Map id → qty)
 const accessoryQty = ref<Record<number, number>>({})
 const accessoryAdded = ref<Record<number, boolean>>({})
 function getAccessoryQty(id: number): number { return accessoryQty.value[id] ?? 1 }
@@ -212,9 +192,7 @@ const features = computed(() => Array.isArray(props.product.features) ? props.pr
 const calibrageFeature = computed(() =>
   features.value.find(f => /calibr|caliber/i.test(f.name)),
 )
-// "Unit price or per kilo" — commercial feature: we extract it to
-// display it under the price (if customer logged in) and we remove it from specs
-// generic (hidden for non-logged-in visitors).
+
 const unitPriceFeature = computed(() =>
   features.value.find(f => /prix.*(unit|kilo|kg)/i.test(f.name)),
 )
@@ -231,7 +209,7 @@ const weightDisplay = computed(() => {
 const unitPriceDisplay = computed(() => {
   const raw = unitPriceFeature.value?.value?.trim()
   if (!raw) return ''
-  // Accepte "6.85", "6,85", "6.85 €/kg" — normalise en "6,85 €/kg"
+  
   const m = raw.match(/(\d+(?:[.,]\d+)?)/)
   if (!m) return raw
   const n = parseFloat(m[1].replace(',', '.'))
@@ -244,8 +222,6 @@ function openLightbox() {
   if (props.product.images?.length) lightboxOpen.value = true
 }
 
-// HD Zoom: PrestaShop exposes the source image at the URL without format suffix.
-// `…/img/p/1/8/2/9/1829-large_default.jpg` → `…/img/p/1/8/2/9/1829.jpg`.
 function toOriginalImage(url?: string): string {
   if (!url) return ''
   return url.replace(/-(?:[a-z_]+_)?default(?:_?2x)?(\.[a-zA-Z]+)(\?.*)?$/, '$1$2')
@@ -270,9 +246,6 @@ const hasLongDescription = computed(() => {
   return long.length > short.length + 40
 })
 
-// Display the product Specifications block only if at least one field
-// useful from cs_product_food is filled (avoids the phantom h2 seen when
-// the nutrient PDF extraction failed).
 const hasSpecContent = computed(() => {
   const s = props.product.spec
   if (!s) return false
@@ -295,8 +268,6 @@ const hasSpecContent = computed(() => {
 
 const priceDisplay = computed(() => props.product.priceFormatted ?? props.product.price ?? '')
 
-// Dynamic net price = unit price × quantity, recalculated live when
-// the user changes the qty.
 function formatEur(n: number): string {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
 }
@@ -316,7 +287,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
 
 <template>
   <div class="min-h-screen bg-white">
-    <!-- Breadcrumb -->
+    
     <div class="bg-gray-50 border-b border-gray-100">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
         <nav class="flex items-center gap-2 text-xs text-gray-400">
@@ -337,7 +308,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
       <div class="grid lg:grid-cols-2 gap-10">
-        <!-- Galerie images -->
+        
         <div>
           <button
             type="button"
@@ -383,7 +354,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
           </div>
         </div>
 
-        <!-- Infos produit -->
+        
         <div>
           <h1 class="text-[22px] sm:text-2xl lg:text-3xl font-extrabold text-gray-900 leading-tight tracking-tight mb-2">{{ product.name }}</h1>
           <p v-if="product.reference" class="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-3">{{ t('catalogue.label_ref') }} {{ product.reference }}</p>
@@ -391,17 +362,11 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
             <WishlistButton :product-id="product.id" variant="full" />
           </div>
 
-          <!-- Bloc prix : showPrices session-dépendant → ClientOnly pour cache
-               SSR Redis sur /produit/**. Fallback skeleton h-20 pour éviter CLS. -->
+          
           <div class="bg-gray-50 rounded-xl p-5 mb-6">
             <ClientOnly>
               <template v-if="showPrices">
-                <!-- Hiérarchie inversée Aude 04/05 P2 : prix HT/K en gros + mention
-                     TVA. Source de vérité prix au kilo : pricePerKgFormatted
-                     (dérivé Poids net × Unités par colis, parité ProductCard) si
-                     dispo, sinon feature PS « prix à l'unité ou kilo » legacy.
-                     Si une `ps_specific_price` est active : badge "-X%", HT/K
-                     barré, prix colis barré sous la mention TVA. -->
+                
                 <template v-if="product.pricePerKgFormatted || unitPriceDisplay">
                   <div class="flex items-baseline flex-wrap gap-x-3 gap-y-1">
                     <p class="text-3xl font-extrabold text-primary-600">
@@ -473,7 +438,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
             <span class="text-sm font-bold text-gray-900">{{ calibrageFeature.value }}</span>
           </div>
 
-          <!-- Quick-info Origin / Expiry / EAN — pulled from the Specs block to densify the top of the product page -->
+          
           <div v-if="product.spec" class="flex flex-wrap gap-2 mb-6">
             <div v-if="product.spec.countryOrigin" class="flex items-center gap-2 px-3 py-1.5 bg-primary-600/5 border border-primary-600/20 rounded-lg">
               <svg class="w-3.5 h-3.5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
@@ -492,7 +457,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
             </div>
           </div>
 
-          <!-- Variant selector (Shoe size / Size / Color) — displayed if ps_product_attribute exists -->
+          
           <div v-for="group in attributeGroups" :key="group.id" class="mb-5">
             <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-2">{{ group.name }}</p>
             <div class="flex flex-wrap gap-2">
@@ -551,8 +516,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
             <ChatbotProductButton :product-id="product.id" :qty="quantity" variant="detail" class="flex-1 min-w-0 h-12 rounded-xl whitespace-nowrap px-4" />
           </div>
 
-          <!-- Description courte (teaser commercial) sous le CTA. À réécrire via
-               automate dédié pour éviter la redite avec les tableaux Specs/Features. -->
+          
           <div
             v-if="descShort"
             class="prose prose-sm max-w-none text-gray-700 mb-6"
@@ -563,7 +527,6 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
             class="prose prose-sm max-w-none text-gray-700 mb-6"
             v-html="descLong"
           />
-
 
           <ClientOnly>
             <NuxtLink
@@ -582,11 +545,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
             </NuxtLink>
           </ClientOnly>
 
-          <!-- Cross-selling : produits associés (ps_accessory) — sous le CTA.
-               Layout horizontal : image à gauche (carrée), contenu à droite
-               (nom + prix + stepper qty + CTA Ajouter sur la même ligne).
-               3 cards visibles + scroll vertical pour le reste (max-h calé sur
-               3 × image-h-24 + 2 × gap-3 = 312px). -->
+          
           <section v-if="product.accessories?.length" class="mb-6 border-t border-gray-200 pt-6">
             <h2 class="text-sm font-bold text-gray-900 mb-4">
               {{ t('product.related_title') }}
@@ -689,7 +648,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
         </div>
       </div>
 
-      <!-- Long description — first paragraph highlighted (lead), rest in standard prose -->
+      
       <div v-if="hasLongDescription" class="mt-12 pt-8 border-t border-gray-100">
         <h2 class="text-xl font-bold text-gray-900 mb-4">{{ t('catalogue.description') }}</h2>
         <div
@@ -704,7 +663,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
         />
       </div>
 
-      <!-- Fiches techniques (attachments PDF/XLSX) -->
+      
       <div v-if="product.attachments?.length" class="mt-12 pt-8 border-t border-gray-100">
         <h2 class="text-xl font-bold text-gray-900 mb-4">{{ t('catalogue.datasheets') }}</h2>
         <div class="grid sm:grid-cols-2 gap-3">
@@ -740,7 +699,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
         </div>
       </div>
 
-      <!-- Specifications -->
+      
       <div v-if="otherFeatures.length" class="mt-12 pt-8 border-t border-gray-100">
         <h2 class="text-xl font-bold text-gray-900 mb-4">{{ t('catalogue.features') }}</h2>
         <dl class="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
@@ -755,8 +714,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
         </dl>
       </div>
 
-      <!-- Spécifications MDM (cs_product_food : Example Shop V2)
-           Masquée si tous les champs utiles sont NULL (extraction PDF nutri ratée). -->
+      
       <div v-if="hasSpecContent" class="mt-12 pt-8 border-t border-gray-100 space-y-10">
         <h2 class="text-xl font-bold text-gray-900">{{ t('product.specs_heading') }}</h2>
 
@@ -887,7 +845,7 @@ const lineTotalFormatted = computed(() => unitPriceRaw.value > 0 ? formatEur(lin
 
     </div>
 
-    <!-- Lightbox zoom image produit -->
+    
     <Teleport to="body">
       <Transition
         enter-active-class="transition-opacity duration-200"

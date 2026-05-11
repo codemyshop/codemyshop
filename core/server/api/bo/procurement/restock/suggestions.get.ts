@@ -1,20 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/procurement/restock/suggestions — AI-generated restocking suggestions grouped by supplier.
- *
- * Query: ?threshold=5 (minimum days remaining) · ?targetCover=60 (target coverage days after delivery)
- *
- * Simplified algorithm (EOQ without ordering cost):
- * - Product eligible if stock ≤ threshold * velocity30 (or stock = 0)
- * - Suggested quantity = max(1, (targetCover × velocity30) - current_stock)
- * - Rounded up to the nearest integer
- * - Total amount = qty × supplier_price
- * - Grouping by attached supplier (ps_product_supplier)
- * - Without supplier → bucket "Unassigned"
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const thresholdDays = Math.max(1, Math.min(60, Number(q.threshold || 15)))
@@ -82,7 +69,7 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    // Groupement par fournisseur
+    
     const groups: Record<string, any> = {}
     for (const p of eligible) {
       const key = p.idSupplier ? String(p.idSupplier) : 'none'

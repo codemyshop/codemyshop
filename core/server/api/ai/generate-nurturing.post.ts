@@ -1,11 +1,4 @@
-/**
- *
- * POST /api/ai/generate-nurturing
- * Body : { objective, avatarName, avatarRules, duration, channels, clientId }
- * Returns : NurturingSequence
- *
- * SECURITY.md R3: no PII in the prompt. R4: inputs validated.
- */
+
 
 export interface NurturingStep {
   dayOffset: number
@@ -45,7 +38,7 @@ export default defineEventHandler(async (event) => {
     clientId:    string
   }>(event)
 
-  // R4 : validation
+  
   const objective = (body.objective ?? '').trim().slice(0, 500)
   const avatarName = (body.avatarName ?? '').trim().slice(0, 100)
   const avatarRules = (body.avatarRules ?? '').trim().slice(0, 1000)

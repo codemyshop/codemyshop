@@ -1,16 +1,4 @@
-/**
- *
- * Composable i18n storefront — reads OSS UI strings from `ps_translation`
- * (rows where `domain='oss'`, seeded from `core/i18n/locales/*.yaml`).
- *
- * Usage:
- *   const { t } = useT()
- * t('cart.loyalty.title')                                  → "Loyalty program"
- *   t('cart.loyalty.points_balance', { points: 42 })         → "42 points disponibles"
- *
- * Missing keys: returns the key itself + console.warn in dev. In prod,
- * returns the key without warning (visible to user but doesn't break UI).
- */
+
 
 export const useT = () => {
   const translations = useState<Record<string, string>>('oss_translations', () => ({}))
@@ -30,7 +18,7 @@ export const useT = () => {
     }
   }
 
-  /** Translate a key, with optional `{name}` placeholder interpolation. */
+  
   function t(key: string, params?: Record<string, string | number>): string {
     const raw = translations.value[key]
     if (!raw) {

@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/procurement/suppliers — liste fournisseurs (ps_supplier + adresse contact).
- * Query: ?search=xxx (LIKE on name, city, phone) — optional.
- * Joins ps_address (alias='supplier' or id_supplier=...) for contact.
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const search = (q.search || '').trim()

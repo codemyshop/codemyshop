@@ -1,16 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /sitemap-silo.xml — Sitemap for pillar categories (tenant-aware).
- *
- * Generates canonical FR URLs + hreflang alternates for all languages
- * actives (ps_lang). Source : ps_category + ps_category_lang.link_rewrite
- * (native PS i18n). The filename remains "sitemap-silo.xml" for backward-
- * compat (Google Search Console + backlinks externes).
- *
- * Refactor from the industrialization initiative 2026-05-08: the pillars
- * are resolved via runtimeConfig.public.piliers (more than 260/321 hardcoded).
- */
+
 import {
   loadActiveLangs,
   buildUrlEntry,
@@ -36,7 +25,7 @@ export default defineEventHandler(async (event) => {
   const locales: string[] = ((config.public as any).i18nLocales as string[]) || ['en']
   const langs = await loadActiveLangs(db, locales)
 
-  // Fetch toutes les cats actives + leur link_rewrite par langue
+  
   const catRows = await db.query<CategoryRow>(
     `SELECT c.id_category, c.id_parent, c.level_depth,
             COALESCE(clf.link_rewrite, '') AS slug_fr
@@ -48,7 +37,7 @@ export default defineEventHandler(async (event) => {
   const byId = new Map<number, CategoryRow>()
   for (const r of catRows) byId.set(r.id_category, r)
 
-  // Map id_category → link_rewrite par id_lang (langs.length petit ≤ 3)
+  
   const slugByLangByCat = new Map<number, Map<number, string>>()
   for (const l of langs) {
     const rows = await db.query<{ id_category: number; link_rewrite: string }>(
@@ -62,12 +51,12 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Résolution dynamique des piliers tenant.
+  
   const piliers = await resolveTenantPiliers(event, db, 1)
   const pilierIds = new Set(piliers.map(p => p.idCategory))
   const pilierSlugById = new Map(piliers.map(p => [p.idCategory, p.slug]))
 
-  // Walk ancestors pour construire le path FR et le path localisé par langue.
+  
   const buildPath = (id: number, idLang: number): { path: string; pilierId: number | null } => {
     const chain: string[] = []
     let cursor: number | null = id
@@ -88,7 +77,7 @@ export default defineEventHandler(async (event) => {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${SITEMAP_XHTML_NS}>\n`
 
-  // Roots /<pilier-slug>/ — un par pilier déclaré dans le tenant config.
+  
   for (const p of piliers) {
     xml += buildUrlEntry(
       `${base}/${p.slug}/`,
@@ -97,7 +86,7 @@ export default defineEventHandler(async (event) => {
     )
   }
 
-  // URLs catégorie (descendants des piliers uniquement)
+  
   for (const cat of catRows) {
     const { path: pathFr, pilierId } = buildPath(cat.id_category, 1)
     if (!pilierId || !pathFr) continue

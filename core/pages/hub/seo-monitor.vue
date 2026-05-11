@@ -1,8 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <script setup lang="ts">
 definePageMeta({ layout: 'hub', middleware: 'crm-auth' })
 
@@ -56,7 +52,7 @@ function timeAgo(ts: string) {
       </button>
     </div>
 
-    <!-- Stat cards -->
+    
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
       <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-gray-200 dark:border-slate-700">
         <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total crawls</p>
@@ -72,7 +68,7 @@ function timeAgo(ts: string) {
       </div>
     </div>
 
-    <!-- Bots table -->
+    
     <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden mb-8">
       <div class="px-5 py-4 border-b border-gray-200 dark:border-slate-700">
         <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">Activité par bot</h2>
@@ -99,7 +95,7 @@ function timeAgo(ts: string) {
       </div>
     </div>
 
-    <!-- Top URLs -->
+    
     <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden">
       <div class="px-5 py-4 border-b border-gray-200 dark:border-slate-700">
         <h2 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">Top pages crawlées</h2>

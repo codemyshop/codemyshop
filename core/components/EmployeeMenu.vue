@@ -1,6 +1,5 @@
 <template>
-  <!-- Icône employee — visible uniquement si admin/staff connecté.
-       Indépendante de UserMenu (qui gère le customer). -->
+  
   <div v-if="employee" class="relative">
     <button
       @click="toggleDropdown"

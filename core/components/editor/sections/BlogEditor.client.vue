@@ -1,10 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Éditeur Blog — nombre d'articles + bouton "voir tout".
--->
 <template>
   <div class="space-y-3">
     <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">

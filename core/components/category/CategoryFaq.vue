@@ -1,20 +1,4 @@
-<!--
-  Bloc FAQ accordéon générique pour pages catégorie/silo (réutilisable
-  multi-tenant). Visuel pur — le JSON-LD FAQPage est émis par le parent
-  (CategoryPage.vue) via useHead, qui est SSR-safe contrairement à un
-  Teleport profond.
 
-  Règle SEO : minimum 15 questions/réponses (cf feedback_faq_15_questions_seo).
-  Si moins de 15 sont fournies, le bloc s'affiche quand même mais émet un
-  warning console en dev pour signaler la dette éditoriale.
-
-  Source des données : DB tenant (jamais de FAQ statique en fallback).
-  Si props.items est vide, le composant ne rend rien.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 interface FaqItem {
   position: number

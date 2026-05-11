@@ -1,14 +1,4 @@
-/**
- *
- * SIRET verification via the public data.gouv.fr API (recherche-entreprises).
- * Free, no API key, official INSEE/RNE source — already used on the
- * /hub/leads enrichissement (cf reference memory).
- *
- * Usage : `const r = await verifySiret('12345678901234'); if (r.valid) { ... }`
- *
- * Coverage ~100% of active French SIRETs. Also returns the
- * company name + city to pre-fill captured_company without asking the user.
- */
+
 
 export interface SiretInfo {
   valid:        boolean
@@ -19,13 +9,13 @@ export interface SiretInfo {
   city?:        string
   postalCode?:  string
   address?:     string
-  /** Code APE/NAF de l'établissement (ex: "47.21Z" — Commerce de détail de fruits et légumes). */
+  
   nafCode?:     string
-  /** NAF code label (ex: "Retail trade of fruit and vegetables in specialized store"). */
+  
   nafLabel?:    string
-  /** INSEE employee size bracket (ex: "10 to 19 employees"). */
+  
   staffSize?:   string
-  /** Establishment creation date (ISO YYYY-MM-DD). */
+  
   creationDate?: string
   error?:       string
 }
@@ -53,20 +43,20 @@ export async function verifySiret(rawSiret: string): Promise<SiretInfo> {
     const r = data?.results?.[0]
     if (!r) return { valid: false, error: 'SIRET introuvable au registre des entreprises.' }
 
-    // The recherche-entreprises API returns the SIREN at top-level + a list
-    // of establishments. We verify that the provided SIRET matches one of
-    // these establishments (otherwise the user entered a SIRET from another
-    // company whose SIREN happens to match the first digits).
+    
+    
+    
+    
     const matched = (r.matching_etablissements || []).find((e: any) => e.siret === cleaned)
                    || (r.siege?.siret === cleaned ? r.siege : null)
     if (!matched) {
       return { valid: false, error: 'Ce SIRET ne correspond à aucun établissement actif.' }
     }
-    // Formatted address: number + type + label (ex: "12 RUE DES LILAS").
+    
     const addressParts = [matched.numero_voie, matched.type_voie, matched.libelle_voie]
       .filter(Boolean).map((v: any) => String(v).trim())
     const address = addressParts.join(' ')
-    // APE code: priority from matched establishment, fallback to legal entity.
+    
     const nafCode  = String(matched.activite_principale || r.activite_principale || '').trim()
     const nafLabel = String(matched.libelle_activite_principale || r.libelle_activite_principale || '').trim()
 
@@ -90,7 +80,6 @@ export async function verifySiret(rawSiret: string): Promise<SiretInfo> {
   }
 }
 
-/** Email format regex validation (no SMTP — for the chatbot, format is sufficient). */
 export function isEmailFormat(raw: string): boolean {
   const v = (raw || '').trim().toLowerCase()
   return /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v) && v.length <= 255

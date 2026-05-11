@@ -1,22 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/bo/smartproject/projects/:id
- * Remplace ac_smartproject/ajaxupdateproject (chantier #38 Phase B1.5).
- *
- * Body :
- *  - { project: { project_status?, project_type?, budget?, final_price?, needs?, ... },
- *      contact: { firstname?, lastname?, email?, phone_whatsapp? } }
- *  - OU shortcut historique flat (compat saveInfo legacy) :
- *      { project_status?, project_type?, budget?, final_price?, needs? }
- *  - OU kanban shortcut : { new_status: '...' }
- *
- * Bugfix vs PHP: strict partial update — only explicitly
- * present fields in the body are written. PHP wrapped Tools::getValue() which
- * returned '' for absent fields and silently overwrote
- * project_title, contact_status, source, etc. The new saveInfo() Nuxt
- * only sends 5 fields, so PHP wiped all other columns.
- */
+
 import {
   updateProjectDetail,
   type UpdateProjectDetailInput,
@@ -56,7 +39,7 @@ export default defineEventHandler(async (event) => {
     if (body.project && typeof body.project === 'object') input.project = body.project
     if (body.contact && typeof body.contact === 'object') input.contact = body.contact
   } else {
-    // Shortcut flat : split entre project + contact selon les clés connues
+    
     const flatProject: Record<string, any> = {}
     const flatContact: Record<string, any> = {}
     for (const [k, v] of Object.entries(body)) {

@@ -1,19 +1,8 @@
-<!--
-  /**
-   *
-   * /cartes-cadeaux — page d'achat de carte cadeau (publique, traductible).
-   *
-   * Gating: feature `giftcard` must be active on the tenant. Otherwise
-   * the API returns 404 and the page redirects.
-   *
-   * All visible labels pass through t() (rule 10bis) — keys
-   * `cartes_cadeaux.*` to seed in ps_translation.
-   */
--->
+
 <template>
   <NuxtLayout name="white-label">
     <div class="max-w-4xl mx-auto px-6 py-12 sm:py-16">
-      <!-- ── En-tête ────────────────────────────────────────────────────── -->
+      
       <header class="text-center mb-10">
         <p class="text-[11px] tracking-[0.3em] uppercase text-primary-600 mb-3">
           {{ t('cartes_cadeaux.kicker', 'Cartes cadeaux') }}
@@ -26,14 +15,14 @@
         </p>
       </header>
 
-      <!-- ── Formulaire ──────────────────────────────────────────────────── -->
+      
       <form
         v-if="state !== 'success'"
         class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 space-y-8"
         novalidate
         @submit.prevent="submit"
       >
-        <!-- Honeypot -->
+        
         <input
           v-model="form.website"
           type="text" name="website" tabindex="-1" autocomplete="off"
@@ -41,7 +30,7 @@
           aria-hidden="true"
         />
 
-        <!-- Montant -->
+        
         <fieldset class="space-y-3">
           <legend class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
             {{ t('cartes_cadeaux.amount_label', 'Montant de la carte') }}
@@ -77,7 +66,7 @@
           </div>
         </fieldset>
 
-        <!-- Mode de livraison -->
+        
         <fieldset class="space-y-3">
           <legend class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
             {{ t('cartes_cadeaux.delivery_label', 'Comment l\'offrir ?') }}
@@ -107,7 +96,7 @@
           </div>
         </fieldset>
 
-        <!-- Acheteur -->
+        
         <fieldset class="space-y-3">
           <legend class="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
             {{ t('cartes_cadeaux.purchaser_label', 'Vos coordonnées') }}
@@ -128,7 +117,7 @@
           </div>
         </fieldset>
 
-        <!-- Destinataire (si livraison email/both) -->
+        
         <fieldset
           v-if="needsRecipient"
           class="space-y-3 border-t border-gray-100 pt-6"
@@ -160,7 +149,7 @@
           />
         </fieldset>
 
-        <!-- CTA + récap -->
+        
         <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
           <p class="text-xs text-gray-500">
             {{ t('cartes_cadeaux.legal', 'Validité 1 an. Code unique généré à l\'achat. Paiement sécurisé.') }}
@@ -178,7 +167,7 @@
         <p v-if="errorMessage" class="text-xs text-rose-600">{{ errorMessage }}</p>
       </form>
 
-      <!-- ── Succès ────────────────────────────────────────────────────── -->
+      
       <div
         v-else
         class="bg-white rounded-2xl border border-emerald-200 shadow-sm p-8 text-center"

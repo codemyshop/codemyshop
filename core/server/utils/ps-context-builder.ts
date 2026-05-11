@@ -1,9 +1,4 @@
-/**
- *
- * PrestaShop context aggregator.
- * Queries the tenant's PS Webservice to extract anonymized metrics.
- * SECURITY.md R3: no PII — only statistical aggregates.
- */
+
 
 export interface ClientContext {
   clientId:        string
@@ -14,20 +9,16 @@ export interface ClientContext {
   avgPriceFormatted: string
   priceRange:      { min: number; max: number }
   topCategories:   string[]
-  businessType:    string       // 'B2B' | 'B2C' | 'Mixte'
-  catalogStrength: string       // 'Petit' | 'Moyen' | 'Large'
+  businessType:    string       
+  catalogStrength: string       
   fetchedAt:       string
 }
 
-/**
- * Builds the tenant context from its PS API.
- * Does not expose ANY personal data (R3 least privilege).
- */
 export async function buildClientContext(clientId: string): Promise<ClientContext> {
   const clientName = getClientDisplayName(clientId)
 
   try {
-    // 1. Compter les produits
+    
     const productsData = await psApiFetch<{ products?: any[] }>('products', {
       'filter[active]': '[1]',
       display: '[id,price,id_category_default]',
@@ -37,7 +28,7 @@ export async function buildClientContext(clientId: string): Promise<ClientContex
     const products = productsData?.products ?? []
     const totalProducts = products.length
 
-    // 2. Compter les catégories
+    
     const catsData = await psApiFetch<{ categories?: any[] }>('categories', {
       'filter[active]': '[1]',
       display: '[id,name]',
@@ -47,7 +38,7 @@ export async function buildClientContext(clientId: string): Promise<ClientContex
     const cats = (catsData?.categories ?? []).filter((c: any) => Number(c.id) > 2)
     const totalCategories = cats.length
 
-    // 3. Calculer le panier moyen et la fourchette de prix
+    
     const prices = products
       .map((p: any) => Number(p.price || 0))
       .filter((p: number) => p > 0)
@@ -59,7 +50,7 @@ export async function buildClientContext(clientId: string): Promise<ClientContex
     const minPrice = prices.length > 0 ? Math.min(...prices) : 0
     const maxPrice = prices.length > 0 ? Math.max(...prices) : 0
 
-    // 4. Top catégories (par fréquence)
+    
     const catCount: Record<string, number> = {}
     for (const p of products) {
       const catId = String(p.id_category_default)
@@ -75,7 +66,7 @@ export async function buildClientContext(clientId: string): Promise<ClientContex
       return cat ? getLang(cat.name) : `Cat #${id}`
     })
 
-    // 5. Déduire le type business
+    
     const businessType = avgPrice > 50 ? 'B2B' : avgPrice > 15 ? 'Mixte' : 'B2C'
     const catalogStrength = totalProducts > 500 ? 'Large' : totalProducts > 100 ? 'Moyen' : 'Petit'
 
@@ -94,7 +85,7 @@ export async function buildClientContext(clientId: string): Promise<ClientContex
     }
   } catch (err: any) {
     console.error(`[ps-context-builder] Error for ${clientId}:`, err?.message || err)
-    // Fallback contexte minimal
+    
     return {
       clientId,
       clientName,

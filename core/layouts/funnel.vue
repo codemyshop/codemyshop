@@ -1,20 +1,7 @@
-<!--
-  Layout dédié funnel B2B pré-vente — /devis + /rdv.
-  Header minimal (logo centré), pas de megamenu/drawer/widget.
-  Footer minimal (mentions légales + copyright). Aucune distraction.
 
-  Différence avec checkout.vue : pas d'indicateur "Paiement sécurisé"
-  (pas pertinent en pré-vente — pas de transaction). Indicateur
-  optionnel "Confidentiel" pour rassurer côté B2B (SIRET, données
-  entreprise saisies).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <template>
   <div class="min-h-screen flex flex-col bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100">
-    <!-- Minimal header — centered logo, privacy indicator on the right -->
+    
     <header class="border-b border-gray-100 dark:border-slate-800">
       <div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-center">
         <NuxtLink to="/" class="flex items-center gap-2 shrink-0" :aria-label="t('common.common_back_to_home', 'Retour à l\'accueil')">
@@ -42,12 +29,12 @@
       </div>
     </header>
 
-    <!-- Contenu page -->
+    
     <main class="flex-1">
       <slot />
     </main>
 
-    <!-- Footer minimal -->
+    
     <footer class="border-t border-gray-100 dark:border-slate-800 mt-auto">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-gray-500 dark:text-slate-400">
         <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 order-2 sm:order-1">
@@ -87,8 +74,6 @@ const logoAlt = computed(
   () => i18nt(header.value?.logo?.alt) || i18nt(header.value?.logo?.text) || brandName.value || 'Logo',
 )
 
-// Legal links: reuses bottomBar.links from the DB footer (consistent with
-// checkout.vue + full footer). No links if DB is empty.
 const legalLinks = computed<Array<{ href: string; label: string }>>(() => {
   const raw = (footer.value as any)?.bottomBar?.links as any[] | undefined
   if (!Array.isArray(raw) || !raw.length) return []

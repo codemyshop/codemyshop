@@ -1,11 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  PRM — Fiche détail d'un fournisseur.
-  Infos + produits rattachés (ps_product_supplier) + historique BC.
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
@@ -28,7 +21,7 @@
       <div v-if="loading" class="text-xs text-gray-400">Chargement…</div>
 
       <template v-else-if="data?.supplier">
-        <!-- Infos de contact -->
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm">
             <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Contact</h2>
@@ -57,7 +50,7 @@
           <p class="text-xs text-gray-700 dark:text-slate-300 whitespace-pre-line">{{ data.supplier.description }}</p>
         </div>
 
-        <!-- Attached products -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
             <h2 class="text-sm font-bold">Produits rattachés</h2>
@@ -86,7 +79,7 @@
           </div>
         </div>
 
-        <!-- Historique BC -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
             <h2 class="text-sm font-bold">Historique bons de commande</h2>

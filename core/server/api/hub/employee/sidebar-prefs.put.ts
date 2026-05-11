@@ -1,14 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/hub/employee/sidebar-prefs
- *
- * Body : { hidden?: string[], order?: Record<string, string[]>, collapsed?: boolean }
- *
- * Upsert the sidebar preferences for the current employee. The 3 fields
- * are independent: we only write those provided in the body
- * (COALESCE on the PG side to preserve the others).
- */
 
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession } from '~/server/utils/session'
@@ -65,8 +55,8 @@ export default defineEventHandler(async (event) => {
 
   const db = useClientDb(event)
 
-  // Étape 1 : garantit qu'une row existe avec les defaults (NOT NULL respectés
-  // côté DDL : hidden_items='[]', section_order='{}', collapsed=0).
+  
+  
   await db.run(
     `INSERT INTO cs_employee_sidebar_pref (id_employee)
      VALUES (?)
@@ -74,8 +64,8 @@ export default defineEventHandler(async (event) => {
     [session.employeeId],
   )
 
-  // Étape 2 : UPDATE partiel — COALESCE garde la valeur existante quand le
-  // body ne fournit pas le champ (NULL passé en param).
+  
+  
   await db.run(
     `UPDATE cs_employee_sidebar_pref
         SET hidden_items  = COALESCE(?::jsonb, hidden_items),

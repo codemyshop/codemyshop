@@ -1,15 +1,4 @@
-/**
- *
- * Nitro Task — email:client-sync
- *
- * Auto IMAP sync → cs_email_message for the Mail tab of the hub.
- * Different from inbox:sync (which populates cs_inbox_emails with
- * support classification). Here: raw multi-tenant mailbox for
- * the integrated email client (/hub/crm/email Mail tab).
- *
- * Schedule: every 5 minutes, offset minute=2 to avoid conflicting
- * with inbox:sync (minute=0).
- */
+
 
 import { defineTask } from 'nitropack/runtime'
 import { withAutomateLock } from '~/server/utils/automate-lock'

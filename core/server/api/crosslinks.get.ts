@@ -1,10 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/crosslinks?type=blog|expertise&slug=xxx
- * Returns cross-links to other sections (Academy, Blog, Expertise).
- * Source of truth: DB (cs_crosslinks + cs_academy_module).
- */
 
 export default defineEventHandler(async (event) => {
   const { getAllModulesAsync } = await import('~/server/utils/academy-content')
@@ -24,10 +18,10 @@ export default defineEventHandler(async (event) => {
     expertise: [],
   }
 
-  // Academy depuis DB (cache 60s)
+  
   const academy = await getAllModulesAsync()
 
-  // Crosslinks depuis DB (façade ac_hub)
+  
   let crosslinks: any[] = []
   try {
     const { listAllCrosslinks } = await import('~/internal/hub/server/utils/hub')
@@ -37,7 +31,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (contentType === 'blog') {
-    // Blog → Academy : modules dont relatedArticles contient ce slug
+    
     for (const mod of academy.modules || []) {
       const related = (mod as any).relatedArticles || []
       const matches = related.some((entry: any) => {
@@ -54,7 +48,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Blog → Blog (même pilier/sous-cat) depuis DB
+    
     const entry = crosslinks.find(c => c.url?.includes(slug))
     if (entry) {
       const sameSubcat = typeof entry.same_subcat === 'string' ? JSON.parse(entry.same_subcat) : entry.same_subcat || []
@@ -70,7 +64,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (contentType === 'expertise') {
-    // Expertise → Academy
+    
     for (const mod of academy.modules || []) {
       const related = (mod as any).relatedExpertise || []
       const matches = related.some((entry: any) => {
@@ -87,7 +81,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Expertise → Blog par catégorie depuis DB
+    
     const expToBlogMap: Record<string, string[]> = {
       'seo': ['seo'],
       'securite': ['securite'],

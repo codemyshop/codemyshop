@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/bo/smartproject/tasks/:id
- * Remplace ac_smartproject/ajaxupdateprojecttask (chantier #38 Phase B1.1).
- *
- * Body : { task_title?, task_status?, task_description?, date_deadline?, assigned_to? }
- */
+
 import { updateProjectTask, type UpdateProjectTaskInput } from '~/enterprise/base/smartproject/server/utils/smartproject'
 
 export default defineEventHandler(async (event) => {

@@ -1,14 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * i18n helpers for multilingual sitemap generation.
- *
- * Emits a <url> block per canonical URL with <xhtml:link rel="alternate"
- * hreflang="..."/> for each active language of the shop + an x-default → fr.
- *
- * Convention conforme aux specs Google :
- * https://developers.google.com/search/docs/specialized/international/localized-versions
- */
+
 import { localizeRootSegment } from '~/utils/locale-route-roots'
 
 export const SITEMAP_XHTML_NS = ' xmlns:xhtml="http://www.w3.org/1999/xhtml"'
@@ -18,11 +9,6 @@ export interface ActiveLang {
   iso_code: string
 }
 
-/**
- * Loads the active languages of the shop, filtered by the `locales` whitelist
- * + 'fr' (canonical). Pass `runtimeConfig.public.i18nLocales` from the
- * route handler.
- */
 export async function loadActiveLangs(db: any, locales: string[] = ['en']): Promise<ActiveLang[]> {
   try {
     const rows = await db.query<ActiveLang>(
@@ -36,14 +22,10 @@ export async function loadActiveLangs(db: any, locales: string[] = ['en']): Prom
   }
 }
 
-/**
- * URL prefix according to iso_code. fr (default) → no prefix.
- * Ex: ('/grossiste/olive/', 'en') → '/en/wholesaler/olive/'
- */
 export function buildLocalizedPath(rawPath: string, iso: string): string {
   if (!rawPath.startsWith('/')) rawPath = '/' + rawPath
   if (iso === 'fr') return rawPath
-  // Traduire le premier segment s'il est canonical
+  
   const firstSlash = rawPath.indexOf('/', 1)
   const firstSeg = firstSlash > 0 ? rawPath.slice(1, firstSlash) : rawPath.slice(1)
   const rest = firstSlash > 0 ? rawPath.slice(firstSlash) : ''
@@ -51,15 +33,6 @@ export function buildLocalizedPath(rawPath: string, iso: string): string {
   return `/${iso}/${translatedRoot}${rest}`
 }
 
-/**
- * Localized slug map: for a _lang table, returns
- * Map<masterPath, Record<iso_code, localizedSlug>>.
- * Usage: build translated paths segment by segment (ex: silo
- * fruit-sec/datte → dried-fruit/datte en EN).
- *
- * If `slugCol` doesn't exist in the table (ex: megamenu has no slug),
- * returns an empty map (fallback master.path).
- */
 export async function loadLocalizedSlugMap(
   db: any,
   table: string,
@@ -81,7 +54,7 @@ export async function loadLocalizedSlugMap(
          JOIN ps_lang ps ON ps.id_lang = l.id_lang AND ps.active = 1
         WHERE m.active = 1 ${kindFilter}`,
     )
-    // Group by path, then accumulate slug_lang per iso
+    
     const byPathIso = new Map<string, Record<number, string>>()
     const idLangToIso = new Map<number, string>()
     const isoRows = await db.query<ActiveLang>(`SELECT id_lang, iso_code FROM ps_lang WHERE active = 1`)
@@ -98,19 +71,10 @@ export async function loadLocalizedSlugMap(
       }
       map.set(path, isoMap)
     }
-  } catch { /* table absente ou colonne manquante */ }
+  } catch {  }
   return map
 }
 
-/**
- * Builds a localized path by walking the segments + substituting with
- * the localized slug for each ancestor. Fallback master for segments
- * without translation.
- *
- * Ex: masterPath='fruit-sec/datte/medjool', iso='en', slugMap populated
- * → 'dried-fruit/datte/medjool' (if datte and medjool not translated, remain
- * identiques).
- */
 export function buildLocalizedSiloPath(
   masterPath: string,
   iso: string,
@@ -127,10 +91,6 @@ export function buildLocalizedSiloPath(
   return out.join('/')
 }
 
-/**
- * Emits a complete <url> XML with hreflang alternates for all languages
- * actives. loc = URL canonique (fr). langsWithUrls = [{ iso, url }].
- */
 export function buildUrlEntry(
   loc: string,
   langsWithUrls: Array<{ iso: string; url: string }>,
@@ -146,7 +106,7 @@ export function buildUrlEntry(
   for (const { iso, url } of langsWithUrls) {
     x += `    <xhtml:link rel="alternate" hreflang="${iso}" href="${escapeXml(url)}" />\n`
   }
-  // x-default pointe sur la version fr
+  
   const fr = langsWithUrls.find(l => l.iso === 'fr')
   if (fr) x += `    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(fr.url)}" />\n`
   x += `  </url>\n`

@@ -13,7 +13,7 @@
       <div v-else class="flex-1" />
 
       <div class="flex items-center gap-3">
-        <!-- Sprint 12 — PIM language selector (multi-tenant) -->
+        
         <HubLangSelector aria-label="Langue d'édition de la catégorie" />
 
         <label class="flex items-center gap-2 text-xs cursor-pointer" :class="{ 'opacity-40 cursor-not-allowed': !isMasterLang }" title="Affichée sur la boutique (éditable en langue master uniquement)">
@@ -51,7 +51,7 @@
       </div>
     </header>
 
-    <!-- Skeleton -->
+    
     <div v-if="loading" class="px-6 py-8">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 h-96 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl animate-pulse" />
@@ -64,7 +64,7 @@
     <div v-else-if="category" class="px-6 py-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- Colonne gauche : onglets -->
+        
         <div class="lg:col-span-2 space-y-6">
           <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm">
             <nav class="flex items-center gap-1 px-4 border-b border-gray-100 dark:border-slate-800" role="tablist">
@@ -87,7 +87,7 @@
             </nav>
           </div>
 
-          <!-- Tab: Essentiel -->
+          
           <div v-show="activeTab === 'essentiel'" class="space-y-6">
             <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-5">
               <div class="flex items-center justify-between">
@@ -117,9 +117,9 @@
             </div>
           </div>
 
-          <!-- Tab: Contenu -->
+          
           <div v-show="activeTab === 'contenu'" class="space-y-6">
-            <!-- 1. Cover image (manual upload + auto square generation) -->
+            
             <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
               <div class="flex items-start justify-between gap-4">
                 <div>
@@ -187,11 +187,11 @@
               <p v-if="catCoverStatus" class="text-[10px]" :class="catCoverStatusClass">{{ catCoverStatus }}</p>
             </div>
 
-            <!-- 2. H1 (cs_category_extra_lang) -->
+            
             <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-2">
               <div class="flex items-center gap-2">
                 <label for="cat-h1" class="text-sm font-bold text-gray-800 dark:text-slate-100">H1</label>
-                <!-- CSS-only tooltip: H1 importance + GSC role. -->
+                
                 <div class="relative group inline-flex">
                   <svg class="w-4 h-4 text-gray-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
                     <circle cx="12" cy="12" r="9" />
@@ -216,7 +216,7 @@
               <p class="text-[10px] text-gray-400">{{ form.h1.length }}/255</p>
             </div>
 
-            <!-- 1bis. Targeted keywords (Search Console) -->
+            
             <section class="bg-white dark:bg-slate-900 border border-emerald-100 dark:border-emerald-500/20 rounded-xl shadow-sm p-6">
               <button
                 type="button"
@@ -280,7 +280,7 @@
                 Soit la catégorie est neuve, soit le sujet n'est pas encore indexé.
               </div>
               <div v-else>
-                <!-- H1 recommendation if best keyword position < 30 -->
+                
                 <div v-if="seoBest && seoRecommendedH1" class="mb-3 p-3 rounded-lg bg-emerald-50/70 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30">
                   <div class="flex items-start justify-between gap-3">
                     <div class="flex-1 min-w-0">
@@ -296,7 +296,7 @@
                   </div>
                 </div>
 
-                <!-- Matched opportunities table -->
+                
                 <div class="overflow-x-auto -mx-6">
                   <table class="w-full text-[11px]">
                     <thead class="text-[9px] uppercase tracking-wider text-gray-500 dark:text-slate-500 border-b border-gray-100 dark:border-slate-800">
@@ -341,7 +341,7 @@
                   Ces données seront automatiquement injectées dans le prompt « Rédaction IA » ci-dessous pour orienter le résumé et la description longue.
                 </p>
 
-                <!-- Silo distribution: keywords belonging to subcategories -->
+                
                 <div v-if="seoIsPillar && seoSiloBuckets.length" class="mt-5 pt-4 border-t border-gray-100 dark:border-slate-800">
                   <h3 class="text-xs font-bold text-gray-700 dark:text-slate-200 mb-2">
                     Distribution silo — {{ seoSiloBuckets.reduce((a, b) => a + b.keywords.length, 0) }} mots-clés à déléguer aux sous-catégories
@@ -373,7 +373,7 @@
               </div>
             </section>
 
-            <!-- 1bis. AI writing — API (summary + long description) -->
+            
             <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
               <div class="flex items-center justify-between">
                 <div>
@@ -401,7 +401,7 @@
                 />
               </div>
 
-              <!-- Mode Centaure -->
+              
               <div v-if="aiMode === 'centaure'" class="mt-4 space-y-3">
                 <button
                   @click="generateCentaurePrompt"
@@ -446,7 +446,7 @@
                 </div>
               </div>
 
-              <!-- Mode API -->
+              
               <div v-if="aiMode === 'api'" class="mt-4 space-y-3">
                 <button
                   @click="requestCatContent"
@@ -475,7 +475,7 @@
               </div>
             </section>
 
-            <!-- 3. Summary (ps_category_lang.description — top of page, intro_html) -->
+            
             <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-2">
               <label for="cat-summary" class="text-sm font-bold text-gray-800 dark:text-slate-100">Résumé</label>
               <p class="text-xs text-gray-400">Texte court affiché à côté de la cover en haut de page.</p>
@@ -489,7 +489,7 @@
               <p class="text-[10px] text-gray-400">{{ form.summary.length }} caractères.</p>
             </div>
 
-            <!-- 4. Description longue (ps_category_lang.additional_description — bas de page SEO) -->
+            
             <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-5">
               <div class="flex items-center justify-between">
                 <div>
@@ -542,10 +542,10 @@
             </div>
           </div>
 
-          <!-- Tab: FAQ -->
+          
           <div v-show="activeTab === 'faq'" class="space-y-6">
 
-            <!-- FAQ generation via AI -->
+            
             <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-3">
               <div class="flex items-center justify-between">
                 <div>
@@ -604,7 +604,7 @@
             </div>
           </div>
 
-          <!-- Tab: Maillage -->
+          
           <div v-show="activeTab === 'maillage'" class="space-y-6">
             <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
               <HubCategoryBlogPostLinker v-model="form.linkedPosts" />
@@ -614,9 +614,9 @@
             </div>
           </div>
 
-          <!-- Tab: SEO & Access -->
+          
           <div v-show="activeTab === 'seo'" class="space-y-6">
-            <!-- Optimisation SEO par IA (Centaure) -->
+            
             <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-3">
               <div class="flex items-center justify-between">
                 <div>
@@ -778,7 +778,7 @@
           </div>
         </div>
 
-        <!-- Colonne droite : carte statut + nav -->
+        
         <div class="space-y-6">
           <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6 space-y-4">
             <div class="flex items-center justify-between">
@@ -822,7 +822,7 @@
             </div>
           </div>
 
-          <!-- Modal suppression + migration -->
+          
           <Teleport to="body">
             <div v-if="showDeleteModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4" @click.self="showDeleteModal = false">
               <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4">
@@ -877,8 +877,6 @@ import type { CategoryFaq, LinkedBlogPost } from '~/types/hub/category-silo'
 const route = useRoute()
 const config = useRuntimeConfig()
 
-// Sprint 12 — multilang: PIM editing language.
-// The composable is SSR-safe (useState) and shared between editors.
 const { currentLangId, isDefault: isMasterLang } = useHubLang()
 
 const category = ref<any>(null)
@@ -890,7 +888,6 @@ const saving = ref(false)
 const saved = ref(false)
 const saveError = ref<string | null>(null)
 
-// Deletion modal state + migration
 const showDeleteModal = ref(false)
 const deleteTargetId = ref(0)
 const deleteHard = ref(false)
@@ -921,7 +918,7 @@ async function confirmDelete() {
       },
     )
     showDeleteModal.value = false
-    // Redirect to list
+    
     await navigateTo('/hub/categories')
   } catch (err: any) {
     deleteError.value = err?.data?.message || err?.message || 'Erreur suppression'
@@ -930,8 +927,6 @@ async function confirmDelete() {
   }
 }
 
-// 3-state (primary=webp → fallback=jpg legacy → missing=empty icon).
-// Incremented by @error for each failed variant.
 const coverFallbackLevel = ref(0)
 const coverUploading = ref(false)
 const coverUploadError = ref<string | null>(null)
@@ -963,7 +958,6 @@ const tabs: Array<{ id: CategoryTab; label: string }> = [
   { id: 'seo', label: 'SEO & Accès' },
 ]
 
-// ---- WYSIWYG ----
 const mode = ref<'wysiwyg' | 'html'>('wysiwyg')
 const editorEl = ref<HTMLElement | null>(null)
 const toolbar = [
@@ -1010,7 +1004,6 @@ watch(mode, (m) => {
   })
 })
 
-// ---- SEO preview ----
 const siteName = computed(() => {
   const host = String(config.public.psFrontUrl || '').replace(/^https?:\/\//, '').replace(/\/+$/, '')
   return host || 'www.example-shop.com'
@@ -1066,23 +1059,17 @@ function regenerateSlug() {
   form.slug = slugify(form.name)
 }
 
-// ---- Front URL + images ----
-// Relative URL (silo): category opens on the same host as the hub
-// current (preprod preprod_host, prod prod_host) — avoids redirecting to
-// production from preprod.
 const categoryFrontUrl = computed(() => {
-  // frontPath (e.g., /grossiste/olive/tartinable) is the canonical Nuxt URL of the
-  // tenant computed server-side via the ancestor chain. Fallback to the
-  // legacy /c/{id}-{slug} only if missing (tenant outside Nuxt convention).
+  
+  
+  
   const srv = category.value?.frontPath
   if (srv) return srv
   const id = category.value?.id ?? route.params.id
   const slug = form.slug || category.value?.slug || ''
   return slug ? `/c/${id}-${slug}` : `/c/${id}`
 })
-// SEO slug used in the WebP filename. The stable source = form.slug (lang
-// current) then category.slug — the upload API always resolves the slug id_lang=1
-// server-side, but the hub is multilang so we follow the selected language.
+
 function slugifyLocal(s: string): string {
   return (s || '')
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
@@ -1094,7 +1081,7 @@ const coverUrl = computed(() => {
   if (!id) return ''
   const bust = coverCacheBust.value ? `?v=${coverCacheBust.value}` : ''
   const slug = slugifyLocal(form.slug || category.value?.slug || '')
-  // Level 0: WebP SEO — 1: JPG legacy — 2: covergen legacy /blog-covers/ — 3+: empty icon
+  
   if (coverFallbackLevel.value === 0) return `/img/c/${id}-${slug}-800.webp${bust}`
   if (coverFallbackLevel.value === 1) return `/img/c/${id}.jpg${bust}`
   if (coverFallbackLevel.value === 2 && (category.value as any)?.legacyCoverUrl) {
@@ -1143,7 +1130,6 @@ function onCoverFileChange(e: Event) {
   ;(e.target as HTMLInputElement).value = ''
 }
 
-// ---- Load / save ----
 async function load() {
   loading.value = true
   coverFallbackLevel.value = 0
@@ -1155,9 +1141,9 @@ async function load() {
     parents.value = data.parents ?? []
     groups.value = data.groups ?? []
     nbProducts.value = data.nbProducts ?? 0
-    // catCoverUrl is only populated by generation (requestCatCover) or
-    // upload-cover. The cover displayed by default follows coverUrl (PS native
-    // /img/c/{id}-{slug}-800.webp) with fallback to legacyCoverUrl if 404.
+    
+    
+    
     catCoverUrl.value = null
 
     const c = data.category
@@ -1240,7 +1226,6 @@ async function save() {
   }
 }
 
-// ── Category cover ─────────────────────────────────────────────
 const catCoverUrl = ref<string | null>(null)
 const catCoverGenerating = ref(false)
 const catCoverStatus = ref<string | null>(null)
@@ -1293,10 +1278,9 @@ async function checkCatCoverStatus() {
       catCoverStatusClass.value = 'text-red-500'
       if (catCoverPollTimer) clearInterval(catCoverPollTimer)
     }
-  } catch { /* silent */ }
+  } catch {  }
 }
 
-// ── Targeted GSC keywords (Search Console) ──────────────────────────
 interface SeoKeyword {
   query: string; page: string; position: number; clicks: number
   impressions: number; ctr: number; score: number
@@ -1313,18 +1297,14 @@ const seoIsPillar      = ref(false)
 const seoPillarAncestor = ref<{ id: number; name: string; slug: string } | null>(null)
 const seoSiblings      = ref<{ id: number; name: string; slug: string }[]>([])
 const seoChildren      = ref<{ id: number; name: string; slug: string }[]>([])
-const seoKeywords      = ref<SeoKeyword[]>([])         // pillarKeywords
-const seoSiloBuckets   = ref<SiloBucket[]>([])         // groupés par sous-cat
+const seoKeywords      = ref<SeoKeyword[]>([])         
+const seoSiloBuckets   = ref<SiloBucket[]>([])         
 const seoBest          = ref<SeoKeyword | null>(null)
 const seoRecommendedH1 = ref<string | null>(null)
 const seoLoading       = ref(false)
 const seoError         = ref<string | null>(null)
-const seoExpanded      = ref(false)   // accordéon fermé par défaut
+const seoExpanded      = ref(false)   
 
-// ── Brief audience tenant (PS_AC_TENANT_AUDIENCE) ─────────────────
-// Injected at the top of ALL AI prompts (content, SEO, FAQ) to
-// guide the tone and exclude out-of-scope angles (B2C on B2B site, etc.).
-// Edited in /hub/informations Preferences tab.
 const tenantAudience = ref('')
 
 async function loadTenantBrief() {
@@ -1384,7 +1364,6 @@ function applyKeywordAsH1(opp: SeoKeyword) {
   form.h1 = cap(opp.query).slice(0, 255)
 }
 
-// ── Category AI writing ──────────────────────────────────────
 const catInstructions = ref('')
 const catRedactionGenerating = ref(false)
 const catRedactionStatus = ref<string | null>(null)
@@ -1446,7 +1425,7 @@ async function checkCatRedactionStatus() {
       catRedactionStatus.value = 'En file d\'attente'
       catRedactionStatusClass.value = 'text-violet-400'
     }
-  } catch { /* silent */ }
+  } catch {  }
 }
 
 function applyCatRedaction() {
@@ -1474,10 +1453,9 @@ function applyCatFaqOnly() {
       catRedactionStatus.value = `${faqList.length} FAQ appliquées`
       catRedactionStatusClass.value = 'text-emerald-600'
     }
-  } catch { /* ignore */ }
+  } catch {  }
 }
 
-// ── API mode for summary + description + meta ──────────
 const aiMode = ref<'centaure' | 'api'>('centaure')
 const centaurePrompt = ref('')
 const centaureResponse = ref('')
@@ -1491,15 +1469,15 @@ function generateCentaurePrompt() {
   const existingSummary = form.summary?.trim() || ''
   const existingDesc = (form.description || '').replace(/<[^>]+>/g, ' ').trim().slice(0, 400)
 
-  // If H1 is already filled → don't re-generate it, pass it to the LLM as context
+  
   const h1IsLocked = existingH1.length > 0
 
-  // Ancestor pillar (e.g., grossiste/marque in some tenants, empty in others) — prefix
-  // ALL internal links generated by the LLM. Without this, we would get
-  // /saveurs-du-monde instead of /grossiste/saveurs-du-monde/ (audit incidents
-  // 2026-04-25). Tenant-aware via runtimeConfig.public.piliers
-  // — some tenants don't have a pillar declared, we fall back to flat scheme /{slug}/.
-  // Compact format 'grossiste' | 'grossiste:2' — we only keep the slug here.
+  
+  
+  
+  
+  
+  
   const piliersList = (((config.public as any).piliers ?? []) as string[])
     .map((p) => (p.split(':', 1)[0] || p))
   const pilierSlug = piliersList.length === 0
@@ -1507,12 +1485,12 @@ function generateCentaurePrompt() {
     : seoIsPillar.value
       ? (slug || piliersList[0])
       : (seoPillarAncestor.value?.slug ?? piliersList[0])
-  // Helper: builds an absolute category URL by prefixing with pillar if
-  // applicable. /grossiste/oliv/ for tenants with pillars, /oliv/ for those without.
+  
+  
   const catUrl = (s: string) => pilierSlug ? `/${pilierSlug}/${s}/` : `/${s}/`
   const ancestorBaseUrl = pilierSlug ? `/${pilierSlug}/` : '/'
 
-  // Live SEO context: top GSC keywords targeting this category
+  
   let seoBlock = ''
   if (seoKeywords.value.length) {
     const top = seoKeywords.value.slice(0, 8)
@@ -1525,7 +1503,7 @@ function generateCentaurePrompt() {
     seoBlock = `\n## Données Search Console (28 derniers jours)\nMots-clés réels qui cherchent cette catégorie sur Google :\n${lines}\n\n${h1Instr} N'invente pas de chiffres ou de positions — reste sur le fond éditorial.\n`
   }
 
-  // Structural context: if pillar page, list subcategories (SEO silo)
+  
   let pillarBlock = ''
   if (seoIsPillar.value && seoChildren.value.length) {
     const childList = seoChildren.value.map(c => `- ${c.name}`).join('\n')
@@ -1535,15 +1513,15 @@ function generateCentaurePrompt() {
     pillarBlock = `\n## Structure de la page (cocon sémantique)\nCette catégorie est une **page pilier** avec ${seoChildren.value.length} sous-catégories :\n${childList}\n\nTon rôle :\n${h1Rule}\n- La description longue doit présenter et **annoncer chaque sous-catégorie** dans des sections H2 thématiques (1 H2 par grand cluster). Le but est que la pilier serve de hub qui distribue le PageRank vers les enfants.\n- N'utilise PAS de mots-clés ultra-spécifiques (ex: "noix", "pistache", "olives") dans le résumé — ils appartiennent aux sous-catégories.\n`
   }
 
-  // H1 context section: current (locked) or to be written
+  
   const h1Context = h1IsLocked
     ? `\nH1 fixé (à NE PAS réécrire — sert de contexte) :\n${existingH1}\n`
     : ''
 
-  // Summary block: universal 3-paragraph structure for leaf/mid-tier pages
-  // (with link back to ancestor pillar), broad structure for pillars.
-  // The patterns are vertical-agnostic (B2B food, B2C real estate, etc.);
-  // the LLM fills in domain vocabulary by reading the existing description.
+  
+  
+  
+  
   const ancestor = seoPillarAncestor.value
   let summaryBrief: string
   if (seoIsPillar.value) {
@@ -1567,7 +1545,7 @@ function generateCentaurePrompt() {
    Contraintes : 3+ noms concrets par § (variétés, zones, formats, segments…), 1-3 <strong> par §, pas de prix chiffré (tarif grossiste / prix attractifs OK), ton expert et factuel, pas de superlatifs creux.${h1IsLocked ? ' Cohérent avec le H1 fixé ci-dessus.' : ''}`
   }
 
-  // List of conditional writing guidelines
+  
   const tasks: string[] = []
   if (!h1IsLocked) {
     tasks.push(`Un **H1** (60-70 caractères) ${seoIsPillar.value ? 'généraliste qui couvre le domaine entier (pas une niche). Si un mot-clé GSC broad est en page 2, intègre-le.' : 'qui répond au top mot-clé GSC ci-dessus s\'il y en a, sinon au nom de catégorie.'}`)
@@ -1589,15 +1567,15 @@ function generateCentaurePrompt() {
 
    HTML propre (<h2>, <p>, <table><thead><tr><th>…</th></tr></thead><tbody>…</tbody></table>, <strong>, <a>, <ul>). Aucune classe Tailwind. Aucun chiffre inventé.`
   } else {
-    // List of sibling slugs pre-provided to the LLM for URL anti-hallucination.
-    // URLs are absolute (pillar prefix mandatory if tenant has pillars):
-    // /grossiste/oriental/ for tenants with pillars, /oriental/ for those without.
+    
+    
+    
     const siblingsList = seoSiblings.value.slice(0, 8)
       .map(s => `${s.name} → ${catUrl(s.slug)}`)
       .join(', ')
     const ancestorBacklink = ancestor ? `/${ancestor.slug}/` : ancestorBaseUrl
 
-    // Top 3 secondary GSC keywords to push in <strong>
+    
     const secondaryKw = seoKeywords.value.slice(0, 5).map(k => `"${k.query}"`).join(', ')
 
     descBrief = `Une **description longue SEO** (700–1000 mots) affichée en bas de page, structurée en **6 sections H2** thématiques. Layout responsive 2 colonnes côté front, donc chaque section doit être autonome et concise (~80-120 mots). Règles éditoriales :
@@ -1621,7 +1599,7 @@ function generateCentaurePrompt() {
   tasks.push(descBrief)
   const tasksList = tasks.map((t, i) => `${i + 1}. ${t}`).join('\n')
 
-  // JSON response format — h1 included only if it needs to be generated
+  
   const jsonShape = h1IsLocked
     ? `{
   "summary": "<p>HTML du résumé ici</p>",
@@ -1660,8 +1638,8 @@ function applyCentaureResponse() {
 
   let parsed: { h1?: string; summary?: string; description?: string } | null = null
 
-  // 1. JSON attempt (preferred format). Tolerates code fences ```json ... ```
-  // and surrounding noise by finding the first { and last }.
+  
+  
   const stripFences = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '')
   const firstBrace = stripFences.indexOf('{')
   const lastBrace  = stripFences.lastIndexOf('}')
@@ -1670,10 +1648,10 @@ function applyCentaureResponse() {
     try {
       parsed = JSON.parse(candidate)
     } catch (e1) {
-      // Common LLM JSON failures:
-      // (a) literal newlines/tabs in values (invalid in strict JSON)
-      // (b) unescaped HTML quotes (<a href="..."> → breaks the string)
-      // We extract each pair "key": "...." and re-escape its body.
+      
+      
+      
+      
       try {
         const sanitized = candidate.replace(
           /("[\w_]+"\s*:\s*")([\s\S]*?)("\s*(?:,|\}))/g,
@@ -1694,7 +1672,7 @@ function applyCentaureResponse() {
     }
   }
 
-  // 2. Fallback : ancien format ---H1---/---SUMMARY---/---DESCRIPTION---
+  
   if (!parsed) {
     const h1m   = raw.match(/---H1---\s*\n([\s\S]*?)(?=---SUMMARY---|$)/i)
     const sum   = raw.match(/---SUMMARY---\s*\n([\s\S]*?)(?=---DESCRIPTION---|$)/i)
@@ -1709,8 +1687,8 @@ function applyCentaureResponse() {
     }
   }
 
-  // 3. Ultimate fallback: raw HTML without wrapper. Split at first <h2>:
-  // everything before = summary (intro), <h2>...end = long description.
+  
+  
   if (!parsed) {
     const stripped = raw.replace(/^```html?\s*/i, '').replace(/\s*```\s*$/, '').trim()
     if (/^</.test(stripped) && /<h2[\s>]/i.test(stripped)) {
@@ -1757,7 +1735,6 @@ function applyCentaureResponse() {
   catRedactionStatusClass.value = applied.length ? 'text-emerald-600' : 'text-amber-500'
 }
 
-// ── SEO mode (meta_title + meta_description + slug) ──
 const seoMode = ref<'centaure' | 'api'>('centaure')
 const seoPrompt = ref('')
 const seoResponse = ref('')
@@ -1773,25 +1750,25 @@ function generateSeoPrompt() {
   const sum = form.summary?.replace(/<[^>]+>/g, ' ').trim() || ''
   const desc = (form.description || '').replace(/<[^>]+>/g, ' ').trim().slice(0, 800)
 
-  // GSC top keywords to guide meta_title/meta_description
+  
   let gscBlock = ''
   if (seoKeywords.value.length) {
     const top = seoKeywords.value.slice(0, 6)
     gscBlock = `\n## Données Search Console (28 derniers jours) — angles CTR\n${top.map(k => `- "${k.query}" — pos. ${k.position}, ${k.impressions} impressions, CTR ${k.ctr}% (${k.type})`).join('\n')}\n\nIntègre 1-2 top keywords broad dans le meta_title. Le meta_description doit refléter au moins un keyword "rewrite" (page 1 à faible CTR — angle d'amélioration).\n`
   }
 
-  // Slug guard: if already valid (lowercase + dashes, not empty), don't expose
-  // the slug to the LLM — so it can't overwrite it, even by accident or
-  // copy-paste. Manual regeneration remains available via the dedicated button
-  // in the form (regenerateSlug()).
+  
+  
+  
+  
   const slugIsValid = !!slug && /^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)
 
-  // Pillar vs leaf: meta strategy differs
+  
   const pillarHint = seoIsPillar.value
     ? 'Cette catégorie est une **page pilier** (hub). Le meta_title doit rester broad/transversal — pas de niche. Évite les tokens spécifiques aux sous-cats.'
     : 'Cette catégorie est une **page feuille**. Le meta_title peut s\'aligner sur le top keyword GSC niche pour maximiser le CTR.'
 
-  // Task list conditioned on whether the slug needs generation
+  
   const tasks: string[] = []
   tasks.push('**meta_title** — **≤ 60 caractères** (Google tronque au-delà), angle bénéfice concret. Doit être cohérent avec le H1 fixé sans le dupliquer mot pour mot.')
   tasks.push('**meta_description** — **145–160 caractères**, phrase complète terminant par un point ou un appel à l\'action implicite. Pas de troncature à mi-mot.')
@@ -1800,7 +1777,7 @@ function generateSeoPrompt() {
   }
   const tasksList = tasks.map((t, i) => `${i + 1}. ${t}`).join('\n')
 
-  // JSON output — slug omitted if already valid
+  
   const jsonShape = slugIsValid
     ? `{
   "meta_title": "…",
@@ -1838,15 +1815,15 @@ function applySeoResponse() {
 
   let parsed: { meta_title?: string; meta_description?: string; slug?: string; slug_change_reason?: string } | null = null
 
-  // 1. Tentative JSON
+  
   const stripFences = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '')
   const firstBrace = stripFences.indexOf('{')
   const lastBrace = stripFences.lastIndexOf('}')
   if (firstBrace >= 0 && lastBrace > firstBrace) {
-    try { parsed = JSON.parse(stripFences.slice(firstBrace, lastBrace + 1)) } catch { /* fallback */ }
+    try { parsed = JSON.parse(stripFences.slice(firstBrace, lastBrace + 1)) } catch {  }
   }
 
-  // 2. Fallback : ancien format markers ---META_TITLE--- / ---META_DESCRIPTION--- / ---SLUG---
+  
   if (!parsed) {
     const mt = raw.match(/---META_TITLE---\s*\n([\s\S]*?)(?=---META_DESCRIPTION---|---SLUG---|$)/i)
     const md = raw.match(/---META_DESCRIPTION---\s*\n([\s\S]*?)(?=---SLUG---|$)/i)
@@ -1875,10 +1852,10 @@ function applySeoResponse() {
     form.metaDescription = parsed.meta_description.trim().slice(0, 170)
     applied.push('Meta description')
   }
-  // Slug guard on apply: if current slug is already valid, don't accept
-  // the LLM's slug (belt + braces on prompt instruction). The slug
-  // can only be modified via the "Regenerate" button in the form or
-  // via manual entry.
+  
+  
+  
+  
   if (parsed.slug) {
     const currentValid = !!form.slug && /^[a-z0-9]+(-[a-z0-9]+)*$/.test(form.slug)
     if (!currentValid) {
@@ -1888,7 +1865,7 @@ function applySeoResponse() {
         applied.push('Slug')
       }
     }
-    // If currentValid: silently ignored — the existing URL is protected.
+    
   }
 
   seoApplyStatus.value = applied.length
@@ -1898,7 +1875,6 @@ function applySeoResponse() {
   setTimeout(() => { seoApplyStatus.value = null }, 5000)
 }
 
-// ── FAQ mode (Silo SEO tab) ─────────────────────────
 const faqCentaurePrompt = ref('')
 const faqCentaureResponse = ref('')
 const faqCentaurePromptCopied = ref(false)
@@ -1908,9 +1884,9 @@ function generateFaqCentaurePrompt() {
   const sum = form.summary?.replace(/<[^>]+>/g, ' ').trim() || ''
   const desc = (form.description || '').replace(/<[^>]+>/g, ' ').trim().slice(0, 2000)
 
-  // GSC keywords "rewrite" = page 1 but CTR < 2% = implicit questions
-  // that users search for but the page doesn't answer clearly.
-  // These are the best candidates for an FAQ that unlocks CTR.
+  
+  
+  
   const rewriteKw = seoKeywords.value.filter(k => k.type === 'rewrite').slice(0, 5)
   const conquestKw = seoKeywords.value.filter(k => k.type === 'conquest').slice(0, 5)
   let gscBlock = ''
@@ -1924,7 +1900,7 @@ function generateFaqCentaurePrompt() {
     }
   }
 
-  // Volume FAQ adaptatif : pilier = peu (10), feuille = riche (15)
+  
   const faqCount = seoIsPillar.value ? 10 : 15
   const angleHint = seoIsPillar.value
     ? 'Reste sur des questions broad/transversales (offre globale, livraison, paiement, accompagnement). Pas de question niche qui appartient aux sous-cats.'
@@ -1960,7 +1936,7 @@ function applyFaqCentaureResponse() {
   const raw = faqCentaureResponse.value.trim()
   if (!raw) return
 
-  // 1. Tentative JSON propre {faqs: [...]}
+  
   let list: Array<{ q?: string; a?: string }> | null = null
   const stripFences = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '')
   const firstBrace = stripFences.indexOf('{')
@@ -1969,17 +1945,17 @@ function applyFaqCentaureResponse() {
     try {
       const parsed = JSON.parse(stripFences.slice(firstBrace, lastBrace + 1))
       if (Array.isArray(parsed.faqs)) list = parsed.faqs
-    } catch { /* fallback */ }
+    } catch {  }
   }
 
-  // 2. Fallback : ancien format ---FAQ_JSON---[ ... ] ou JSON array brut
+  
   if (!list) {
     const m = raw.match(/---FAQ_JSON---\s*\n([\s\S]*?)$/i)
     const body = (m ? m[1] : raw).trim().replace(/^```json?\s*\n?/, '').replace(/\n?```\s*$/, '')
     try {
       const parsed = JSON.parse(body)
       if (Array.isArray(parsed)) list = parsed
-    } catch { /* fail through */ }
+    } catch {  }
   }
 
   if (!list || !list.length) {
@@ -1998,7 +1974,7 @@ function applyFaqCentaureResponse() {
 onMounted(() => {
   load()
   loadTenantBrief()
-  // Check if a cover/write-up already exists
+  
   if (route.params.id && route.params.id !== 'new') {
     checkCatCoverStatus()
     checkCatRedactionStatus()
@@ -2011,8 +1987,6 @@ onUnmounted(() => {
   if (catRedactionPollTimer) clearInterval(catRedactionPollTimer)
 })
 
-// Sprint 12 — reload on each language change.
-// Skip the first tick to avoid double-load on mount.
 watch(currentLangId, (newId, oldId) => {
   if (newId !== oldId && !loading.value) load()
 })

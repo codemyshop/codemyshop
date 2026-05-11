@@ -1,8 +1,4 @@
-/**
- *
- * Drizzle PG schema — megamenu domain.
- * Generated 2026-05-01 (php-eviction-phase2) from live PG information_schema.
- */
+
 
 import {
   integer, primaryKey, serial, smallint, text, timestamp, uniqueIndex, varchar,

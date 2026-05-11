@@ -1,23 +1,4 @@
-<!--
-  Grille produits paginée SSR pour les pages catégorie/silo (réutilisable
-  multi-tenant). Pagination classique via ?page=N&limit=N&sort=X —
-  JAMAIS d'infinite scroll (cf feedback_no_infinite_scroll_seo_pages).
 
-  Toolbar au-dessus de la grille : tri + items par page.
-  Pagination dupliquée (haut + bas) pour confort long scroll.
-
-  Props :
-    - endpoint, query, canonicalPath, canonicalBase, keyPrefix
-    - limit?            : items par page défaut (24)
-    - title?
-    - defaultSort?      : clé de tri par défaut ('relevance')
-    - interleaveEvery?  : N → insère le slot #interleave tous les N produits (0 = off)
-    - interleaveOnTop?  : true → rend aussi le slot une fois entre la pagination haut et la grille
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { t } = useT()
 interface ProductRow {
@@ -56,7 +37,6 @@ type SortKey =
   | 'name-asc' | 'name-desc'
   | 'ean13-asc' | 'ean13-desc'
 
-// i18n labels via t() — computed so language change re-renders.
 const SORT_OPTIONS = computed<Array<{ value: SortKey; label: string }>>(() => [
   { value: 'relevance',     label: t('catalogue.sort_relevance') },
   { value: 'price-asc',     label: t('catalogue.sort_price_asc') },
@@ -76,7 +56,6 @@ const SORT_KEYS: SortKey[] = [
   'ean13-asc', 'ean13-desc',
 ]
 
-/** Sortable columns from table header. */
 type SortCol = 'ref' | 'name' | 'ean13' | 'weight' | 'price' | 'price-kg'
 
 const PAGE_SIZES = [24, 48, 60, 100, 500, 1000] as const
@@ -97,13 +76,11 @@ const props = withDefaults(
   { limit: 24, title: '', defaultSort: 'relevance', interleaveEvery: 0, interleaveOnTop: false },
 )
 
-// Default title via i18n (catalogue.available_products) if prop empty.
 const resolvedTitle = computed(() => props.title || t('catalogue.available_products'))
 
 const route = useRoute()
 const router = useRouter()
 
-// Current view: URL ?view takes priority, else cookie (user preference), else 'grid'.
 const viewCookie = useCookie<ViewMode>('ac_listing_view', {
   default: () => 'grid',
   maxAge: 60 * 60 * 24 * 365,
@@ -123,7 +100,6 @@ function setView(v: ViewMode) {
   })
 }
 
-/** Toggle sort on column header. Cycle asc → desc → relevance. */
 function toggleColumnSort(col: SortCol) {
   const asc = `${col}-asc` as SortKey
   const desc = `${col}-desc` as SortKey
@@ -176,17 +152,12 @@ const { data, pending } = await useFetch<PagedResponse>(props.endpoint, {
   watch: [fetchQuery],
 })
 
-// Preserve the last non-null response during client-side refetch,
-// else the UI briefly switches to empty state (section unmounts, select
-// disappears) when changing limit/sort. See feedback from 2024-04-19 regarding limit=1000.
 const lastGoodData = ref<PagedResponse | null>(data.value)
 watch(data, (v) => { if (v !== null && v !== undefined) lastGoodData.value = v })
 
 const products = computed(() => lastGoodData.value?.products ?? [])
 const total = computed(() => lastGoodData.value?.total ?? 0)
 
-// Empty state context: distinguish "empty silo in DB" (indexing) from
-// simple "filter/pagination that matches nothing" (temporary empty result).
 const hasActiveFilters = computed(() =>
   !!(route.query.origin || route.query.allergens),
 )
@@ -195,7 +166,6 @@ const totalPages = computed(() =>
   total.value > 0 ? Math.max(1, Math.ceil(total.value / currentLimit.value)) : 1,
 )
 
-/** Query-string preservant sort/limit/view, en mutant juste `page`. */
 function buildQuery(page: number, extra: Partial<Record<string, string | number>> = {}): Record<string, string | number> {
   const q: Record<string, string | number> = {}
   if (page > 1) q.page = page
@@ -226,7 +196,6 @@ function onLimitChange(e: Event) {
   router.push({ path: route.path, query: { ...buildQuery(1), limit: v === props.limit ? undefined : v, page: undefined } })
 }
 
-// SEO pagination — rel prev/next in <head>
 useHead(() => {
   const links: Array<{ rel: string; href: string }> = []
   if (currentPage.value > 1) {
@@ -239,7 +208,6 @@ useHead(() => {
   return { link: links }
 })
 
-/** Derived items: products + #interleave slot insertions every N. */
 type GridItem =
   | { kind: 'product'; product: ProductRow }
   | { kind: 'interleave'; index: number }
@@ -282,7 +250,7 @@ const pageWindow = computed<Array<number | '…'>>(() => {
       </p>
     </div>
 
-    <!-- Toolbar : tri + nb/page + toggle vue -->
+    
     <div class="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
       <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
         <span>{{ t('catalogue.sort_by') }}</span>
@@ -307,7 +275,7 @@ const pageWindow = computed<Array<number | '…'>>(() => {
           </select>
         </label>
 
-        <!-- Toggle grille / liste -->
+        
         <div class="flex items-center overflow-hidden rounded-md border border-slate-200 dark:border-slate-700">
           <button
             type="button"
@@ -345,7 +313,7 @@ const pageWindow = computed<Array<number | '…'>>(() => {
       </div>
     </div>
 
-    <!-- Pagination HAUT -->
+    
     <CategoryPaginationNav
       class="mb-6"
       :current-page="currentPage"
@@ -355,12 +323,12 @@ const pageWindow = computed<Array<number | '…'>>(() => {
       :aria-label="t('catalogue.pagination_top')"
     />
 
-    <!-- Appointment card in header (just after 1st pagination) -->
+    
     <div v-if="interleaveOnTop" class="mb-6">
       <slot name="interleave" :index="-1" />
     </div>
 
-    <!-- Grille produits -->
+    
     <div
       v-if="currentView === 'grid'"
       :class="[
@@ -379,7 +347,7 @@ const pageWindow = computed<Array<number | '…'>>(() => {
       </template>
     </div>
 
-    <!-- Vue liste (prise de commande rapide) -->
+    
     <div
       v-else
       :class="[
@@ -439,7 +407,7 @@ const pageWindow = computed<Array<number | '…'>>(() => {
       </table>
     </div>
 
-    <!-- Pagination BAS -->
+    
     <CategoryPaginationNav
       class="mt-10"
       :current-page="currentPage"

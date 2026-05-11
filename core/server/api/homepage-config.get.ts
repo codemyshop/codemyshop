@@ -1,16 +1,5 @@
-/**
- *
- * GET /api/homepage-config
- *
- * Rebuilds the homepage payload (hero, features, personas, categories,
- * testimonials, about, blog, faq, malt) depuis cs_homepage_section +
- * cs_homepage_block (+ _lang) — no more domain-specific JSON columns, no more
- * master cs_homepage (dropped #200).
- *
- * Section ordering + visibility lives on the frontend (index.vue :
- * DEFAULT_SECTIONS). The `sections` field in the response is kept as `null`
- * for backward-compatibility with the signature consumed by useHomepageDb().
- */
+
+
 import { listSectionsWithLang, type SectionWithLangRow } from '~/modules/homepage-section/server/utils/homepage-section'
 import { listBlocksForSections, type BlockWithLangRow } from '~/modules/homepage-block/server/utils/homepage-block'
 
@@ -50,11 +39,6 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-/**
- * Mirror reconstruction of `archive/hp_normalize_205.py` — each
- * section-type rebuilds the JSON shape that Nuxt components consume
- * (HomeHero, HomeFeatures, HomePersonas, HomeAbout, HomeBlog, HomeFaq, …).
- */
 function buildSectionPayload(s: SectionWithLangRow, blocks: BlockWithLangRow[]): any {
   switch (s.type) {
     case 'hero': {

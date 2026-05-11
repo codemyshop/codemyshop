@@ -1,11 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-// ---------------------------------------------------------------------------
-// Rate-limit store (in-memory, resets on server restart)
-// ---------------------------------------------------------------------------
+
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 const RATE_LIMIT_MAX = 10
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000 // 1 hour
+const RATE_LIMIT_WINDOW = 60 * 60 * 1000 
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now()
@@ -20,9 +17,6 @@ function isRateLimited(ip: string): boolean {
   return entry.count > RATE_LIMIT_MAX
 }
 
-// ---------------------------------------------------------------------------
-// URL validation helpers
-// ---------------------------------------------------------------------------
 const PRIVATE_IP_RANGES = [
   /^127\./,
   /^10\./,
@@ -67,9 +61,6 @@ function validateUrl(raw: unknown): URL {
   return parsed
 }
 
-// ---------------------------------------------------------------------------
-// Lightweight HTML helpers (no external parser needed)
-// ---------------------------------------------------------------------------
 function getTagContent(html: string, tag: string): string | null {
   const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i')
   const match = html.match(regex)
@@ -87,7 +78,7 @@ function getAllTagContents(html: string, tag: string): string[] {
 }
 
 function getMetaContent(html: string, attr: string, value: string): string | null {
-  // Match both name="..." content="..." and content="..." name="..."
+  
   const patterns = [
     new RegExp(`<meta[^>]+${attr}=["']${value}["'][^>]+content=["']([^"']*)["'][^>]*/?>`, 'i'),
     new RegExp(`<meta[^>]+content=["']([^"']*)["'][^>]+${attr}=["']${value}["'][^>]*/?>`, 'i'),
@@ -124,7 +115,7 @@ function getJsonLdTypes(html: string): string[] {
         }
       }
       extract(data)
-    } catch { /* malformed JSON-LD, skip */ }
+    } catch {  }
   }
   return types
 }
@@ -160,7 +151,7 @@ function countLinks(html: string, baseHost: string): { internal: number; externa
         external++
       }
     } catch {
-      internal++ // relative URLs count as internal
+      internal++ 
     }
   }
   return { internal, external }
@@ -180,14 +171,11 @@ function getOgTags(html: string): Record<string, string> {
   return tags
 }
 
-// ---------------------------------------------------------------------------
-// Scoring
-// ---------------------------------------------------------------------------
 interface CheckResult {
   name: string
   status: 'pass' | 'warn' | 'fail'
-  score: number    // points earned
-  maxScore: number // max possible
+  score: number    
+  maxScore: number 
   value: string
   recommendation?: string
 }
@@ -220,11 +208,8 @@ const RECOMMENDATIONS: Record<string, Record<string, string>> = {
   robots: { fail: 'Votre page est en noindex — elle ne sera jamais indexée par Google ni les IA.' },
 }
 
-// ---------------------------------------------------------------------------
-// Main handler
-// ---------------------------------------------------------------------------
 export default defineEventHandler(async (event) => {
-  // Rate limiting
+  
   const ip = getRequestHeader(event, 'x-forwarded-for')?.split(',')[0]?.trim()
     || getRequestHeader(event, 'x-real-ip')
     || 'unknown'
@@ -236,12 +221,12 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Parse body
+  
   const body = await readBody(event)
   const parsedUrl = validateUrl(body?.url)
   const email = body?.email && typeof body.email === 'string' ? body.email : undefined
 
-  // Fetch the page
+  
   const startTime = Date.now()
   let html: string
   let responseStatus: number
@@ -273,10 +258,10 @@ export default defineEventHandler(async (event) => {
 
   const ttfb = Date.now() - startTime
 
-  // Run checks
+  
   const checks: CheckResult[] = []
 
-  // 1. Title
+  
   const title = getTagContent(html, 'title')
   if (!title) {
     checks.push({ name: 'title', status: 'fail', score: 0, maxScore: 10, value: 'No <title> tag found.' })
@@ -286,7 +271,7 @@ export default defineEventHandler(async (event) => {
     checks.push({ name: 'title', status: 'warn', score: 5, maxScore: 10, value: `Title length ${title.length} chars (ideal: 50-65): "${title}"` })
   }
 
-  // 2. Meta description
+  
   const metaDesc = getMetaContent(html, 'name', 'description')
   if (!metaDesc) {
     checks.push({ name: 'meta_description', status: 'fail', score: 0, maxScore: 10, value: 'No meta description found.' })
@@ -296,7 +281,7 @@ export default defineEventHandler(async (event) => {
     checks.push({ name: 'meta_description', status: 'warn', score: 5, maxScore: 10, value: `Meta description length ${metaDesc.length} chars (ideal: 140-160).` })
   }
 
-  // 3. H1
+  
   const h1s = getAllTagContents(html, 'h1')
   if (h1s.length === 0) {
     checks.push({ name: 'h1', status: 'fail', score: 0, maxScore: 10, value: 'No <h1> tag found.' })
@@ -306,7 +291,7 @@ export default defineEventHandler(async (event) => {
     checks.push({ name: 'h1', status: 'warn', score: 5, maxScore: 10, value: `${h1s.length} H1 tags found (should be unique).` })
   }
 
-  // 4. JSON-LD
+  
   const jsonLdTypes = getJsonLdTypes(html)
   if (jsonLdTypes.length > 0) {
     checks.push({ name: 'json_ld', status: 'pass', score: 10, maxScore: 10, value: `JSON-LD types found: ${jsonLdTypes.join(', ')}` })
@@ -314,7 +299,7 @@ export default defineEventHandler(async (event) => {
     checks.push({ name: 'json_ld', status: 'fail', score: 0, maxScore: 10, value: 'No JSON-LD structured data found.' })
   }
 
-  // 5. Canonical
+  
   const canonical = getCanonical(html)
   if (canonical) {
     checks.push({ name: 'canonical', status: 'pass', score: 10, maxScore: 10, value: `Canonical: ${canonical}` })
@@ -322,7 +307,7 @@ export default defineEventHandler(async (event) => {
     checks.push({ name: 'canonical', status: 'warn', score: 3, maxScore: 10, value: 'No canonical tag found.' })
   }
 
-  // 6. Open Graph
+  
   const ogTags = getOgTags(html)
   const ogKeys = Object.keys(ogTags)
   const requiredOg = ['og:title', 'og:description', 'og:image', 'og:url']
@@ -335,7 +320,7 @@ export default defineEventHandler(async (event) => {
     checks.push({ name: 'open_graph', status: 'fail', score: 0, maxScore: 10, value: 'No Open Graph tags found.' })
   }
 
-  // 7. Image alt attributes
+  
   const images = countImages(html)
   if (images.total === 0) {
     checks.push({ name: 'img_alt', status: 'warn', score: 5, maxScore: 10, value: 'No images found on the page.' })
@@ -347,7 +332,7 @@ export default defineEventHandler(async (event) => {
     checks.push({ name: 'img_alt', status: ratio > 0.7 ? 'warn' : 'fail', score: earned, maxScore: 10, value: `${images.withAlt}/${images.total} images have alt attributes (${images.withoutAlt} missing).` })
   }
 
-  // 8. Links
+  
   const links = countLinks(html, parsedUrl.hostname)
   checks.push({
     name: 'links',
@@ -357,7 +342,7 @@ export default defineEventHandler(async (event) => {
     detail: `${links.internal} internal links, ${links.external} external links.`,
   })
 
-  // 9. TTFB
+  
   if (ttfb < 600) {
     checks.push({ name: 'ttfb', status: 'pass', score: 5, maxScore: 5, value: `Response time: ${ttfb}ms (good).` })
   } else if (ttfb < 1500) {
@@ -366,14 +351,14 @@ export default defineEventHandler(async (event) => {
     checks.push({ name: 'ttfb', status: 'fail', score: 0, maxScore: 5, value: `Response time: ${ttfb}ms (slow).` })
   }
 
-  // 10. HTTPS
+  
   if (isHttps) {
     checks.push({ name: 'https', status: 'pass', score: 5, maxScore: 5, value: 'URL uses HTTPS.' })
   } else {
     checks.push({ name: 'https', status: 'fail', score: 0, maxScore: 5, value: 'URL does not use HTTPS.' })
   }
 
-  // 11. Robots meta
+  
   const robotsMeta = getMetaContent(html, 'name', 'robots')
   if (!robotsMeta) {
     checks.push({ name: 'robots', status: 'pass', score: 5, maxScore: 5, value: 'No restrictive robots meta tag (default: index, follow).' })
@@ -383,12 +368,12 @@ export default defineEventHandler(async (event) => {
     checks.push({ name: 'robots', status: 'pass', score: 5, maxScore: 5, value: `Robots meta: "${robotsMeta}".` })
   }
 
-  // Compute total score
+  
   const totalEarned = checks.reduce((sum, c) => sum + c.score, 0)
   const totalMax = checks.reduce((sum, c) => sum + c.maxScore, 0)
   const score = Math.round((totalEarned / totalMax) * 100)
 
-  // Add recommendations
+  
   const enrichedChecks = checks.map(c => ({
     name: LABEL_MAP[c.name] ?? c.name,
     status: c.status,

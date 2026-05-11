@@ -1,22 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * POST /api/bo/procurement/suppliers/import — UPSERT annuaire fournisseurs.
- *
- * Body : { rows, mapping, createMissing? }
- * Match key: name (business uniqueness constraint — same rule as POST
- * /api/bo/procurement/suppliers).
- *
- * Tables affected:
- *   - ps_supplier (name, active, date_upd)
- *   - ps_supplier_lang (description, id_lang=1)
- * - ps_address (upsert on id_supplier+deleted=0)
- *
- * createMissing triggers the same sequence as POST /suppliers:
- * ps_supplier + ps_supplier_lang (all languages) + ps_supplier_shop + ps_address.
- */
 interface ImportBody {
   rows: Record<string, any>[]
   mapping: {
@@ -59,7 +44,7 @@ export default defineEventHandler(async (event) => {
     errors: [] as Array<{ row: number; reason: string }>,
   }
 
-  // Langues actives (pour création multi-lang safe)
+  
   const langs = await db.query<any>(`SELECT id_lang FROM ps_lang WHERE active = 1`)
 
   for (let i = 0; i < body.rows.length; i++) {
@@ -101,7 +86,7 @@ export default defineEventHandler(async (event) => {
       if (existing?.id_supplier) {
         const id = Number(existing.id_supplier)
 
-        // ps_supplier (active uniquement — le name sert de clé, on ne le modifie pas)
+        
         if (active !== undefined) {
           await db.run(
             `UPDATE ps_supplier SET active = ?, date_upd = NOW() WHERE id_supplier = ?`,
@@ -109,7 +94,7 @@ export default defineEventHandler(async (event) => {
           )
         }
 
-        // ps_supplier_lang (description)
+        
         if (description !== undefined) {
           await db.run(
             `UPDATE ps_supplier_lang SET description = ? WHERE id_supplier = ? AND id_lang = 1`,
@@ -117,14 +102,14 @@ export default defineEventHandler(async (event) => {
           )
         }
 
-        // ps_address (upsert)
+        
         if (hasContact) {
           const addr = await db.get<any>(
             `SELECT id_address FROM ps_address WHERE id_supplier = ? AND deleted = 0 LIMIT 1`,
             [id],
           )
           if (addr) {
-            // On ne met à jour que les champs fournis ; les autres gardent leur valeur
+            
             const f: string[] = []
             const p: any[] = []
             if (phone !== undefined) { f.push('phone = ?'); p.push(phone) }
@@ -140,7 +125,7 @@ export default defineEventHandler(async (event) => {
               )
             }
           } else {
-            // Créer la ps_address
+            
             await db.run(
               `INSERT INTO ps_address
                 (id_country, id_supplier, alias, lastname, firstname, address1, postcode, city,
@@ -152,7 +137,7 @@ export default defineEventHandler(async (event) => {
         }
         stats.updated++
       } else if (body.createMissing) {
-        // Création complète (miroir du POST /suppliers)
+        
         const ins = await db.run(
           `INSERT INTO ps_supplier (name, active, date_add, date_upd) VALUES (?, ?, NOW(), NOW())`,
           [name, active ?? 1],

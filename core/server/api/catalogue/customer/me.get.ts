@@ -1,13 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/customer/me — Verifies the customer session.
- *
- * Cookie: ac_session (HMAC-signed).
- * Admin/seller mode: if the logged-in admin has a hub_impersonation cookie
- * valid, we return the target customer profile (enriched from ps_customer)
- * with an isImpersonated flag. The storefront then displays 'as customer'.
- */
+
 import { sql } from 'drizzle-orm'
 import { getCustomerSession } from '~/server/utils/customer-session'
 import { usePocPg } from '~/server/db/drizzle-pg'

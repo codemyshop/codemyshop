@@ -10,12 +10,12 @@
       </span>
     </div>
 
-    <!-- Loading state -->
+    
     <div v-if="loading" class="py-8 text-center text-xs text-gray-400">
       Chargement des attributs…
     </div>
 
-    <!-- Empty state : aucun groupe d'attribut en DB -->
+    
     <div
       v-else-if="!groups.length"
       class="py-8 text-center border border-dashed border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50/50 dark:bg-slate-950/40"
@@ -26,7 +26,7 @@
       </p>
     </div>
 
-    <!-- Generator: attribute groups (dynamic) -->
+    
     <div
       v-else
       class="grid gap-4"
@@ -65,7 +65,7 @@
       </div>
     </div>
 
-    <!-- Results: badge + table -->
+    
     <div v-if="groups.length" class="pt-4 border-t border-gray-100 dark:border-slate-800 space-y-4">
       <div class="flex items-center justify-between">
         <span
@@ -212,7 +212,7 @@ const props = defineProps<{
 
 const groups = ref<AttributeGroup[]>([])
 const loading = ref(true)
-// selectedIds: set of checked attribute IDs, global (across all groups)
+
 const selectedIds = reactive(new Set<number>())
 const comboState = reactive<Record<string, ComboState>>({})
 
@@ -230,21 +230,20 @@ async function loadAttributes() {
   }
 }
 
-/** Pre-fills comboState + selectedIds from existing variants in the DB. */
 function hydrateFromExisting() {
   if (!props.existingCombinations?.length || !groups.value.length) return
 
-  // Group order = DB order (by position). Key = IDs sorted by groupId
-  // to match the computed property.
+  
+  
   const groupOrder = groups.value.map(g => g.id)
 
   for (const ec of props.existingCombinations) {
     if (!ec.attributes?.length) continue
 
-    // Check all related attributes
+    
     for (const a of ec.attributes) selectedIds.add(a.attributeId)
 
-    // Key ordered by group position in the catalog
+    
     const sorted = [...ec.attributes].sort((a, b) =>
       groupOrder.indexOf(a.groupId) - groupOrder.indexOf(b.groupId)
     )
@@ -276,14 +275,14 @@ function selectedCount(groupId: number): number {
 }
 
 const combinations = computed<Combination[]>(() => {
-  // Groups with at least one value checked
+  
   const activeGroups = groups.value
     .map(g => ({ id: g.id, values: g.values.filter(v => selectedIds.has(v.id)) }))
     .filter(g => g.values.length > 0)
 
   if (activeGroups.length === 0) return []
 
-  // n-ary Cartesian product
+  
   let result: AttributeValue[][] = [[]]
   for (const group of activeGroups) {
     const next: AttributeValue[][] = []
@@ -311,7 +310,6 @@ function clearAll() {
   selectedIds.clear()
 }
 
-// Reload if existingCombinations arrive after the attributes fetch
 watch(() => props.existingCombinations, hydrateFromExisting, { deep: false })
 
 onMounted(loadAttributes)

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-// DB-Only (Vague 3) : FAQ depuis cs_client_config.config_json.faq
-// (single-tenant strict, FR mono-language acceptable)
+
 interface FaqItem { question: string; reponse: string }
 const { config } = useClientDetection()
 const faqData = computed<FaqItem[]>(() => ((config.value as any)?.faq as FaqItem[]) ?? [])
@@ -20,7 +19,7 @@ function toggle(i: number) {
         :key="i"
         class="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden"
       >
-        <!-- Question (bouton) -->
+        
         <dt>
           <button
             type="button"
@@ -29,7 +28,7 @@ function toggle(i: number) {
             @click="toggle(i)"
           >
             <span class="text-sm font-semibold text-gray-800">{{ item.question }}</span>
-            <!-- Animated chevron icon -->
+            
             <svg
               class="w-5 h-5 text-primary-500 shrink-0 transition-transform duration-300"
               :class="openIndex === i ? 'rotate-180' : ''"
@@ -44,7 +43,7 @@ function toggle(i: number) {
           </button>
         </dt>
 
-        <!-- Response (accordion) -->
+        
         <dd
           v-show="openIndex === i"
           class="px-6 pb-5 text-sm text-gray-600 leading-relaxed border-t border-gray-50"

@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/manufacturers
- *
- * Brand list (ps_manufacturer) with active product count.
- * Multi-tenant via useClientDb.
- */
+
 import { useClientDb, resolveClientId } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 
@@ -17,7 +11,6 @@ interface ManufacturerRow {
   meta_description: string | null
   nb_products: number
 }
-
 
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)

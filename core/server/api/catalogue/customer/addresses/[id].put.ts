@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/catalogue/customer/addresses/:id
- * DB direct (doctrine: Zero PrestaShop webservice, 2026-04-22).
- */
+
 import { useClientDb } from '~/server/utils/db'
 
 const ALLOWED = new Set([

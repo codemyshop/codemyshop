@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/new-products?clientId=example-shop-v2&limit=8
- *
- * Returns the most recently added products (sorted by date_add DESC).
- * Direct database only (doctrine "Zero PrestaShop webservice" 2026-04-22).
- */
+
 import { useClientDb, resolveClientId } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 import { buildProductUrl, buildImageUrl, buildImageSrcset } from '~/server/utils/product-urls'
@@ -48,7 +42,7 @@ export default defineEventHandler(async (event): Promise<{ products: NewProduct[
   const tenant = String(clientId || resolveClientId(event) || 'ac-hub')
   const lim = Math.min(Math.max(Number(limit) || 8, 1), 24)
 
-  // Essai DB direct (pattern Example Shop v2 — cohérent avec promotions / best-sellers)
+  
   try {
     const db = useClientDb(event)
     const idLang = await resolveIdLang(event)

@@ -1,18 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/quote/:id/pdf?token=<hmac>
- *
- * Returns the PDF of the quote request #id if the HMAC token matches.
- * Used from the confirmation email (link "Download the quote").
- *
- * Security: token = HMAC-SHA256(NUXT_SECRET, "quote-pdf:<id>") in base64url.
- * - id alone is not enough (enumeration blocked).
- * - No expiration on the token side: we allow long-lived links because the
- * content is a receipt acknowledgment, not a commercial secret.
- *
- * Signing helper available via signQuotePdfToken(idQuoteRequest).
- */
 
 import { createHmac } from 'node:crypto'
 import { generateQuoteRequestPdf } from '~/server/utils/quote-pdf'
@@ -30,10 +16,10 @@ export function signQuotePdfToken(idQuoteRequest: number): string {
 function verifyToken(idQuoteRequest: number, token: string): boolean {
   if (!token) return false
   const expected = signQuotePdfToken(idQuoteRequest)
-  // timing-safe — `===` suffit ici car les longueurs sont fixes (43 chars
-  // base64url-sha256) ; pour une protection plus stricte importer
-  // `crypto.timingSafeEqual` mais le risque est faible (token court-vivant
-  // et pas un secret commercial — c'est un accusé de réception).
+  
+  
+  
+  
   return token === expected
 }
 

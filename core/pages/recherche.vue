@@ -1,12 +1,4 @@
-<!--
-  Page recherche — /recherche?q=keywords
-  Recherche plein texte via l'API catalogue.
-  clientId via useRuntimeConfig().public.clientId.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -69,7 +61,7 @@ useListingBodyId('search')
     <div class="min-h-screen bg-white">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
-        <!-- Barre de recherche -->
+        
         <form class="max-w-2xl mx-auto mb-10" @submit.prevent="onSearch">
           <div class="relative">
             <input
@@ -86,7 +78,7 @@ useListingBodyId('search')
           </div>
         </form>
 
-        <!-- Results -->
+        
         <div v-if="pending" class="text-center py-10">
           <p class="text-gray-400 text-sm">{{ t('catalogue.search_loading') }}</p>
         </div>

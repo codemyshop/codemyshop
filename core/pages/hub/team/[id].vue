@@ -132,7 +132,7 @@
           </div>
         </section>
 
-        <!-- Author page (extras) — hidden until the employee is created -->
+        
         <section v-if="!isNew" class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-5 flex items-center justify-between">
             <div>
@@ -274,7 +274,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
@@ -443,7 +442,7 @@ async function save() {
     if (res?.created && res?.id) {
       router.replace(`/hub/team/${res.id}`)
     } else if (form.id) {
-      // Saving extras (author page) only if the employee exists.
+      
       await saveExtra()
     }
   } catch (err: any) {

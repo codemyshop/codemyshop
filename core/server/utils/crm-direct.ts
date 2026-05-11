@@ -1,17 +1,4 @@
-/**
- *
- * CRM helpers — direct Drizzle on cs_smartlead + cs_smartproject tables.
- * Headless modules TypeScript implementation (variant C-hard). Replaces
- * legacy CRM API calls on the Nuxt side.
- *
- * The legacy CRM module remains active (PrestaShop admin uses it for
- * CRM administration) — only the public Nuxt → DB direct path becomes authoritative.
- *
- * Task #44: migration from MariaDB to PostgreSQL (cs_main), facade
- * 100% PostgreSQL via `usePocPg()`. The `clientId` parameter is preserved in the signature
- * for consumer compatibility — the runtime now always routes to
- * ac_postgres / cs_main.
- */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -34,7 +21,7 @@ export interface CrmLeadInput {
   profession?: string
   annualRevenue?: string
   referenceClient?: string
-  projectType?: string         // 'devis' | 'contact' | …
+  projectType?: string         
   projectIntention?: string
   itemsJson?: string
   message?: string
@@ -51,16 +38,6 @@ export interface CrmCreateResult {
   error?: string
 }
 
-/**
- * Idempotent creation/update of a lead + associated new project.
- * Faithfully reproduces the legacy CRM API pipeline.
- *
- * If email exists: UPDATE provided fields + append note
- *   `<date> — Blog: <article>\n<message>` ou `Devis: <message>`.
- * Otherwise: INSERT full lead (type='Prospect', default status, default level).
- *
- * Always: INSERT cs_smartproject with project_status='lead_entrant'.
- */
 export async function crmCreateLeadProject(
   input: CrmLeadInput,
   ctx: DbContext = {},
@@ -87,7 +64,7 @@ export async function crmCreateLeadProject(
 
   const d = db(ctx)
 
-  // ── Lead : UPSERT par email ────────────────────────────────────────
+  
   const existing = ((await d.execute<any>(sql`
     SELECT id_ac_smartlead AS "idAcSmartlead", note
       FROM cs_main.cs_smartlead
@@ -110,7 +87,7 @@ export async function crmCreateLeadProject(
       ? (currentNote ? `${currentNote}\n---\n${appendNote}` : appendNote)
       : currentNote
 
-    // UPDATE conditionnel — on ne touche que les champs fournis (pattern PHP).
+    
     const sets: any[] = [sql`date_upd = CURRENT_TIMESTAMP`]
     if (firstname)    sets.push(sql`firstname = ${firstname}`)
     if (lastname)     sets.push(sql`lastname = ${lastname}`)
@@ -127,7 +104,7 @@ export async function crmCreateLeadProject(
        WHERE id_ac_smartlead = ${leadId}
     `)
   } else {
-    // ── INSERT lead ──────────────────────────────────────────────────
+    
     const defaultStatus = await getCrmDefault(d, 'AC_SMARTLEAD_DEFAULT_STATUS', 'en_attente')
     const defaultLevel = Number(await getCrmDefault(d, 'AC_SMARTLEAD_DEFAULT_LEVEL', '5'))
 
@@ -152,7 +129,7 @@ export async function crmCreateLeadProject(
     }
   }
 
-  // ── Project ────────────────────────────────────────────────────────
+  
   const projectTitleOverride = (input.projectTitleOverride || '').trim()
   let projectTitle: string
   if (projectTitleOverride) {
@@ -160,7 +137,7 @@ export async function crmCreateLeadProject(
   } else if (projectType === 'devis' && companyName) {
     let itemsCount = 0
     if (itemsJson) {
-      try { const dec = JSON.parse(itemsJson); if (Array.isArray(dec)) itemsCount = dec.length } catch { /* noop */ }
+      try { const dec = JSON.parse(itemsJson); if (Array.isArray(dec)) itemsCount = dec.length } catch {  }
     }
     projectTitle = `Devis ${companyName} — ${itemsCount} produit${itemsCount > 1 ? 's' : ''}`
   } else if (articleTitle) {

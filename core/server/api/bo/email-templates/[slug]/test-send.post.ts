@@ -1,19 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/email-templates/:slug/test-send
- *
- * Sends a template test to a custom email address (entered from the back office
- * /hub/crm/email/template/:slug). Loads the current database version (subject +
- * html_body) and substitutes with plausible example values per slug
- * so the rendering reflects what the final recipient will see.
- *
- * Body : { id_lang: number, to: string }
- *
- * Security: no real customer data is used — only the
- * sample vars defined below. EMAIL_OVERRIDE_TO on the sendEmail() side applies
- * normalement (preprod redirect intacte).
- */
 
 import { sendEmailViaQueue } from '~/server/utils/email-queue'
 import { loadEmailTemplate } from '~/server/utils/email-template-loader'
@@ -21,7 +6,6 @@ import { renderEmailTemplate } from '~/server/utils/email-template-render'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i
 
-/** Sample vars par slug — valeurs représentatives d'un envoi réel. */
 const SAMPLE_PRODUCTS_TABLE = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;">
 <thead>
 <tr style="background:#f8fafc;">
@@ -133,9 +117,9 @@ export default defineEventHandler(async (event) => {
   const subject = `[TEST] ${renderEmailTemplate(tpl.subject, sampleVars)}`
   const html = renderEmailTemplate(tpl.htmlBody, sampleVars)
 
-  // Queue instead of sending directly: test goes through the queue, the admin
-  // sees the test arrive in /hub/crm/email tab Send Queue (then sent
-  // by the 60s cron or via the "Process now" button to avoid waiting).
+  
+  
+  
   const result = await sendEmailViaQueue({
     to, subject, html,
     templateSlug: slug, idLang,

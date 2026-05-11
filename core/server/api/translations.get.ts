@@ -1,17 +1,4 @@
-/**
- *
- * GET /api/translations?lang=fr
- *
- * Returns a flat dict { "cart.loyalty.title": "Loyalty program", ... }
- * for the storefront UI strings — i.e. rows in `ps_translation` (PG)
- * tagged `domain='oss'`.
- *
- * Source of truth = `core/i18n/locales/<lang>.yaml` (seeded into PG by
- * the `seed:translations` Nitro task).
- *
- * Server-side cached (5 min) per (clientId, lang) pair to avoid hitting
- * the DB on every render.
- */
+
 
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 
@@ -35,14 +22,19 @@ export default defineEventHandler(async (event) => {
       [langCode],
     )
     const idLang = langRow?.id_lang || 1
+    const tenantDomain = `tenant:${db.clientId}`
 
-    const rows = await db.query<{ key: string; translation: string }>(
-      `SELECT "key", translation FROM ps_translation WHERE id_lang = ? AND domain = ?`,
-      [idLang, 'oss'],
+    const rows = await db.query<{ key: string; translation: string; domain: string }>(
+      `SELECT "key", translation, domain
+         FROM ps_translation
+        WHERE id_lang = ? AND domain IN (?, ?)`,
+      [idLang, 'oss', tenantDomain],
     )
 
+    
     const dict: Record<string, string> = {}
-    for (const r of rows) dict[r.key] = r.translation
+    for (const r of rows) if (r.domain === 'oss') dict[r.key] = r.translation
+    for (const r of rows) if (r.domain === tenantDomain) dict[r.key] = r.translation
 
     cache[cacheKey] = { data: dict, ts: now }
     return dict

@@ -7,7 +7,7 @@
           <h1 class="text-lg font-bold text-gray-800 dark:text-slate-100">Marketplace</h1>
           <p class="text-xs text-gray-400 mt-0.5">{{ enabledCount }} module(s) actif(s) sur {{ features.length }} · Thème : {{ activeTheme.name }}</p>
         </div>
-        <!-- Tabs -->
+        
         <div class="flex bg-gray-100 dark:bg-slate-800 rounded-lg p-0.5">
           <button
             @click="activeTab = 'apps'"
@@ -25,7 +25,7 @@
           </button>
         </div>
       </div>
-      <!-- Category filters (apps only) — Transversal vs Business vertical -->
+      
       <div v-if="activeTab === 'apps'" class="flex flex-wrap items-center gap-2 mt-3">
         <button @click="filter = 'all'"
           :class="['px-3 py-1.5 rounded-lg text-xs font-semibold transition-all',
@@ -51,10 +51,10 @@
 
     <div class="p-6 max-w-6xl mx-auto">
 
-      <!-- ═══ TAB: Applications ═══════════════════════════════════════════ -->
+      
       <template v-if="activeTab === 'apps'">
 
-      <!-- Loading -->
+      
       <div v-if="!loaded" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div v-for="i in 6" :key="i" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5 animate-pulse">
           <div class="w-10 h-10 bg-gray-100 dark:bg-slate-800 rounded-xl mb-3" />
@@ -64,7 +64,7 @@
         </div>
       </div>
 
-      <!-- Grille -->
+      
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
           v-for="f in filtered"
@@ -73,7 +73,7 @@
           :class="f.enabled ? 'border-primary-200' : 'border-gray-100 dark:border-slate-800'"
         >
           <div class="p-5">
-            <!-- Header -->
+            
             <div class="flex items-start justify-between mb-3">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
@@ -88,7 +88,7 @@
                   >{{ f.badge || f.status }}</span>
                 </div>
               </div>
-              <!-- Toggle Switch (Pixel Perfect) -->
+              
               <button
                 v-if="isOwner"
                 type="button"
@@ -109,10 +109,10 @@
               </button>
             </div>
 
-            <!-- Description -->
+            
             <p class="text-xs text-gray-500 leading-relaxed mb-3">{{ f.description }}</p>
 
-            <!-- Footer -->
+            
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold" :class="f.monthlyPrice > 0 ? 'text-primary-600' : 'text-success-600'">
                 {{ f.monthlyPrice > 0 ? `${f.monthlyPrice}\u20ac/mois` : 'Gratuit' }}
@@ -130,14 +130,14 @@
             </div>
           </div>
 
-          <!-- Barre d'activation -->
+          
           <div v-if="f.enabled" class="h-1 bg-primary-500" />
         </div>
       </div>
 
       </template>
 
-      <!-- ═══ TAB: Design Systems ═════════════════════════════════════════ -->
+      
       <template v-if="activeTab === 'themes'">
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -149,7 +149,7 @@
             ? 'border-primary-500 shadow-[0_0_20px_rgba(79,70,229,0.12)]'
             : 'border-gray-100 dark:border-slate-800 hover:border-gray-200 dark:hover:border-slate-700'"
         >
-          <!-- Badge actif -->
+          
           <div v-if="dsActiveId === ds.id" class="absolute top-3 right-3">
             <span class="bg-primary-600 text-white text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full flex items-center gap-1">
               <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
@@ -157,13 +157,13 @@
             </span>
           </div>
 
-          <!-- Preview (mini maquette) -->
+          
           <div class="h-32 relative overflow-hidden" :class="ds.tokens.bgWow">
             <div class="absolute inset-0" :class="ds.tokens.bgWowDark" />
-            <!-- Orbes preview -->
+            
             <div v-if="ds.tokens.orbRose" class="absolute -top-8 -left-8 w-32 h-32 rounded-full" :class="ds.tokens.orbRose" />
             <div v-if="ds.tokens.orbViolet" class="absolute top-2 right-[-20px] w-24 h-24 rounded-full" :class="ds.tokens.orbViolet" />
-            <!-- Card preview -->
+            
             <div class="absolute bottom-3 left-4 right-4">
               <div class="rounded-lg p-3 text-[10px]" :class="[ds.tokens.cardGlass, ds.tokens.cardGlassDark]">
                 <div class="h-2 rounded-full w-2/3 mb-1.5 bg-gray-300 dark:bg-slate-600" />
@@ -176,7 +176,7 @@
             <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">{{ ds.name }}</h3>
             <p class="text-xs text-gray-500 dark:text-slate-400 leading-relaxed mb-4">{{ ds.description }}</p>
 
-            <!-- Tokens preview -->
+            
             <div class="flex flex-wrap gap-1.5 mb-4">
               <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400">
                 {{ ds.tokens.orbRose ? 'Orbes' : 'Pas d\'orbes' }}
@@ -189,7 +189,7 @@
               </span>
             </div>
 
-            <!-- Bouton activer -->
+            
             <button
               v-if="dsActiveId !== ds.id && isOwner"
               @click="activateTheme(ds.id)"

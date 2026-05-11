@@ -1,16 +1,4 @@
-<!--
-  Section Instagram — homepage.
-  Feed live via Instagram Graph API (/api/instagram/feed). Fallback élégant sur
-  CTA bouton si token absent (env NUXT_INSTAGRAM_TOKEN + NUXT_INSTAGRAM_IG_USER_ID
-  non configurés sur le tenant).
 
-  Handle Instagram tenant-spécifique : runtimeConfig.public.instagramHandle
-  (ex: 'example_fruits_secs' → https://www.instagram.com/example_fruits_secs/).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 interface IgMedia {
   id:        string
@@ -45,7 +33,7 @@ const hasFeed = computed(() => items.value.length > 0)
         </p>
       </div>
 
-      <!-- Feed grid (if Graph API token configured) -->
+      
       <div
         v-if="hasFeed"
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3 mb-8"
@@ -65,7 +53,7 @@ const hasFeed = computed(() => items.value.length > 0)
             loading="lazy"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           >
-          <!-- Video badge -->
+          
           <span
             v-if="m.mediaType === 'VIDEO'"
             class="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-full p-1.5"
@@ -75,7 +63,7 @@ const hasFeed = computed(() => items.value.length > 0)
               <path d="M8 5v14l11-7z" />
             </svg>
           </span>
-          <!-- Carousel badge -->
+          
           <span
             v-else-if="m.mediaType === 'CAROUSEL_ALBUM'"
             class="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-full p-1.5"
@@ -86,7 +74,7 @@ const hasFeed = computed(() => items.value.length > 0)
               <path stroke-linecap="round" d="M4 16V6a2 2 0 0 1 2-2h10" />
             </svg>
           </span>
-          <!-- Caption overlay hover -->
+          
           <div
             v-if="m.caption"
             class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3"
@@ -96,7 +84,7 @@ const hasFeed = computed(() => items.value.length > 0)
         </a>
       </div>
 
-      <!-- ── CTA boutons : handle IG externe + archive DB interne ───────── -->
+      
       <div class="flex flex-wrap items-center justify-center gap-3">
         <a
           v-if="igHandle"

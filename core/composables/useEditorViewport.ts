@@ -1,9 +1,4 @@
-/**
- *
- * Composable for the builder's viewport mode (desktop / tablet / mobile) — like Shopify.
- * Shared state via useState (SSR-safe) + client-side localStorage persistence.
- * Supports portrait ↔ landscape rotation for mobile and tablet.
- */
+
 
 export type ViewportMode = 'desktop' | 'tablet' | 'mobile'
 export type ViewportOrientation = 'portrait' | 'landscape'
@@ -44,7 +39,7 @@ export function useEditorViewport() {
   const orientation = useState<ViewportOrientation>('ed_viewport_orientation', () => 'portrait')
 
   if (import.meta.client) {
-    // Hydrate depuis localStorage au mount (une seule fois)
+    
     const hydrated = useState<boolean>('ed_viewport_hydrated', () => false)
     if (!hydrated.value) {
       const savedMode = localStorage.getItem(STORAGE_KEY_MODE) as ViewportMode | null
@@ -62,14 +57,14 @@ export function useEditorViewport() {
   function setMode(m: ViewportMode) {
     mode.value = m
     if (import.meta.client) {
-      try { localStorage.setItem(STORAGE_KEY_MODE, m) } catch { /* noop */ }
+      try { localStorage.setItem(STORAGE_KEY_MODE, m) } catch {  }
     }
   }
 
   function setOrientation(o: ViewportOrientation) {
     orientation.value = o
     if (import.meta.client) {
-      try { localStorage.setItem(STORAGE_KEY_ORIENT, o) } catch { /* noop */ }
+      try { localStorage.setItem(STORAGE_KEY_ORIENT, o) } catch {  }
     }
   }
 
@@ -81,19 +76,15 @@ export function useEditorViewport() {
 
   const currentDims = computed(() => {
     const preset = VIEWPORT_PRESETS[mode.value]
-    return preset[orientation.value] // null pour desktop
+    return preset[orientation.value] 
   })
 
   const currentWidth  = computed(() => currentDims.value?.w ?? null)
   const currentHeight = computed(() => currentDims.value?.h ?? null)
   const isConstrained = computed(() => currentWidth.value !== null)
 
-  /**
-   * True when the layout is rendered inside a builder <iframe>
-   * (mobile/tablet preview). Detection via query param ?builder-preview=1
-   * to be SSR-safe (window.self != window.top is only available on the
-   * client → hydration mismatch without the param).
-   */
+  
+
   const route = useRoute()
   const isInsideIframe = computed(() => route.query['builder-preview'] === '1')
 

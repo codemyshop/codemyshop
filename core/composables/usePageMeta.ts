@@ -1,14 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * usePageMeta — loads SEO meta from cs_page_meta (DB-first, no fallback).
- *
- * Usage :
- *   const { pageMeta } = await usePageMeta('/synedre/constitution')
- *
- * If the route is not in the DB, the meta remains empty. No JSON fallback.
- * The DB is the single source of truth.
- */
+
 export async function usePageMeta(route: string) {
   const siteUrl = (useRuntimeConfig().public.psFrontUrl as string || '').replace(/\/+$/, '')
 

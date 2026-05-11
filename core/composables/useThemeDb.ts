@@ -1,8 +1,4 @@
-/**
- *
- * Composable to load the theme from /api/theme (DB-first cs_theme).
- * Provides an editable state for the builder with DB sync.
- */
+
 
 export interface ThemeDbData {
   colors: {
@@ -41,22 +37,22 @@ export function useThemeDb() {
     default: () => ({ theme: null }),
   })
 
-  // State éditable par le builder
+  
   const builderTheme = useState<ThemeDbData | null>('theme_builder_override', () => null)
 
-  /** Thème effectif : builder > DB > défaut */
+  
   const theme = computed<ThemeDbData>(() => {
     if (builderTheme.value) return builderTheme.value
     if (data.value?.theme) return data.value.theme
     return DEFAULT_THEME
   })
 
-  /** Loads the DB theme into the builder state */
+  
   function loadIntoBuilder() {
     builderTheme.value = JSON.parse(JSON.stringify(data.value?.theme || DEFAULT_THEME))
   }
 
-  /** Updates the builder state (live preview) */
+  
   function updateBuilderTheme(patch: Partial<ThemeDbData>) {
     if (!builderTheme.value) loadIntoBuilder()
     builderTheme.value = {
@@ -92,7 +88,7 @@ export function useThemeDb() {
     }
   }
 
-  /** Sync to DB */
+  
   async function syncToDb() {
     if (!builderTheme.value) return
     await $fetch('/api/theme/sync', {

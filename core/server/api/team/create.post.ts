@@ -1,9 +1,5 @@
-/**
- *
- * POST /api/team/create
- * Creates an employee (ps_employee) directly in DB (doctrine "Zero webservice
- * PrestaShop » 2026-04-22). Refacto depuis connector.createEmployee.
- */
+
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 import { getPsProfileId } from '~/server/utils/roles'
 import { createHash, randomBytes } from 'node:crypto'
@@ -27,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
   const db = body.clientId ? useClientDbById(String(body.clientId)) : useClientDb(event)
 
-  // Unicité email employé
+  
   const existing = await db.get<{ id_employee: number }>(
     `SELECT id_employee FROM ps_employee WHERE email = ? LIMIT 1`,
     [email],
@@ -45,7 +41,7 @@ export default defineEventHandler(async (event) => {
   const plainPassword = body.password?.trim() || randomBytes(12).toString('base64url').slice(0, 16)
   const generatedPassword = body.password ? undefined : plainPassword
 
-  // Hash bcrypt $2y$10$ (format PS 8+ natif)
+  
   const bcrypt = await import('bcryptjs')
   const hashed = (await bcrypt.hash(plainPassword, 10)).replace(/^\$2a\$/, '$2y$')
 
@@ -60,12 +56,12 @@ export default defineEventHandler(async (event) => {
                '0000-00-00', '0000-00-00', '0000-00-00', '0000-00-00', 1)`,
       [profileId, lastname, firstname, email, hashed],
     )
-    // Secure key cookie PS (md5 random, sert pour le reset password PS natif)
+    
     const secureKey = createHash('md5').update(randomBytes(16)).digest('hex').toUpperCase()
     await db.run(
       `UPDATE ps_employee SET reset_password_validity = '0000-00-00 00:00:00' WHERE id_employee = ?`,
       [Number(insertId)],
-    ).catch(() => { /* col absente sur certains schémas PS */ })
+    ).catch(() => {  })
 
     return {
       ok: true,

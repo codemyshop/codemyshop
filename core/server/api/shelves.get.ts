@@ -1,14 +1,11 @@
-/**
- *
- * GET /api/shelves?client_id=ac-hub&section_type=hero
- * Returns shelves from cs_shelf — Direct Drizzle DB.
- */
+
+
 import { getShelfById, listShelves } from '~/server/utils/shelves-db'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
 
-  // Single shelf by id
+  
   const id = Number(query.id || 0)
   if (id > 0) {
     const shelf = await getShelfById(id)

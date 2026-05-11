@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * DELETE /api/bo/smartproject/automations/:id
- * Remplace ac_smartproject/ajaxdeleteautomation (cascade _log, chantier #38 Phase B1.2).
- */
+
 import { deleteAutomationRule } from '~/enterprise/base/smartproject/server/utils/smartproject'
 
 export default defineEventHandler(async (event) => {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 const { t } = useT()
 
@@ -50,7 +49,7 @@ async function submit() {
       form.author = ''
       form.email = ''
       form.content = ''
-      // Refresh after a delay (the comment is pending, not yet visible)
+      
     }
   } catch (e: any) {
     errorMsg.value = e?.data?.message || t('common.common_error_generic')
@@ -72,14 +71,14 @@ async function submit() {
       </h2>
     </div>
 
-    <!-- Commentaires existants -->
+    
     <div v-if="comments?.length" class="space-y-5 mb-10">
       <div
         v-for="comment in comments"
         :key="comment.id"
         class="rounded-xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 overflow-hidden"
       >
-        <!-- Visitor comment -->
+        
         <div class="px-5 py-4">
           <div class="flex items-center gap-2 mb-2">
             <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-gray-500 dark:text-slate-400">
@@ -93,7 +92,7 @@ async function submit() {
           <p class="text-sm text-gray-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">{{ comment.content }}</p>
         </div>
 
-        <!-- AI response (if available) -->
+        
         <div
           v-if="comment.aiResponse"
           class="px-5 py-4 bg-primary-50/50 dark:bg-primary-500/[0.04] border-t border-primary-100 dark:border-primary-500/10"
@@ -113,7 +112,7 @@ async function submit() {
       </div>
     </div>
 
-    <!-- Formulaire -->
+    
     <div class="rounded-xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-6">
       <div v-if="submitted" class="text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg p-4">
         {{ t('blogcomments.comments_submit_success_message') }}

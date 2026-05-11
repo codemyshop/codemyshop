@@ -1,11 +1,4 @@
-<!--
-  @author CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  FIN — Pilotage Auto-Entreprise (jauge plafond 77 700 € + portefeuille + URSSAF).
-  Doctrine : documentation/legal/STRATEGY_DUAL_STRUCTURE_AE_SASU.md
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
@@ -27,7 +20,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- ─── Block 1: Current year saturation ─────────────────────── -->
+      
       <section v-if="data?.saturation"
         class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
         <div class="flex items-baseline justify-between mb-4 flex-wrap gap-2">
@@ -95,7 +88,7 @@
         </div>
       </section>
 
-      <!-- ─── Block 2: Recurring AE portfolio ─────────────────────── -->
+      
       <section class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
           <div>
@@ -158,7 +151,7 @@
                   <button @click="del(c)" class="text-rose-600 hover:underline text-[11px]">Supprimer</button>
                 </td>
               </tr>
-              <!-- Visualized free slots -->
+              
               <tr v-if="!loading && data?.saturation && data.saturation.freeSlots800 > 0"
                 v-for="i in Math.min(data.saturation.freeSlots800, 6)" :key="`slot-${i}`"
                 class="bg-gray-50/40 dark:bg-slate-800/20">
@@ -183,7 +176,7 @@
         </div>
       </section>
 
-      <!-- ─── Block 3: Current year URSSAF ─────────────────────────── -->
+      
       <section v-if="data?.urssaf" class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-6 shadow-sm">
         <div class="flex items-baseline justify-between mb-4 flex-wrap gap-2">
           <div>
@@ -225,7 +218,7 @@
         </div>
       </section>
 
-      <!-- ─── Bloc 4 : SASU (placeholder) ─────────────────────────────── -->
+      
       <section class="bg-gray-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 p-6">
         <h2 class="text-sm font-bold uppercase tracking-wider text-gray-400">SASU CodeMyShop</h2>
         <p class="text-[11px] text-gray-400 mt-1">Non active. Sera créée dès 2-3 prospects Managed signés (voir doctrine).</p>
@@ -236,7 +229,7 @@
       </section>
     </div>
 
-    <!-- ─── Create / edit modal ──────────────────────────────────────── -->
+    
     <div v-if="modal.open" class="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-6" @click.self="closeModal">
       <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-md shadow-xl">
         <h3 class="text-base font-bold mb-4">{{ modal.editId ? 'Éditer le client' : 'Nouveau client AE' }}</h3>

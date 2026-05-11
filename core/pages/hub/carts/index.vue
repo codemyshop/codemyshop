@@ -11,7 +11,7 @@
       </div>
     </header>
 
-    <!-- Pagination top -->
+    
     <HubPaginationBar v-if="total > 0" :page="page" :total-pages="totalPages" :total="total" label="paniers"
       :per-page="perPage" :per-page-options="perPageOptions"
       @go="goPage" @update:per-page="setPerPage"
@@ -68,7 +68,7 @@
       </table>
     </div>
 
-    <!-- Pagination bottom -->
+    
     <HubPaginationBar v-if="totalPages > 1" :page="page" :total-pages="totalPages" :total="total" label="paniers" @go="goPage" class="border-t border-gray-100 dark:border-slate-800" />
   </div>
 </template>

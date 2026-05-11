@@ -1,28 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/specific-prices — create a promotion (product mode OR
- * category). DB-only, writes directly to `ps_specific_price`.
- *
- * Body :
- *   {
- *     mode: 'product' | 'category',
- *     idProduct?: number,        // mode=product
- *     idCategory?: number,       // mode=category (subtree inclus)
- * reduction: number,         // 0.05 = 5% if percentage; 1.50 if amount
- *     reductionType: 'percentage' | 'amount',
- *     reductionTax: 0 | 1,       // 1 = TTC inclus, 0 = HT
- * fromQuantity?: number,     // 1 by default
- * idGroup?: number,          // 0 = all groups (default)
- * dateFrom?: string | null,  // ISO 'YYYY-MM-DD HH:MM:SS'; null = always active
- * dateTo?:   string | null,  // null = never expires
- *   }
- *
- * Mode 'category': recursive CTE (subtree) + INSERT...SELECT to generate
- * a `ps_specific_price` per active product in the category. Basic idempotence
- * via ON CONFLICT (auto-increment PK, so no deduplication — the UI should
- * prevent duplicate promotions on the same products).
- */
+
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession } from '~/server/utils/session'
 
@@ -90,13 +67,13 @@ export default defineEventHandler(async (event) => {
     return { ok: true, created: 1, ids: res.insertId ? [res.insertId] : [] }
   }
 
-  // mode === 'category'
+  
   const idCategory = Number(body.idCategory)
   if (!Number.isFinite(idCategory) || idCategory <= 0) {
     throw createError({ statusCode: 400, statusMessage: 'idCategory requis' })
   }
 
-  // Subtree CTE → produits actifs descendants
+  
   const targets = await db.query<{ id_product: number }>(
     `WITH RECURSIVE cat_tree AS (
        SELECT id_category FROM ps_category WHERE id_category = ? AND active = 1

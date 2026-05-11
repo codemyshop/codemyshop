@@ -1,9 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Centralized helper for Anthropic Claude API calls.
- * Single source for the URL, headers, and request format.
- */
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages'
 const ANTHROPIC_VERSION = '2023-06-01'
@@ -25,10 +20,6 @@ export interface AnthropicCallResult {
   model: string
 }
 
-/**
- * Raw call to the Anthropic Messages API.
- * All consumers (ai.ts, ai-gateway.ts, ai-queue.ts) go through here.
- */
 export async function callAnthropicRaw(opts: AnthropicCallOptions): Promise<AnthropicCallResult> {
   const model = opts.model ?? 'claude-sonnet-4-6'
 

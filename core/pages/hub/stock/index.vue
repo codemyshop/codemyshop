@@ -16,7 +16,7 @@
       </div>
     </header>
 
-    <!-- Alertes -->
+    
     <div class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-2.5 flex items-center gap-6 shrink-0">
       <div class="flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-red-400" />

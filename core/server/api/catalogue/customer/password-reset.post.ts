@@ -1,16 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/catalogue/customer/password-reset
- *
- * Step 2 of the forgot-password flow: validates token + email, hashes the new
- * password in bcrypt $2y$10$ (compatible with the native format and refactored login),
- * clears the token. Validity strictly greater than NOW to avoid
- * expired tokens.
- *
- * Returns 401 if token is invalid / expired / already used. No business logic details
- * in the error message (anti-leak).
- */
 
 import { useClientDb } from '~/server/utils/db'
 import { sendPasswordChangedEmail } from '~/server/utils/order-emails'
@@ -57,9 +45,9 @@ export default defineEventHandler(async (event) => {
     [hashed, customer.id_customer],
   )
 
-  // Confirmation de changement (alerte sécurité). Non-bloquant — si l'email
-  // échoue, le mot de passe reste changé. Le shopName/accentColor du tenant
-  // pourrait être lu depuis ps_configuration mais c'est secondaire ici.
+  
+  
+  
   sendPasswordChangedEmail(email, customer.firstname || '')
     .catch((err: any) => console.error(`[password-reset:${email}] mail confirmation KO:`, err?.message || err))
 

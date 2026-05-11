@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto">
 
-    <!-- Header -->
+    
     <header class="sticky top-0 z-10 px-8 py-5 border-b border-white/5 backdrop-blur-xl bg-white/70 dark:bg-slate-900/70">
       <div class="flex items-center justify-between">
         <div>
@@ -30,7 +30,7 @@
 
     <div class="p-8 space-y-8 max-w-7xl mx-auto">
 
-      <!-- Stat Cards -->
+      
       <div class="grid grid-cols-2 xl:grid-cols-4 gap-6">
         <div
           v-for="card in statCards" :key="card.label"
@@ -67,7 +67,7 @@
         </div>
       </div>
 
-      <!-- Chart + Status -->
+      
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div class="xl:col-span-2 rounded-2xl border p-6
                     bg-white border-white/5 dark:bg-slate-800/80 dark:border-slate-700/50">
@@ -111,7 +111,7 @@
         </div>
       </div>
 
-      <!-- CRM Cards -->
+      
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div
           v-for="card in crmCards" :key="card.label"
@@ -138,13 +138,13 @@
         </div>
       </div>
 
-      <!-- Leads + Tasks -->
+      
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-6" style="min-height: 380px;">
         <HubRecentLeads :leads="recentLeads" @quote-created="onQuoteCreated" />
         <HubTeamTasks :tasks="teamTasks" @task-created="onTaskCreated" @task-toggled="onTaskToggled" />
       </div>
 
-      <!-- Recent Orders -->
+      
       <div class="rounded-2xl border overflow-hidden
                   bg-white border-white/5 dark:bg-slate-800/80 dark:border-slate-700/50">
         <div class="px-6 py-5 border-b border-white/5 dark:border-slate-700 flex items-center justify-between">
@@ -238,7 +238,6 @@ async function fetchDashboardStats() {
   return stats.value
 }
 
-// Stat Cards with inline SVG paths for cleaner templates
 const statCards = computed(() => [
   { iconBg: 'bg-primary-500/10', iconColor: 'text-primary-500', label: 'Ventes du jour', value: `${stats.value.revenue.toLocaleString('fr-FR')} \u20ac`, trend: stats.value.trends.revenue, svgIcon: 'svg', svgPath: 'M14.25 7.756a4.5 4.5 0 1 0 0 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z' },
   { iconBg: 'bg-violet-500/10', iconColor: 'text-violet-500', label: 'Commandes', value: stats.value.orders, trend: stats.value.trends.orders, svgIcon: 'svg', svgPath: 'M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z' },

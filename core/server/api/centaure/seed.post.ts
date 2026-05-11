@@ -1,10 +1,4 @@
-/**
- *
- * POST /api/centaure/seed (admin only)
- *
- * Hydrate cs_centaure_embedding depuis cs_autoblog_queue.
- * Idempotent (ON CONFLICT DO UPDATE). Chantier #38 criterion #2.
- */
+
 
 import { seedFromAutoblog } from '~/server/utils/centaure-embed'
 import { verifyToken } from '~/server/utils/session-crypto'

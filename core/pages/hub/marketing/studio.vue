@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -21,14 +21,14 @@
     <div class="p-6 max-w-6xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- ── Panneau gauche : Formulaire ─────────────────────────────────── -->
+        
         <div class="space-y-5">
 
-          <!-- Source -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">Source du contenu</h2>
 
-            <!-- Tabs source -->
+            
             <div class="flex gap-2 mb-4">
               <button
                 v-for="tab in SOURCES"
@@ -45,7 +45,7 @@
               </button>
             </div>
 
-            <!-- Produit -->
+            
             <div v-if="source === 'product'" class="space-y-3">
               <div v-if="productsLoading" class="space-y-2">
                 <div v-for="i in 3" :key="i" class="h-10 bg-gray-100 dark:bg-slate-800 rounded-lg animate-pulse" />
@@ -80,7 +80,7 @@
               </div>
             </div>
 
-            <!-- Event -->
+            
             <div v-else-if="source === 'event'" class="space-y-3">
               <div v-if="eventsLoading" class="space-y-2">
                 <div v-for="i in 3" :key="i" class="h-10 bg-gray-100 dark:bg-slate-800 rounded-lg animate-pulse" />
@@ -114,7 +114,7 @@
               </div>
             </div>
 
-            <!-- Free article -->
+            
             <div v-else>
               <textarea
                 v-model="newsContent"
@@ -125,7 +125,7 @@
             </div>
           </div>
 
-          <!-- Ton -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-3">Ton & Style</h2>
             <div class="grid grid-cols-2 gap-2">
@@ -149,7 +149,7 @@
             </div>
           </div>
 
-          <!-- Generate -->
+          
           <button
             @click="generate"
             :disabled="generating || !canGenerate"
@@ -166,10 +166,10 @@
           </button>
         </div>
 
-        <!-- ── Panneau droit : Preview 9:16 + Export ────────────────────────── -->
+        
         <div class="space-y-5">
 
-          <!-- Placeholder vide -->
+          
           <div v-if="!script" class="flex flex-col items-center justify-center py-20 text-gray-300">
             <svg class="w-16 h-16 mb-4 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
               <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -179,17 +179,17 @@
           </div>
 
           <template v-else>
-            <!-- Preview verticale 9:16 -->
+            
             <div class="flex justify-center">
               <div class="w-56 aspect-[9/16] rounded-2xl overflow-hidden shadow-xl relative bg-gray-900 border border-gray-700">
 
-                <!-- Hook — top -->
+                
                 <div class="absolute inset-x-0 top-0 p-4 bg-gradient-to-b from-black/80 to-transparent z-10">
                   <div class="w-12 h-1.5 bg-white dark:bg-slate-900/30 rounded-full mb-3" />
                   <p class="text-white text-xs font-bold leading-snug drop-shadow">{{ script.hook }}</p>
                 </div>
 
-                <!-- Background image/gradient -->
+                
                 <div class="absolute inset-0 bg-gradient-to-br from-primary-900/60 to-gray-900" />
                 <div class="absolute inset-0 flex items-center justify-center opacity-10">
                   <svg class="w-20 h-20 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="0.5">
@@ -197,7 +197,7 @@
                   </svg>
                 </div>
 
-                <!-- Benefits — middle -->
+                
                 <div class="absolute inset-x-0 top-1/3 px-4 space-y-1.5 z-10">
                   <div
                     v-for="(b, i) in script.benefits"
@@ -208,7 +208,7 @@
                   </div>
                 </div>
 
-                <!-- CTA — bottom -->
+                
                 <div class="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-10">
                   <div class="bg-primary-500 rounded-lg px-3 py-2 text-center">
                     <p class="text-white text-[10px] font-bold">{{ script.cta }}</p>
@@ -218,7 +218,7 @@
               </div>
             </div>
 
-            <!-- Directions visuelles -->
+            
             <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
               <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Directions visuelles</h3>
               <ol class="space-y-2">
@@ -233,7 +233,7 @@
               </ol>
             </div>
 
-            <!-- Hashtags -->
+            
             <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
               <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Hashtags</h3>
               <div class="flex flex-wrap gap-2">
@@ -245,12 +245,12 @@
               </div>
             </div>
 
-            <!-- Export -->
+            
             <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
               <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Exporter</h3>
               <div class="grid grid-cols-3 gap-2">
 
-                <!-- Copier -->
+                
                 <button
                   @click="copyScript"
                   class="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-primary-300 hover:bg-primary-50 transition-all group"
@@ -263,7 +263,7 @@
                   </span>
                 </button>
 
-                <!-- WhatsApp -->
+                
                 <button
                   @click="shareWhatsApp"
                   class="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-green-300 hover:bg-green-50 transition-all group"
@@ -274,7 +274,7 @@
                   <span class="text-xs text-gray-500 group-hover:text-green-600 font-medium transition-colors">WhatsApp</span>
                 </button>
 
-                <!-- Email -->
+                
                 <button
                   @click="shareEmail"
                   class="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-blue-300 hover:bg-blue-50 transition-all group"
@@ -294,14 +294,11 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
+
 import type { ShortScript } from '~/server/api/ai/generate-short.post'
 import type { EventRecord } from '~/types/event'
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
-
-// ── Types locaux ──────────────────────────────────────────────────────────────
 
 interface Product {
   id_product: number
@@ -312,8 +309,6 @@ interface Product {
   description_short?: string
 }
 
-// ── Constantes ────────────────────────────────────────────────────────────────
-
 const SOURCES = [
   { value: 'product' as const, label: 'Produit',     icon: '🛍️' },
   { value: 'event'   as const, label: 'Événement',   icon: '📅' },
@@ -323,11 +318,9 @@ const SOURCES = [
 const TONES = [
   { value: 'énergétique et funky',          label: 'Funky',        icon: '🔥', hint: 'TikTok / GenZ' },
   { value: 'professionnel et expert',        label: 'Pro',          icon: '💼', hint: 'B2B / LinkedIn' },
-  { value: 'tech et enthousiaste',           label: 'Tech',         icon: '🚀', hint: 'Startups / SaaS' }, // saas-ok: secteur cible
+  { value: 'tech et enthousiaste',           label: 'Tech',         icon: '🚀', hint: 'Startups / SaaS' }, 
   { value: 'chaleureux et communautaire',    label: 'Humain',       icon: '🤝', hint: 'Réseaux locaux' },
 ]
-
-// ── État ──────────────────────────────────────────────────────────────────────
 
 const { resolvedClientId } = useClientDetection()
 
@@ -338,19 +331,14 @@ const generating  = ref(false)
 const copied      = ref(false)
 const hasApiKey   = ref(false)
 
-// Source sélectionnée (produit ou événement)
 const selectedItem = ref<{ id: number | string; content: string } | null>(null)
 
-// Données
 const products       = ref<Product[]>([])
 const events         = ref<EventRecord[]>([])
 const productsLoading = ref(false)
 const eventsLoading   = ref(false)
 
-// Résultat généré
 const script = ref<ShortScript | null>(null)
-
-// ── Computed ──────────────────────────────────────────────────────────────────
 
 const canGenerate = computed(() => {
   if (source.value === 'news')  return newsContent.value.trim().length > 0
@@ -362,8 +350,6 @@ const contentToSend = computed((): string => {
   return selectedItem.value?.content ?? ''
 })
 
-// ── Chargements ───────────────────────────────────────────────────────────────
-
 async function loadProducts() {
   productsLoading.value = true
   try {
@@ -373,7 +359,7 @@ async function loadProducts() {
     )
     if (res.success) products.value = res.products
   } catch {
-    // module non installé
+    
   } finally {
     productsLoading.value = false
   }
@@ -387,7 +373,7 @@ async function loadEvents() {
     })
     events.value = res
   } catch {
-    //
+    
   } finally {
     eventsLoading.value = false
   }
@@ -398,11 +384,9 @@ async function checkApiKey() {
     const status = await $fetch<{ ai: { enabled: boolean } }>('/api/hub/system-status')
     hasApiKey.value = status.ai?.enabled ?? false
   } catch {
-    //
+    
   }
 }
-
-// ── Sélection ────────────────────────────────────────────────────────────────
 
 function selectProduct(p: Product) {
   const content = [
@@ -424,8 +408,6 @@ function selectEvent(ev: EventRecord) {
   ].filter(Boolean).join('\n')
   selectedItem.value = { id: ev.id, content }
 }
-
-// ── Génération ────────────────────────────────────────────────────────────────
 
 async function generate() {
   if (!canGenerate.value || generating.value) return
@@ -450,8 +432,6 @@ async function generate() {
   }
 }
 
-// ── Export ────────────────────────────────────────────────────────────────────
-
 function buildFullScript(): string {
   if (!script.value) return ''
   const s = script.value
@@ -471,7 +451,7 @@ async function copyScript() {
     copied.value = true
     setTimeout(() => { copied.value = false }, 2500)
   } catch {
-    //
+    
   }
 }
 
@@ -486,15 +466,11 @@ function shareEmail() {
   window.location.href = `mailto:?subject=${subject}&body=${body}`
 }
 
-// ── Utils ────────────────────────────────────────────────────────────────────
-
 const formatPrice = (v: string | number) =>
   new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(Number(v))
 
 const formatDate = (d: string) =>
   new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
-
-// ── Init ─────────────────────────────────────────────────────────────────────
 
 onMounted(() => {
   loadProducts()

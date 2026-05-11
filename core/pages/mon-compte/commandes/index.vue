@@ -1,9 +1,4 @@
-<!--
-  Mon compte — Historique commandes
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <script setup lang="ts">
 import type { OrderData } from '~/server/connectors/base'
 
@@ -55,7 +50,7 @@ async function downloadInvoices() {
     a.download = brand ? `factures-${brand.toLowerCase()}.zip` : 'factures.zip'
     a.click()
     URL.revokeObjectURL(url)
-  } catch { /* no invoices */ }
+  } catch {  }
   finally { downloading.value = false }
 }
 
@@ -73,7 +68,7 @@ async function downloadAllInvoices() {
     a.download = brand ? `factures-${brand.toLowerCase()}.zip` : 'factures.zip'
     a.click()
     URL.revokeObjectURL(url)
-  } catch { /* no invoices */ }
+  } catch {  }
   finally { downloading.value = false }
 }
 
@@ -87,7 +82,7 @@ async function loadOrders() {
     orders.value = await $fetch<OrderData[]>('/api/orders', {
       query: { customerId: customer.value!.customerId, clientId, limit: 50 },
     })
-  } catch { /* ignore */ }
+  } catch {  }
   finally { loading.value = false }
 }
 
@@ -107,7 +102,7 @@ useHead({ title: brand ? `Mes commandes — ${brand}` : 'Mes commandes' })
             <h1 class="text-2xl font-bold text-gray-900">{{ t('account.orders_title') }}</h1>
           </div>
 
-          <!-- Actions factures -->
+          
           <div v-if="!loading && invoiceOrders.length" class="flex items-center gap-2">
             <button
               v-if="selectedIds.size > 0"
@@ -134,7 +129,7 @@ useHead({ title: brand ? `Mes commandes — ${brand}` : 'Mes commandes' })
 
         <div v-else-if="orders.length" class="space-y-3">
 
-          <!-- Global selection -->
+          
           <div v-if="invoiceOrders.length" class="flex items-center gap-2 px-2 pb-2">
             <input
               type="checkbox"
@@ -145,13 +140,13 @@ useHead({ title: brand ? `Mes commandes — ${brand}` : 'Mes commandes' })
             <span class="text-xs text-gray-400">{{ t('account.orders_select_all') }} ({{ invoiceOrders.length }})</span>
           </div>
 
-          <!-- Liste commandes -->
+          
           <div
             v-for="order in orders"
             :key="order.id"
             class="flex items-center gap-3"
           >
-            <!-- Checkbox facture -->
+            
             <div class="shrink-0 w-6 flex justify-center">
               <input
                 v-if="order.invoiceNumber"

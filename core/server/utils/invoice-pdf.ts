@@ -1,9 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PDF invoice generation from OrderData.
- * Uses PDFKit (native Node.js, not Puppeteer).
- */
 
 import PDFDocument from 'pdfkit'
 import type { OrderData } from '~/server/connectors/base'
@@ -26,11 +21,11 @@ export function generateInvoicePdf(order: OrderData, shopName: string, accentCol
     const formatDate = (d: string) =>
       d ? new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : ''
 
-    // ── Header ──────────────────────────────────────────────
+    
     doc.fontSize(20).fillColor(dark).text(shopName, 50, 50)
     doc.fontSize(10).fillColor(gray).text('Facture', 50, 75)
 
-    // Invoice info (right-aligned)
+    
     const rightX = 350
     doc.fontSize(10).fillColor(dark)
     if (order.invoiceNumber) {
@@ -40,10 +35,10 @@ export function generateInvoicePdf(order: OrderData, shopName: string, accentCol
     doc.text(`Commande #${order.reference}`, rightX, 67, { width: 200, align: 'right' })
     doc.text(`Date : ${formatDate(order.invoiceDate || order.dateAdd)}`, rightX, 82, { width: 200, align: 'right' })
 
-    // ── Separator ───────────────────────────────────────────
+    
     doc.moveTo(50, 110).lineTo(545, 110).strokeColor('#e2e8f0').lineWidth(1).stroke()
 
-    // ── Addresses ───────────────────────────────────────────
+    
     let y = 125
 
     if (order.addressInvoice || order.addressDelivery) {
@@ -74,7 +69,7 @@ export function generateInvoicePdf(order: OrderData, shopName: string, accentCol
 
     y = Math.max(y, 200) + 20
 
-    // ── Table header ────────────────────────────────────────
+    
     doc.rect(50, y, 495, 22).fill('#f8fafc')
     doc.fontSize(8).fillColor(gray)
     doc.text('Produit', 55, y + 6, { width: 230 })
@@ -84,7 +79,7 @@ export function generateInvoicePdf(order: OrderData, shopName: string, accentCol
     doc.text('Total TTC', 470, y + 6, { width: 70, align: 'right' })
     y += 26
 
-    // ── Table rows ──────────────────────────────────────────
+    
     doc.fontSize(9).fillColor(dark)
     for (const item of order.items) {
       if (y > 720) {
@@ -94,8 +89,8 @@ export function generateInvoicePdf(order: OrderData, shopName: string, accentCol
       doc.text(item.name, 55, y, { width: 230 })
       doc.fillColor(gray).text(item.reference, 290, y, { width: 60 })
       doc.fillColor(dark).text(String(item.quantity), 355, y, { width: 40, align: 'center' })
-      // P.U. TTC après promo (si applicable). Si promo, la ligne suivante
-      // sous le P.U. expose le prix avant promo barré + label "-X%".
+      
+      
       doc.text(formatPrice(item.priceTTC), 400, y, { width: 65, align: 'right' })
       doc.text(formatPrice(item.priceTTC * item.quantity), 470, y, { width: 70, align: 'right' })
       y += 14
@@ -116,12 +111,12 @@ export function generateInvoicePdf(order: OrderData, shopName: string, accentCol
       y += 4
     }
 
-    // ── Separator ───────────────────────────────────────────
+    
     y += 8
     doc.moveTo(350, y).lineTo(545, y).strokeColor('#e2e8f0').lineWidth(1).stroke()
     y += 12
 
-    // ── Totals ──────────────────────────────────────────────
+    
     doc.fontSize(9).fillColor(gray)
     doc.text('Sous-total HT', 350, y, { width: 115 })
     doc.fillColor(dark).text(formatPrice(order.totalProducts), 470, y, { width: 70, align: 'right' })
@@ -137,7 +132,7 @@ export function generateInvoicePdf(order: OrderData, shopName: string, accentCol
     doc.fontSize(9).fillColor(gray)
     doc.text(`Paiement : ${order.payment}`, 350, y)
 
-    // ── Footer ──────────────────────────────────────────────
+    
     doc.fontSize(7).fillColor(gray)
     doc.text(
       `Document généré le ${new Date().toLocaleDateString('fr-FR')} — ${shopName}`,

@@ -1,13 +1,4 @@
-<!--
-  Page réinitialisation mot de passe — /reinitialiser-mot-de-passe?token=…&email=…
-  Formulaire nouveau mot de passe → POST /api/catalogue/customer/password-reset.
 
-  Token + email lus depuis la query string. Si absents → message d'erreur.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 

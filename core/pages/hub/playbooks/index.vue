@@ -6,7 +6,7 @@
         <p class="text-xs text-gray-400 mt-0.5">{{ total }} playbook{{ total > 1 ? 's' : '' }}{{ !isOwner ? ` — ${roleLabel}` : '' }}</p>
       </div>
       <div class="flex items-center gap-2">
-        <!-- Toggle groupage profil / feature -->
+        
         <div class="inline-flex rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden">
           <button @click="groupBy = 'role'"
             class="text-xs px-3 py-1.5 transition-colors"
@@ -32,7 +32,7 @@
       </div>
     </header>
 
-    <!-- Tabs : groupes dynamiques -->
+    
     <nav v-if="!loading && tabs.length > 1" class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 shrink-0 overflow-x-auto">
       <ul class="flex gap-1 min-w-max">
         <li v-for="tab in tabs" :key="tab.key">
@@ -96,7 +96,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
@@ -113,7 +112,6 @@ function splitRoles(roles: string | null | undefined): string[] {
   return (roles || '').split(',').map(r => r.trim()).filter(Boolean)
 }
 
-/** Computed groups: key = role or feature_id, value = playbooks. */
 const groups = computed<Record<string, any[]>>(() => {
   const out: Record<string, any[]> = {}
   for (const p of playbooks.value) {
@@ -133,13 +131,12 @@ const groups = computed<Record<string, any[]>>(() => {
   return out
 })
 
-/** Tabs dynamically generated from groups (+ "All" at the top). */
 const tabs = computed(() => {
   const list: { key: string; label: string; count: number }[] = [
     { key: '__all__', label: 'Tous', count: playbooks.value.length },
   ]
   const keys = Object.keys(groups.value).sort((a, b) => {
-    // __none__ en queue
+    
     if (a === '__none__') return 1
     if (b === '__none__') return -1
     return a.localeCompare(b)
@@ -158,7 +155,6 @@ const visiblePlaybooks = computed(() => {
   return groups.value[activeTab.value] || []
 })
 
-// Reset active tab on grouping mode change
 watch(groupBy, () => { activeTab.value = '__all__' })
 
 async function load() {

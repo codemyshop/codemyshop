@@ -1,17 +1,11 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/fleet
- * Direct Drizzle on cs_main.cs_fleet_instance (PG).
- * Super Admin uniquement.
- */
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 import { verifyToken } from '~/server/utils/session-crypto'
 
 export default defineEventHandler(async (event) => {
-  // Auth Super Admin (cookie hub_session signé HMAC backlog #249)
+  
   const session = verifyToken<any>(getCookie(event, 'hub_session'))
   if (!session) throw createError({ statusCode: 401, message: 'Non authentifié' })
   if (!session.isAdmin || session.profileId !== 1) throw createError({ statusCode: 403 })

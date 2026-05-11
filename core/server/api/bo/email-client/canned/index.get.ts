@@ -1,4 +1,4 @@
-/** @author CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 const PG_SCHEMA = 'cs_main'

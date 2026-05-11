@@ -1,8 +1,4 @@
-/**
- *
- * Drizzle PG schema — email-queue domain.
- * Owner de cs_email_queue. Voir migration 2026-05-05_email_queue.sql.
- */
+
 
 import {
   integer,
@@ -29,11 +25,11 @@ export const emailQueue = vaisseauMereAcSchema.table(
     templateSlug:   varchar('template_slug', { length: 64 }),
     idLang:         integer('id_lang'),
     status:         varchar('status',        { length: 16 }).notNull().default('pending'),
-    /** Priorité 0-100 (0=critique, 50=standard, 100=marketing).
-     * Worker dequeues via ORDER BY priority ASC, date_add ASC. */
+    
+
     priority:       smallint('priority').notNull().default(50),
-    /** JSON `{ type, …args }` — attachment resolved by the worker at the moment
-     * of sending (avoids storing a BYTEA and defers generation off the HTTP path). */
+    
+
     attachmentMeta: text('attachment_meta').notNull().default(''),
     attempts:       smallint('attempts').notNull().default(0),
     maxAttempts:    smallint('max_attempts').notNull().default(3),

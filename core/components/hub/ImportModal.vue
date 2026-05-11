@@ -5,7 +5,7 @@
     @click.self="close"
   >
     <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden">
-      <!-- Header -->
+      
       <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 shrink-0">
         <div>
           <h2 class="text-base font-bold text-gray-800 dark:text-slate-100">{{ title }}</h2>
@@ -16,9 +16,9 @@
         </button>
       </div>
 
-      <!-- Body -->
+      
       <div class="flex-1 overflow-auto px-6 py-5 space-y-5">
-        <!-- Step 1: drop zone -->
+        
         <div v-if="!parsedRows.length && !importing && !result">
           <label
             @dragover.prevent="dragOver = true"
@@ -41,7 +41,7 @@
           </p>
         </div>
 
-        <!-- Step 2: mapping / preview -->
+        
         <div v-else-if="parsedRows.length && !importing && !result" class="space-y-5">
           <div class="flex items-center justify-between bg-gray-50 dark:bg-slate-950/40 border border-gray-100 dark:border-slate-800 rounded-lg px-4 py-3">
             <div>
@@ -51,7 +51,7 @@
             <button @click="reset" class="text-[11px] text-gray-500 hover:text-gray-700 dark:hover:text-slate-200 underline">Changer de fichier</button>
           </div>
 
-          <!-- Mapping auto -->
+          
           <div>
             <h3 class="text-xs font-semibold text-gray-700 dark:text-slate-200 uppercase tracking-wide mb-2">Correspondance des colonnes</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -75,7 +75,7 @@
             </p>
           </div>
 
-          <!-- Preview -->
+          
           <div>
             <h3 class="text-xs font-semibold text-gray-700 dark:text-slate-200 uppercase tracking-wide mb-2">Aperçu (5 premières lignes)</h3>
             <div class="overflow-auto border border-gray-100 dark:border-slate-800 rounded-lg">
@@ -99,7 +99,7 @@
             </div>
           </div>
 
-          <!-- Option createMissing -->
+          
           <div v-if="allowCreateMissing" class="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 rounded-lg px-4 py-3">
             <label class="flex items-start gap-3 cursor-pointer">
               <input type="checkbox" v-model="createMissing" class="mt-0.5 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
@@ -111,7 +111,7 @@
           </div>
         </div>
 
-        <!-- Step 3: import in progress -->
+        
         <div v-else-if="importing" class="py-12 text-center">
           <svg class="w-10 h-10 mx-auto animate-spin text-primary-600" fill="none" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" class="opacity-25" />
@@ -120,7 +120,7 @@
           <p class="text-sm text-gray-600 dark:text-slate-300 mt-3">Import en cours… {{ parsedRows.length }} lignes</p>
         </div>
 
-        <!-- Step 4: result -->
+        
         <div v-else-if="result" class="space-y-4">
           <div class="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 rounded-lg p-4">
             <p class="text-sm font-semibold text-emerald-800 dark:text-emerald-200">Import terminé</p>
@@ -152,7 +152,7 @@
         </div>
       </div>
 
-      <!-- Footer -->
+      
       <div class="flex items-center justify-between gap-3 px-6 py-4 border-t border-gray-100 dark:border-slate-800 shrink-0 bg-gray-50/50 dark:bg-slate-950/40">
         <button
           v-if="!importing"
@@ -175,17 +175,7 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * HubImportModal — generic CSV import modal.
- *
- * Pattern extracted from the product ImportModal (Sprint 9) so that the 4 pages
- * CRM/CMS/PRM can share the same UX drag&drop + auto-mapping +
- * preview + stats. On the server side, each entity exposes its own endpoint
- * `/api/bo/<entity>/import` which receives { rows, mapping, createMissing } and
- * renvoie { stats: { total, updated, created, skipped, errors } }.
- */
 interface TargetField {
   key: string
   label: string
@@ -274,7 +264,6 @@ function runAutoMap(headers: string[]) {
   }
 }
 
-/** Parser CSV minimal : détection séparateur, support `"..."` avec quotes doublés, CRLF. */
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[]; sep: string } {
   if (text.charCodeAt(0) === 0xfeff) text = text.slice(1)
 

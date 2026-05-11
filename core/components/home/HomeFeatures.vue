@@ -8,7 +8,7 @@
           :key="feat.label"
           class="flex items-start gap-3 dark:bg-white/[0.03] dark:backdrop-blur-sm dark:rounded-xl dark:p-3 dark:border dark:border-white/[0.06] dark:hover:border-indigo-500/20 dark:hover:bg-white/[0.05] dark:transition-all dark:duration-300"
         >
-          <!-- Icon -->
+          
           <div class="w-10 h-10 rounded-card bg-primary-50 text-primary-600 dark:bg-indigo-500/15 dark:text-indigo-400 flex items-center justify-center shrink-0">
 
             <svg v-if="feat.icon === 'truck'" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
@@ -39,7 +39,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-1.2 5.4-4.5 9-9 9 0 6 4.5 9 9 9s9-3 9-9c-4.5 0-7.8-3.6-9-9Z" />
             </svg>
 
-            <!-- check (fallback) -->
+            
             <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
             </svg>

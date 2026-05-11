@@ -1,13 +1,4 @@
-<!--
-  Page détail skateshop — /skateshop/{slug}/
-  Fiche complète d'un magasin physique : hero + adresse + horaires + map
-  + description + JSON-LD LocalBusiness pour SEO local (Google Maps,
-  Knowledge Panel, "skateshop {ville}" rich result).
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -54,7 +45,6 @@ const hoursList = computed(() => {
   }))
 })
 
-// JSON-LD LocalBusiness — ranking key on "skateshop {city}"
 const dayMap: Record<string, string> = { mon: 'Mo', tue: 'Tu', wed: 'We', thu: 'Th', fri: 'Fr', sat: 'Sa', sun: 'Su' }
 const openingHoursSpec = computed(() => {
   const h = store.value.hours
@@ -150,7 +140,7 @@ const directionsHref = computed(() => `https://www.google.com/maps/dir/?api=1&de
 <template>
   <NuxtLayout name="white-label">
     <div class="bg-white">
-      <!-- Hero -->
+      
       <div class="border-b border-gray-100 bg-gradient-to-b from-gray-50 to-white">
         <div class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
           <nav class="text-xs text-gray-400 mb-4">
@@ -170,17 +160,17 @@ const directionsHref = computed(() => `https://www.google.com/maps/dir/?api=1&de
       </div>
 
       <div class="mx-auto max-w-6xl px-4 sm:px-6 py-10 grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10">
-        <!-- Colonne gauche : map + description -->
+        
         <div class="space-y-8">
-          <!-- Map -->
+          
           <div class="rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
             <div id="skateshop-detail-map" class="w-full h-[420px]"></div>
           </div>
 
-          <!-- Description -->
+          
           <section v-if="store.description" class="prose prose-sm sm:prose max-w-none text-gray-700" v-html="store.description"></section>
 
-          <!-- Lower CTA -->
+          
           <div class="flex flex-wrap gap-3">
             <a :href="directionsHref" target="_blank" rel="noopener"
                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 transition">
@@ -193,7 +183,7 @@ const directionsHref = computed(() => `https://www.google.com/maps/dir/?api=1&de
           </div>
         </div>
 
-        <!-- Colonne droite : sidebar contact + horaires -->
+        
         <aside class="space-y-6">
           <div class="rounded-lg border border-gray-200 p-5 bg-white">
             <h2 class="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Contact</h2>

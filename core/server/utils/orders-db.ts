@@ -1,12 +1,4 @@
-/**
- *
- * Direct DB helpers for /api/orders/* — doctrine: "Zero webservice"
- * PrestaShop » 2026-04-22. Lecture ps_orders / ps_order_detail /
- * ps_order_history / ps_order_state + write operations (order creation).
- *
- * Chantier #44 : cutover MariaDB -> PostgreSQL (cs_main), via
- * usePocPg() + raw qualified SQL.
- */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -35,7 +27,6 @@ function first<T = any>(result: any): T | null {
   return rows<T>(result)[0] ?? null
 }
 
-// Compat : alias internes — ré-exportés via OrderData (forme canonique du connector).
 export type OrderSummary = OrderData
 export type OrderItem = OrderItemData
 
@@ -55,7 +46,7 @@ export interface CarrierSummary {
   price: number
   freeAbove: number | null
   active: boolean
-  /** carrier intrinsèquement gratuit (PS is_free=1 — typiquement retrait sur place) */
+  
   isFree: boolean
 }
 
@@ -100,8 +91,8 @@ export async function getOrderFromDb(orderId: number, ctx: OrdersContext = {}): 
   `).then(first<any>)
   if (!order) return null
 
-  // JOIN ps_product to retrieve unit_price_ratio + unity + weight, which
-  // allows computing pricePerUnit (ex-tax/case or ex-tax/unit) on the email summary display side
+  
+  
   const items = rows<any>(await db(ctx).execute(sql`
     SELECT od.product_id, od.product_name, od.product_reference, od.product_quantity,
            od.unit_price_tax_excl, od.unit_price_tax_incl,
@@ -141,14 +132,14 @@ export async function getOrderFromDb(orderId: number, ctx: OrdersContext = {}): 
         } else if (reductionAmount > 0) {
           reductionLabel = `-${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(reductionAmount)}`
         } else {
-          // Discount recorded without percent/amount split (legacy order):
-          // Recalculates a percentage from original/priceHT.
+          
+          
           const ratio = (original - priceHT) / original
           reductionLabel = `-${Math.round(ratio * 100)}%`
         }
       }
-      // No join on features (Units per package) here because it would cause N+1
-      // queries on the order summary; we stick to native PS fields.
+      
+      
       const pricing = deriveUnitPricing({
         priceHT,
         unitPriceRatio: r.unit_price_ratio,
@@ -221,10 +212,6 @@ export async function getOrderStatesFromDb(ctx: OrdersContext = {}): Promise<Ord
   }))
 }
 
-/**
- * Lists active carriers with their resolved price for the provided context.
- * Native PS pricing (DB-Only, no webservice calls).
- */
 export async function getCarriersFromDb(
   idLang = 1,
   filters: { addressId?: number; totalHT?: number; weight?: number } = {},
@@ -314,10 +301,6 @@ export async function getCarriersFromDb(
   return out
 }
 
-/**
- * Order creation from an existing cart.
- * MVP Scope: transposes cart → order + order_detail + initial order_history.
- */
 export async function createOrderFromCart(
   params: {
     cartId: number
@@ -352,9 +335,9 @@ export async function createOrderFromCart(
   `))
   if (!items.length) return null
 
-  // Promos produit (ps_specific_price) actives — appliquées avant la remise
-  // cart_rule globale. Garantit la parité « prix card produit = prix panier
-  // = prix commande facturée ».
+  
+  
+  
   const productIds = items.map((it: any) => Number(it.id_product))
   const specificPrices = await getActiveSpecificPrices(productIds, ctx)
   const itemPricing = items.map((r: any) => {
@@ -367,7 +350,7 @@ export async function createOrderFromCart(
   const totalProductsHT = itemPricing.reduce((s: number, ip) =>
     s + ip.finalPrice * Number(ip.row.quantity), 0)
 
-  // Shipping recalculé serveur-side (DB-Only).
+  
   let shippingPrice = 0
   if (carrierId) {
     const carriers = await getCarriersFromDb(langId, { addressId: addressDeliveryId, totalHT: totalProductsHT }, ctx)
@@ -375,7 +358,7 @@ export async function createOrderFromCart(
     if (c) shippingPrice = Number(c.price || 0)
   }
 
-  // Remise totale (cart_rules associés au cart).
+  
   const ruleRows = await d.execute(sql`
     SELECT cr.id_cart_rule, cr.reduction_amount, cr.reduction_percent
        FROM cs_main.ps_cart_cart_rule ccr
@@ -394,13 +377,13 @@ export async function createOrderFromCart(
   const reference = 'AC' + Math.random().toString(36).toUpperCase().slice(2, 10)
   const secureKey = Math.random().toString(36).slice(2, 34)
 
-  // Mapping payment → état initial PS (id_order_state).
-  // - virement bancaire → 10 ("En attente de virement bancaire")
-  // - SystemPay (CB) → 14 ("En attente de paiement") : la commande est
-  //   créée AVANT redirect SystemPay ; l'IPN (systempay-ipn.post.ts) la
-  //   promeut à 2 ("Paiement accepté") après validation. Évite l'incohérence
-  //   « commande validée mais paiement jamais reçu » si SystemPay rejette.
-  // - défaut → 2 si on n'a aucun signal (peu probable).
+  
+  
+  
+  
+  
+  
+  
   const paymentLow = String(paymentMethod || '').toLowerCase()
   const isBankwire = paymentLow.includes('virement')
   const isSystempay = paymentLow.includes('systempay') || paymentLow.includes('carte bancaire')
@@ -439,10 +422,10 @@ export async function createOrderFromCart(
     const unit = ip.finalPrice
     const original = ip.basePrice
     const qty = Number(it.quantity)
-    // PS standard `ps_order_detail` : original_product_price = prix avant
-    // promo, reduction_percent (0..1) si pct, reduction_amount (€ HT) si
-    // montant fixe. Le BO PS legacy lit ces colonnes pour afficher la promo
-    // un order côté legacy par hasard.
+    
+    
+    
+    
     const reductionPercent = ip.sp?.reductionType === 'percentage' ? Number(ip.sp.reduction) : 0
     const reductionAmount  = ip.sp?.reductionType === 'amount'     ? Number(ip.sp.reduction) : 0
     const reductionUnit    = Math.max(0, original - unit)
@@ -468,7 +451,7 @@ export async function createOrderFromCart(
                0, 0, 0)
     `)
 
-    // Stock decrement.
+    
     await d.execute(sql`
       UPDATE cs_main.ps_stock_available
           SET quantity           = quantity - ${qty},
@@ -476,7 +459,7 @@ export async function createOrderFromCart(
         WHERE id_product = ${Number(it.id_product)}
           AND id_product_attribute = ${Number(it.id_product_attribute || 0)}
     `)
-    // Mouvement stock pour l'historique.
+    
     await d.execute(sql`
       INSERT INTO cs_main.ps_stock_mvt
           (id_stock, id_order, id_supply_order, id_stock_mvt_reason, id_employee,
@@ -486,7 +469,7 @@ export async function createOrderFromCart(
          FROM cs_main.ps_stock_available sa
         WHERE sa.id_product = ${Number(it.id_product)} AND sa.id_product_attribute = ${Number(it.id_product_attribute || 0)}
         LIMIT 1
-    `).catch(() => { /* ps_stock_mvt peut ne pas exister sur anciens schémas */ })
+    `).catch(() => {  })
   }
 
   await d.execute(sql`
@@ -494,16 +477,16 @@ export async function createOrderFromCart(
      VALUES (0, ${orderId}, ${initialState}, NOW())
   `)
 
-  // this propagation, the quantity_per_user check in applyCouponToCart
-  // sees no prior usage → PROMO5 reusable indefinitely).
-  // Native PS reads this table to track usage per customer.
+  
+  
+  
   for (const r of ruleRows as any[]) {
     const ruleId = Number(r.id_cart_rule)
     if (!ruleId) continue
     const fixed = Number(r.reduction_amount || 0)
     const pct = Number(r.reduction_percent || 0)
     const ruleAmount = fixed > 0 ? fixed : pct > 0 ? totalProductsHT * (pct / 100) : 0
-    // ps_cart_rule_lang.name (lang 1) for the displayed name in backoffice order_cart_rule
+    
     const nameRow: any[] = await d.execute(sql`
       SELECT COALESCE(crl.name, cr.code, '') AS name
         FROM cs_main.ps_cart_rule cr

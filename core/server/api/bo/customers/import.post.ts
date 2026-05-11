@@ -1,21 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * POST /api/bo/customers/import — bulk UPSERT of customers (ps_customer).
- *
- * Body : { rows, mapping, createMissing? }
- * Match key: email (implicit unique index in PS).
- *
- * Security rule: only modify ps_customer (deleted=0). No
- * groups, no addresses, no orders — the import remains a
- * directory operation, not an account re-initialization.
- *
- * createMissing: creates an account with temporary password (the customer will have to
- * reset it), id_default_group=3, id_lang=1, id_gender=0 (unchanged from
- * endpoint /create.post.ts existant).
- */
 interface ImportBody {
   rows: Record<string, any>[]
   mapping: {

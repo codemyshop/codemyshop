@@ -1,16 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { updateBankTransaction } from '~/enterprise/banking/bank/server/utils/bank'
 
-/**
- * PUT /api/bo/finance/bank/:id — Categorizes / reconciles a transaction.
- *
- * Body :
- *   - category?: string  (ex: "charges", "ventes", "tjm", "urssaf", "perso")
- *   - reconciled?: boolean
- *   - reconciledRef?: string
- *   - notes?: string
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!id) throw createError({ statusCode: 400, statusMessage: 'id manquant' })

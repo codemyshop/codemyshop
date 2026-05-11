@@ -1,19 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * PUT /api/bo/marketing/blog-categories/:id — upsert CMS category.
- *
- * Multi-lang: master writes ps_cms_category + ps_cms_category_lang for
- * all languages; other languages only touch their own
- * ligne _lang via UPSERT.
- *
- * Safeguards: parent can never be itself nor a descendant
- * (cycle). level_depth is recalculated automatically. The root id=1
- * is protected (404).
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -37,7 +26,7 @@ export default defineEventHandler(async (event) => {
     meta_description: body.metaDescription !== undefined ? String(body.metaDescription || '') : undefined,
   }
 
-  // ─── Création ────────────────────────────────────────────────────
+  
   if (isNew) {
     if (!isMaster) {
       throw createError({ statusCode: 400, message: 'Création autorisée uniquement en langue master (id_lang=1)' })
@@ -53,7 +42,7 @@ export default defineEventHandler(async (event) => {
     const parent = await db.get<any>(`SELECT level_depth FROM ps_cms_category WHERE id_cms_category = ?`, [parentId])
     if (!parent) throw createError({ statusCode: 422, message: 'Parent introuvable' })
 
-    // Unicité link_rewrite parmi les enfants du même parent (cohérence URL)
+    
     const dup = await db.get<any>(`
       SELECT c.id_cms_category
       FROM ps_cms_category c
@@ -65,7 +54,7 @@ export default defineEventHandler(async (event) => {
     const active = body.active === false ? 0 : 1
     const levelDepth = Number(parent.level_depth) + 1
 
-    // Position : à la fin de la fratrie
+    
     const maxPos = await db.get<any>(`SELECT COALESCE(MAX(position), -1) AS maxPos FROM ps_cms_category WHERE id_parent = ?`, [parentId])
     const nextPos = Number(maxPos?.maxPos ?? -1) + 1
 
@@ -98,7 +87,7 @@ export default defineEventHandler(async (event) => {
     return { success: true, id: newId, langId, isMaster, created: true }
   }
 
-  // ─── Édition ─────────────────────────────────────────────────────
+  
   const id = Number(rawId)
   if (!id || id === 1) throw createError({ statusCode: 404, message: 'Catégorie introuvable' })
 
@@ -126,7 +115,7 @@ export default defineEventHandler(async (event) => {
       cf.push('id_parent = ?'); cp.push(newParent)
       cf.push('level_depth = ?'); cp.push(newDepth)
 
-      // Si le parent change, propager level_depth aux descendants
+      
       if (Number(existing.id_parent) !== newParent) {
         await reindexDescendantsDepth(db, id, newDepth)
       }
@@ -148,7 +137,7 @@ export default defineEventHandler(async (event) => {
         FROM ps_cms_category_lang WHERE id_cms_category = ? AND id_lang = ? AND id_shop = 1
     `, [id, langId])
 
-    // Garde-fou : slug unique parmi les enfants du même parent (master only)
+    
     if (isMaster && langFields.link_rewrite && langFields.link_rewrite !== existingLang?.link_rewrite) {
       const parentForCheck = body.parentId !== undefined ? Number(body.parentId) : Number(existing.id_parent)
       const dup = await db.get<any>(`
@@ -206,7 +195,7 @@ async function collectDescendants(db: any, rootId: number): Promise<number[]> {
 }
 
 async function reindexDescendantsDepth(db: any, rootId: number, rootDepth: number) {
-  // BFS : chaque niveau se voit attribuer rootDepth + distance depuis root.
+  
   const queue: Array<{ id: number; depth: number }> = [{ id: rootId, depth: rootDepth }]
   const visited = new Set<number>([rootId])
   while (queue.length) {

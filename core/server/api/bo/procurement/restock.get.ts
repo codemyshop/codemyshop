@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/** GET /api/bo/procurement/restock — products to be restocked (stock ≤ threshold). */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const threshold = Math.max(0, Math.min(100, Number(q.threshold || 5)))

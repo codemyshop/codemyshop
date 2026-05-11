@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -21,7 +21,7 @@
 
     <div class="p-6 max-w-7xl mx-auto space-y-6">
 
-      <!-- ── Barre de filtres ─────────────────────────────────────────────── -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
         <div class="grid grid-cols-1 lg:grid-cols-6 gap-4 items-end">
           <div>
@@ -74,10 +74,10 @@
         </div>
       </div>
 
-      <!-- ── Split Workspace ──────────────────────────────────────────────── -->
+      
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- Left: String list -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200">
@@ -126,10 +126,10 @@
           </div>
         </div>
 
-        <!-- Right: Prompt + reinjection -->
+        
         <div class="space-y-6">
 
-          <!-- Generated prompt -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200">2. Prompt IA</h2>
@@ -167,7 +167,7 @@
             </div>
           </div>
 
-          <!-- JSON reinjection -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200">3. Réponse JSON de l'IA</h2>
@@ -201,7 +201,7 @@
       </div>
     </div>
 
-    <!-- ── Drawer profils par langue ──────────────────────────────────────── -->
+    
     <Transition name="slide">
       <aside
         v-if="profilesOpen"
@@ -263,12 +263,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- *
- * Workspace Hub — Traductions IA multilingues.
- * Flow: choose scope + languages → load strings → select →
- * generate prompt (enriched by cultural profile) → paste JSON → apply.
- */
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
@@ -320,7 +314,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const scopeGroups = computed(() => {
   const out: Array<{ label: string; items: Scope[] }> = []
-  // Groupes en premier (accès rapide "Header — Tout", "Footer — Tout", …)
+  
   if (groupScopes.value.length) {
     out.push({ label: '⭐ Groupes (tout-en-un)', items: groupScopes.value })
   }
@@ -350,7 +344,7 @@ async function loadInit() {
     dynamicScopes.value = sc.dynamicScopes
     groupScopes.value = sc.groupScopes || []
     profiles.value = pr
-    // Defaults
+    
     if (ls.length && !ls.find(l => l.id_lang === sourceLang.value)) sourceLang.value = ls[0].id_lang
     if (ls.length > 1) {
       const nonSrc = ls.find(l => l.id_lang !== sourceLang.value)
@@ -425,13 +419,13 @@ async function copyPrompt() {
     await navigator.clipboard.writeText(prompt.value)
     promptCopied.value = true
     setTimeout(() => { promptCopied.value = false }, 2000)
-  } catch { /* */ }
+  } catch {  }
 }
 
 function parseResponse(raw: string): Array<{ id: string; target: string }> {
   const t = raw.trim()
   if (!t) return []
-  // Accept raw array, or { translations: [...] }, or ```json fenced
+  
   const cleaned = t.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '')
   let parsed: any
   try { parsed = JSON.parse(cleaned) } catch {

@@ -1,11 +1,4 @@
-/**
- *
- * POST /api/hub/translations/apply
- * Body : { scope, target_lang, translations: Array<{ id: rowKey, target: string }> }
- *
- * Supports individual scopes AND groups. For a group, each id
- * is decoded into (memberSlug, innerRowKey) and routed to the correct scope.
- */
+
 
 import { useClientDb } from '~/server/utils/db'
 import {
@@ -25,10 +18,6 @@ function resolveScope(slug: string): ScopeSpec | null {
   return s
 }
 
-/**
- * Applies a unique translation to the passed scope, respecting the
- * defensive clientScope. Returns 'updated' | 'inserted' | 'skipped' | 'error'.
- */
 async function applyOne(
   db: any,
   scope: ScopeSpec,
@@ -40,7 +29,7 @@ async function applyOne(
   if (!IDENT.test(scope.table) || !IDENT.test(scope.column)) return 'error'
   for (const c of scope.idCols) if (!IDENT.test(c)) return 'error'
 
-  // Branche ps_translation
+  
   if (scope.table === 'ps_translation') {
     const [domain, ...keyParts] = innerRowKey.split('::')
     const key = keyParts.join('::')
@@ -63,12 +52,12 @@ async function applyOne(
     return 'inserted'
   }
 
-  // Branche _lang
+  
   const parts = innerRowKey.split('::')
   if (parts.length !== scope.idCols.length) return 'skipped'
   const whereClauses = scope.idCols.map(c => `\`${c}\` = ?`).join(' AND ')
 
-  // Guard tenant
+  
   const cs = scope.clientScope
   if (cs) {
     let guardJoin = ` INNER JOIN \`${cs.masterTable}\` cs_master ON cs_master.\`${cs.masterIdCol}\` = src.\`${cs.masterIdCol}\``
@@ -98,7 +87,7 @@ async function applyOne(
   }
   if (!sourceLang) return 'skipped'
 
-  // Copier toutes les colonnes depuis la ligne source, écraser id_lang + colonne cible
+  
   const src = await db.get<any>(
     `SELECT * FROM \`${scope.table}\` WHERE id_lang = ? AND ${whereClauses} LIMIT 1`,
     [sourceLang, ...parts],
@@ -138,9 +127,9 @@ export default defineEventHandler(async (event) => {
   const singleScope = group ? null : resolveScope(scopeSlug)
   if (!group && !singleScope) throw createError({ statusCode: 404, statusMessage: 'scope inconnu' })
 
-  // Dédoublonnage : si le scope a dedupe='source', expande les traductions
-  // vers tous les rowKeys siblings (rows master sharing le même source_text).
-  // Ex: column_title='Informations' sur 6 liens → 1 traduction → 6 updates.
+  
+  
+  
   let workingTranslations: TranslationIn[] = [...translations]
   if (singleScope?.dedupe === 'source' && sourceLang && singleScope.idCols.length === 1) {
     const col = singleScope.column
@@ -172,7 +161,7 @@ export default defineEventHandler(async (event) => {
               expanded.push({ id: sid, target: it.target })
             }
           }
-          // L'original lui-même (déjà dans seen/expanded via siblings)
+          
           if (!expanded.some(e => e.id === id)) expanded.push(it)
         } catch {
           expanded.push(it)

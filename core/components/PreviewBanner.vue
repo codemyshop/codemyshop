@@ -15,17 +15,17 @@
                rounded-full px-3.5 py-2 shadow-xl text-xs font-medium
                border border-white/10"
       >
-        <!-- Dot indicateur -->
+        
         <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0 animate-pulse" />
 
-        <!-- Label -->
+        
         <span class="text-gray-300">{{ t('common.preview_label') }}</span>
         <span class="font-semibold tracking-wide text-amber-300">{{ displayName }}</span>
 
-        <!-- Separator -->
+        
         <span class="w-px h-3.5 bg-white/20 shrink-0" />
 
-        <!-- Bouton quitter -->
+        
         <button
           @click="exitPreview"
           class="flex items-center gap-1 text-gray-300 hover:text-white transition-colors"
@@ -46,15 +46,12 @@ const { t } = useT()
 const { previewMode, resolvedClientId, previewClient } = useClientDetection()
 const { header } = useHeaderDb()
 
-// Display name: client's logo.text > raw previewClient (fallback if client unknown)
 const displayName = computed(() =>
   header.value?.logo?.text
   ?? previewClient.value
   ?? resolvedClientId.value
 )
 
-// Uses the /exit-preview server route that expires the cookie via Set-Cookie header directly
-// — more reliable than useCookie().value = null in route middleware
 function exitPreview() {
   window.location.href = '/exit-preview'
 }

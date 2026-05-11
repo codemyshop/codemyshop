@@ -1,9 +1,4 @@
-/**
- *
- * POST /api/ai/transcreate
- * Body : { text, targetLocale, avatarType?, clientTone?, productName? }
- * Returns : TranscreationResult
- */
+
 
 export interface TranscreationResult {
   locale:         string

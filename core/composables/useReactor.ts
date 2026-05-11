@@ -1,9 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * useReactor — Composable for the real-time dashboard.
- * Uses useFetch (SSR-aware) + SSE (Server-Sent Events) with fallback polling.
- */
 
 interface ReactorAgent {
   codename: string
@@ -51,7 +46,7 @@ interface ReactorResponse {
 }
 
 export function useReactor() {
-  // ── Chargement initial SSR-aware via useFetch ────────────────────────────
+  
   const { data: initialData, refresh } = useFetch<ReactorResponse>('/api/reactor', {
     key: 'reactor-data',
     default: () => ({
@@ -61,14 +56,14 @@ export function useReactor() {
     }),
   })
 
-  // Refs réactives alimentées par SSR puis mises à jour par SSE
+  
   const agents = ref<ReactorAgent[]>([])
   const activity = ref<ActivityEntry[]>([])
   const stats = ref<ReactorStats>({ totalChecks24h: 0, activeAgents: 0, totalAgents: 0, lastError: null, lastUpdate: null })
   const isLive = ref(false)
   const error = ref<string | null>(null)
 
-  // Sync depuis useFetch data (SSR + client hydration)
+  
   watch(initialData, (data) => {
     if (data) {
       agents.value = data.agents
@@ -92,7 +87,7 @@ export function useReactor() {
     }
   }
 
-  // ── SSE temps réel ─────────────────────────────────────────────────────
+  
   function connectSSE() {
     if (typeof window === 'undefined') return
 
@@ -126,7 +121,7 @@ export function useReactor() {
               },
             }
           }
-        } catch { /* ignore */ }
+        } catch {  }
       })
 
       eventSource.addEventListener('heartbeats', (e: MessageEvent) => {
@@ -138,7 +133,7 @@ export function useReactor() {
               agent.lastSeen = hb[agent.codename].lastSeen
             }
           }
-        } catch { /* ignore */ }
+        } catch {  }
       })
 
       eventSource.onerror = () => {

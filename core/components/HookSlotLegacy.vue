@@ -1,11 +1,4 @@
-<!--
-  HookSlotLegacy — point de greffe DB-driven historique.
-  Lit cs_hook via useHooks et rend les composants enregistrés.
 
-  Conservé pour les usages existants (cms, page, product targets). Pour le
-  nouveau code, préférer <HookSlot name="..."> qui est code-first via
-  useDisplaySlot.provideSlot() (pas de DB nécessaire, build-time résolu).
--->
 
 <template>
   <template v-for="h in hooks" :key="h.id">

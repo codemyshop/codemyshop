@@ -1,17 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { findLearnerByEmailWithPseudo } from '~/internal/academy/server/utils/academy'
 import { signToken } from '~/server/utils/session-crypto'
 
-/**
- * POST /api/academy/login
- * Academy learner login — email + password → session cookie via the facade
- * ac_academy.
- *
- * Note: the register uses sha256(salt + password) but doesn't store the hash
- * in the DB (the current register doesn't store the password at all in
- * cs_academy_learner). We only verify that the email exists for now.
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ email: string; password: string }>(event)
 

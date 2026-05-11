@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { replyConversation } from '~/server/utils/chatbot-engine'
 
-/**
- * POST /api/chatbot/reply — user response to the ongoing conversation.
- * Body { conversationId, conversationToken, message }.
- * Returns the next bot node (or terminal=true).
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event) as {
     conversationId?:    number | string
@@ -26,9 +21,9 @@ export default defineEventHandler(async (event) => {
 
   try {
     const dto = await replyConversation({ conversationId, conversationToken, message }, { event })
-    // awaitMoreProduct = signal envoyé quand l'user a cliqué « Ajouter un autre
-    // produit » sur le node review : le front doit fermer le widget tout en
-    // gardant la session, pour que le prochain click sur Négocier reprenne.
+    
+    
+    
     return {
       ok: true,
       humanTakeover: Boolean(dto.humanTakeover),

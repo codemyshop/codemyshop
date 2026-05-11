@@ -1,31 +1,11 @@
-<!--
-  CategoryPage — composant core SEO-rich pour landing catégorie par pilier.
 
-  Extrait du pattern Example Shop v2 /grossiste/[...path] + /marque/[...path].
-  Utilisable par n'importe quel tenant via <CategoryPage :pilier="..." /> depuis
-  une route `pages/[pilier]/[...path].vue` avec validate route.
-
-  Layout SEO (modèle voguimmo) :
-    - Hero 2 cols : H1+intro à gauche, vignette à droite
-    - Sommaire sticky droite avec highlight actif
-    - Sections ancrées (#produits, #livraison, #faq, #presentation, #articles, #contact)
-    - JSON-LD : BreadcrumbList + Product/AggregateOffer + ItemList + FAQPage
-    - Pagination SSR dans CategoryProductGrid (PAS d'infinite scroll)
-
-  Fallback produit : si la catégorie n'existe pas et que le dernier segment est
-  un slug produit valide → rendu ProductDetail.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 interface Props {
   pilier: string
-  // Segments override : permet au catch-all core/pages/[...path].vue de passer
-  // Segments without the prefixed silo (e.g., /grossiste/fruit-sec/datte →
-  // segments=['fruit-sec','datte'], silo='grossiste'). If absent, reads
-  // route.params.path directement (mode wrapper tenant historique).
+  
+  
+  
+  
   initialSegments?: string[]
 }
 const props = defineProps<Props>()
@@ -83,7 +63,6 @@ const { data: category, error } = await useFetch<CategoryResponse>('/api/categor
   watch: [siloLang],
 })
 
-// Fallback product slug if the category doesn't exist.
 interface ProductBySlugResponse {
   found: boolean
   id_product?: number
@@ -98,10 +77,10 @@ const productPilier = ref<string>('')
 
 if (error.value || !category.value?.found) {
   const lastSegment = segments.value[segments.value.length - 1]
-  // segments >= 1 (not >=2): covers the case where id_category_default points
-  // to the silo itself (138 products Example Shop) → URL `/grossiste/{slug}-{id}`
-  // with a unique segment. /api/product-by-slug ignores siloPath (PS guarantees
-  // uniqueness via link_rewrite) so empty parentPath is safe.
+  
+  
+  
+  
   if (lastSegment && segments.value.length >= 1) {
     const parentPath = segments.value.slice(0, -1).join('/')
     const { data: productLookup } = await useFetch<ProductBySlugResponse>('/api/product-by-slug', {
@@ -115,10 +94,10 @@ if (error.value || !category.value?.found) {
       productBreadcrumb.value = productLookup.value.breadcrumb ?? []
       productPilier.value = productLookup.value.pilier ?? props.pilier
 
-      // 301 redirect to short canonical URL if user arrives via an old
-      // deep indexed URL (e.g., /grossiste/racine/accueil/marque/espig/{slug}
-      // → /grossiste/{leaf}/{slug}). Preserves SEO value without breaking
-      // backlinks. Refacto URL flat 2026-04-25.
+      
+      
+      
+      
       const { data: canonical } = await useFetch<{ found: boolean; path?: string }>('/api/product-url-by-id', {
         query: { id: productLookup.value.id_product, lang: siloLang },
         key: () => `product-canonical-${productLookup.value!.id_product}-${siloLang.value}`,
@@ -136,7 +115,6 @@ if (error.value || !category.value?.found) {
   }
 }
 
-// Fiche produit.
 const { data: productData } = isProductPage.value && productId.value
   ? await useFetch(`/api/catalogue/product/${productId.value}`, {
       query: { clientId, lang: siloLang },
@@ -149,9 +127,6 @@ const product = computed(() => {
   const raw = productData.value
   return (raw as any)?.product ?? raw ?? null
 })
-
-// productBreadcrumb comes from /api/product-by-slug (ancestor chain DB-Only
-// depuis ps_product.id_category_default). Cf ref() au-dessus.
 
 const canonicalBase = psFrontUrl
 const canonicalPath = computed(() => {
@@ -259,8 +234,6 @@ const jsonLdItemList = computed(() => {
   }
 })
 
-// CollectionPage: numberOfItems = aggregate.total (calculated in SSR via
-// /api/category, therefore reliable unlike useLazyFetch on grid side).
 const jsonLdCollectionPage = computed(() => {
   if (isProductPage.value || !category.value) return null
   const total = category.value.aggregate?.total ?? 0
@@ -276,8 +249,6 @@ const jsonLdCollectionPage = computed(() => {
   }
 })
 
-// FAQPage: injected via useHead (not Teleport, which fails on SSR under v-if
-// profond — cf audit /grossiste/epice 2026-04-25).
 function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
 }
@@ -299,8 +270,6 @@ const jsonLdFaq = computed(() => {
   }
 })
 
-// Aggregate of 5 JSON-LD for useHead. We only keep those with
-// content — schema.org expects non-null objects.
 const jsonLdScripts = computed(() => {
   const blobs = [
     { key: 'jsonld-breadcrumb', data: jsonLdBreadcrumb.value },
@@ -345,8 +314,7 @@ const hasProducts = computed(
 )
 const hasFaq = computed(() => (category.value?.faq?.length ?? 0) > 0)
 const hasCategoryDescription = computed(() => !!category.value?.long_description_html)
-// Count of related blog articles (same endpoint as CategoryArticleCarousel,
-// useFetch deduplicated via shared key → 1 single SSR call).
+
 const articlesCountQuery = computed(() => ({
   categoryId: category.value?.id_category ?? 0,
   limit: 1,
@@ -365,9 +333,9 @@ const hasCategoryArticles = computed(
 const subcategoryPills = computed(() =>
   (category.value?.children ?? []).map(c => ({
     label: c.label,
-    // For cross-categories, c.silo is populated with the origin silo
-    // (potentially ≠ host silo). For native children, fallback to
-    // the silo of the current page.
+    
+    
+    
     url: `/${(c as any).pilier || props.pilier}/${c.path}/`,
   })),
 )
@@ -394,11 +362,6 @@ const tocItems = computed<TocItem[]>(() => {
   return out
 })
 
-// Intro fallback: i18n key `silo.intro_fallback_{silo}_root` (silo landing)
-// and `silo.intro_fallback_{silo}_template` (subcategories). If the key
-// doesn't exist, useHubT returns the default provided as 2nd argument.
-// useT returns the key itself when missing: cascading behavior
-// Pillar-specific → generic → empty, filtering unresolved keys
 function resolveSiloT(key: string): string {
   const v = t(key)
   return v === key || v.startsWith('silo.intro_fallback_') ? '' : v
@@ -414,7 +377,6 @@ const fallbackIntro = computed(() => {
   return tpl.replace('${label}', category.value?.name.toLowerCase() ?? '')
 })
 
-// Edit Mode
 const editorSilo = useEditorSilo()
 
 onMounted(() => {
@@ -457,7 +419,7 @@ const liveImageAlt = computed(() =>
 
 <template>
   <NuxtLayout name="white-label">
-    <!-- ═══ FICHE PRODUIT ═══ -->
+    
     <div v-if="isProductPage">
       <ProductDetail
         v-if="product"
@@ -471,13 +433,11 @@ const liveImageAlt = computed(() =>
       </div>
     </div>
 
-    <!-- ═══ CATEGORY LANDING ═══ -->
-    <!-- JSON-LD (Breadcrumb, CollectionPage, AggregateOffer, ItemList,
-         FAQPage) : injecté via useHead côté script (SSR-safe) — pas de
-         Teleport ici qui rate sous v-if profond en SSR Nuxt 3. -->
+    
+    
     <template v-else>
     <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <!-- Breadcrumb -->
+      
       <nav class="mb-6 text-sm" :aria-label="t('silo.breadcrumb_aria')">
         <ol class="flex flex-wrap items-center gap-2 text-slate-500">
           <li>
@@ -499,7 +459,7 @@ const liveImageAlt = computed(() =>
         </ol>
       </nav>
 
-      <!-- Hero page-1-only -->
+      
       <CategoryHero
         v-if="isFirstPage"
         :h1="liveH1 ?? category!.h1"
@@ -519,7 +479,7 @@ const liveImageAlt = computed(() =>
         :class="isFirstPage ? 'lg:grid-cols-[1fr_260px]' : ''"
       >
         <article class="space-y-14">
-          <!-- §1 Produits -->
+          
           <section v-if="hasProducts" id="produits" class="scroll-mt-24">
             <div class="grid grid-cols-1 gap-6">
               <CategoryProductGrid
@@ -540,7 +500,7 @@ const liveImageAlt = computed(() =>
             </div>
           </section>
 
-          <!-- §2 Livraison & B2B (page-1-only) -->
+          
           <section v-if="isFirstPage" id="livraison" class="scroll-mt-24">
             <h2 class="mb-5 text-2xl font-bold tracking-tight text-primary-900 dark:text-primary-100">
               {{ t('silo.shipping_title') }}
@@ -561,12 +521,12 @@ const liveImageAlt = computed(() =>
             </div>
           </section>
 
-          <!-- §3 FAQ (page-1-only, JSON-LD FAQPage) -->
+          
           <section v-if="hasFaq && isFirstPage" id="faq" class="scroll-mt-24">
             <CategoryFaq :items="category!.faq" />
           </section>
 
-          <!-- §4 Presentation (page-1-only) -->
+          
           <section v-if="hasCategoryDescription && isFirstPage" id="presentation" class="scroll-mt-24">
             <h2 class="mb-5 text-2xl font-bold tracking-tight text-primary-900 dark:text-primary-100">
               {{ t('silo.presentation_title') }}
@@ -590,7 +550,7 @@ const liveImageAlt = computed(() =>
             />
           </section>
 
-          <!-- §5 Related blog articles (page-1-only) -->
+          
           <section v-if="hasCategoryArticles && isFirstPage" id="articles" class="scroll-mt-24">
             <CategoryArticleCarousel
               endpoint="/api/catalogue/articles"
@@ -602,7 +562,7 @@ const liveImageAlt = computed(() =>
 
         </article>
 
-        <!-- Sommaire sticky droite (page-1-only) -->
+        
         <CategoryToc v-if="isFirstPage" :items="tocItems" />
       </div>
     </div>

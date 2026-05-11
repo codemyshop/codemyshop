@@ -1,16 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { enqueueEmail } from '~/server/utils/email-queue'
 
-/**
- * POST /api/bo/email-queue — queue an email manually.
- *
- * Body : { to, subject, html_body, plain_body?, from_email?, reply_to?,
- *          template_slug?, id_lang?, scheduled_at? (ISO string) }
- *
- * The payload is already rendered (no variable substitution here — the
- * caller does their interpolation then queues the final HTML).
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event) as {
     to?:           string

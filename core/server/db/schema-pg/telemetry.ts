@@ -1,18 +1,4 @@
-/**
- *
- * Drizzle PG schemas for ac_telemetry — task #44 port-drizzle-mariadb-pg.
- *
- * 2 tables (cs_main) :
- * - cs_telemetry : logs each LLM call (model, tokens, cost, latency)
- * - cs_bot_hits  : logs each SEO bot visit (Google, GPT, Claude…)
- *
- * Mapping types MariaDB -> PG :
- *   - INT AUTO_INCREMENT  -> serial
- * - SMALLINT            -> smallint (Phase C dump parity)
- *   - TINYINT(1)          -> smallint (success column, dump l'a en smallint)
- *   - DECIMAL(p,s)        -> numeric(p, s)
- *   - DATETIME            -> timestamp(0) without time zone
- */
+
 
 import {
   index,

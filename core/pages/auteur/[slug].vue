@@ -1,14 +1,4 @@
 <script setup lang="ts">
-/**
- *
- * Page auteur publique — /auteur/[slug]
- *
- * Source : cs_employee_extra (slug, bio, expertise, photo, LinkedIn)
- * + JOIN ps_employee + list of articles via cs_cms_extra.author_employee_id.
- *
- * E-E-A-T: JSON-LD Person structure + ItemList of articles, markup
- * og:profile, canonical par tenant.
- */
 
 interface AuthorArticle {
   id: number
@@ -72,7 +62,6 @@ function formatDate(raw: string): string {
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-// JSON-LD Person
 const personJsonLd = computed(() => {
   const sameAs: string[] = []
   if (author.value.linkedinUrl) sameAs.push(author.value.linkedinUrl)
@@ -143,7 +132,7 @@ function authorInitials(): string {
 <template>
   <main class="bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100">
 
-    <!-- Breadcrumb -->
+    
     <nav class="max-w-5xl mx-auto px-6 pt-8 text-xs text-gray-500 dark:text-slate-400" aria-label="Fil d'Ariane">
       <NuxtLink to="/" class="hover:text-primary-600">Accueil</NuxtLink>
       <span class="mx-2">/</span>
@@ -152,7 +141,7 @@ function authorInitials(): string {
       <span class="text-gray-700 dark:text-slate-200">{{ author.displayName }}</span>
     </nav>
 
-    <!-- Hero auteur -->
+    
     <header class="max-w-5xl mx-auto px-6 pt-8 pb-12">
       <div class="flex flex-col md:flex-row gap-8 items-start">
         <div class="shrink-0">
@@ -199,7 +188,7 @@ function authorInitials(): string {
       </div>
     </header>
 
-    <!-- Articles -->
+    
     <section class="max-w-5xl mx-auto px-6 pb-20 border-t border-gray-100 dark:border-slate-800 pt-10">
       <header class="mb-8">
         <h2 class="text-xl md:text-2xl font-bold tracking-tight">

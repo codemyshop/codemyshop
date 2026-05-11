@@ -1,10 +1,4 @@
-<!--
-  Page connexion client B2B — /connexion
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -19,9 +13,6 @@ const form = reactive({ email: '', password: '' })
 const cfg = useRuntimeConfig()
 const brand = String((cfg.public as any).brandName ?? '')
 
-// Whitelist of allowed paths for `?next=` — prevents open redirect.
-// Only internal relative paths are allowed (start with '/' and
-// not '//' which could point elsewhere after URL normalization).
 function safeNext(): string {
   const raw = String(route.query.next || '').trim()
   if (!raw.startsWith('/') || raw.startsWith('//')) return '/'

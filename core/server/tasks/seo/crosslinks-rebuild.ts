@@ -1,22 +1,4 @@
-/**
- *
- * Nitro Task — seo:crosslinks-rebuild
- *
- * Wave 4 of task #43 (python-nitro-tasks). Refactors
- * `automation/ac_linkmap.py` which wrote to `internal_links.json` (file system,
- * unused since PHP removal on 2026-05-01) → writes DB-first to
- * `cs_crosslinks` (frozen since 2026-04-04, 72 rows).
- *
- * Semantic silo logic (1:1 port from Python):
- * - Same pillar AND same subcategory (subcat ≠ '') → same_subcat (top 3, "In the same series")
- * - Same pillar only                       → same_pillar (top 2, "On the same topic")
- * - Different pillar                                → cross_pillar (top 1, "Learn more")
- *
- * Relevance = |intersection of title words (>3 chars, lowercase, without punctuation)|.
- *
- * No shadow AUDIT_MODE: the Python implementation did not write to this table —
- * direct cutover without risk of double-write.
- */
+
 
 import { defineTask } from 'nitropack/runtime'
 import { skipIfNotAcInternal } from '~/server/utils/cron-context'

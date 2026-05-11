@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { sendEmailViaQueue } from './email-queue'
 import { loadEmailTemplate, resolveAdminRecipients, type LoadedEmailTemplate } from './email-template-loader'
@@ -7,13 +7,6 @@ import type { OrderData } from '~/server/connectors/base'
 
 const formatPrice = (n: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
 
-/**
- * Builds the HTML product block for the `{products}` placeholder of the
- * template `order_confirmation`. Wraps the rows in a styled table.
- */
-/** Mention promo en dessous du nom produit dans les emails — barré + badge.
- * Present only if a `ps_specific_price` was active at creation
- *  de commande (cf. orders-db.getOrderFromDb → priceHTBeforeDiscount). */
 function promoLineHtml(item: OrderData['items'][number]): string {
   if (!item.priceHTBeforeDiscount && !item.reductionLabel) return ''
   const barred = item.priceHTBeforeDiscount
@@ -56,14 +49,6 @@ function buildOrderProductsHtml(items: OrderData['items']): string {
 </table>`
 }
 
-/**
- * Envoie l'email de confirmation de commande.
- *
- * `bankDetails`: IBAN from ps_configuration.BANK_WIRE_*. If provided and
- * the payment is bank transfer, it is displayed in the email so that the
- * customer can pay immediately (otherwise they would need to wait for a
- * manual email from the merchant — unnecessary friction).
- */
 export async function sendOrderConfirmationEmail(
   order: OrderData,
   customerEmail: string,
@@ -72,8 +57,8 @@ export async function sendOrderConfirmationEmail(
   bankDetails?: { owner?: string; details?: string; address?: string; customText?: string },
   extras?: { carrierName?: string; historyUrl?: string; attachInvoiceForOrderId?: number },
 ) {
-  // ─── DB-First : le BO /hub/crm/email/template/order_confirmation est la
-  // source. Si présent, on rend depuis DB ; sinon fallback inline ci-dessous.
+  
+  
   const tpl = await loadEmailTemplate('order_confirmation', 1)
   if (tpl?.htmlBody) {
     const productsHtml = buildOrderProductsHtml(order.items)
@@ -98,10 +83,10 @@ export async function sendOrderConfirmationEmail(
       delivery_block_html: addr
         ? `${addr.firstname || ''} ${addr.lastname || ''}<br>${addr.address1 || ''}<br>${addr.postcode || ''} ${addr.city || ''}`
         : '',
-      // {payment} est dans la whitelist HTML brut (cf email-template-render.ts) :
+      
       payment:             order.payment + ribLine,
-      // Bloc carrier conditionnel : vide si pas de transporteur sélectionné
-      // injection brute via la whitelist du renderer.
+      
+      
       carrier_block_html:  extras?.carrierName
         ? `<br>Transporteur&nbsp;: ${String(extras.carrierName).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c] || c))}`
         : '',
@@ -109,15 +94,15 @@ export async function sendOrderConfirmationEmail(
       shop_name:           shopName,
       primary_color:       accentColor,
     })
-    // PDF facture en attachment (déféré au worker pour ne pas bloquer
-    // la requête HTTP — génération PDFKit ~200ms).
+    
+    
     const attachmentMeta = extras?.attachInvoiceForOrderId
       ? ({ type: 'order_invoice_pdf' as const, orderId: extras.attachInvoiceForOrderId })
       : undefined
     return sendEmailViaQueue({ to: customerEmail, subject, html, attachmentMeta })
   }
 
-  // ─── Fallback HTML inline (DB indisponible / template absent) ──────
+  
   const itemsHtml = order.items.map(item => `
     <tr>
       <td style="padding:8px 12px;border-bottom:1px solid #f1f5f9;font-size:14px;">
@@ -225,9 +210,6 @@ export async function sendOrderConfirmationEmail(
   })
 }
 
-/**
- * Sends the welcome email after account creation.
- */
 export async function sendWelcomeEmail(
   customerEmail: string,
   firstname: string,
@@ -236,7 +218,7 @@ export async function sendWelcomeEmail(
   shopUrl = '/',
   accentColor = '#4F46E5',
 ) {
-  // ─── DB-First : éditable depuis /hub/crm/email/template/account_confirmation
+  
   const tpl = await loadEmailTemplate('account_confirmation', 1)
   if (tpl?.htmlBody) {
     const subject = renderEmailTemplate(tpl.subject, { shop_name: shopName })
@@ -251,7 +233,7 @@ export async function sendWelcomeEmail(
     return sendEmailViaQueue({ to: customerEmail, subject, html })
   }
 
-  // ─── Fallback HTML inline (DB indisponible / template absent) ──────
+  
   const html = `
 <!DOCTYPE html>
 <html>
@@ -307,16 +289,6 @@ export async function sendWelcomeEmail(
   })
 }
 
-/**
- * Internal helper: sends a template `audience='admin'` to all
- * recipients `recipient_to` of the template (fallback env if empty). Render via
- * `renderEmailTemplate` with the provided `vars`.
- *
- * Current limitations: the queue does not yet support Cc/Bcc — we enqueue
- * 1 email per address in the To list. If recipient_cc/bcc are filled, we
- * log a warning (not implemented). Future enhancement = add cc/bcc columns
- * in cs_email_queue.
- */
 async function sendAdminTemplate(
   slug: string,
   fallbackSubject: string,
@@ -339,7 +311,7 @@ async function sendAdminTemplate(
   } else {
     subject = fallbackSubject
     html    = fallbackHtml
-    // Pas de template → fallback env vars uniquement
+    
     recipients = resolveAdminRecipients({
       audience: 'admin', subject: '', htmlBody: '', plainBody: null,
       recipientTo: '', recipientCc: '', recipientBcc: '',
@@ -366,12 +338,6 @@ async function sendAdminTemplate(
   return { ok: sentTo.length > 0, sentTo }
 }
 
-/**
- * Minimal wrapper for inline HTML fallbacks (same proportions as the
- * sendWelcomeEmail). Reserved for the 4 senders below that do not (yet)
- * have a dedicated styled fallback — if the DB is reachable, the cs_email_template_lang template
- * takes priority anyway.
- */
 function buildSimpleFallback(opts: {
   shopName:    string
   title:       string
@@ -401,12 +367,6 @@ function buildSimpleFallback(opts: {
 </body></html>`
 }
 
-/**
- * Envoie l'email « En attente de virement » — RIB seul, hors mail commande.
- * Useful if a merchant wants to decouple the confirmation and bank transfer reminder
- * (currently bank details are included in order_confirmation
- * — this sender allows a dedicated email if the tenant wishes).
- */
 export async function sendPaymentPendingEmail(
   customerEmail: string,
   firstname:     string,
@@ -449,10 +409,6 @@ export async function sendPaymentPendingEmail(
   })
 }
 
-/**
- * Sends the "Order shipped" email to the customer (tracking + carrier).
- * To be called from the future admin endpoint that marks an order as shipped.
- */
 export async function sendOrderShippedEmail(
   customerEmail: string,
   firstname:     string,
@@ -493,10 +449,6 @@ ${trackingUrl ? '<p>Vous pouvez suivre son acheminement en cliquant sur le bouto
   })
 }
 
-/**
- * Sends the password reset email (tokenized link valid
- * limited in time — the duration + token are produced by the caller).
- */
 export async function sendPasswordResetEmail(
   customerEmail: string,
   firstname:     string,
@@ -506,18 +458,18 @@ export async function sendPasswordResetEmail(
 ) {
   const tpl = await loadEmailTemplate('password_reset', 1)
   if (tpl?.htmlBody) {
-    // Date FR humanisée pour le placeholder `{date}` ("6 mai 2026").
-    // Format court préféré au DateTime complet — l'email rappelle juste
-    // au visiteur quand il a fait la demande.
+    
+    
+    
     const dateLabel = new Date().toLocaleDateString('fr-FR', {
       day: 'numeric', month: 'long', year: 'numeric',
     })
     const subject = renderEmailTemplate(tpl.subject, { shop_name: shopName })
     const html = renderEmailTemplate(tpl.htmlBody, {
       firstname,
-      // `reset_url` (canonique AC) + `url` (alias templates tenant
-      // Example Shop v2). Garder les deux pour rester tolérant aux variations
-      // de placeholder entre templates édités via /hub/crm/email/template.
+      
+      
+      
       reset_url:     resetUrl,
       url:           resetUrl,
       date:          dateLabel,
@@ -544,15 +496,6 @@ export async function sendPasswordResetEmail(
   })
 }
 
-/**
- * Sends the password change confirmation (security alert).
- * Called after a successful POST `/api/catalogue/customer/password-reset` —
- * closes the reset loop: the customer knows that the change
- * is effective and can alert if it was not them.
- *
- * Vars de template `password_changed` rendues : firstname, date,
- * shop_name, primary_color.
- */
 export async function sendPasswordChangedEmail(
   customerEmail: string,
   firstname:     string,
@@ -574,7 +517,7 @@ export async function sendPasswordChangedEmail(
     return sendEmailViaQueue({ to: customerEmail, subject, html, templateSlug: 'password_changed' })
   }
 
-  // Fallback HTML inline si template DB absent (déploiement avant seed).
+  
   const html = buildSimpleFallback({
     shopName,
     title: 'Mot de passe modifié',
@@ -591,17 +534,6 @@ export async function sendPasswordChangedEmail(
   })
 }
 
-/**
- * Sends an abandoned cart recovery email. Called manually from
- * `/hub/carts/abandoned` (Resend button). Goes through the queue
- * (cs_email_queue) — visible in `/hub/crm/email` tab Queue + History.
- *
- * Vars de template `cart_recovery` rendues : firstname, salutation,
- * items_count, items_label, total_ht, cart_url, shop_name, primary_color.
- *
- * Test mode (subject prefixed [TEST {id_cart}]): the caller passes `subjectPrefix`
- * + `to` override to redirect to their address without logging conversion.
- */
 export async function sendCartRecoveryEmail(opts: {
   to:            string
   firstname:     string
@@ -635,7 +567,7 @@ export async function sendCartRecoveryEmail(opts: {
     subject = renderEmailTemplate(tpl.subject || 'Votre panier vous attend — {items_count} {items_label} en attente', vars)
     html    = renderEmailTemplate(tpl.htmlBody, vars)
   } else {
-    // Fallback minimaliste si template DB absent (déploiement avant seed).
+    
     subject = `Votre panier vous attend — ${opts.itemsCount} ${itemsLabel} en attente`
     html    = buildSimpleFallback({
       shopName,
@@ -661,18 +593,6 @@ export async function sendCartRecoveryEmail(opts: {
   })
 }
 
-/**
- * Sends a reminder on a pending quote (not converted to order).
- * B2B counterpart of sendCartRecoveryEmail. Called manually
- * from `/hub/carts/abandoned` tab Quotes. Pushed to the queue (visible
- * /hub/crm/email tab Queue + Historique).
- *
- * Vars de template `quote_followup` rendues : firstname, salutation, company,
- * quote_ref, age_days, age_days_plural, items_count, items_count_plural,
- * total_ht, rdv_url, shop_name, primary_color.
- *
- * Mode test : subjectPrefix `[TEST Q-{id}]` + `to` override.
- */
 export async function sendQuoteFollowupEmail(opts: {
   to:            string
   firstname:     string
@@ -738,14 +658,6 @@ export async function sendQuoteFollowupEmail(opts: {
   })
 }
 
-/**
- * Sends an acknowledgment to the visitor after submitting a
- * B2B quote request. Wired to the QUOTE_REQUESTED event (NotifyCustomerHandler).
- *
- * Vars de template `quote_request` rendues : firstname, company, quote_ref,
- * quote_items_html, quote_total, valid_until, total_items, shop_name,
- * primary_color, quote_pdf_url.
- */
 export async function sendQuoteRequestEmail(opts: {
   customerEmail: string
   firstname:     string
@@ -754,18 +666,18 @@ export async function sendQuoteRequestEmail(opts: {
   totalItems:    number
   shopName?:     string
   accentColor?:  string
-  /** Bloc HTML pré-construit des items (table). Cf NotifyCustomerHandler. */
+  
   itemsHtml?:    string
-  /** Total displayed — "Upon request" until the sales representative quotes it. */
+  
   total?:        string
-  /** Validity date formatted (e.g.: "5 juin 2026"). */
+  
   validUntil?:   string
-  /** Absolute URL of the summary PDF (optional — empty until wired up). */
+  
   quotePdfUrl?:  string
-  /** Absolute URL of the pre-filled appointment page with quote info. */
+  
   rdvUrl?:       string
-  /** Deferred quote PDF generation by the worker queue. Avoids the
-   * synchronous generation on the HTTP side — the visitor doesn't bear the PDFKit cost. */
+  
+
   quoteIdForPdf?: number
 }) {
   const shopName    = opts.shopName    ?? 'Boutique'
@@ -792,9 +704,9 @@ export async function sendQuoteRequestEmail(opts: {
       quote_pdf_url:    quotePdfUrl,
       rdv_url:          rdvUrl,
     })
-    // Deferred PDF generation: just passes a meta `{type:'quote_pdf',
-    // quoteId}` to the queue. The `processEmailQueue` worker generates the PDF
-    // at send time → cost off the HTTP critical path.
+    
+    
+    
     return sendEmailViaQueue({
       to:           opts.customerEmail,
       subject,
@@ -827,16 +739,6 @@ ${validityBlock}
   })
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// Senders ADMIN — destinataires lus depuis cs_email_template.recipient_to
-// (fallback env). Multi-recipient support (1 enqueue per address).
-// ─────────────────────────────────────────────────────────────────────────
-
-/**
- * Notifies the admin of a new message received via `/contact` (blog or public form).
- * Available vars in the template: {firstname}, {lastname}, {email}, {phone}, {message},
- * {article_title}, {article_url}, {lead_id}, {project_id}, {date}.
- */
 export async function sendAdminContactFormEmail(opts: {
   firstname?:    string
   lastname?:     string
@@ -879,11 +781,6 @@ ${opts.message ? `<p><strong>Message :</strong></p><blockquote style="border-lef
   )
 }
 
-/**
- * Notifies the admin that a new order has been placed. Called after
- * createOrder() (api/orders/create.post.ts). Vars : {order_name}, {customer_name},
- * {customer_email}, {total_paid}, {payment}, {date}.
- */
 export async function sendAdminNewOrderEmail(opts: {
   orderRef:       string
   customerName:   string
@@ -898,8 +795,8 @@ export async function sendAdminNewOrderEmail(opts: {
 }) {
   const date = new Date().toLocaleString('fr-FR')
   const totalPaidStr = formatPrice(opts.totalPaid)
-  // était vide. Le template attend {firstname}{lastname}{company}{customer_email}
-  // {id_order}. Backward-compat : on garde aussi customer_name composite.
+  
+  
   const firstname = opts.firstname || (opts.customerName.split(' ')[0] || '')
   const lastname  = opts.lastname  || (opts.customerName.split(' ').slice(1).join(' ') || '')
   const fbHtml = buildSimpleFallback({
@@ -913,8 +810,8 @@ ${opts.company ? `<p><strong>Société :</strong> ${opts.company}</p>` : ''}
     accentColor: '#0ea5e9',
   })
 
-  // Bloc société conditionnel : vide si pas de company. Convention `_html`
-  // pour injection brute via la whitelist du renderer.
+  
+  
   const companyLineHtml = opts.company
     ? `<p style="margin:0 0 8px;font-size:13px;color:#475569;">${String(opts.company).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c] || c))}</p>`
     : ''
@@ -940,11 +837,6 @@ ${opts.company ? `<p><strong>Société :</strong> ${opts.company}</p>` : ''}
   )
 }
 
-/**
- * Notifies the admin of a new B2B quote request (handler subscribed to
- * QUOTE_REQUESTED). Vars : {customer_name}, {company}, {email}, {phone},
- * {total_items}, {quote_ref}, {message}, {date}.
- */
 export async function sendAdminNewLeadEmail(opts: {
   firstname:    string
   lastname:     string

@@ -11,7 +11,7 @@
         :href="cat.href"
         class="group relative overflow-hidden rounded-card bg-gray-100 block aspect-[4/3]"
       >
-        <!-- Image with zoom on hover -->
+        
         <NuxtImg
           :src="cat.image"
           :alt="cat.label"
@@ -20,9 +20,9 @@
           preset="hero"
           loading="lazy"
         />
-        <!-- Gradient bas -->
+        
         <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
-        <!-- Label -->
+        
         <span class="absolute bottom-0 left-0 right-0 p-3 text-white font-semibold text-sm leading-tight">
           {{ t(cat.label as any) }}
         </span>

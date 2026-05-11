@@ -10,7 +10,7 @@
 
     <div class="flex-1 overflow-auto p-6 space-y-6">
 
-      <!-- Discount rules -->
+      
       <section>
         <div class="flex items-center justify-between mb-2">
           <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500">Règles de décote</h2>
@@ -40,7 +40,7 @@
         </div>
       </section>
 
-      <!-- Live discount batches -->
+      
       <section>
         <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Lots en fenêtre de décote</h2>
 
@@ -109,7 +109,7 @@
       </div>
     </div>
 
-    <!-- ─── Rule modal (create / edit) ────────────────────────────── -->
+    
     <div v-if="ruleModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="ruleModalOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-md mx-4">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">

@@ -1,13 +1,4 @@
-/**
- *
- * GET `/api/admin/modules` — lists the modules from the registry for the current tenant.
- *
- * Query params optionnels :
- *   ?runtime=ps|nuxt
- *   ?status=active|disabled|deprecated
- *
- * Response: `{ modules: ModuleRegistryRow[], stats: { ps, nuxt, total } }`
- */
+
 
 import { listModules, getRuntimeStats } from '../../../utils/module-registry'
 import { verifyToken } from '~/server/utils/session-crypto'

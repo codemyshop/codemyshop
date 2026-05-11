@@ -1,9 +1,4 @@
-/**
- *
- * Helper server to read the business profile of the current tenant from
- * ps_configuration (no HTTP round-trip). To be used in
- * endpoints that adapt their response based on vertical/channel.
- */
+
 
 import { useClientDb } from '~/server/utils/db'
 

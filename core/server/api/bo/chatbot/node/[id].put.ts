@@ -1,9 +1,5 @@
-/**
- *
- * PUT /api/bo/chatbot/node/:id — Update node + UPSERT translations.
- * Body : { nodeKey?, type?, capture?, nextQuestion?, terminal?, scenarioRoot?, position?,
- *          langs?: [{ idLang, question, recapLabel? }] }
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
@@ -24,7 +20,7 @@ export default defineEventHandler(async (event) => {
 
   const db = useClientDb(event)
 
-  // Build dynamic UPDATE
+  
   const sets: string[] = []
   const params: any[] = []
   if (body.nodeKey !== undefined) { sets.push('node_key = ?'); params.push(body.nodeKey) }
@@ -46,7 +42,7 @@ export default defineEventHandler(async (event) => {
     )
   }
 
-  // UPSERT _lang
+  
   if (body.langs?.length) {
     for (const l of body.langs) {
       await db.run(

@@ -1,16 +1,8 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  BI — Matomo Analytics. Embed iframe du dashboard Matomo self-hosted
-  (analytics.codemyshop.com). Tabs vers widgets clés : vue
-  d'ensemble, visites, pages, acquisitions, conversions.
--->
 <template>
   <div class="flex-1 flex flex-col min-h-0 bg-gray-50 dark:bg-slate-950">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 shrink-0">
       <div class="flex items-center justify-between gap-4">
         <div class="min-w-0">
@@ -20,7 +12,7 @@
           </p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <!-- Period -->
+          
           <select v-model="period" class="text-xs border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-1.5 bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200">
             <option value="day">Jour</option>
             <option value="week">Semaine</option>
@@ -28,7 +20,7 @@
             <option value="year">Année</option>
             <option value="range">Plage custom</option>
           </select>
-          <!-- Ouvrir Matomo -->
+          
           <a :href="fullDashboardUrl" target="_blank" rel="noopener noreferrer"
              class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -39,7 +31,7 @@
         </div>
       </div>
 
-      <!-- Tabs widgets -->
+      
       <div class="flex gap-1 mt-3 overflow-x-auto">
         <button v-for="w in widgets" :key="w.id" @click="activeWidget = w.id"
           :class="['px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors',
@@ -51,7 +43,7 @@
       </div>
     </header>
 
-    <!-- Iframe + fallback -->
+    
     <div class="flex-1 relative min-h-0 p-4">
       <div v-if="!matomoUrl" class="absolute inset-4 flex items-center justify-center bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800">
         <div class="text-center max-w-md px-6">
@@ -77,7 +69,7 @@
           loading="lazy"
           referrerpolicy="origin"
         />
-        <!-- Note fallback X-Frame-Options -->
+        
         <div v-if="showFallbackNote" class="absolute bottom-3 right-3 max-w-xs bg-amber-50 dark:bg-amber-500/15 border border-amber-200 dark:border-amber-500/30 rounded-lg px-3 py-2 text-[11px] text-amber-800 dark:text-amber-300 shadow-sm">
           L'iframe peut être bloquée par X-Frame-Options. Si page blanche →
           <a :href="fullDashboardUrl" target="_blank" class="font-bold underline">ouvrir dans Matomo</a>.
@@ -112,7 +104,6 @@ const widgets = [
 
 const currentWidget = computed(() => widgets.find(w => w.id === activeWidget.value) || widgets[0])
 
-// Matomo embed URL — Widgetize without token (requires auth=anonymous OR Matomo session)
 const widgetUrl = computed(() => {
   if (!matomoUrl) return ''
   const base = matomoUrl.replace(/\/$/, '')
@@ -131,7 +122,6 @@ const widgetUrl = computed(() => {
   return `${base}/index.php?${params}`
 })
 
-// Full-screen dashboard URL (fallback if iframe is blocked)
 const fullDashboardUrl = computed(() => {
   if (!matomoUrl) return '#'
   const base = matomoUrl.replace(/\/$/, '')
@@ -145,6 +135,5 @@ const fullDashboardUrl = computed(() => {
   return `${base}/index.php?${params}`
 })
 
-// Key to force iframe reload when widget/period changes
 const iframeKey = computed(() => `${activeWidget.value}-${period.value}`)
 </script>

@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * PUT /api/bo/procurement/suppliers/:id — modification.
- * Body: { name?, active?, description?, phone?, phoneMobile?, address1?, postcode?, city?, idCountry? }
- * Updates ps_supplier + ps_supplier_lang (id_lang=1) + ps_address (upsert).
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id') || 0)
   if (!id) throw createError({ statusCode: 400, statusMessage: 'id requis' })
@@ -18,7 +13,7 @@ export default defineEventHandler(async (event) => {
     const existing = await db.get<any>(`SELECT id_supplier FROM ps_supplier WHERE id_supplier = ? LIMIT 1`, [id])
     if (!existing) throw createError({ statusCode: 404, statusMessage: 'Fournisseur introuvable' })
 
-    // 1. ps_supplier
+    
     const updates: string[] = []
     const params: any[] = []
     if (typeof body.name === 'string' && body.name.trim()) {
@@ -33,7 +28,7 @@ export default defineEventHandler(async (event) => {
       await db.run(`UPDATE ps_supplier SET ${updates.join(', ')} WHERE id_supplier = ?`, [...params, id])
     }
 
-    // 2. ps_supplier_lang (description, lang=1 uniquement pour simplifier)
+    
     if (typeof body.description === 'string') {
       await db.run(
         `UPDATE ps_supplier_lang SET description = ? WHERE id_supplier = ? AND id_lang = 1`,
@@ -41,7 +36,7 @@ export default defineEventHandler(async (event) => {
       )
     }
 
-    // 3. ps_address (upsert)
+    
     const hasContact = body.phone !== undefined || body.phoneMobile !== undefined
       || body.address1 !== undefined || body.postcode !== undefined
       || body.city !== undefined || body.idCountry !== undefined

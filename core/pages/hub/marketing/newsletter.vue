@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50">
 
-    <!-- ── Header ────────────────────────────────────────────────────────── -->
+    
     <header class="bg-white border-b border-gray-100 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -17,12 +17,12 @@
 
     <div class="p-6 max-w-4xl mx-auto space-y-6">
 
-      <!-- ── Generator ──────────────────────────────────────────────────────── -->
+      
       <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <h2 class="text-sm font-semibold text-gray-700 mb-4">Générer une newsletter</h2>
 
         <div class="space-y-4">
-          <!-- Sujet -->
+          
           <div>
             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Sujet / thème</label>
             <input
@@ -33,7 +33,7 @@
             />
           </div>
 
-          <!-- Cible avatar -->
+          
           <div>
             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Cible avatar</label>
             <div class="flex flex-wrap gap-2">
@@ -64,7 +64,7 @@
             </div>
           </div>
 
-          <!-- Ton -->
+          
           <div>
             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Ton</label>
             <div class="flex gap-2">
@@ -84,7 +84,7 @@
             </div>
           </div>
 
-          <!-- Generate button -->
+          
           <button
             @click="generate"
             :disabled="generating || !form.subject.trim()"
@@ -102,7 +102,7 @@
         </div>
       </div>
 
-      <!-- ── Preview ───────────────────────────────────────────────────────── -->
+      
       <Transition
         enter-active-class="transition-all duration-300"
         enter-from-class="opacity-0 -translate-y-2"
@@ -134,7 +134,7 @@
           <div class="p-5">
             <pre class="text-xs text-gray-700 whitespace-pre-wrap leading-relaxed font-sans">{{ result }}</pre>
           </div>
-          <!-- Send disabled (missing provider) -->
+          
           <div class="px-5 pb-4">
             <button
               disabled
@@ -150,7 +150,7 @@
         </div>
       </Transition>
 
-      <!-- ── Configuration provider ────────────────────────────────────────── -->
+      
       <div class="bg-white rounded-xl border border-dashed border-gray-200 p-5">
         <h2 class="text-sm font-semibold text-gray-600 mb-1">Configuration provider d'envoi</h2>
         <p class="text-xs text-gray-400 mb-4 leading-relaxed">
@@ -173,7 +173,6 @@ import type { AvatarType } from '~/types/avatar'
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
-// ── Formulaire ────────────────────────────────────────────────────────────────
 const form = reactive({
   subject: '',
   targets: [] as AvatarType[],
@@ -192,7 +191,6 @@ function toggleTarget(type: AvatarType) {
   idx >= 0 ? form.targets.splice(idx, 1) : form.targets.push(type)
 }
 
-// ── Generation ──────────────────────────────────────────────────────────────
 const generating = ref(false)
 const result     = ref<string | null>(null)
 
@@ -217,14 +215,13 @@ async function generate() {
     })
     result.value = res.text
   } catch (e: any) {
-    // Fallback stub if the API doesn't exist yet
+    
     result.value = `[STUB] Objet : ${form.subject}\n\nCible : ${form.targets.join(', ') || 'tous'}\nTon : ${form.tone}\n\n---\nContenu généré par l'IA ici...\n\nActivez ANTHROPIC_API_KEY pour une génération réelle.`
   } finally {
     generating.value = false
   }
 }
 
-// ── Copier ────────────────────────────────────────────────────────────────────
 const copied = ref(false)
 
 async function copyResult() {

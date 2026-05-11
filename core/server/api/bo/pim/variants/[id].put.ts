@@ -1,17 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * PUT /api/bo/pim/variants/:id — upsert variant group and attributes.
- *
- * The master writes the structure (group_type, is_color_group, position) and the
- * language fields for ALL languages. Translations only modify their language.
- *
- * The attributes from the body are upserted; those not listed and not used
- * in a product combination are removed (master only).
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -26,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
   const isNew = rawId === 'new' || Number(rawId) === 0
 
-  // ─── Création ────────────────────────────────────────────────────
+  
   if (isNew) {
     if (!isMaster) throw createError({ statusCode: 400, message: 'Création autorisée uniquement en langue master' })
     const name = String(body.name || '').trim()
@@ -62,7 +53,7 @@ export default defineEventHandler(async (event) => {
     return { success: true, id: newId, langId, isMaster, created: true }
   }
 
-  // ─── Édition ─────────────────────────────────────────────────────
+  
   const id = Number(rawId)
   const exists = await db.get<any>(`SELECT id_attribute_group FROM ps_attribute_group WHERE id_attribute_group = ?`, [id])
   if (!exists) throw createError({ statusCode: 404, message: 'Groupe introuvable' })
@@ -99,7 +90,7 @@ export default defineEventHandler(async (event) => {
       const langs = await db.query<any>(`SELECT id_lang FROM ps_lang WHERE active = 1`)
       await upsertAttributes(db, id, body.attributes, langs)
     } else {
-      // Traduction : upsert uniquement le name pour la langue courante
+      
       for (const a of body.attributes) {
         if (!a.id) continue
         await db.run(`
@@ -147,7 +138,7 @@ async function upsertAttributes(db: any, idGroup: number, attrs: any[], langs: a
     }
   }
 
-  // Supprime les attributs absents et non-utilisés en combinaison
+  
   const existing = await db.query<any>(`
     SELECT a.id_attribute AS id,
            (SELECT COUNT(*) FROM ps_product_attribute_combination pac WHERE pac.id_attribute = a.id_attribute) AS used

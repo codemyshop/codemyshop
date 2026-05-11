@@ -1,22 +1,4 @@
-/**
- *
- * Drizzle PG schema for the OSINT extension of the ac_smartlead module.
- *
- * Doctrine: no new module — we extend ac_smartlead with a sub-domain
- * dedicated to the specialized context. cs_smartlead remains the CRM person table
- * pure (leads chauds entrants). L'extension 1:1 cs_smartlead_rungis porte
- * columns specific to the specialized context (company + strategic tagging +
- * enrichissement Insee + empreinte digitale).
- *
- * Pattern: 1:1 extension type `_extra` — the PK is also the FK to
- * cs_smartlead.id_ac_smartlead. Filtrage trivial :
- *   - INNER JOIN smartlead_rungis  → uniquement leads Rungis
- *   - LEFT JOIN ... WHERE NULL     → uniquement leads chauds non-Rungis
- *
- * N-N child table cs_smartlead_rungis_certification: quality certifications
- * (HACCP/IFS/BRC/ISO9001/Bio/Halal/Kasher/Fel'partenariat/Ecocert/GlobalGap),
- * normalized to 1NF (doctrine §NAMING rule 11 against domain JSON).
- */
+
 
 import {
   index,
@@ -106,14 +88,14 @@ export const smartleadRungisVaisseau = vaisseauMereAcSchema.table(
   'cs_smartlead_rungis',
   {
     idAcSmartlead: integer('id_ac_smartlead').primaryKey(),
-    // Contexte société Rungis (extrait du carnet)
+    
     rungisStatus: varchar('rungis_status', { length: 32 }).$type<RungisStatusCode>(),
     rungisLocation: varchar('rungis_location', { length: 96 }),
     rungisSector: varchar('rungis_sector', { length: 32 }).$type<RungisSectorCode>(),
     rungisSubsector: varchar('rungis_subsector', { length: 64 }),
     rungisSanitaryApproval: varchar('rungis_sanitary_approval', { length: 64 }),
     rungisProductsRaw: text('rungis_products_raw'),
-    // Enrichissement Insee/Pappers (société, post-import)
+    
     siren: varchar('siren', { length: 9 }),
     legalForm: varchar('legal_form', { length: 32 }),
     apeCode: varchar('ape_code', { length: 8 }),
@@ -125,11 +107,11 @@ export const smartleadRungisVaisseau = vaisseauMereAcSchema.table(
     dirigeantBirthYear: smallint('dirigeant_birth_year'),
     dirigeantRole: varchar('dirigeant_role', { length: 64 }),
     dirigeantFullName: varchar('dirigeant_full_name', { length: 128 }),
-    // Empreinte digitale (audit web auto)
+    
     websiteTech: varchar('website_tech', { length: 64 }),
     hasEcommerce: smallint('has_ecommerce'),
     lighthouseScore: smallint('lighthouse_score'),
-    // Tagging stratégique Sun Tzu
+    
     verticalTarget: varchar('vertical_target', { length: 16 })
       .$type<VerticalTarget>()
       .notNull()

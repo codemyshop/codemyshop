@@ -1,27 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { resolveCustomerPrice } from '~/enterprise/misc/pricing/server/utils/pricing'
 
-/**
- * POST /api/bo/quick-order/bulk — Resolve cart from (SKU, qty) pairs.
- *
- * Body : { items: [{sku: string, qty: number}], idCustomer?: number }
- *
- * For each item:
- *   1. Match par ps_product.reference (SKU exact)
- *   2. Fallback : match par ps_product_attribute.reference
- *   3. Sinon : status='not_found'
- * If idCustomer provided, price resolved via the pricing facade
- * (priority: contract > tier > catalog).
- * Checks stock ps_stock_available.quantity.
- *
- * Returns { resolved, notFound, totals } in < 3s for 50 items.
- *
- * Stays on the raw mysql2 pool for native PS catalog lookups
- * (ps_product / ps_product_attribute / ps_stock_available) — these tables
- * are not owned by an ac_* module, no dedicated facade to create.
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     items: { sku: string; qty: number }[]

@@ -1,19 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * GET /api/bo/marketing/landing-pages — liste landing pages CMS
- * (Sprint 18.1 — ex /api/bo/marketing/pages, split landing vs blog).
- *
- * Isolation constraint: WHERE id_cms_category = 1. Only the
- * pages attached to the root category (institutional, pages
- * legal) are surfaced here. Blog articles live under
- * /api/bo/marketing/blog with the inverse constraint.
- *
- * Security: root/founder/market roles OR SaaS SuperAdmin.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -25,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const langId = Math.max(1, Number(q.lang) || 1)
   const db = useClientDb(event)
 
-  // Sprint 18.1 — isolation landing pages : UNIQUEMENT catégorie 1.
+  
   const conditions: string[] = ['c.id_cms_category = 1']
   const params: any[] = []
 
@@ -59,9 +48,9 @@ export default defineEventHandler(async (event) => {
     const total = countRow?.total ?? 0
     const offset = (page - 1) * perPage
 
-    // Sprint 18.2 — ps_cms PS ancien n'a PAS date_add/date_upd
-    // (tenants Example Shop prod et v2). On retire la colonne dateUpd du
-    // SELECT pour garder l'endpoint compatible sur tous les tenants.
+    
+    
+    
     const pages = await db.query<any>(`
       SELECT
         c.id_cms           AS id,

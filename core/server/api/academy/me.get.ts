@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/academy/me
- * Verify the Academy session from the hub_session cookie.
- */
+
 export default defineEventHandler((event) => {
   const token = getCookie(event, 'hub_session')
 

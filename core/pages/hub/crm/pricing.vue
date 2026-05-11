@@ -10,7 +10,7 @@
 
     <div class="flex-1 overflow-auto p-6 space-y-6">
 
-      <!-- ─── Resolution simulator ──────────────────────────────── -->
+      
       <section class="bg-primary-50/40 dark:bg-slate-800/30 border border-primary-100 dark:border-slate-700 rounded-xl p-4">
         <h2 class="text-xs font-semibold uppercase tracking-wider text-primary-700 dark:text-primary-300 mb-3">🧮 Simulateur de résolution</h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
@@ -35,7 +35,7 @@
         </div>
       </section>
 
-      <!-- ─── Groupes tarifaires ──────────────────────────────── -->
+      
       <section>
         <div class="flex items-center justify-between mb-2">
           <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500">Groupes tarifaires</h2>
@@ -64,7 +64,7 @@
         </div>
       </section>
 
-      <!-- ─── Paliers tarifaires ──────────────────────────────── -->
+      
       <section>
         <div class="flex items-center justify-between mb-2">
           <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500">Paliers quantité → prix</h2>
@@ -112,7 +112,7 @@
         </table>
       </section>
 
-      <!-- ─── Negotiated contracts (read-only in MVP) ──────────────────────────────── -->
+      
       <section v-if="contracts.length">
         <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Contrats négociés individuels</h2>
         <table class="w-full text-sm bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 overflow-hidden">
@@ -142,7 +142,7 @@
       </section>
     </div>
 
-    <!-- ─── Modal groupe ──────────────────────────────── -->
+    
     <div v-if="groupModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="groupModalOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-md mx-4">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
@@ -173,7 +173,7 @@
       </div>
     </div>
 
-    <!-- ─── Modal palier ──────────────────────────────── -->
+    
     <div v-if="tierModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="tierModalOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-md mx-4">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">

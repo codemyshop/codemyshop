@@ -1,8 +1,4 @@
-/**
- *
- * GET /api/events/{slug}?lang=fr
- * Event details + public list of attendees who have consented.
- */
+
 
 import { useClientDb } from '../../utils/db'
 
@@ -35,7 +31,7 @@ export default defineEventHandler(async (event) => {
   const r = rows[0]
   if (!r) throw createError({ statusCode: 404, statusMessage: 'Event not found' })
 
-  // Compteur total + participants publics (consent_participants_list = 1)
+  
   const counts = await db.query<{ total: string }>(
     `SELECT COUNT(*) AS total FROM cs_event_registration
       WHERE id_event = ? AND status = 'confirmed'`,

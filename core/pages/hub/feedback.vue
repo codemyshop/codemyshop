@@ -12,7 +12,7 @@
 
     <div class="p-6 max-w-3xl mx-auto space-y-6">
 
-      <!-- Formulaire -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6">
         <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-4">Soumettre une id&eacute;e</h2>
 
@@ -61,7 +61,7 @@
         </Transition>
       </div>
 
-      <!-- Mes demandes -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Mes demandes</h2>
@@ -128,7 +128,7 @@ async function submit() {
   if (submitting.value || !form.description.trim()) return
   submitting.value = true; submitted.value = false
   try {
-    // Uses the remote bridge (local fallback if not configured)
+    
     await $fetch('/api/client/send-feedback', {
       method: 'POST',
       body: {

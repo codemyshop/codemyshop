@@ -1,13 +1,5 @@
-/**
- *
- * GET /api/catalogue/promotions?limit=8
- *
- * Returns products currently on promotion (ps_specific_price with
- * reduction > 0 and open time window). Direct DB read via
- * useClientDb (pattern Example Shop v2 — cf homepage-sections / contact).
- *
- * Tenant-aware: limited to example-shop-v2 for now.
- */
+
+
 import { useClientDb, resolveClientId } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 import { buildProductUrl, buildImageUrl, buildImageSrcset } from '~/server/utils/product-urls'
@@ -63,8 +55,8 @@ export default defineEventHandler(async (event): Promise<{ products: PromotionPr
 
   try {
     const rows = await db.query<PromotionRow>(
-      // ⚠️ ps_product n'a PAS de colonne id_default_image (cf découverte 1.8).
-      // L'image cover vit dans ps_image (cover=1).
+      
+      
       `SELECT p.id_product AS id,
               p.reference AS ref,
               pl.name AS name,

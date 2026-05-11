@@ -1,14 +1,4 @@
-/**
- *
- * POST /api/admin/modules/:codename/runtime — bascule runtime (ps ↔ nuxt).
- *
- * Body : { runtime: 'ps' | 'nuxt', manifest?: ModuleManifest }
- *
- * Safeguards applied by the facade (`setRuntime`):
- *   - module doit exister
- * - module must be in `status='active'`
- * - `runtime='nuxt'` requires a manifest (or an already persisted one)
- */
+
 
 import { setRuntime } from '../../../../utils/module-registry'
 import type { ModuleManifest } from '../../../../db/schema-pg/module-registry'

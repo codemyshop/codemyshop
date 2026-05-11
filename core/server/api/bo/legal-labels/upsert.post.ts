@@ -1,14 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { upsertLegalLang, upsertLegalParent } from '~/enterprise/vertical-food/product-food/server/utils/product-food'
 
-/**
- * POST /api/bo/legal-labels/upsert — Creates or updates legal notices.
- *
- * Body : { idProduct, idLang?, originIso2?, caliber?, categoryLegal?, additionalMentions?, active? }
- * Writes to cs_product_food (non-i18n parent) + cs_product_food_lang (i18n).
- * Null values allowed (enables batch inheritance via FIFO cs_lot).
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     idProduct: number

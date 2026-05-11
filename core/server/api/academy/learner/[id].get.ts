@@ -1,8 +1,4 @@
-/**
- * GET /api/academy/learner/:id
- * Profile of a learner with their complete progress via the ac_academy facade.
- *
- */
+
 
 import {
   getLearnerProfile,

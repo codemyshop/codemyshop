@@ -1,12 +1,4 @@
-/**
- *
- * Drizzle PG schemas for homepage section — task #38 Phase 1 step 5.
- *
- * 3 tables (cs_main, AC-only) :
- * - cs_homepage_section         : typed sections (hero/features/categories…)
- *   - cs_homepage_section_lang    : i18n (title, subtitle)
- *   - cs_homepage_section_avatar  : asso N-N section ↔ avatar (cas type=personas)
- */
+
 
 import {
   index,

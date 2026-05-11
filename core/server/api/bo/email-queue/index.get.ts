@@ -1,19 +1,9 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 
 const PG_SCHEMA = 'cs_main'
 
-/**
- * GET /api/bo/email-queue — list emails from the queue.
- *
- * Query :
- * ?status=pending|sending|sent|failed|cancelled (by default all)
- * ?limit=100 (by default 100, max 500)
- *
- * Sort: pending first (date_add ASC for FIFO), then the rest (date_add
- * DESC for most recent at the top).
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event)
   const status = String(q.status || '').trim()
@@ -49,7 +39,7 @@ export default defineEventHandler(async (event) => {
         LIMIT ${limit}
       `
 
-  // Compteurs pour le header de l'UI
+  
   const counts = await sql<{ status: string; n: number }[]>`
     SELECT status, COUNT(*)::int AS n
     FROM ${sql(PG_SCHEMA)}.cs_email_queue

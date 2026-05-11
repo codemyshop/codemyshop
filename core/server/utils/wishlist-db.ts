@@ -1,12 +1,4 @@
-/**
- *
- * Direct DB helpers for /api/wishlist/* — doctrine "Zero PrestaShop webservice
- * 2026-04-22. Read / write multiple lists ps_wishlist +
- * ps_wishlist_product + cs_wishlist_extra (1-1 with ps_wishlist).
- *
- * Tables owned by `ac_wishlistextra` (≥ v1.2.0). Project #44: cutover
- * MariaDB -> PostgreSQL (cs_main), via usePocPg() + qualified raw SQL.
- */
+
 
 import { randomBytes } from 'node:crypto'
 import { sql } from 'drizzle-orm'
@@ -65,7 +57,6 @@ export function generateShareToken(): string {
   return randomBytes(16).toString('hex')
 }
 
-/** Vérifie qu'une wishlist appartient bien au customer (defense in depth). */
 export async function assertOwnership(
   idWishlist: number,
   idCustomer: number,
@@ -78,7 +69,6 @@ export async function assertOwnership(
   return !!row && Number(row.id_customer) === idCustomer
 }
 
-/** All wishlists of a customer + counter recalculated live. */
 export async function listForCustomer(
   idCustomer: number,
   ctx: WishlistContext = {},
@@ -110,7 +100,6 @@ export async function listForCustomer(
   }))
 }
 
-/** Detailed items of a wishlist (product joins + language + cover image). */
 export async function itemsForList(
   idWishlist: number,
   idLang: number,
@@ -153,7 +142,6 @@ export async function itemsForList(
   }))
 }
 
-/** Creates the associated ac_wishlist_extra row if missing. */
 export async function ensureExtra(idWishlist: number, ctx: WishlistContext = {}): Promise<void> {
   if (idWishlist <= 0) return
   await db(ctx).execute(sql`
@@ -173,7 +161,6 @@ export interface CreateListResult {
   status?: number
 }
 
-/** Creates a wishlist (first = default), enforce MAX_LISTS_PER_CUSTOMER. */
 export async function createList(
   idCustomer: number,
   rawName: string,
@@ -217,7 +204,6 @@ export interface UpdateListResult {
   status?: number
 }
 
-/** Renames and/or switches the default (atomic: sets others to 0 first). */
 export async function updateList(
   idWishlist: number,
   idCustomer: number,
@@ -255,7 +241,6 @@ export interface DeleteListResult {
   status?: number
 }
 
-/** Deletes a wishlist + its items + its extra. Promotes the oldest one if default. */
 export async function deleteList(
   idWishlist: number,
   idCustomer: number,
@@ -275,7 +260,7 @@ export async function deleteList(
   await d.execute(sql`DELETE FROM cs_main.ps_wishlist           WHERE id_wishlist = ${idWishlist}`)
 
   if (wasDefault) {
-    // PG: no direct UPDATE ... ORDER BY ... LIMIT; target the oldest via subquery.
+    
     await d.execute(sql`
       UPDATE cs_main.ps_wishlist
          SET "default" = 1
@@ -299,7 +284,6 @@ export interface AddItemResult {
   status?: number
 }
 
-/** Adds a product to the list, or increments the quantity if already present. */
 export async function addItem(
   idWishlist: number,
   idCustomer: number,
@@ -361,7 +345,6 @@ export interface RemoveItemResult {
   status?: number
 }
 
-/** Removes a product (idProduct + idAttribute) from a list. */
 export async function removeItem(
   idWishlist: number,
   idCustomer: number,

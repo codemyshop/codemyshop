@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/carts — all paginated carts (including anonymous).
- * Query: ?page=1&perPage=30&search=…&sort=id|date&dir=ASC|DESC
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const page = Math.max(1, Number(q.page || 1))
@@ -25,10 +21,10 @@ export default defineEventHandler(async (event) => {
       params.push(s, s, s, s)
     }
 
-    // PG strict : HAVING ne peut pas référencer un alias SELECT lower-case
-    // alors que l'alias `AS nbItems` est auto-quoté en `"nbItems"` par
-    // l'adapter (préserve la casse côté JS row.nbItems). On référence
-    // l'expression agrégée directement — portable PG/MariaDB.
+    
+    
+    
+    
     const having = 'HAVING COUNT(cp.id_product) > 0'
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
 
@@ -50,10 +46,10 @@ export default defineEventHandler(async (event) => {
     const sortMap: Record<string, string> = { id: 'ca.id_cart', date: 'ca.date_add' }
     const orderClause = `ORDER BY ${sortMap[sort] || 'ca.id_cart'} ${dir}`
 
-    // PG-strict GROUP BY : il faut grouper toutes les colonnes JOIN non-agrégées.
-    // ca.id_cart est PK de ps_cart (functional dep couvre ca.*). c.id_customer
-    // est PK de ps_customer mais pour LEFT JOIN PG ne fait pas l'inférence
-    // automatique → on liste explicitement les colonnes c.* utilisées.
+    
+    
+    
+    
     const carts = await db.query<any>(`
       SELECT
         ca.id_cart       AS id,

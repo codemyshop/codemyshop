@@ -1,18 +1,4 @@
-/**
- *
- * Nitro Task — cover:queue-process
- *
- * Wave 3 #3 Phase D of task #43. Consumer of cs_covergen_queue which
- * replaces `synedre/ac_covergen.py --process-queue` (runs every 5 minutes).
- *
- * Pattern : claim FOR UPDATE SKIP LOCKED (max 5/run) → render generateCover()
- * (resvg-js + sharp) → save WebP cover/thumb to .output/public/blog-covers/
- * → UPDATE queue.status = 'done' with public URLs.
- *
- * No AUDIT_MODE: operational consumer (not an audit-only process). Cutover =
- * disable `ac_covergen --process-queue` Python the same day as
- * Nitro cron activation.
- */
+
 
 import { defineTask } from 'nitropack/runtime'
 import { skipIfNotAcInternal } from '~/server/utils/cron-context'

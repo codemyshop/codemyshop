@@ -1,8 +1,5 @@
-/**
- *
- * Availability composable — controls booking CTA visibility.
- * If currentClients >= maxClients → CTA disabled + waitlist message.
- */
+
+
 export const useAvailability = () => {
   const available   = useState<boolean>('availability_open', () => true)
   const remaining   = useState<number>('availability_remaining', () => 2)
@@ -22,7 +19,7 @@ export const useAvailability = () => {
       maxClients.value = data.maxClients
       loaded.value     = true
     } catch {
-      // Fallback : toujours disponible
+      
       available.value = true
     }
   }

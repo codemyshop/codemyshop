@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { addStopToTour } from '~/modules/routing/server/utils/routing'
 
-/** POST /api/bo/routing/tours/:id/stops — adds a stop to the tour (queue). */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id') || 0)
   if (!id) throw createError({ statusCode: 400, statusMessage: 'id requis' })

@@ -1,16 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * GET /api/bo/marketing/blog-categories/:id — category details
- * CMS + list of eligible parents for the selector (excludes the
- * current category and its descendants to avoid cycles).
- *
- * `id=new` returns a skeleton with default parent = Blog root
- * (the one whose link_rewrite is 'blog'), or 1 (Home) as fallback.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -21,7 +13,7 @@ export default defineEventHandler(async (event) => {
   const langId = Math.max(1, Number(q.lang) || 1)
   const db = useClientDb(event)
 
-  // Résout la racine Blog (link_rewrite='blog') pour le parent par défaut
+  
   const blogRoot = await db.get<any>(`
     SELECT c.id_cms_category AS id
     FROM ps_cms_category c
@@ -99,8 +91,8 @@ export default defineEventHandler(async (event) => {
 
   if (!category) throw createError({ statusCode: 404, message: 'Catégorie introuvable' })
 
-  // Retire la catégorie courante et ses descendants de la liste des parents
-  // éligibles pour éviter les cycles.
+  
+  
   const descendantIds = await collectDescendants(db, idNum)
   const blocked = new Set<number>([idNum, ...descendantIds])
   const eligibleFiltered = parentsEligible.filter((p: any) => !blocked.has(Number(p.id)))

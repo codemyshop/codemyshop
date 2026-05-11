@@ -1,22 +1,9 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 import { replaceFaqsForParent, upsertFaqTranslations } from '~/modules/faq/server/utils/faq'
 
-/** PUT /api/bo/categories/:id — updates a PrestaShop category.
- *
- * Sprint 12 — multilang semantics:
- * - `?lang=1` (master): modifies PrestaShop structure + FR localized fields.
- * - `?lang>1` (translation): writes ONLY the localized fields of the
- * targeted language (via INSERT…ON DUPLICATE KEY). Fields
- *      structurels (parentId, active, groupIds, faqs ajout/suppression,
- * linkedPostIds) are ignored to never overwrite or duplicate.
- *
- * Existing FAQs are translated in place: INSERT…ON DUPLICATE KEY
- * on `cs_faq_lang` (composite key id_faq+id_lang). Additions/
- * FAQ deletions remain reserved for the master language.
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!id || id < 2) throw createError({ statusCode: 400, message: 'id invalide' })
@@ -53,7 +40,7 @@ export default defineEventHandler(async (event) => {
     .toLowerCase().normalize('NFD').replace(/\p{Mn}/gu, '')
     .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
-  // ── Mutations structurelles — langue master uniquement ─────────────
+  
   if (isMaster) {
     let depth = current.level_depth
     const newParent = body.parentId ?? current.id_parent
@@ -74,14 +61,14 @@ export default defineEventHandler(async (event) => {
     `)
   }
 
-  // ── Champs localisés — INSERT … ON CONFLICT DO UPDATE pour la langue ciblée
-  // (équivalent PG de l'INSERT…ON DUPLICATE KEY MySQL). Permet la création de
-  // traduction EN/DE même si la ligne _lang n'existe pas encore (incidents :
-  // UPDATE silencieux qui sauvegarde fantôme).
-  // Mapping Example Shop (vérifié sur /grossiste/ 2026-04-21) :
-  //   - ps_category_lang.description            → intro HAUT (résumé)
-  //   - ps_category_lang.additional_description → texte SEO BAS (long)
-  // PK composite ps_category_lang : (id_category, id_shop, id_lang).
+  
+  
+  
+  
+  
+  
+  
+  
   await d.execute(sql`
     INSERT INTO cs_main.ps_category_lang
       (id_category, id_lang, id_shop, name, description, additional_description,
@@ -97,7 +84,7 @@ export default defineEventHandler(async (event) => {
       meta_description = EXCLUDED.meta_description
   `)
 
-  // H1 i18n via ac_categoryextra. Master insère aussi le parent (1:1 ps_category).
+  
   if (body.h1 !== undefined) {
     const { upsertCategoryH1 } = await import('~/modules/category-extra/server/utils/category-extra')
     await upsertCategoryH1(Number(id), langId, String(body.h1 || ''), { ensureParent: isMaster }, { event })
@@ -111,8 +98,8 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Sprint 11/12 — Silo SEO : FAQ + linked CMS posts.
-  // cs_faq polymorphique : parent_type='category' + parent_id=id_category.
+  
+  
   if (Array.isArray(body.faqs)) {
     try {
       if (isMaster) {
@@ -130,7 +117,7 @@ export default defineEventHandler(async (event) => {
         })), { event })
       }
     } catch (err: any) {
-      // PG : table absente → 42P01 ; MySQL legacy : ER_NO_SUCH_TABLE / 1146.
+      
       if (
         err?.code !== '42P01' &&
         err?.code !== 'ER_NO_SUCH_TABLE' && err?.errno !== 1146

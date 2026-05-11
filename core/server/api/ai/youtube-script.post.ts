@@ -1,11 +1,4 @@
-/**
- *
- * POST /api/ai/youtube-script
- * Body : { subject, avatar, tone, clientId }
- * Returns : YouTubeStoryboard
- *
- * SECURITY.md R3: no PII. R4: inputs validated and limited.
- */
+
 
 export interface StoryboardScene {
   sceneNumber:  number
@@ -76,7 +69,7 @@ export default defineEventHandler(async (event) => {
     clientId: string
   }>(event)
 
-  // R4 : validation
+  
   const subject  = (body.subject ?? '').trim().slice(0, 500)
   const target   = (body.target ?? '').trim().slice(0, 200)
   const tone     = (body.tone ?? '').trim().slice(0, 100)

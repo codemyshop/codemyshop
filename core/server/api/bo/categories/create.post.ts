@@ -1,9 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 
-/** POST /api/bo/categories/create — creates a PrestaShop category. */
 export default defineEventHandler(async (event) => {
   const { name, parentId, active } = await readBody<{ name: string; parentId?: number; active?: boolean }>(event)
   if (!name?.trim()) throw createError({ statusCode: 400, message: 'Nom requis' })
@@ -24,8 +23,8 @@ export default defineEventHandler(async (event) => {
   `)
   const pos = Number(((maxPosResult as any) as any[])[0]?.pos || 0)
 
-  // PG : RETURNING id_category (≠ MySQL insertId / LAST_INSERT_ID).
-  // explicit redirect_type: the DEFAULT cs_main is broken ('''301''' = 5 chars on VARCHAR(3)).
+  
+  
   const insertResult: any = await d.execute(sql`
     INSERT INTO cs_main.ps_category (id_parent, id_shop_default, level_depth, active, date_add, date_upd, position, redirect_type)
     VALUES (${parentIdResolved}, 1, ${depth}, ${activeFlag}, NOW(), NOW(), ${pos}, '301')

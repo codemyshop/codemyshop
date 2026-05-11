@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/procurement/purchase-orders/:id — purchase order detail.
- * Returns the header, detailed lines, and state transition history.
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id') || 0)
   if (!id) throw createError({ statusCode: 400, statusMessage: 'id requis' })

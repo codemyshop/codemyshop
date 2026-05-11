@@ -1,15 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Helpers events — Drizzle DB direct (cs_events + cs_event_registrations).
- * Doctrine « Zero PrestaShop webservice » 2026-04-22, single-tenant.
- *
- * Targets PostgreSQL `cs_main` (effort #44 MariaDB removal).
- *
- * ID convention: id_event / id_registration are INT auto_increment;
- * exposed as `string` on TS side via `String(...)` (compat with legacy caller
- * that did `===` comparisons on UUIDs).
- */
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -58,7 +47,6 @@ function mapRegistration(r: any): EventRegistration {
   }
 }
 
-/** Liste tous les events (legacy : caller filtre côté JS). */
 export async function readEvents(): Promise<EventRecord[]> {
   try {
     const result = asArray<any>(await usePocPg().execute(sql`
@@ -70,7 +58,6 @@ export async function readEvents(): Promise<EventRecord[]> {
   }
 }
 
-/** Retrieves an event by id (string or number). */
 export async function getEventById(id: string | number): Promise<EventRecord | null> {
   const n = Number(id)
   if (!Number.isFinite(n) || n <= 0) return null
@@ -80,7 +67,6 @@ export async function getEventById(id: string | number): Promise<EventRecord | n
   return row ? mapEvent(row) : null
 }
 
-/** Creates an event. Returns the complete record with generated id. */
 export async function createEvent(input: Partial<EventRecord>): Promise<EventRecord> {
   const ins: any = await usePocPg().execute(sql`
     INSERT INTO cs_main.cs_events
@@ -111,7 +97,6 @@ export async function createEvent(input: Partial<EventRecord>): Promise<EventRec
   return row
 }
 
-/** Partial update of an event (immutable fields id/registrations_count are ignored). */
 export async function updateEvent(id: string | number, patch: Partial<EventRecord>): Promise<EventRecord | null> {
   const n = Number(id)
   if (!Number.isFinite(n) || n <= 0) return null
@@ -135,7 +120,6 @@ export async function updateEvent(id: string | number, patch: Partial<EventRecor
   return getEventById(n)
 }
 
-/** Deletes an event + all its registrations. */
 export async function deleteEvent(id: string | number): Promise<boolean> {
   const n = Number(id)
   if (!Number.isFinite(n) || n <= 0) return false
@@ -145,7 +129,6 @@ export async function deleteEvent(id: string | number): Promise<boolean> {
   return true
 }
 
-/** Increments registrations_count of an event. */
 export async function incrementEventCount(id: string | number, delta = 1): Promise<void> {
   const n = Number(id)
   if (!Number.isFinite(n) || n <= 0) return
@@ -155,7 +138,6 @@ export async function incrementEventCount(id: string | number, delta = 1): Promi
   `)
 }
 
-/** Lists all registrations (legacy: caller filters by eventId). */
 export async function readRegistrations(): Promise<EventRegistration[]> {
   try {
     const result = asArray<any>(await usePocPg().execute(sql`
@@ -167,7 +149,6 @@ export async function readRegistrations(): Promise<EventRegistration[]> {
   }
 }
 
-/** Lists registrations for a given event. */
 export async function listRegistrationsForEvent(eventId: string | number): Promise<EventRegistration[]> {
   const n = Number(eventId)
   if (!Number.isFinite(n) || n <= 0) return []
@@ -177,7 +158,6 @@ export async function listRegistrationsForEvent(eventId: string | number): Promi
   return result.map(mapRegistration)
 }
 
-/** Checks if an email is already registered for an event. */
 export async function isAlreadyRegistered(eventId: string | number, email: string): Promise<boolean> {
   const n = Number(eventId)
   if (!Number.isFinite(n) || n <= 0) return false
@@ -196,7 +176,6 @@ export interface CreateRegistrationInput {
   phone?: string
 }
 
-/** Creates a registration. Returns the complete record. */
 export async function createRegistration(input: CreateRegistrationInput): Promise<EventRegistration> {
   const n = Number(input.eventId)
   if (!Number.isFinite(n) || n <= 0) throw new Error('eventId invalide')

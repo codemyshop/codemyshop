@@ -1,7 +1,4 @@
-/**
- *
- * GET /api/lead-qualifications → all qualifications (bulk)
- */
+
 
 import { readQualifications } from '~/server/utils/lead-qualifications'
 

@@ -1,14 +1,4 @@
-/**
- *
- * OVH service — Ordering and provisioning of dedicated VPS.
- *
- * Each client gets a sovereign French VPS.
- * This service uses the OVH API to order, monitor, and
- * retrieve the public IP of the VPS once provisioned.
- *
- * Variables d'environnement requises :
- *   OVH_APP_KEY, OVH_APP_SECRET, OVH_CONSUMER_KEY, OVH_REGION
- */
+
 
 interface VPSOrderResult {
   serviceName: string
@@ -21,11 +11,8 @@ interface VPSInfo {
   status: string
 }
 
-/**
- * Create an authenticated OVH client.
- */
 function createOvhClient() {
-  // Import dynamique pour ne pas bloquer si le package n'est pas installé
+  
   const Ovh = require('ovh')
   return new Ovh({
     appKey:      process.env.OVH_APP_KEY,
@@ -35,22 +22,16 @@ function createOvhClient() {
   })
 }
 
-/**
- * Order a VPS from OVH for a new client.
- *
- * @param clientName - Identifiant du client (ex: "example-shop")
- * @returns serviceName et orderId
- */
 export async function orderClientVPS(clientName: string): Promise<VPSOrderResult> {
   const ovh = createOvhClient()
 
   try {
-    // 1. Récupérer les offres VPS disponibles
+    
     const catalog = await ovh.requestPromised('GET', '/order/catalog/public/vps', {
       ovhSubsidiary: 'FR',
     })
 
-    // VPS Essential 2 vCPU, 4GB RAM, 80GB SSD — ~12.50€/mois
+    
     const TARGET_PLAN = 'vps-essential-2-4-80'
     const plan = catalog.plans?.find((p: any) => p.planCode === TARGET_PLAN)
 
@@ -60,7 +41,7 @@ export async function orderClientVPS(clientName: string): Promise<VPSOrderResult
 
     console.log(`[ovh] Plan sélectionné : ${plan.planCode} (${plan.invoiceName})`)
 
-    // 2. Créer la commande
+    
     const cart = await ovh.requestPromised('POST', '/order/cart', {
       ovhSubsidiary: 'FR',
       description: `VPS CodeMyShop — ${clientName}`,
@@ -68,7 +49,7 @@ export async function orderClientVPS(clientName: string): Promise<VPSOrderResult
 
     await ovh.requestPromised('POST', `/order/cart/${cart.cartId}/assign`)
 
-    // Ajouter le VPS au panier
+    
     const item = await ovh.requestPromised('POST', `/order/cart/${cart.cartId}/vps`, {
       planCode: plan.planCode,
       duration: 'P1M',
@@ -76,7 +57,7 @@ export async function orderClientVPS(clientName: string): Promise<VPSOrderResult
       quantity: 1,
     })
 
-    // Configuration : Ubuntu 22.04, datacenter France (GRA/RBX/SBG)
+    
     const configs = await ovh.requestPromised(
       'GET',
       `/order/cart/${cart.cartId}/item/${item.itemId}/requiredConfiguration`
@@ -94,12 +75,12 @@ export async function orderClientVPS(clientName: string): Promise<VPSOrderResult
         await ovh.requestPromised(
           'POST',
           `/order/cart/${cart.cartId}/item/${item.itemId}/configuration`,
-          { label: 'vps_datacenter', value: 'GRA' }  // Gravelines, France
+          { label: 'vps_datacenter', value: 'GRA' }  
         )
       }
     }
 
-    // 3. Valider et payer la commande (paiement par défaut du compte OVH)
+    
     const order = await ovh.requestPromised(
       'POST',
       `/order/cart/${cart.cartId}/checkout`,
@@ -118,13 +99,6 @@ export async function orderClientVPS(clientName: string): Promise<VPSOrderResult
   }
 }
 
-/**
- * Poll the OVH API until the VPS is active and returns its public IP.
- *
- * @param serviceName - Nom du service VPS
- * @param maxWaitMs - Timeout max (défaut 15 minutes)
- * @param pollIntervalMs - Intervalle de polling (défaut 30 secondes)
- */
 export async function waitForVPSReady(
   serviceName: string,
   maxWaitMs = 15 * 60 * 1000,
@@ -137,7 +111,7 @@ export async function waitForVPSReady(
 
   while (Date.now() - start < maxWaitMs) {
     try {
-      // Lister les VPS du compte
+      
       const vpsList: string[] = await ovh.requestPromised('GET', '/vps')
       const match = vpsList.find(v => v.includes(serviceName) || v === serviceName)
 
@@ -145,7 +119,7 @@ export async function waitForVPSReady(
         const info = await ovh.requestPromised('GET', `/vps/${match}`)
 
         if (info.state === 'running') {
-          // Récupérer l'IP publique
+          
           const ips: string[] = await ovh.requestPromised('GET', `/vps/${match}/ips`)
           const ipv4 = ips.find((ip: string) => !ip.includes(':'))
 
@@ -160,7 +134,7 @@ export async function waitForVPSReady(
         }
       }
     } catch {
-      // VPS pas encore provisionné, on continue de poll
+      
     }
 
     await new Promise(resolve => setTimeout(resolve, pollIntervalMs))

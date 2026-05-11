@@ -1,10 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * DELETE /api/cart/coupon — Removes promo codes from a cart.
- * Body: { cartId, clientId }
- * DB direct (doctrine: Zero PrestaShop webservice, 2026-04-22).
- */
+
 import { removeCouponFromCart, getCartFromDb } from '~/server/utils/cart-db'
 
 export default defineEventHandler(async (event) => {

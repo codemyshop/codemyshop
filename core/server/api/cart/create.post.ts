@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/cart/create
- * DB direct (doctrine: Zero PrestaShop webservice, 2026-04-22).
- */
+
 import { createCartInDb, getCartFromDb } from '~/server/utils/cart-db'
 import { getCustomerSession, resolveCustomerIdForRequest } from '~/server/utils/customer-session'
 import { attachActionToSession } from '~/internal/impersonation/server/utils/impersonation'

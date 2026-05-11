@@ -1,15 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * SSR-only plugin: pre-loads client config from the DB
- * BEFORE rendering layouts/components. Solves the timing issue
- * where TheHeader rendered before config was available.
- *
- * Also pre-loads the blog categories hierarchy (ps_cms_category native PS)
- * so that useBlogConfig can access it synchronously on layouts and pages.
- */
+
 export default defineNuxtPlugin(async (nuxtApp) => {
-  // Résolution clientId depuis le runtimeConfig (chaque VPS définit son clientId)
+  
   const runtimeConfig = useRuntimeConfig()
   const clientId = (runtimeConfig.clientId as string) || (runtimeConfig.public?.clientId as string) || 'ac-hub'
 

@@ -1,18 +1,5 @@
-/**
- *
- * POST /api/impersonate/start
- * Starts a B2B impersonation session (commercial mode).
- *
- * ACL: roles `sales`, `commercial`, `founder`, `root` or SuperAdmin SaaS.
- * Body : { idCustomer: number, reason: string }
- * Retour : { ok: true, session: ImpersonationSession }
- *
- * Effets :
- * - Revokes any concurrent active session of the same employee (rotation).
- *  - INSERT cs_impersonation_session (status='active', expires_at=now+2h).
- * - Sets the signed HMAC cookie `hub_impersonation` for front-end banner.
- * - If opening attempt is denied (403) or failure → audit delegated to ACL.
- */
+
+
 import { sql } from 'drizzle-orm'
 import { startSession } from '~/internal/impersonation/server/utils/impersonation'
 import { setImpersonationCookie } from '~/internal/impersonation/server/utils/cookie'
@@ -38,7 +25,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'employee non identifié' })
   }
 
-  // Vérifie que le client cible existe (évite les sessions orphelines).
+  
   const customerExists = await usePocPg().execute<any>(sql`
     SELECT id_customer AS "id", email, firstname, lastname
     FROM cs_main.ps_customer

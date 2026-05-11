@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/abandoned-carts/config
- * Lit AC_CART_RECOVERY_* depuis ps_configuration.
- */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
   const rows = await db.query<{ name: string; value: string }>(

@@ -1,26 +1,5 @@
-/**
- *
- * GET /api/reviews?limit=N&offset=O
- *
- * Serves customer reviews for the current tenant from cs_reviews + metadata
- * de l'entreprise depuis cs_business (1 ligne par tenant).
- *
- * Multi-tenant via useClientDb(event) :
- * - hostname example-shop* → DB ps_example-shop on VPS example-shop-v2
- * - other hostnames → default mariadb (where cs_reviews
- * already exists for historical data)
- *
- * Fallback gracieux ER_NO_SUCH_TABLE → reviews=[], business=null. Permet
- * to deploy the code BEFORE the table has been created on a new tenant
- * (incidents 07/04 ordre code/DB).
- *
- * Contrat de sortie :
- *   reviews:  Review[]
- *   total:    number
- *   business: { name, url, gmaps_url, total_rating, total_reviews } | null
- * → used by CustomerReviews.vue for JSON-LD AggregateRating
- * (stars in Google SERP) and the "View all our reviews" CTA button.
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 import { listActiveReviewsForClient } from '~/internal/hub/server/utils/hub'
 
@@ -76,7 +55,7 @@ export default defineEventHandler(async (event) => {
   let reviews: Review[] = []
   let business: BusinessMeta | null = null
 
-  // 1) Avis (cs_reviews — schéma identique sur tous les tenants, façade ac_hub)
+  
   try {
     const rows = await listActiveReviewsForClient({ event })
     reviews = rows.map(r => ({
@@ -94,10 +73,10 @@ export default defineEventHandler(async (event) => {
     if (!isMissingTable(err)) {
       console.error('[reviews] DB error:', err?.message)
     }
-    // sinon : table absente → reviews=[]
+    
   }
 
-  // 2) Méta entreprise (cs_business — pour le JSON-LD tenant-aware)
+  
   try {
     const rows = await db.query<BusinessRow>(
       `SELECT name, url, gmaps_url, total_rating, total_reviews

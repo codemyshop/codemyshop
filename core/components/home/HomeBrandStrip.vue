@@ -1,19 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Section homepage "brand-strip" — bandeau marquee de marques distribuées.
-  Pattern Skate Deluxe / Nike SB / Vans : auto-scroll horizontal infinite.
-
-  Item shape :
-    { label: string, href: string, image?: string }
-  Si `image` est fourni → <img> rendu (logo CDN). Sinon → wordmark textuel
-  (typo Archivo Black uppercase, gris-foncé, hover noir).
-
-  Marquee CSS pure (zéro JS) : duplication des items × 2 + animation linear
-  infinite. Pause au hover.
--->
 <script setup lang="ts">
 interface BrandItem {
   label: string
@@ -25,16 +10,14 @@ const props = defineProps<{
   title?: string | null
   subtitle?: string | null
   items: BrandItem[]
-  /** Speed in px/s (default 60). */
+  
   speed?: number
 }>()
 
 const speedPx = computed(() => Math.max(20, props.speed ?? 60))
-// Duplicate items for infinite loop without visual jump.
+
 const looped = computed(() => [...props.items, ...props.items])
 
-// Estimated width of an item (wordmark or logo) — used to calculate
-// duration de l'animation (`pixels / speedPx` secondes).
 const ITEM_WIDTH_PX = 180
 const animationDuration = computed(() => `${(props.items.length * ITEM_WIDTH_PX) / speedPx.value}s`)
 </script>

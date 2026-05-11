@@ -1,12 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Placeholder réutilisable pour les pages dont la feature est déclarée
-  dans le catalogue marketplace mais pas encore implémentée. Affiche le
-  titre, un pitch, les bénéfices attendus et un CTA.
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">

@@ -42,7 +42,7 @@
     <div v-else-if="loaded" class="px-6 py-6">
       <div class="max-w-4xl mx-auto space-y-6">
 
-        <!-- Bloc 1 — SEO & URL ──────────────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-5">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">SEO & URL</h2>
@@ -95,7 +95,7 @@
           </div>
         </section>
 
-        <!-- Bloc 2 — Contenu (rich text) ─────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-5 flex items-center justify-between">
             <div>
@@ -154,10 +154,8 @@
           </p>
         </section>
 
-        <!-- Block 3 — Parameters -->
-        <!-- Sprint 18.1 — Landing page : pas de sélecteur catégorie,
-             toujours rattachée à la racine (id 1). Le backend
-             /api/bo/marketing/landing-pages ignore body.categoryId. -->
+        
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-5">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Paramètres</h2>
@@ -198,7 +196,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
@@ -231,14 +228,13 @@ const form = reactive({
   metaDescription: '',
   linkRewrite: '',
   content: '',
-  // Sprint 18.1 — landing pages locked to the root category,
-  // no UI selector. The backend ignores body.categoryId anyway,
-  // but we send 1 explicitly to keep it readable.
+  
+  
+  
   categoryId: 1,
   active: false,
 })
 
-// ── Rich text editor (calque HubProductDescription — Sprint 12) ──
 const mode = ref<'wysiwyg' | 'html'>('wysiwyg')
 const editorEl = ref<HTMLElement | null>(null)
 
@@ -298,7 +294,6 @@ watch(mode, (m) => {
   })
 })
 
-// ── Slug ────────────────────────────────────────────────────────
 function slugify(raw: string): string {
   return String(raw || '')
     .normalize('NFD')
@@ -310,7 +305,6 @@ function slugify(raw: string): string {
     .slice(0, 128)
 }
 
-// ── Data loading ────────────────────────────────────────────────
 async function load() {
   loading.value = true
   loaded.value = false
@@ -327,7 +321,7 @@ async function load() {
     form.content = p.content || ''
     form.categoryId = Number(p.categoryId) || 1
     form.active = !!Number(p.active)
-    // Repopulate the contenteditable after rendering
+    
     nextTick(() => {
       if (editorEl.value) editorEl.value.innerHTML = form.content || ''
     })
@@ -345,9 +339,9 @@ async function save() {
   saved.value = false
   saveError.value = null
   try {
-    // Translation mode: send only localized fields to
-    // avoid overwriting the API structure (the backend filters but
-    // we keep the request minimal).
+    
+    
+    
     const payload: Record<string, any> = isMaster.value
       ? {
           title: form.title,
@@ -385,7 +379,6 @@ async function save() {
 
 onMounted(load)
 
-// Sprint 12 — reload on each language change, except during creation
 watch(currentLangId, (newId, oldId) => {
   if (newId !== oldId && !loading.value && route.params.id !== 'new') {
     load()

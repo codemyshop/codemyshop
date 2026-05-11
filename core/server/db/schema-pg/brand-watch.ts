@@ -1,10 +1,4 @@
-/**
- *
- * Drizzle PG schema — brand-watch domain.
- * SERP monitoring of proprietary systems.
- * Database-only port of brand-watch module + hard-coded WATCH_TERMS
- * + synedre/reports/brand-watch.json (chantier #43 Wave 2).
- */
+
 
 import {
   integer,

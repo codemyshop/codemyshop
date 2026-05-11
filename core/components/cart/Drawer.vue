@@ -1,24 +1,12 @@
-<!--
-  CartDrawer — panier modal slide-in latéral (chantier example-shop-bascule, tâche 1.1)
-  Composant générique branché sur useServerCart, monté dans white-label.vue
-  Ouvre/ferme via useCartDrawer (état partagé).
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { t } = useT()
 const { resolvedClientId } = useClientDetection()
 const { isOpen, close } = useCartDrawer()
 const { loggedIn, customer, checkSession } = useCustomerAuth()
 
-// Cart icon vs shopping bag depending on the store type (see `TheHeader.vue`).
 const _runtimeCfg = useRuntimeConfig()
 const isFoodVertical = computed(() => String((_runtimeCfg.public as any)?.vertical || '') === 'food')
-
-// The 'first order' banner is handled by `<CartFirstOrderBanner />`
-// (reusable component: drawer + `/panier` + `/commander`).
 
 const {
   items,
@@ -40,11 +28,6 @@ const {
   initServerCart,
 } = useServerCart(resolvedClientId.value)
 
-// Initialize server cart if client is connected — otherwise `applyPromoCode` throws
-// "Login required" (see incident 2026-05-04, already fixed on
-// `pages/panier.vue`, oversight here in the global Drawer). Initialize on mount
-// then on each drawer open in case the session has
-// become valid in the meantime (login from elsewhere).
 async function ensureServerCartInit() {
   if (loggedIn.value && customer.value?.customerId && !isServerMode.value) {
     await initServerCart(customer.value.customerId)
@@ -61,7 +44,6 @@ watch([isOpen, loggedIn], async ([open]) => {
   }
 })
 
-// Code promo
 const promoInput = ref('')
 const promoError = ref<string | null>(null)
 const promoApplying = ref(false)
@@ -104,7 +86,6 @@ function taxLineHtml(item: { taxRate?: number; quantity: number; priceRaw: numbe
   })
 }
 
-// Close with Escape
 function onKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape' && isOpen.value) close()
 }
@@ -116,7 +97,6 @@ onBeforeUnmount(() => {
   if (import.meta.client) document.removeEventListener('keydown', onKeydown)
 })
 
-// Block body scroll when open
 watch(isOpen, (val) => {
   if (!import.meta.client) return
   document.body.style.overflow = val ? 'hidden' : ''
@@ -141,7 +121,7 @@ watch(isOpen, (val) => {
         aria-modal="true"
         aria-labelledby="cart-drawer-title"
       >
-        <!-- Header -->
+        
         <header class="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-slate-800 shrink-0">
           <h2
             id="cart-drawer-title"
@@ -165,7 +145,7 @@ watch(isOpen, (val) => {
           </button>
         </header>
 
-        <!-- Liste articles -->
+        
         <div class="flex-1 overflow-y-auto px-5 py-4">
           <div v-if="cartLoading" class="text-center py-12 text-gray-400 text-sm">
             {{ t('common.loading') }}
@@ -190,7 +170,7 @@ watch(isOpen, (val) => {
                   {{ item.name }}
                 </h3>
 
-                <!-- Pills format / packaging / size — parity with `ProductCard.vue`. -->
+                
                 <div
                   v-if="item.format || item.packaging || item.caliber"
                   class="mt-1 flex flex-wrap gap-1"
@@ -213,9 +193,7 @@ watch(isOpen, (val) => {
                   {{ t('common.item_ref', { ref: item.ref }) }}
                 </p>
 
-                <!-- Hiérarchie inversée Aude P2 : HT/K en gros + mention TVA pour
-                     N colis. Si promo (specific_price) active : HT/K barré +
-                     label "-X%" en badge. Fallback sans pricePerKg : prix colis. -->
+                
                 <template v-if="item.pricePerKgFormatted">
                   <div class="mt-1 flex items-baseline gap-1.5">
                     <span class="text-sm font-bold text-primary-600 dark:text-primary-400">{{ item.pricePerKgFormatted }}</span>
@@ -280,7 +258,7 @@ watch(isOpen, (val) => {
             </div>
           </div>
 
-          <!-- Panier vide -->
+          
           <div v-else class="text-center py-16">
             <svg class="w-14 h-14 mx-auto text-gray-200 dark:text-slate-700 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
               <path v-if="isFoodVertical" stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
@@ -291,15 +269,15 @@ watch(isOpen, (val) => {
           </div>
         </div>
 
-        <!-- Footer / summary + CTA -->
+        
         <footer
           v-if="items.length"
           class="border-t border-gray-100 dark:border-slate-800 px-5 py-4 shrink-0 bg-gray-50/50 dark:bg-slate-900"
         >
-          <!-- First-order banner — promotion `PROMO5` (reusable component). -->
+          
           <CartFirstOrderBanner :enabled="isOpen" compact class="mb-3" />
 
-          <!-- Code promo -->
+          
           <div class="mb-3">
             <div v-if="discountCode" class="flex items-center justify-between px-3 py-2 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-xs">
               <span class="flex items-center gap-1.5 text-primary-700 dark:text-primary-300 font-semibold min-w-0">

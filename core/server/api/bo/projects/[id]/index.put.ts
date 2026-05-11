@@ -1,15 +1,10 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import {
   type SmartProjectUpdateSet,
   updateSmartProject,
 } from '~/enterprise/base/smartproject/server/utils/smartproject'
 
-/**
- * PUT /api/bo/projects/:id — update of an existing project.
- *
- * DB-First: direct UPDATE to cs_smartproject via ac_smartproject facade.
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!id || id <= 0) {

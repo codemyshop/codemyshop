@@ -1,15 +1,5 @@
-/**
- *
- * GET /api/megamenu
- *
- * Serves the megamenu of the current tenant from cs_megamenu JOIN cs_megamenu_lang
- * (PS _lang pattern — 1 row per language). The psChildren (PrestaShop child categories
- * automatically injected for items with show_ps_children=1) come from
- * ps_category + ps_category_lang (natif PS, link_rewrite par id_lang).
- *
- * Internal FR paths are built via link_rewrite in lang 1, then
- * localizeSiloHref translates segments for the current language (same for footer).
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 import { loadSiloSlugMapForLang, localizeSiloHref } from '~/server/utils/localize-silo-href'
 import { ensureTrailingSlash, isCategoryHref } from '~/server/utils/category-url'
@@ -75,9 +65,9 @@ function rowToItem(row: MegamenuRow): MegamenuItem {
   const badge       = row.badge       ?? row.badge_fr       ?? null
   const groupTitle  = row.group_title ?? row.group_title_fr ?? null
 
-  // Normalise le trailing slash sur les hrefs de catégorie (convention
-  // canonique 2026-04-21). Les URLs non-catégorie (pages custom, externes…)
-  // passent inchangées.
+  
+  
+  
   const normHref = isCategoryHref(row.href) ? ensureTrailingSlash(row.href) : row.href
 
   return {
@@ -108,7 +98,7 @@ export default defineEventHandler(async (event) => {
   try {
     const { loadMegamenuTreeRows } = await import('~/modules/megamenu/server/utils/megamenu')
     const items = await loadMegamenuTreeRows(db.clientId, idLang, { event })
-    // Adapter au shape MegamenuRow legacy (snake_case) pour rowToItem.
+    
     const rows: MegamenuRow[] = items.map((r) => ({
       id_megamenu: r.idMegamenu,
       client_id: r.clientId,
@@ -152,14 +142,14 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // ── psChildren : injecte les sous-catégories PS pour les items avec flag ──
+    
     const expandableItems = [...byId.values()].filter(i => i.showPsChildren && i.psCategoryId)
     if (expandableItems.length > 0) {
       const categoryIds = expandableItems.map(i => i.psCategoryId!)
       const placeholders = categoryIds.map(() => '?').join(',')
 
-      // name = lang courante (fallback fr), slug = toujours FR pour construction
-      // du path interne ; la localisation finale est appliquée par localizeSiloHref.
+      
+      
       const psChildren = await db.query<{
         id_category: number
         name: string
@@ -206,7 +196,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      // Petits-enfants (1 niveau de plus sous les psChildren)
+      
       const childCategoryIds = psChildren.map(r => r.id_category)
       if (childCategoryIds.length > 0) {
         const gcPlaceholders = childCategoryIds.map(() => '?').join(',')
@@ -266,7 +256,7 @@ export default defineEventHandler(async (event) => {
         }
       }
 
-      // Attach + dédoublonnage par href/name vs children megamenu explicites
+      
       for (const item of expandableItems) {
         const raw = childrenByParent.get(item.psCategoryId!) || []
         const existingHrefs = new Set(item.children.map(c => c.href?.replace(/\/+$/, '')))
@@ -293,9 +283,9 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Localiser les hrefs (inner segments) si lang != fr.
-    // Les items megamenu explicites (href stocké en FR) + les psChildren
-    // construits en FR sont traduits en un seul passage.
+    
+    
+    
     if (idLang !== 1) {
       const slugMap = await loadSiloSlugMapForLang(idLang)
       const walk = (items: MegamenuItem[]) => {

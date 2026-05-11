@@ -1,12 +1,4 @@
-<!--
-  Toolbar device (desktop / tablet / mobile + rotation portrait↔paysage)
-  affichée en haut du preview quand le builder est actif.
-  Le live view respecte la largeur + hauteur choisies via wrapper dans white-label.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 import type { ViewportMode } from '~/composables/useEditorViewport'
 
@@ -44,17 +36,17 @@ const buttons: Array<{ id: ViewportMode; label: string }> = [
       ]"
       @click="setMode(b.id)"
     >
-      <!-- Mobile icon -->
+      
       <svg v-if="b.id === 'mobile'" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
         <rect x="7" y="2" width="10" height="20" rx="2" />
         <line x1="11" y1="18" x2="13" y2="18" />
       </svg>
-      <!-- Tablet icon -->
+      
       <svg v-else-if="b.id === 'tablet'" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
         <rect x="4" y="2" width="16" height="20" rx="2" />
         <line x1="11" y1="18" x2="13" y2="18" />
       </svg>
-      <!-- Desktop icon -->
+      
       <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
         <rect x="2" y="4" width="20" height="12" rx="2" />
         <line x1="8" y1="20" x2="16" y2="20" />
@@ -63,7 +55,7 @@ const buttons: Array<{ id: ViewportMode; label: string }> = [
       <span class="hidden sm:inline">{{ b.label }}</span>
     </button>
 
-    <!-- Bouton rotation (visible uniquement en mobile / tablette) -->
+    
     <button
       v-if="canRotate"
       type="button"
@@ -81,7 +73,7 @@ const buttons: Array<{ id: ViewportMode; label: string }> = [
       </svg>
     </button>
 
-    <!-- Dimensions actuelles -->
+    
     <span
       v-if="currentWidth && currentHeight"
       class="ml-3 text-[10px] font-mono text-gray-400 tabular-nums"

@@ -60,7 +60,7 @@
       @done="load"
     />
 
-    <!-- Barre d'action bulk -->
+    
     <Transition enter-active-class="transition duration-150" enter-from-class="-translate-y-2 opacity-0" leave-active-class="transition duration-100" leave-to-class="-translate-y-2 opacity-0">
       <div v-if="selected.size > 0" class="bg-violet-50 dark:bg-violet-950/30 border-b border-violet-200 dark:border-violet-800 px-6 py-2.5 flex items-center gap-4 shrink-0">
         <span class="text-xs font-medium text-violet-700 dark:text-violet-300">
@@ -174,7 +174,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
@@ -200,7 +199,6 @@ const loading = ref(false)
 const search = ref('')
 const statusFilter = ref('')
 
-// ── Import CSV (UPSERT par ID ou URL, langue master uniquement) ─
 const importOpen = ref(false)
 const importTargetFields = [
   { key: 'id', label: 'ID' },
@@ -221,7 +219,6 @@ const importFieldAliases: Record<string, string[]> = {
   indexation: ['indexation', 'index', 'noindex'],
 }
 
-// ── Selection & Bulk ────────────────────────────────────────────
 const selected = reactive(new Set<number>())
 const selectedArticles = reactive(new Map<number, { title: string; linkRewrite: string }>())
 const bulkLoading = ref(false)
@@ -329,7 +326,6 @@ async function bulkCover() {
   setTimeout(() => { bulkStatus.value = null }, 5000)
 }
 
-// ── Search & Filter ─────────────────────────────────────────────
 let searchTimer: ReturnType<typeof setTimeout> | null = null
 watch(search, () => {
   if (searchTimer) clearTimeout(searchTimer)

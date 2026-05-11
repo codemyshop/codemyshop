@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/footer-links/:id
- * Updates a link. Split master (non-i18n) vs _lang.
- */
+
 import { resolveClientId } from '~/server/utils/db'
 import { updateLinkMaster, upsertLinkLang, getActiveLangs } from '~/modules/footer/server/utils/footer'
 
@@ -24,7 +20,7 @@ export default defineEventHandler(async (event) => {
 
   const clientId = resolveClientId(event)
 
-  // 1. Master fields (non-i18n)
+  
   const masterFields: any = {}
   if (body.column_position !== undefined) masterFields.columnPosition = body.column_position
   if (body.link_href !== undefined) masterFields.linkHref = body.link_href
@@ -35,9 +31,9 @@ export default defineEventHandler(async (event) => {
     await updateLinkMaster(idFooter, clientId, masterFields, { event })
   }
 
-  // 2. _lang fields (i18n) — upsert sur les 3 colonnes en bloc (le passage de
-  // valeurs identiques aux courantes via VALUES(col) reste cohérent ici car le
-  // PUT touche un seul lien et la DB renvoie l'état complet en lecture).
+  
+  
+  
   const LANG_FIELDS = ['column_title', 'link_label', 'link_badge'] as const
   const langFieldsPresent = LANG_FIELDS.filter((k) => body[k] !== undefined)
   if (langFieldsPresent.length) {

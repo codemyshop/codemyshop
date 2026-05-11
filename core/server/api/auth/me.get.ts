@@ -1,8 +1,5 @@
-/**
- *
- * GET /api/auth/me
- * Read the hub_session cookie and return employee info.
- */
+
+
 import { isProfileAdmin } from '~/server/utils/roles'
 import { verifyToken } from '~/server/utils/session-crypto'
 
@@ -22,7 +19,7 @@ export default defineEventHandler((event) => {
     user_type: data.userType || 'employee',
     userType:  data.userType || 'employee',
     clientId:  data.clientId,
-    // Academy student fields
+    
     studentId: data.studentId || null,
     pseudo:    data.pseudo || null,
   }

@@ -1,20 +1,4 @@
-<!--
-  Grille "Nos Univers" — icônes SVG vectorielles via HomeUniverseIcon
-  (fallback PNG/SVG legacy via cat.image conservé).
 
-  Payload DB attendu (type='categories') :
-  {
-    "items": [
-      { "icon": "olive",  "label": "Fruits secs, olives et épices", "href": "/grossiste/fruit-sec" },
-      { "icon": "chef",   "label": { "fr": "Sélection CHR" },        "href": "/grossiste/chr" },
-      ...
-    ]
-  }
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { localePath } = useLocalePath()
 interface Category {

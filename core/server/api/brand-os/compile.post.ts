@@ -1,19 +1,7 @@
-/**
- *
- * POST /api/brand-os/compile
- *
- * Receives the complete brand data, generates a structured CONTEXT.md,
- * and saves it to .data/contexts/ (outside public access).
- *
- * This file serves as the global System Prompt for all AI requests.
- *
- * SECURITY.md R2: stored outside the source code (.data/ directory).
- * SECURITY.md R3: no PII — only brand content.
- */
+
+
 import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve, dirname } from 'node:path'
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 interface BrandFoundation {
   vision:    string
@@ -42,8 +30,6 @@ interface CompilePayload {
   voiceOfCustomer: VoiceOfCustomer
 }
 
-// ── Handler ───────────────────────────────────────────────────────────────────
-
 export default defineEventHandler(async (event) => {
   const body = await readBody<CompilePayload>(event)
 
@@ -54,17 +40,17 @@ export default defineEventHandler(async (event) => {
   const clientId = body.clientId.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-')
 
   try {
-    // 1. Générer le Markdown
+    
     const markdown = buildContextMarkdown(body)
 
-    // 2. Sauvegarder dans .data/contexts/ (hors accès public)
+    
     const contextsDir = resolve(process.cwd(), '.data', 'contexts')
     await mkdir(contextsDir, { recursive: true })
 
     const filePath = resolve(contextsDir, `CONTEXT_${clientId.toUpperCase()}.md`)
     await writeFile(filePath, markdown, 'utf-8')
 
-    // 3. Calculer des métriques
+    
     const wordCount = markdown.split(/\s+/).length
     const sections  = (markdown.match(/^## /gm) || []).length
 
@@ -85,8 +71,6 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-// ── Markdown Builder ──────────────────────────────────────────────────────────
-
 function buildContextMarkdown(data: CompilePayload): string {
   const { foundation: f, marketing: m, voiceOfCustomer: v, clientId } = data
   const date = new Date().toISOString().split('T')[0]
@@ -101,7 +85,7 @@ function buildContextMarkdown(data: CompilePayload): string {
     ``,
   ]
 
-  // ── Section 1 : Fondations
+  
   lines.push(`## 1. FONDATIONS (Dirigeant)`, ``)
 
   if (f.vision?.trim()) {
@@ -119,7 +103,7 @@ function buildContextMarkdown(data: CompilePayload): string {
 
   lines.push(`---`, ``)
 
-  // ── Section 2 : Marketing
+  
   lines.push(`## 2. MARKETING & OPÉRATIONNEL`, ``)
 
   if (m.persona?.trim()) {
@@ -137,7 +121,7 @@ function buildContextMarkdown(data: CompilePayload): string {
 
   lines.push(`---`, ``)
 
-  // ── Section 3 : Voix du Client
+  
   lines.push(`## 3. LA VOIX DU CLIENT (Live Insights)`, ``)
 
   if (v.searchIntents?.length) {

@@ -1,4 +1,4 @@
-<!-- @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later -->
+
 <template>
   <div
     v-if="visible"
@@ -31,19 +31,11 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Language selector PIM Hub (Sprint 12).
- *
- * Source of truth: composable `useHubLang` (5 min cache).
- * Only displays if the current tenant has ≥ 2 active languages.
- * The star ★ marks the master language (id_lang = 1) that alone can mutate
- * the structure (add/remove/reorder FAQ, etc.).
- */
+
 const { langs, currentLangId, setLang } = useHubLang()
 
 const visible = computed(() => (langs.value?.length || 0) > 1)
 
-/** iso_code → drapeau emoji. Fallback sur ISO majuscule si inconnu. */
 function flagEmoji(iso: string): string {
   const map: Record<string, string> = {
     fr: '🇫🇷',

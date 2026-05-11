@@ -23,7 +23,7 @@
       </div>
     </header>
 
-    <!-- Monthly URSSAF summary -->
+    
     <section v-if="monthly.length" class="border-b border-gray-100 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-900/40 px-6 py-4">
       <div class="flex items-center justify-between mb-3">
         <div>
@@ -146,13 +146,13 @@
       </div>
     </section>
 
-    <!-- Pagination top -->
+    
     <HubPaginationBar v-if="total > 0" :page="page" :total-pages="totalPages" :total="total" label="factures"
       :per-page="perPage" :per-page-options="perPageOptions"
       @go="goPage" @update:per-page="setPerPage"
       class="border-b border-gray-100 dark:border-slate-800" />
 
-    <!-- Table -->
+    
     <div class="flex-1 overflow-auto">
       <div v-if="loading && !invoices.length" class="px-6 py-4 space-y-2">
         <div v-for="i in 8" :key="i" class="h-14 bg-gray-100 dark:bg-slate-800 rounded-xl animate-pulse" />
@@ -209,7 +209,7 @@
       </table>
     </div>
 
-    <!-- Pagination bottom -->
+    
     <HubPaginationBar v-if="totalPages > 1" :page="page" :total-pages="totalPages" :total="total" label="factures" @go="goPage" class="border-t border-gray-100 dark:border-slate-800" />
   </div>
 </template>
@@ -261,12 +261,6 @@ interface UrssafDeclaration {
   notes: string | null
 }
 
-/**
- * URSSAF self-employed rate 2026 (excluding optional IR payment).
- * Liberal BNC (general scheme, excluding CIPAV): contributions 25.60% + CFP 0.20%
- *   BIC prestations services (artisanales/commerciales) : 21,20% + 0,30%
- *   BIC ventes marchandises : 12,30% + 0,10%
- */
 const URSSAF_RATES: Record<string, { label: string; cotis: number; cfp: number }> = {
   bnc:          { label: 'BNC libérale',   cotis: 0.2560, cfp: 0.0020 },
   bic_services: { label: 'BIC services',   cotis: 0.2120, cfp: 0.0030 },
@@ -287,7 +281,7 @@ const regime = ref<'bnc' | 'bic_services' | 'bic_ventes'>('bnc')
 const monthlyIssued = ref<MonthRow[]>([])
 const monthlyPaid = ref<MonthRow[]>([])
 const urssafDeclarations = ref<UrssafDeclaration[]>([])
-const urssafBusy = ref<string>('')  // periodMonth en cours de mutation
+const urssafBusy = ref<string>('')  
 
 const urssafByMonth = computed<Record<string, UrssafDeclaration>>(() => {
   const map: Record<string, UrssafDeclaration> = {}
@@ -308,10 +302,6 @@ const monthlyTotals = computed(() => {
   }), init)
 })
 
-/**
- * URSSAF self-employed: basis = collected revenue (VAT exemption applies, ex-VAT = inc. VAT).
- * Rounding: each line rounded to the euro (URSSAF convention), total = sum of rounded amounts.
- */
 function urssafForRow(m: MonthRow) {
   const base = Number(m.ht || 0)
   const r = currentRegime.value
@@ -390,14 +380,14 @@ async function loadMonthly() {
     const data = await $fetch<any>('/api/bo/invoices/monthly')
     monthlyIssued.value = data.issued ?? []
     monthlyPaid.value = data.paid ?? []
-  } catch (e) { /* ignore */ }
+  } catch (e) {  }
 }
 
 async function loadUrssaf() {
   try {
     const data = await $fetch<any>('/api/bo/invoices/urssaf')
     urssafDeclarations.value = data.declarations ?? []
-  } catch (e) { /* ignore */ }
+  } catch (e) {  }
 }
 
 async function toggleUrssafPaid(periodMonth: string, checked: boolean) {
@@ -416,13 +406,12 @@ async function toggleUrssafPaid(periodMonth: string, checked: boolean) {
   }
 }
 
-/** Calculated status: paid | overdue | due | upcoming */
 function urssafStatus(month: string): 'paid' | 'overdue' | 'due' | 'upcoming' {
   const d = urssafByMonth.value[month]
   if (d?.paidAt) return 'paid'
   const deadlineStr = urssafDeadline(month)
   if (!deadlineStr) return 'upcoming'
-  // deadlineStr au format dd/mm/yyyy
+  
   const [dd, mm, yyyy] = deadlineStr.split('/').map(Number)
   const deadline = new Date(yyyy, mm - 1, dd)
   const now = new Date()
@@ -449,7 +438,7 @@ function statusBadgeClass(month: string): string {
 }
 
 watch(mode, () => {
-  // Reload the list with the correct filter dimension
+  
   if (selectedMonth.value) goPage(1)
 })
 
@@ -463,11 +452,10 @@ function formatMonth(m: string) {
   return d.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
 }
 
-/** URSSAF monthly declaration deadline for self-employed: last day of month M+1. */
 function urssafDeadline(month: string): string {
   if (!/^\d{4}-\d{2}$/.test(month)) return ''
   const [y, m] = month.split('-').map(Number)
-  // Last day of month M+1 = day 0 of month M+2
+  
   const deadline = new Date(y, m + 1, 0)
   return deadline.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
 }

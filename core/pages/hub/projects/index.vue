@@ -1,13 +1,13 @@
 <template>
   <div class="flex-1 overflow-auto">
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between gap-4">
         <h1 class="text-lg font-bold text-gray-800 dark:text-slate-100 shrink-0">Pipeline</h1>
 
-        <!-- Toolbar -->
+        
         <div class="flex items-center gap-2 flex-wrap">
-          <!-- View switcher -->
+          
           <div class="flex items-center border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden text-xs">
             <button
               @click="viewMode = 'kanban'"
@@ -31,7 +31,7 @@
             </button>
           </div>
 
-          <!-- Task templates -->
+          
           <button
             @click="openTaskTemplates"
             class="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-gray-200 dark:border-slate-700 rounded-lg text-gray-600 hover:bg-gray-50 dark:bg-slate-950 transition-colors"
@@ -42,7 +42,7 @@
             Tâches modèles
           </button>
 
-          <!-- Team -->
+          
           <button
             @click="openTeam"
             class="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-gray-200 dark:border-slate-700 rounded-lg text-gray-600 hover:bg-gray-50 dark:bg-slate-950 transition-colors"
@@ -53,7 +53,7 @@
             Équipe
           </button>
 
-          <!-- WhatsApp templates -->
+          
           <button
             @click="openWhatsApp"
             class="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-gray-200 dark:border-slate-700 rounded-lg text-gray-600 hover:bg-gray-50 dark:bg-slate-950 transition-colors"
@@ -64,7 +64,7 @@
             WhatsApp
           </button>
 
-          <!-- Automations -->
+          
           <button
             @click="openAutomations"
             class="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-gray-200 dark:border-slate-700 rounded-lg text-gray-600 hover:bg-gray-50 dark:bg-slate-950 transition-colors"
@@ -75,7 +75,7 @@
             Automatisations
           </button>
 
-          <!-- New project -->
+          
           <button
             @click="openCreate"
             class="flex items-center gap-1.5 bg-primary-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-primary-700 transition-colors"
@@ -92,7 +92,7 @@
     <div class="p-6">
       <div v-if="loading" class="text-center py-20 text-gray-400">Chargement…</div>
 
-      <!-- Kanban board -->
+      
       <div v-else-if="viewMode === 'kanban'" class="flex gap-4 overflow-x-auto pb-4">
         <div
           v-for="(label, key) in STATUSES"
@@ -137,7 +137,7 @@
               </div>
               <p class="font-semibold text-gray-800 dark:text-slate-100 text-sm leading-snug mb-2">{{ p.project_title }}</p>
 
-              <!-- Contact + source (ligne badge type voguimmo) -->
+              
               <div v-if="p.contact_name" class="flex items-center gap-1.5 mb-2">
                 <div
                   class="w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center shrink-0"
@@ -157,7 +157,7 @@
                 </span>
               </div>
 
-              <!-- Niveau (score /10) + budget tag -->
+              
               <div v-if="p.lead_level || p.budget" class="flex items-center gap-2 mb-2">
                 <span
                   v-if="p.lead_level !== null && p.lead_level !== undefined"
@@ -172,7 +172,7 @@
                 </span>
               </div>
 
-              <!-- Compteurs : docs / tasks open / WA / emails / prix final -->
+              
               <div class="flex items-center gap-3 text-xs text-gray-400 mt-2">
                 <span v-if="p.documents_count" :title="`${p.documents_count} document(s)`">📎 {{ p.documents_count }}</span>
                 <span v-if="p.tasks_open_count" :title="`${p.tasks_open_count} tâche(s) ouverte(s) sur ${p.tasks_count}`">✓ {{ p.tasks_open_count }}</span>
@@ -185,7 +185,7 @@
         </div>
       </div>
 
-      <!-- Grid / List view -->
+      
       <div v-else class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <table class="w-full text-sm">
           <thead class="bg-gray-50 dark:bg-slate-950 border-b border-gray-100 dark:border-slate-800">
@@ -271,7 +271,7 @@
       </div>
     </div>
 
-    <!-- =================== Modal Create / Edit project =================== -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" @click.self="closeModal">
@@ -344,7 +344,7 @@
       </Transition>
     </Teleport>
 
-    <!-- =================== Modal Task Templates =================== -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="showTaskTemplates" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" @click.self="showTaskTemplates = false">
@@ -355,7 +355,7 @@
             </div>
 
             <div class="flex gap-6 p-6 overflow-y-auto flex-1">
-              <!-- List -->
+              
               <div class="flex-1 min-w-0">
                 <div v-if="taskTemplatesLoading" class="text-center py-10 text-gray-400 text-sm">Chargement…</div>
                 <div v-else-if="!taskTemplates.length" class="text-center py-10 text-gray-400 text-sm">Aucun modèle.</div>
@@ -377,7 +377,7 @@
                 </div>
               </div>
 
-              <!-- Form -->
+              
               <div class="w-64 shrink-0 border-l border-gray-100 dark:border-slate-800 pl-6">
                 <h3 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">{{ ttForm.id ? 'Modifier' : 'Nouveau modèle' }}</h3>
                 <form @submit.prevent="saveTaskTemplate" class="space-y-3">
@@ -419,7 +419,7 @@
       </Transition>
     </Teleport>
 
-    <!-- =================== Modal Team =================== -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="showTeam" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" @click.self="showTeam = false">
@@ -430,7 +430,7 @@
             </div>
 
             <div class="flex gap-6 p-6 overflow-y-auto flex-1">
-              <!-- List -->
+              
               <div class="flex-1 min-w-0">
                 <div v-if="teamLoading" class="text-center py-10 text-gray-400 text-sm">Chargement…</div>
                 <div v-else-if="!teamMembers.length" class="text-center py-10 text-gray-400 text-sm">Aucun membre.</div>
@@ -452,7 +452,7 @@
                 </div>
               </div>
 
-              <!-- Form -->
+              
               <div class="w-64 shrink-0 border-l border-gray-100 dark:border-slate-800 pl-6">
                 <h3 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">Ajouter un membre</h3>
                 <form @submit.prevent="saveTeamMember" class="space-y-3">
@@ -477,7 +477,7 @@
                   <button type="submit" :disabled="teamSaving" class="w-full py-1.5 text-xs bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 mt-1">
                     {{ teamSaving ? 'Création...' : 'Ajouter' }}
                   </button>
-                  <!-- Result toast -->
+                  
                   <div v-if="teamToast" class="mt-2 p-2 rounded-lg text-[10px] leading-relaxed"
                     :class="teamToast.type === 'success' ? 'bg-success-50 text-success-700' : 'bg-danger-50 text-danger-600'">
                     {{ teamToast.message }}
@@ -490,7 +490,7 @@
       </Transition>
     </Teleport>
 
-    <!-- =================== Modal WhatsApp Templates =================== -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="showWhatsApp" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" @click.self="showWhatsApp = false">
@@ -501,7 +501,7 @@
             </div>
 
             <div class="flex gap-6 p-6 overflow-y-auto flex-1">
-              <!-- List -->
+              
               <div class="flex-1 min-w-0">
                 <div v-if="waLoading" class="text-center py-10 text-gray-400 text-sm">Chargement…</div>
                 <div v-else-if="!waTemplates.length" class="text-center py-10 text-gray-400 text-sm">Aucun modèle.</div>
@@ -524,7 +524,7 @@
                 </div>
               </div>
 
-              <!-- Form -->
+              
               <div class="w-64 shrink-0 border-l border-gray-100 dark:border-slate-800 pl-6">
                 <h3 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">{{ waForm.id ? 'Modifier' : 'Nouveau modèle' }}</h3>
                 <form @submit.prevent="saveWaTemplate" class="space-y-3">
@@ -557,7 +557,7 @@
       </Transition>
     </Teleport>
 
-    <!-- =================== Modal Automations =================== -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="showAutomations" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" @click.self="showAutomations = false">
@@ -568,7 +568,7 @@
             </div>
 
             <div class="flex gap-6 p-6 overflow-y-auto flex-1">
-              <!-- List -->
+              
               <div class="flex-1 min-w-0">
                 <div v-if="autoLoading" class="text-center py-10 text-gray-400 text-sm">Chargement…</div>
                 <div v-else-if="!automations.length" class="text-center py-10 text-gray-400 text-sm">Aucune automatisation.</div>
@@ -602,7 +602,7 @@
                 </div>
               </div>
 
-              <!-- Form -->
+              
               <div class="w-72 shrink-0 border-l border-gray-100 dark:border-slate-800 pl-6">
                 <h3 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">{{ autoForm.id_ac_smartautomation_rule ? 'Modifier' : 'Nouvelle règle' }}</h3>
                 <form @submit.prevent="saveAutomation" class="space-y-3">
@@ -652,7 +652,6 @@ definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 const { resolvedClientId } = useClientDetection()
 const router   = useRouter()
 
-// ── Constants ──────────────────────────────────────────────────────────────
 const STATUSES: Record<string, string> = {
   perdu_standby: 'Perdu / Standby',
   lead_entrant:  'Lead entrant',
@@ -728,10 +727,8 @@ const AUTO_ACTIONS: Record<string, string> = {
   apply_task_template: 'Appliquer modèle de tâches',
 }
 
-// ── View mode ──────────────────────────────────────────────────────────────
 const viewMode = ref<'kanban' | 'grid'>('kanban')
 
-// ── Projects ───────────────────────────────────────────────────────────────
 const projects       = ref<any[]>([])
 const loading        = ref(true)
 const showModal      = ref(false)
@@ -766,7 +763,6 @@ const projectsByStatus = computed(() => {
 
 const statusColor = (key: string) => STATUS_COLORS[key] || 'bg-gray-200'
 
-// Lead score 0-10 → label + color (inspired by hot/warm/cold scoring)
 const leadLevelLabel = (lvl: number | null | undefined): string => {
   const v = Number(lvl)
   if (lvl === null || lvl === undefined || Number.isNaN(v)) return 'Non qualifié'
@@ -789,7 +785,6 @@ const leadLevelBadgeClass = (lvl: number | null | undefined): string => {
   return 'bg-sky-100 text-sky-700'
 }
 
-// lead_source slug → badge { humanized label, classes }. Fallback to raw slug.
 const SOURCE_BADGES: Record<string, { label: string; cls: string }> = {
   product_form:        { label: 'Form produit',  cls: 'bg-rose-100 text-rose-700' },
   contact_form:        { label: 'Contact',       cls: 'bg-rose-100 text-rose-700' },
@@ -807,7 +802,7 @@ const sourceBadge = (src: string): { label: string; cls: string } => {
   if (!src) return { label: '—', cls: 'bg-gray-100 text-gray-500' }
   const hit = SOURCE_BADGES[src]
   if (hit) return hit
-  // Fallback: humanize the slug (snake/kebab → Title Case), neutral class
+  
   const label = src.replace(/[_-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).slice(0, 14)
   return { label, cls: 'bg-gray-100 text-gray-600' }
 }
@@ -821,7 +816,7 @@ const formatDate = (d: string) =>
 const loadProjects = async () => {
   loading.value = true
   try {
-    // DB-First: direct read via Nuxt API (no PS proxy)
+    
     const data = await $fetch<{ projects: any[] }>('/api/bo/projects')
     projects.value = data.projects || []
   } finally {
@@ -934,7 +929,6 @@ const onDrop = async (e: DragEvent, newStatus: string) => {
   })
 }
 
-// ── Task Templates ─────────────────────────────────────────────────────────
 const showTaskTemplates    = ref(false)
 const taskTemplates        = ref<any[]>([])
 const taskTemplatesLoading = ref(false)
@@ -971,7 +965,7 @@ const editTaskTemplate = (t: any) => {
 const saveTaskTemplate = async () => {
   ttSaving.value = true
   try {
-    // ajaxaddtasktemplate handles both create (no id_template) and edit (id_template > 0)
+    
     const payload = {
       id_template:         ttForm.value.id || 0,
       title:               ttForm.value.title,
@@ -999,7 +993,6 @@ const deleteTaskTemplate = async (id: number) => {
   taskTemplates.value = taskTemplates.value.filter(t => t.id_ac_smarttask_template !== id)
 }
 
-// ── Team ───────────────────────────────────────────────────────────────────
 const showTeam    = ref(false)
 const teamMembers = ref<any[]>([])
 const teamLoading = ref(false)
@@ -1024,7 +1017,7 @@ const saveTeamMember = async () => {
   teamSaving.value = true
   teamToast.value  = null
   try {
-    // 1. Add to CRM (cs_smartteam)
+    
     const data = await $fetch<{ success: boolean; message?: string; error?: string; member?: any }>(
       '/api/bo/smartproject/team',
       { method: 'POST', body: { ...teamForm.value } },
@@ -1034,7 +1027,7 @@ const saveTeamMember = async () => {
       return
     }
 
-    // 2. Create the employee in PrestaShop (Webservice)
+    
     let psMsg = ''
     try {
       const psRes = await $fetch<{ ok: boolean; psEmployeeId?: number; psError?: string; generatedPassword?: string; message: string }>(
@@ -1074,7 +1067,6 @@ const deleteMember = async (id: number) => {
   teamMembers.value = teamMembers.value.filter(m => m.id_ac_smartteam !== id)
 }
 
-// ── WhatsApp Templates ─────────────────────────────────────────────────────
 const showWhatsApp  = ref(false)
 const waTemplates   = ref<any[]>([])
 const waLoading     = ref(false)
@@ -1123,7 +1115,6 @@ const deleteWaTemplate = async (id: number) => {
   waTemplates.value = waTemplates.value.filter(t => t.id_ac_whatsapp_template !== id)
 }
 
-// ── Automations ────────────────────────────────────────────────────────────
 const showAutomations = ref(false)
 const automations     = ref<any[]>([])
 const autoLoading     = ref(false)
@@ -1163,7 +1154,7 @@ const saveAutomation = async () => {
     const payload = {
       ...autoForm.value,
       active: autoForm.value.active ? 1 : 0,
-      // conditions_json_compiled is required by the PS controller
+      
       conditions_json_compiled: JSON.stringify([{ trigger: autoForm.value.trigger_type }]),
     }
     const data = await $fetch<{ success: boolean }>('/api/bo/smartproject/automations', {

@@ -1,16 +1,16 @@
-<!-- @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later -->
+
 <template>
   <Teleport to="body">
     <Transition enter-active-class="transition-opacity duration-200" enter-from-class="opacity-0" leave-active-class="transition-opacity duration-150" leave-to-class="opacity-0">
       <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center" @keydown.escape="$emit('close')" @keydown.left="prev" @keydown.right="next">
 
-        <!-- Backdrop -->
+        
         <div class="fixed inset-0 bg-black/70" @click="$emit('close')" />
 
-        <!-- Container -->
+        
         <div ref="containerRef" tabindex="0" class="relative z-10 flex flex-col items-center max-w-4xl w-full mx-4">
 
-          <!-- Header -->
+          
           <div class="flex items-center justify-between w-full mb-3">
             <p v-if="productName" class="text-sm text-white/80 font-medium truncate max-w-md">{{ productName }}</p>
             <span v-else />
@@ -22,9 +22,9 @@
             </div>
           </div>
 
-          <!-- Image principale -->
+          
           <div class="relative w-full flex items-center justify-center" style="min-height: 400px;">
-            <!-- Fleche gauche -->
+            
             <button
               v-if="images.length > 1"
               @click="prev"
@@ -40,7 +40,7 @@
               @error="onImgError"
             />
 
-            <!-- Fleche droite -->
+            
             <button
               v-if="images.length > 1"
               @click="next"
@@ -50,7 +50,7 @@
             </button>
           </div>
 
-          <!-- Thumbnails -->
+          
           <div v-if="images.length > 1" class="flex items-center gap-2 mt-4 overflow-x-auto max-w-full py-1 px-1">
             <button
               v-for="(img, i) in images"
@@ -109,13 +109,12 @@ function next() {
 
 function onImgError(e: Event) {
   const img = e.target as HTMLImageElement
-  // Fallback to home_default if large_default is missing
+  
   if (img.src.includes('large_default')) {
     img.src = img.src.replace('large_default', 'home_default')
   }
 }
 
-// Focus on mount so keyboard input works
 watch(() => props.open, (isOpen) => {
   if (isOpen) {
     current.value = props.startIndex ?? 0

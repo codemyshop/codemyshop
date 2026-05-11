@@ -1,29 +1,4 @@
-<!--
-  Homepage unifiée — tenant-neutre.
 
-  Structure : 100% data-driven depuis cs_homepage_section (DB PS natif,
-  scopé par id_shop côté serveur). Chaque tenant a ses propres sections en DB,
-  même code.
-
-  Paramètres tenant via runtimeConfig.public (nuxt.config.ts du client) :
-    - brandName              (nom marque — title, Organization, h1)
-    - psFrontUrl             (url site, url logo, base JSON-LD)
-    - contactEmail           (Organization.email)
-    - contactPhone           (Organization.telephone, optionnel)
-    - contactDescription     (Organization.description, meta description)
-    - socialLinks            (Organization.sameAs, array URLs)
-    - logoPath               (chemin logo — défaut /logo.svg)
-    - localBusiness          (PostalAddress + openingHours, optionnel — null = pas de JSON-LD LocalBusiness)
-    - metaTitle              (title HTML, défaut `${brandName} — ${description tronquée}`)
-    - heroH1                 (h1 sr-only SEO, défaut brandName)
-
-  Les autres tenants (AC hub, codemyshop, corbie) qui ont une homepage custom
-  non DB-driven gardent leur override clients/<tenant>/pages/index.vue.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -44,7 +19,6 @@ const localBusiness = pub.localBusiness ?? null
 const metaTitle = String(pub.metaTitle ?? (brandName ? `${brandName} — ${contactDescription.slice(0, 80)}` : ''))
 const heroH1 = String(pub.heroH1 ?? brandName)
 
-// Sections from DB — lang-aware, tenant-scoped on server side.
 const { activeLang: sectionsLang } = useRouteLang()
 const { data: sectionsData } = await useFetch<{ sections: Array<{ id: number; position: number; type: string; title: string | null; subtitle: string | null; payload: any; active: boolean }> }>('/api/homepage-sections', {
   query: { lang: sectionsLang },
@@ -52,7 +26,6 @@ const { data: sectionsData } = await useFetch<{ sections: Array<{ id: number; po
   default: () => ({ sections: [] }),
 })
 
-// Builder sidebar written in shared useState → live preview in real time.
 const editorDbSections = useDbHomepageSections()
 
 const dbSections = computed(() => {
@@ -75,7 +48,7 @@ function resolveI18n(value: any, fallback: string = ''): string {
     try {
       const parsed = JSON.parse(value)
       if (typeof parsed === 'object' && parsed !== null) return i18nt(parsed) || fallback
-    } catch { /* string nue */ }
+    } catch {  }
     return value || fallback
   }
   return fallback
@@ -145,7 +118,6 @@ const orderedSectionTypes = computed<string[]>(() =>
   [...dbSections.value].sort((a, b) => a.position - b.position).map(s => s.type),
 )
 
-// JSON-LD Schema.org construit dynamiquement depuis runtimeConfig.
 const organizationLd: Record<string, unknown> = {
   '@type': 'Organization',
   '@id': `${siteUrl}#organization`,
@@ -174,7 +146,6 @@ const websiteLd = {
 
 const graph: unknown[] = [organizationLd, websiteLd]
 
-// LocalBusiness optional (tenant with physical store + hours).
 if (localBusiness && typeof localBusiness === 'object') {
   graph.push({
     '@type': 'LocalBusiness',

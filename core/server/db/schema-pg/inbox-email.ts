@@ -1,10 +1,4 @@
-/**
- *
- * Drizzle PG schema — inbox emails domain (IMAP → DB facade).
- * Owns the runtime table `cs_inbox_emails` (rule 7 §DB-Only).
- * Port chantier #43 / Wave 3 : remplace l'ancien synedre/ac_inbox.py
- * (archived 2026-04-30, initiative #44).
- */
+
 
 import {
   integer, smallint, timestamp, varchar, text, serial,

@@ -1,16 +1,4 @@
-/**
- *
- * Feature Flags multi-tenant.
- *
- * Single source of truth (DB-Only doctrine 2026-04-19):
- * cs_marketplace_feature + cs_marketplace_tenant, read/written via the
- * facade `~/modules/marketplace/server/utils/marketplace` (Drizzle PG).
- *
- * Reads (readCatalog, getTenantEnabledFeatures, isFeatureEnabled) and
- * writes (enableFeature, disableFeature) go DIRECTLY to DB —
- * no duplicate source, no more HTTP calls to the PrestaShop module (php-eviction-phase1
- * 2026-05-01, old fallback `togglePsModule` removed).
- */
+
 
 import {
   listCatalogForTenant,
@@ -20,7 +8,7 @@ import {
 } from '~/modules/marketplace/server/utils/marketplace'
 
 export interface CatalogFeature {
-  id:            string   // feature_id dans la DB
+  id:            string   
   name:          string
   description:   string
   icon:          string

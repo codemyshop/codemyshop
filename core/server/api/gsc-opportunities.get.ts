@@ -1,12 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/gsc-opportunities
- * Returns SEO opportunities from Google Search Console for the current tenant.
- * Used by the proactive monitoring system and the SEO dashboard.
- *
- * The siteUrl is read from cs_client_config[<tenant>].config_json.gscSiteUrl.
- */
 
 import { getTopOpportunities, getDecliningPages } from '~/server/services/gsc'
 import { resolveClientId } from '~/server/utils/db'

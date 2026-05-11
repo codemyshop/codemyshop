@@ -1,18 +1,4 @@
-/**
- *
- * POST /api/admin/seed-client-config
- * Materializes a `cs_client_config` row for a tenant from
- * the static file `core/config/clients/<source>.ts` (which serves
- * as the default schema for tenant bootstrapping).
- *
- * Body : { sourceClientId: 'example-shop', targetClientId: 'example-shop', force?: boolean }
- *
- * Pattern: the static TS = default schema for provisioning.
- * The cs_client_config DB = runtime source of truth edited by the builder.
- * Once seeded, the tenant no longer depends on the static file.
- *
- * Reserved for owner/developer.
- */
+
 
 import acHub      from '~/config/clients/ac-hub'
 import codemyshop from '~/config/clients/codemyshop'
@@ -23,7 +9,6 @@ import {
 } from '~/internal/clientconfig/server/utils/clientconfig'
 import { verifyToken } from '~/server/utils/session-crypto'
 
-// example-shop retiré du registry : DB tenant 100% seedée (Vague 4 final).
 const SOURCE_REGISTRY: Record<string, any> = {
   'ac-hub':       acHub,
   'codemyshop':   codemyshop,
@@ -55,12 +40,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: `sourceClientId inconnu: ${source}` })
   }
 
-  // Extraction des slices builder
+  
   const payload: Record<string, unknown> = {}
   for (const key of ['theme', 'footer', 'homepage', 'sections'] as const) {
     if (key in src) payload[key] = (src as any)[key]
   }
-  // header = tout ce qui n'est pas une slice (logo, topBar, menu, features, etc.)
+  
   const { theme: _t, footer: _f, homepage: _hp, sections: _s, ...headerSlice } = src
   payload.header = headerSlice
 

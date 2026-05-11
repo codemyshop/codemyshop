@@ -1,13 +1,4 @@
-<!--
-  Tunnel de commande B2B — /commander
-  Étapes : Connexion → Adresses → Livraison → Paiement → Confirmation
-  Connecté aux API serveur — crée une vraie commande en DB PrestaShop.
-  clientId via useRuntimeConfig().public.clientId.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -32,7 +23,6 @@ const {
   loadCarriers, placeOrder, goToStep,
 } = useCheckout(clientId)
 
-// Code promo
 const promoInput = ref('')
 const promoError = ref('')
 const promoLoading = ref(false)
@@ -56,15 +46,13 @@ async function onRemovePromo() {
   try { await removePromoCode() } finally { promoLoading.value = false }
 }
 
-// Total TTC final = totalTTC produits - remise + livraison
 const finalTotalTTC = computed(() => Math.max(0, totalTTC.value - discountHT.value) + shippingPrice.value)
 
-// Tenant bank account details (loaded after wire transfer order validated)
 const bankwireDetails = ref<{ owner: string; details: string; address: string; customText: string } | null>(null)
 async function loadBankwireDetails() {
   try {
     bankwireDetails.value = await $fetch('/api/checkout/bankwire-details', { query: { clientId } })
-  } catch { /* ignore */ }
+  } catch {  }
 }
 watch(() => createdOrder.value, async (o) => {
   if (o && paymentMethod.value === 'bankwire' && !bankwireDetails.value) {
@@ -72,12 +60,11 @@ watch(() => createdOrder.value, async (o) => {
   }
 })
 
-// On setup: reset the tunnel then verify the session
 onMounted(async () => {
-  // Always restart from the auth step to avoid a stale step
+  
   goToStep('auth')
   await checkSession()
-  // If the session is valid after verification, skip auth
+  
   if (loggedIn.value && customer.value) {
     if (!isServerMode.value) {
       await initServerCart(customer.value.customerId)
@@ -87,7 +74,6 @@ onMounted(async () => {
   }
 })
 
-// If the user logs in via the form (transition auth → address)
 watch(loggedIn, async (v, oldV) => {
   if (v && !oldV && customer.value) {
     if (!isServerMode.value) {
@@ -100,7 +86,6 @@ watch(loggedIn, async (v, oldV) => {
   }
 })
 
-// Login form
 const loginForm = reactive({ email: '', password: '' })
 const loginError = ref('')
 
@@ -122,14 +107,13 @@ async function onContinueAsLoggedIn() {
 
 async function onLogout() {
   await logout()
-  // Reset server cart (linked to customer) and form — the user can
-  // reconnect or continue as guest (B2B quote).
+  
+  
   clearCart()
   loginForm.email = ''
   loginForm.password = ''
 }
 
-// Address form
 const addressForm = reactive({
   company: '', firstname: '', lastname: '',
   address1: '', address2: '', postcode: '', city: '',
@@ -139,7 +123,7 @@ const countries = ref<{ id: number; name: string }[]>([])
 onMounted(async () => {
   try {
     countries.value = await $fetch<{ id: number; name: string }[]>('/api/catalogue/countries', { query: { clientId } })
-  } catch { /* fallback France */ }
+  } catch {  }
 })
 const showNewAddress = ref(false)
 const editingAddressId = ref<number | null>(null)
@@ -175,7 +159,7 @@ function resetAddressForm() {
 async function onSaveAddress() {
   if (!customer.value) return
   if (editingAddressId.value) {
-    // Modifier
+    
     const addr = await updateAddress(editingAddressId.value, {
       company: addressForm.company,
       firstname: addressForm.firstname || customer.value.firstname,
@@ -189,7 +173,7 @@ async function onSaveAddress() {
     })
     if (addr) resetAddressForm()
   } else {
-    // Create
+    
     const addr = await createAddress({
       customerId: customer.value.customerId,
       alias: t('checkout.checkout_address_alias_default', 'Livraison'),
@@ -230,7 +214,7 @@ async function onPlaceOrder() {
   const order = await placeOrder(cartId.value, customer.value.customerId, customer.value.email)
   if (!order) return
 
-  // If SystemPay card payment, redirect to the payment form
+  
   if (paymentMethod.value === 'systempay') {
     try {
       const formData = await $fetch<{ url: string; fields: Record<string, string> }>('/api/payment/systempay-form', {
@@ -243,7 +227,7 @@ async function onPlaceOrder() {
         },
       })
 
-      // Create and submit a hidden form to SystemPay
+      
       const form = document.createElement('form')
       form.method = 'POST'
       form.action = formData.url
@@ -282,7 +266,6 @@ const stepNum = computed(() => {
 
 const formatPrice = (n: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
 
-// Convention PS : <body id="checkout" class="checkout">
 useListingBodyId('checkout')
 
 useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
@@ -292,7 +275,7 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
   <NuxtLayout name="checkout">
     <div class="min-h-screen bg-gray-50">
 
-      <!-- Progress bar -->
+      
       <div v-if="step !== 'confirmation'" class="bg-white border-b border-gray-100">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4">
           <div class="flex items-center justify-between">
@@ -318,14 +301,14 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
 
       <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8">
 
-        <!-- Erreur globale -->
+        
         <div v-if="error" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
           {{ error }}
         </div>
 
-        <!-- Step 1: Login -->
+        
         <div v-if="step === 'auth'" class="bg-white rounded-2xl p-8 shadow-sm">
-          <!-- Variant: already logged in → confirmation + continue + logout -->
+          
           <template v-if="loggedIn && customer">
             <h2 class="text-xl font-bold text-gray-900 mb-2">{{ t('checkout.auth_already_title') }}</h2>
             <p class="text-sm text-gray-500 mb-6">{{ t('checkout.auth_already_subtitle') }}</p>
@@ -357,7 +340,7 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
             </div>
           </template>
 
-          <!-- Variant: not logged in → login form -->
+          
           <template v-else>
             <h2 class="text-xl font-bold text-gray-900 mb-6">{{ t('checkout.auth_title') }}</h2>
             <p class="text-sm text-gray-500 mb-6">{{ t('checkout.auth_subtitle') }}</p>
@@ -381,11 +364,11 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
           </template>
         </div>
 
-        <!-- Step 2: Addresses -->
+        
         <div v-if="step === 'address'" class="bg-white rounded-2xl p-8 shadow-sm">
           <h2 class="text-xl font-bold text-gray-900 mb-6">{{ t('checkout.address_title') }}</h2>
 
-          <!-- Adresses existantes -->
+          
           <div v-if="addresses.length && !showNewAddress" class="space-y-3 mb-6">
             <label
               v-for="addr in addresses"
@@ -412,7 +395,7 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
             <button class="text-sm text-primary-600 hover:underline" @click="showNewAddress = true">{{ t('checkout.address_new') }}</button>
           </div>
 
-          <!-- Address form (create or edit) -->
+          
           <form v-if="!addresses.length || showNewAddress" class="space-y-4" @submit.prevent="onSaveAddress">
             <div>
               <label class="block text-xs font-semibold text-gray-600 mb-1">{{ t('checkout.label_company') }}</label>
@@ -473,7 +456,7 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
           </div>
         </div>
 
-        <!-- Step 3: Shipping -->
+        
         <div v-if="step === 'shipping'" class="bg-white rounded-2xl p-8 shadow-sm">
           <h2 class="text-xl font-bold text-gray-900 mb-6">{{ t('checkout.shipping_title') }}</h2>
 
@@ -508,11 +491,11 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
           </div>
         </div>
 
-        <!-- Step 4: Payment -->
+        
         <div v-if="step === 'payment'" class="bg-white rounded-2xl p-8 shadow-sm">
           <h2 class="text-xl font-bold text-gray-900 mb-6">{{ t('checkout.payment_title') }}</h2>
 
-          <!-- Order summary -->
+          
           <div class="bg-gray-50 rounded-xl p-4 mb-6">
             <h3 class="text-sm font-semibold text-gray-700 mb-3">{{ t('checkout.summary') }}</h3>
 
@@ -522,8 +505,7 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
                   <th class="font-medium pb-2 pr-2">{{ t('checkout.checkout_table_product', 'Produit') }}</th>
                   <th class="font-medium pb-2 pr-2 hidden sm:table-cell">{{ t('checkout.checkout_table_ref', 'Réf.') }}</th>
                   <th class="font-medium pb-2 pr-2 text-center">{{ t('checkout.checkout_table_qty', 'Qté') }}</th>
-                  <!-- Prix unitaire DB-First : pricePerKgFormatted + unitLabel
-                       (HT/K, HT/L, HT/U) si dispo, sinon prix colis HT brut. -->
+                  
                   <th class="font-medium pb-2 pr-2 text-right hidden sm:table-cell">{{ t('checkout.checkout_table_unit_price', 'Prix unitaire') }}</th>
                   <th class="font-medium pb-2 text-right">{{ t('checkout.checkout_table_total_ht', 'Total HT') }}</th>
                 </tr>
@@ -542,10 +524,10 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
               </tbody>
             </table>
 
-            <!-- Banner "First order" — displayed if applicable -->
+            
             <CartFirstOrderBanner class="mt-3" />
 
-            <!-- Code promo -->
+            
             <div class="border-t border-gray-200 mt-3 pt-3">
               <div v-if="discountCode" class="flex items-center justify-between text-xs">
                 <span class="text-gray-700">Code promo : <strong>{{ discountCode }}</strong></span>
@@ -567,7 +549,7 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
               <p v-if="promoError" class="text-[10px] text-red-500 mt-1">{{ promoError }}</p>
             </div>
 
-            <!-- Bandeau TVA Corse 2,1 % — adresse de livraison 20xxx -->
+            
             <div v-if="appliedCorseTva" class="mt-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs">
               <p class="font-semibold text-blue-900">TVA Corse appliquée — 2,1 %</p>
               <p class="text-[11px] text-blue-800 mt-0.5 leading-snug">
@@ -603,7 +585,7 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
             </div>
           </div>
 
-          <!-- Choix paiement -->
+          
           <div class="space-y-3 mb-6">
             <label
               class="flex items-center gap-4 p-4 border rounded-xl cursor-pointer transition-colors"
@@ -639,7 +621,7 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
           </div>
         </div>
 
-        <!-- Step 5: Confirmation -->
+        
         <div v-if="step === 'confirmation' && createdOrder" class="bg-white rounded-2xl p-8 shadow-sm text-center">
           <div class="w-16 h-16 bg-primary-600/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg class="w-8 h-8 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -681,7 +663,7 @@ useHead({ title: _brand ? `Commander — ${_brand}` : 'Commander' })
             <p class="font-semibold mb-2">{{ t('checkout.bankwire_instructions_title') }}</p>
             <p class="mb-3">{{ t('checkout.bankwire_instructions_body').replace('%s', createdOrder.reference) }}</p>
 
-            <!-- RIB depuis ps_configuration.BANK_WIRE_* -->
+            
             <div v-if="bankwireDetails && (bankwireDetails.details || bankwireDetails.owner)" class="bg-white border border-blue-200 rounded-lg p-3 my-3 text-xs space-y-1.5 font-mono">
               <div v-if="bankwireDetails.owner" class="flex flex-col">
                 <span class="text-[10px] text-blue-500 uppercase tracking-wide">{{ t('checkout.checkout_bankwire_label_owner', 'Bénéficiaire') }}</span>

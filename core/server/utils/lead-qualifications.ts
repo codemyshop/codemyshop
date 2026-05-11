@@ -1,13 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Helpers for lead qualifications — Phase 9b.4 project
- * headless-modules-ts. Direct Drizzle PostgreSQL on `cs_leadqual` (project #44
- * cutover MariaDB -> PG).
- *
- * The `Record<lead_id, LeadQualification>` shape from the legacy is preserved
- * for zero breaking changes on the public API side.
- */
 
 import { eq, sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -89,10 +80,6 @@ export interface UpsertQualificationInput {
   idAcSmartlead?: number | null
 }
 
-/**
- * UPSERT by lead_id. If revenue is provided without segment/segmentLabel, we
- * automatically derive them via getSegmentLabel().
- */
 export async function upsertQualification(
   leadId: string,
   patch: UpsertQualificationInput,
@@ -109,7 +96,7 @@ export async function upsertQualification(
     segmentLabel = segmentLabel || derived.label
   }
 
-  // INSERT ON CONFLICT (lead_id) DO UPDATE — clé unique sur lead_id.
+  
   await d.execute(sql`
     INSERT INTO cs_main.cs_leadqual
       (lead_id, company_name, email, estimated_revenue, segment, segment_label,
@@ -148,13 +135,6 @@ export async function upsertQualification(
   return after
 }
 
-/**
- * Bulk write — preserved for compatibility with the historical signature
- * `writeQualifications(Record<lead_id, partial>)`. Under the hood, loop
- * of UPSERTs. Prefer `upsertQualification` for new callers.
- *
- * @deprecated utilise upsertQualification(leadId, patch)
- */
 export async function writeQualifications(
   data: Record<string, Partial<LeadQualification>>,
   event?: any,

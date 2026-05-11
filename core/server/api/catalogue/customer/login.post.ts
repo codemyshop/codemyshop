@@ -1,18 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/catalogue/customer/login
- * Connexion client PrestaShop — email + password → session cookie.
- *
- * Direct DB lookup (ps_customer + ps_employee fallback) according to the
- * principle 'Zero PrestaShop webservice' (2026-04-22): the DB is the only
- * runtime source of truth, the PS webservice is a costly and fragile detour
- * (Apache/mod_rewrite/.htaccess dependency).
- *
- * Multi-tenant: useClientDb(event) automatically points to the workspace database
- * via the resolved clientId (runtimeConfig + hostname matching).
- * Cookie: ac_session (domain-scoped, thus zero cross-workspace collision).
- */
+
 import { createHash } from 'node:crypto'
 import { useClientDb } from '~/server/utils/db'
 import { getTenantPsConfig } from '~/server/utils/ps-tenant'
@@ -48,7 +35,7 @@ export default defineEventHandler(async (event) => {
   const tenant = getTenantPsConfig(event)
   const db = useClientDb(event)
 
-  // Supporte bcrypt PS 8.x/9 ($2y$) ET MD5 legacy PS 1.6 (cookieKey + plain).
+  
   async function verifyPassword(plain: string, storedHash: string): Promise<boolean> {
     if (!storedHash) return false
     if (storedHash.startsWith('$2y$') || storedHash.startsWith('$2a$') || storedHash.startsWith('$2b$')) {
@@ -74,7 +61,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // ── 1. Tentative customer (cas standard) ────────────────────────────────
+  
   const customer = await db.get<CustomerRow>(
     `SELECT id_customer, email, firstname, lastname, IFNULL(company, '') AS company,
             passwd, active
@@ -100,7 +87,7 @@ export default defineEventHandler(async (event) => {
     return { success: true, customer: session }
   }
 
-  // ── 2. Fallback employee (BO via front, comme AC Hub) ───────────────────
+  
   const emp = await db.get<EmployeeRow>(
     `SELECT id_employee, email, firstname, lastname, passwd, active, id_profile
        FROM ps_employee

@@ -1,22 +1,10 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/hub/backups/download?date=YYYY-MM-DD
- *
- * Generates a presigned Scaleway URL (5 minutes) to download the dump
- * of the current tenant at the requested date. The browser is redirected (302)
- * to the presigned URL — zero bandwidth on our Nuxt server.
- *
- * Guard: the tenant can only download its own backups (prefix
- * forced server-side, no `tenant` query param).
- */
 
 import { presignS3GetUrl } from '~/server/utils/s3-sign'
 import { resolveClientId } from '~/server/utils/db'
 
-// Convention stricte (cf documentation/NAMING_TENANT.md) : 1 tenant = 1 codename.
 const CLIENT_TO_BACKUP_TENANT: Record<string, string> = {
-  'ac-hub':           'vaisseau-mere-ac',  // dette historique
+  'ac-hub':           'vaisseau-mere-ac',  
   'codemyshop':       'codemyshop',
   'example-shop':       'example-shop',
   'example-vape': 'example-vape',
@@ -49,7 +37,7 @@ export default defineEventHandler(async (event) => {
     bucket:    cfg.scwBucket as string,
   }, path, 300)
 
-  // Redirect 302 — le browser fait le GET direct vers Scaleway, aucun byte
-  // ne transite par Nuxt. Sûr car l'URL expire dans 5 minutes.
+  
+  
   await sendRedirect(event, url, 302)
 })

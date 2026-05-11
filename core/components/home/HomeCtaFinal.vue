@@ -1,11 +1,7 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <template>
   <section class="py-20 lg:py-24 bg-primary-600 dark:bg-primary-700 relative overflow-hidden">
-    <!-- Decorative orb -->
+    
     <div class="absolute -top-20 -right-20 w-96 h-96 bg-white/5 rounded-full blur-[100px]" />
     <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-accent-500/10 rounded-full blur-[80px]" />
 

@@ -51,7 +51,7 @@
             </div>
           </div>
 
-          <!-- Edit form -->
+          
           <div v-if="editingId === c.id_carrier" class="border-t border-gray-100 dark:border-slate-700 pt-4 mt-4 space-y-3">
             <div class="grid grid-cols-2 gap-3">
               <div>
@@ -83,7 +83,7 @@
             </div>
           </div>
 
-          <!-- Info + edit button -->
+          
           <div v-else class="flex items-center justify-between border-t border-gray-100 dark:border-slate-700 pt-3 mt-3">
             <div class="flex items-center gap-4 text-xs text-gray-500">
               <span v-if="c.zones">Zones : {{ c.zones }}</span>
@@ -99,7 +99,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 

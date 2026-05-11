@@ -1,13 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  ArticleAudioPlayer — lecteur audio inline pour articles blog
-  Données audio depuis cs_cms_extra (audio_enabled + audio_url).
-  Pas d'autoplay. Audio chargé en lazy (preload="metadata").
-  Positionné en haut de l'article pour accessibilité (lecteurs d'écran).
--->
 <template>
   <div v-if="audioUrl" class="mb-6 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] p-4" role="region" aria-label="Version audio de l'article">
     <div class="flex items-center gap-3 mb-3">
@@ -32,7 +23,7 @@
       </div>
     </div>
 
-    <!-- Progress bar -->
+    
     <div
       class="relative h-1.5 bg-slate-200 dark:bg-white/[0.08] rounded-full cursor-pointer"
       @click="seek"

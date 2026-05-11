@@ -1,15 +1,4 @@
-/**
- *
- * Direct DB helper for /api/hub/avatars — zero-webservice doctrine
- * PrestaShop » 2026-04-22. Table : cs_avatar_definition (personas IA
- * for content generators, single-tenant hub).
- *
- * Targets PostgreSQL `cs_main` (effort #44 MariaDB removal).
- *
- * Technical debt note: keywords / personas / page_type_expression_map are TEXT
- * JSON → violation §NAMING.11. Pre-existing, out of scope; to normalize with
- * cs_avatar_persona / cs_avatar_keyword if feature rewrite.
- */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -87,7 +76,6 @@ function toJsonText(v: any, fallback: string): string {
   try { return JSON.stringify(v) } catch { return fallback }
 }
 
-/** Liste des avatars actifs (active=1), tri par date_upd DESC. */
 export async function listAvatars(): Promise<AvatarRow[]> {
   const result = await usePocPg().execute(sql`
     SELECT * FROM cs_main.cs_avatar_definition WHERE active = 1 ORDER BY date_upd DESC
@@ -95,7 +83,6 @@ export async function listAvatars(): Promise<AvatarRow[]> {
   return asArray<any>(result).map(mapRow)
 }
 
-/** One avatar by id, null if missing. */
 export async function getAvatarById(id: number): Promise<AvatarRow | null> {
   if (!id || id <= 0) return null
   const row = await usePocPg().execute(sql`
@@ -131,7 +118,6 @@ export interface AvatarMutationResult {
   status?: number
 }
 
-/** Creates an avatar (normalized slug, serialized JSON). */
 export async function createAvatar(input: CreateAvatarInput): Promise<AvatarMutationResult> {
   const name = String(input.name || '').trim()
   const slug = sanitizeSlug(String(input.slug || ''))
@@ -183,7 +169,6 @@ const SCALAR_FIELDS: Record<keyof Omit<UpdateAvatarInput, 'id' | 'keywords' | 'p
   demographics: 'demographics',
 }
 
-/** Partial update of an avatar. */
 export async function updateAvatar(input: UpdateAvatarInput): Promise<AvatarMutationResult> {
   const id = Number(input.id || 0)
   if (!id) return { ok: false, status: 400, error: 'id requis' }
@@ -215,7 +200,6 @@ export async function updateAvatar(input: UpdateAvatarInput): Promise<AvatarMuta
   return { ok: true, id }
 }
 
-/** Soft delete — sets active to 0. */
 export async function softDeleteAvatar(id: number): Promise<AvatarMutationResult> {
   if (!id || id <= 0) return { ok: false, status: 400, error: 'id requis' }
   await usePocPg().execute(sql`
@@ -223,10 +207,6 @@ export async function softDeleteAvatar(id: number): Promise<AvatarMutationResult
   `)
   return { ok: true, id }
 }
-
-// ────────────────────────────────────────────────────────────────
-// Top N produits cibles par avatar (cs_avatar_product_target)
-// ────────────────────────────────────────────────────────────────
 
 export interface AvatarProductTarget {
   idProduct: number
@@ -256,19 +236,15 @@ export async function listAvatarProductTargets(idAvatar: number): Promise<Avatar
   }))
 }
 
-/**
- * Set top N (replace all): DELETE then INSERT. Simpler than
- * MERGE for a list that changes rarely and stays small (3-5 items).
- */
 export async function setAvatarProductTargets(
   idAvatar: number,
   items: Array<{ idProduct: number; position: number; reason?: string }>,
 ): Promise<{ ok: true; count: number }> {
-  // Filtre + dédup côté JS pour éviter les contraintes UNIQUE qui sautent
+  
   const clean = items
     .filter((it) => Number.isFinite(it.idProduct) && it.idProduct > 0 && it.position >= 1 && it.position <= 10)
     .reduce((acc, it) => {
-      // Une seule entrée par (avatar, position) ET (avatar, idProduct)
+      
       if (acc.some((x) => x.position === it.position || x.idProduct === it.idProduct)) return acc
       acc.push(it)
       return acc
@@ -288,10 +264,6 @@ export async function setAvatarProductTargets(
   }
   return { ok: true, count: clean.length }
 }
-
-// ────────────────────────────────────────────────────────────────
-// Zones d'influence géographique par avatar (cs_avatar_geographic_zone)
-// ────────────────────────────────────────────────────────────────
 
 export interface AvatarGeographicZone {
   zoneType: 'region' | 'departement' | 'country' | 'city' | string
@@ -319,10 +291,6 @@ export async function listAvatarGeographicZones(idAvatar: number): Promise<Avata
   }))
 }
 
-/**
- * Set influence zones (replace-all): DELETE then INSERT. List
- * small and changes rarely (3-10 zones max), no MERGE.
- */
 export async function setAvatarGeographicZones(
   idAvatar: number,
   items: Array<{ zoneType?: string; zoneCode: string; zoneLabel: string; position: number; weight?: number; reason?: string }>,

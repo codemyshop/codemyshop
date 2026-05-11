@@ -1,7 +1,4 @@
-/**
- * Generates a palette of 10 shades (50→900) from a hexadecimal color.
- * The input color is positioned at level "600" (main interactive shade).
- */
+
 
 export function hexToHsl(hex: string): [number, number, number] {
   const h = hex.replace('#', '')
@@ -29,26 +26,20 @@ export function hexToHsl(hex: string): [number, number, number] {
   return [hue, Math.round(sat * 100), Math.round(l * 100)]
 }
 
-/**
- * Generates all shades of a primary color.
- * The input is treated as shade 600 (strong CTA color).
- * Light shades (50→500): increasing brightness, decreasing saturation.
- * Dark shades (700→900): decreasing brightness.
- */
 export function generateColorScale(hex: string): Record<string, string> {
   const [h, s, baseL] = hexToHsl(hex)
 
-  // Positions relatives pour les nuances plus claires (500→50)
+  
   const lightSteps = [500, 400, 300, 200, 100, 50]
   const darkSteps  = [700, 800, 900]
 
   const result: Record<string, string> = {
     DEFAULT: hex,
-    '600':   hex,  // couleur exacte de la marque
+    '600':   hex,  
   }
 
-  // Nuances claires : interpolation vers L=97%, S réduite progressivement
-  const n = lightSteps.length + 1   // +1 = 600 comme point de départ
+  
+  const n = lightSteps.length + 1   
   lightSteps.forEach((shade, i) => {
     const t  = (i + 1) / n
     const l  = Math.min(97, Math.round(baseL + t * (97 - baseL)))
@@ -56,7 +47,7 @@ export function generateColorScale(hex: string): Record<string, string> {
     result[String(shade)] = `hsl(${h}, ${sv}%, ${l}%)`
   })
 
-  // Nuances sombres : interpolation vers L=10%, S légèrement réduite
+  
   const m = darkSteps.length + 1
   darkSteps.forEach((shade, i) => {
     const t  = (i + 1) / m

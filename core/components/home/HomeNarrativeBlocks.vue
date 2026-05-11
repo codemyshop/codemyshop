@@ -1,19 +1,4 @@
-<!--
-  Blocs narratifs — 3 visuels storytelling (sourcing, conditionnement, livraison...)
-  avec accroche éditoriale et CTA optionnel.
-  Payload DB attendu (type='narrative-blocks') :
-  {
-    "blocks": [
-      { "image": "/img/narratif/sourcing.jpg", "kicker": "Sourcing direct",
-        "title": "De l'origine au sachet", "text": "...",
-        "cta_label": "Notre démarche", "cta_to": "/page/notre-demarche" }
-    ]
-  }
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { localePath } = useLocalePath()
 import type { I18nString } from '~/composables/useI18nField'

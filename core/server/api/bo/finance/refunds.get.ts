@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/** GET /api/bo/finance/refunds — List of credit notes / refunds (ps_order_slip). */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
   try {

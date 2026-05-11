@@ -1,27 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession, isSuperAdminSaaS } from '~/server/utils/session'
 
-/**
- * PUT /api/bo/team/:id — upsert employee record (Sprint 17).
- *
- * Body : { firstname, lastname, email, password?, profileId, active }
- *
- * Security rules:
- * - Only authenticated employees can call (requireEmployeeSession).
- * - A non-SaaS admin CANNOT:
- * · modify employee id=1 or any account with profile 1 (SuperAdmin PS)
- * · ASSIGN profile 1 (prevents self-escalation)
- * - The SaaS SuperAdmin can do everything — including reset a password
- * and switch technical profiles.
- *
- * Hash mot de passe : bcryptjs rounds 10, format $2a$ (PS 8.x
- * also accepts $2y$). If the password field is absent/empty,
- * do not modify the existing hash.
- *
- * Creation (id='new' or 0): complete INSERT with required password.
- */
 export default defineEventHandler(async (event) => {
   const session = requireEmployeeSession(event)
   const isSaas = isSuperAdminSaaS(session)
@@ -48,12 +29,12 @@ export default defineEventHandler(async (event) => {
   const profileId = Number(body.profileId) || 0
   const active = body.active === false ? 0 : 1
 
-  // Guard assignation profil SuperAdmin PS
+  
   if (!isSaas && profileId === 1) {
     throw createError({ statusCode: 403, message: 'Assignation du profil SuperAdmin interdite' })
   }
 
-  // ─── Création ────────────────────────────────────────────────────
+  
   if (isNew) {
     if (!firstname || !lastname || !email || !profileId || !password) {
       throw createError({
@@ -84,19 +65,19 @@ export default defineEventHandler(async (event) => {
     return { success: true, id: insert.insertId, created: true }
   }
 
-  // ─── Édition ─────────────────────────────────────────────────────
+  
   const id = Number(rawId)
   const existing = await db.get<any>(`
     SELECT id_employee, id_profile, email FROM ps_employee WHERE id_employee = ?
   `, [id])
   if (!existing) throw createError({ statusCode: 404, message: 'Employé introuvable' })
 
-  // Guard : non-SaaS ne peut pas toucher aux comptes masqués
+  
   if (!isSaas && (existing.id_employee === 1 || Number(existing.id_profile) === 1)) {
     throw createError({ statusCode: 403, message: 'Modification refusée sur ce compte' })
   }
 
-  // Unicité email (si changé)
+  
   if (email && email !== String(existing.email || '').toLowerCase()) {
     const clash = await db.get<any>(`
       SELECT id_employee FROM ps_employee WHERE email = ? AND id_employee <> ?

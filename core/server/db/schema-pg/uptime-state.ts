@@ -1,9 +1,4 @@
-/**
- *
- * Drizzle PG schema — uptime monitoring domain.
- * Live state of 3-minute HTTP monitoring for production client sites.
- * Port DB-Only de synedre/state/clients_uptime.json (chantier #43 Wave 1).
- */
+
 
 import {
   integer,

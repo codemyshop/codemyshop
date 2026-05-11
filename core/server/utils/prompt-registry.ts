@@ -1,45 +1,26 @@
-/**
- *
- * Versioned prompt registry with A/B testing.
- *
- * Architecture Flywheel :
- * 1. Prompts are centralized here (never on the distributed nodes)
- * 2. Each prompt has variants (A/B) with a split rate
- * 3. Telemetry (tokens, cost, quality) is collected per variant
- * 4. Anonymized feedback from the distributed nodes refines the prompts
- *
- * How feedback improves prompts:
- * - A distributed node sends its metrics (latency, tokens, satisfaction)
- * - The hub aggregates by prompt_id + variant
- * - We identify prompts that consume too many tokens or generate
- * unsatisfactory results (negative feedback)
- * - We create a new optimized variant and increase its split
- * - After 100 executions, the best variant becomes "default"
- */
+
 
 export interface PromptVariant {
-  id:          string    // ex: 'broadcast-v2a'
-  version:     string    // ex: '2.0a'
-  content:     string    // le prompt système
-  splitWeight: number    // 0-100 (% de trafic)
+  id:          string    
+  version:     string    
+  content:     string    
+  splitWeight: number    
   metrics:     {
     executions: number
     avgTokens:  number
     avgCost:    number
     avgLatency: number
-    positiveRate: number  // 0-1 (satisfaction)
+    positiveRate: number  
   }
 }
 
 export interface PromptEntry {
-  taskType:     string    // ex: 'broadcast', 'nurturing'
+  taskType:     string    
   description:  string
   variants:     PromptVariant[]
-  defaultId:    string    // variante par défaut
+  defaultId:    string    
   updatedAt:    string
 }
-
-// ── Registre des prompts (source de vérité) ──────────────────────────────────
 
 const PROMPT_REGISTRY: Record<string, PromptEntry> = {
 
@@ -153,14 +134,11 @@ JSON : {"aiClassification":"...","technicalPrompt":"...","estimatedComplexity":"
   },
 }
 
-// ── API publique ──────────────────────────────────────────────────────────────
-
-/** Résout le prompt à utiliser pour un taskType (avec A/B split) */
 export function resolvePrompt(taskType: string): { prompt: string; variantId: string } | null {
   const entry = PROMPT_REGISTRY[taskType]
   if (!entry) return null
 
-  // A/B split: weighted random selection
+  
   const variants = entry.variants.filter(v => v.splitWeight > 0)
   if (!variants.length) return null
 
@@ -171,12 +149,11 @@ export function resolvePrompt(taskType: string): { prompt: string; variantId: st
     if (random <= 0) return { prompt: v.content, variantId: v.id }
   }
 
-  // Fallback : default
+  
   const def = entry.variants.find(v => v.id === entry.defaultId) ?? variants[0]
   return { prompt: def.content, variantId: def.id }
 }
 
-/** Records the metrics of an execution (for the feedback loop) */
 export function recordPromptMetrics(variantId: string, metrics: {
   tokens: number; cost: number; latencyMs: number; positive: boolean
 }) {
@@ -195,7 +172,6 @@ export function recordPromptMetrics(variantId: string, metrics: {
   }
 }
 
-/** Returns the entire registry (for the admin dashboard) */
 export function getPromptRegistry(): Record<string, PromptEntry> {
   return PROMPT_REGISTRY
 }

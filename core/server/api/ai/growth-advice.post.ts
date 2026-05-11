@@ -1,9 +1,4 @@
-/**
- *
- * POST /api/ai/growth-advice
- * Body : { targetRevenue, avgBasket, conversionRate, cac, requiredClients, requiredTraffic, marketingBudget, clientId, sector }
- * Returns : GrowthAdvice
- */
+
 
 export interface GrowthAction {
   title:    string

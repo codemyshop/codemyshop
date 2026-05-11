@@ -1,18 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/img/{id}-{size}-{slug}.webp?clientId=example-shop-v2
- *
- * Proxy PrestaShop product image → WebP with SEO slug in URL.
- * Format URL : 4871-large-creme-de-pistache-6x200g.webp
- *   - 4871 : id_image PS
- *   - large : taille (mapping → home_default / large_default / cart_default)
- *   - creme-de-pistache-6x200g : slug SEO (link_rewrite)
- *
- * The slug in the URL is purely for SEO (indexed by Google Images). The fetch
- * on the server side doesn't use it — it reconstructs the native PS path from
- * de l'id. Conversion WebP via sharp, cache 1 an immutable.
- */
+
 import http from 'node:http'
 import https from 'node:https'
 import sharp from 'sharp'
@@ -70,9 +57,9 @@ function fetchBuffer(fullUrl: string, hostHeader: string): Promise<Buffer> {
 
 export default defineEventHandler(async (event) => {
   const filename = getRouterParam(event, 'filename') || ''
-  // Formats acceptés :
-  //   {id}-{size}-{slug}.webp   (ex: 4871-large-creme-de-pistache.webp)
-  //   {id}-{size}.webp          (ex: 4871-large.webp, sans slug)
+  
+  
+  
   const match = filename.match(/^(\d+)-([a-z]+)(?:-([a-z0-9-]+))?\.(webp|jpg|jpeg)$/i)
   if (!match) {
     throw createError({ statusCode: 400, message: 'Filename invalide (attendu: {id}-{size}[-{slug}].webp)' })
@@ -99,7 +86,7 @@ export default defineEventHandler(async (event) => {
   try {
     const jpgBuffer = await fetchBuffer(fullUrl, hostHeader)
 
-    // Si webp demandé → conversion sharp. Sinon on sert le jpg natif.
+    
     const outBuffer = ext === 'webp'
       ? await sharp(jpgBuffer).webp({ quality: 82, effort: 4 }).toBuffer()
       : jpgBuffer

@@ -1,8 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <template>
   <section id="investissement" class="py-20 lg:py-24 bg-white dark:bg-slate-900 border-y border-gray-100 dark:border-slate-800">
     <div class="max-w-5xl mx-auto px-6">

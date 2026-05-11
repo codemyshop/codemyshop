@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Pure Node SMTP mini-client (TLS) — no external library.
- * Sufficient for OVH ssl0.ovh.net:465 (auth LOGIN, MAIL FROM, RCPT TO, DATA).
- * For advanced features (DKIM signature, heavy binary attachments),
- * switch to nodemailer.
- */
+
 import * as tls from 'node:tls'
 
 interface SmtpOptions {
@@ -77,7 +71,7 @@ export async function sendSmtpMail(opts: SmtpOptions): Promise<{ ok: boolean; er
 
     socket.on('data', (chunk: string) => {
       buffer += chunk
-      // Handle multi-line responses : last line has space after code (not dash)
+      
       while (buffer.includes('\r\n')) {
         const lineEnd = buffer.indexOf('\r\n')
         const line = buffer.slice(0, lineEnd)

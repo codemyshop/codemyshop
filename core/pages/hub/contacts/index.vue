@@ -55,7 +55,7 @@
       @done="load"
     />
 
-    <!-- Contact creation modal -->
+    
     <HubCreateModal v-model="showCreate" :title="`Nouveau ${segmentNoun}`" :loading="creating" @submit="createClient">
       <div class="space-y-3">
         <div class="grid grid-cols-2 gap-3">
@@ -74,7 +74,7 @@
       @go="goPage" @update:per-page="setPerPage"
       class="border-b border-gray-100 dark:border-slate-800" />
 
-    <!-- Bulk action bar — appears as soon as at least 1 row is checked. -->
+    
     <div
       v-if="selection.size > 0"
       class="bg-primary-50 dark:bg-primary-950/40 border-b border-primary-200 dark:border-primary-800 px-6 py-2 flex items-center gap-3 shrink-0"
@@ -113,7 +113,7 @@
       </button>
     </div>
 
-    <!-- Modal confirmation suppression en lot -->
+    
     <div
       v-if="bulkDeleteOpen"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -141,7 +141,7 @@
       </div>
     </div>
 
-    <!-- Modal LinkedIn — recherche Google + sauvegarde URL profil -->
+    
     <div
       v-if="linkedinClient"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -158,7 +158,7 @@
           </p>
         </div>
 
-        <!-- Step 1: Google search -->
+        
         <div class="border border-gray-100 dark:border-slate-800 rounded-lg p-3 space-y-2">
           <p class="text-[10px] uppercase font-semibold text-gray-400 tracking-wider">Étape 1 — Trouver le profil</p>
           <a
@@ -174,7 +174,7 @@
           <p v-else class="text-xs text-gray-400">Nom incomplet — recherche indisponible.</p>
         </div>
 
-        <!-- Step 2: Verified URL -->
+        
         <div class="border border-gray-100 dark:border-slate-800 rounded-lg p-3 space-y-2">
           <p class="text-[10px] uppercase font-semibold text-gray-400 tracking-wider">Étape 2 — Coller l'URL du profil vérifié</p>
           <input
@@ -217,7 +217,7 @@
       </div>
     </div>
 
-    <!-- Modal Email — sondage SMTP RCPT TO + persistance -->
+    
     <div
       v-if="emailClient"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -280,7 +280,7 @@
       </div>
     </div>
 
-    <!-- Bulk SMTP verification modal -->
+    
     <div
       v-if="bulkVerifyOpen"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
@@ -386,7 +386,7 @@
             <th @click="toggleSort('dateAdd')" class="px-4 py-2.5 font-medium cursor-pointer select-none hover:text-gray-700 dark:hover:text-slate-200"><span class="inline-flex items-center gap-1">Inscrit le<span class="text-gray-300">{{ sortGlyph('dateAdd') }}</span></span></th>
             <th class="px-4 py-2.5 font-medium text-center">Statut</th>
           </tr>
-          <!-- Filter row per column (PrestaShop BO style) — auto-applies with 300ms debounce -->
+          
           <tr class="border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900">
             <th class="px-2 py-1.5">
               <button
@@ -521,7 +521,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
@@ -541,10 +540,6 @@ function setPerPage(n: number) {
 const loading = ref(false)
 const search = ref('')
 
-// Lead/customer segmentation (actioned 2026-05-01)
-// - lead   : 0 orders (prospect / account created but not converted)
-// - customer : ≥ 1 validated order
-// - all    : all (legacy / global view)
 type Segment = 'lead' | 'client' | 'all'
 const segment = ref<Segment>(
   (route.query.segment === 'lead' || route.query.segment === 'all') ? route.query.segment : 'client',
@@ -571,7 +566,6 @@ const creating = ref(false)
 const createError = ref('')
 const newClient = reactive({ firstname: '', lastname: '', email: '', company: '', phone: '' })
 
-// ── Import CSV (UPSERT par email) ──────────────────────────────
 const importOpen = ref(false)
 const importTargetFields = [
   { key: 'email', label: 'Email', required: true },
@@ -596,9 +590,6 @@ const importFieldAliases: Record<string, string[]> = {
   optin: ['optin', 'opt-in', 'consentement'],
 }
 
-// Sprint 15 — 300 ms debounce on search to keep the page
-// "ultra-fast" even on 10k customers (server-side pagination and
-// aggregated LEFT JOIN make the query O(perPage)).
 let searchTimer: ReturnType<typeof setTimeout> | null = null
 watch(search, () => {
   if (searchTimer) clearTimeout(searchTimer)
@@ -631,9 +622,6 @@ function openClient(id: number) {
   router.push(`/hub/contacts/${id}`)
 }
 
-// Server-side sorting — click on header toggles asc/desc, return to page 1.
-// Persisted in `localStorage` to remain consistent between sessions.
-// Default revenue desc (`totalSpent`) — `localStorage` preference takes priority.
 const sortKey = ref<string>('totalSpent')
 const sortDir = ref<'asc' | 'desc'>('desc')
 
@@ -645,19 +633,19 @@ function loadSortPref() {
     const obj = JSON.parse(raw)
     if (obj?.key && typeof obj.key === 'string') sortKey.value = obj.key
     if (obj?.dir === 'asc' || obj?.dir === 'desc') sortDir.value = obj.dir
-  } catch { /* localStorage indispo / corrompu — on ignore */ }
+  } catch {  }
 }
 watch([sortKey, sortDir], ([k, d]) => {
   try {
     localStorage.setItem(SORT_PREF_KEY, JSON.stringify({ key: k, dir: d }))
-  } catch { /* quota plein, mode privé, etc. */ }
+  } catch {  }
 })
 function toggleSort(key: string) {
   if (sortKey.value === key) {
     sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
   } else {
     sortKey.value = key
-    // Sensible defaults: numerics desc (revenue, orders, date), text asc.
+    
     sortDir.value = ['nbOrders', 'totalSpent', 'dateAdd', 'id'].includes(key) ? 'desc' : 'asc'
   }
   page.value = 1
@@ -668,7 +656,6 @@ function sortGlyph(key: string): string {
   return sortDir.value === 'asc' ? '▲' : '▼'
 }
 
-// Column filters — 300ms debounce on server side (ported from leads UX).
 const colFilters = reactive({
   fName: '' as string,
   fCompany: '' as string,
@@ -736,7 +723,6 @@ function activityLabel(code: string | null | undefined): string {
   return activityLabelMap[code] || code
 }
 
-// ── Multiple selection (ported from leads UX) ───────────────────────────────
 const selection = reactive(new Set<number>())
 const allOnPageSelected = computed(() => customers.value.length > 0 && customers.value.every(c => selection.has(c.id)))
 const someOnPageSelected = computed(() => customers.value.some(c => selection.has(c.id)) && !allOnPageSelected.value)
@@ -755,8 +741,8 @@ function clearSelection() {
   selection.clear()
 }
 function onRowClick(c: any) {
-  // If the user has already selected something, row click becomes toggle
-  // (UX pattern "table-style"). Otherwise, click = open the record.
+  
+  
   if (selection.size > 0) {
     toggleRow(c.id)
     return
@@ -775,7 +761,6 @@ const selectionCounts = computed(() => {
   return { client, lead }
 })
 
-// ── Bulk CSV export (client-side from in-memory rows) ───────
 function exportSelectionCsv() {
   const rows = customers.value.filter(c => selection.has(c.id))
   if (!rows.length) return
@@ -800,7 +785,7 @@ function exportSelectionCsv() {
       Number(c.active) ? '1' : '0',
     ].join(';'))
   }
-  const csv = '﻿' + lines.join('\r\n') // BOM UTF-8 pour Excel FR
+  const csv = '﻿' + lines.join('\r\n') 
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -812,7 +797,6 @@ function exportSelectionCsv() {
   URL.revokeObjectURL(url)
 }
 
-// ── Bulk delete ──────────────────────────────────────────────────────
 const bulkDeleteOpen = ref(false)
 const bulkDeleting = ref(false)
 const bulkDeleteError = ref('')
@@ -832,7 +816,6 @@ async function submitBulkDelete() {
   }
 }
 
-// ── LinkedIn lookup + persistance ────────────────────────────────────
 const linkedinClient = ref<any | null>(null)
 const linkedinUrlInput = ref('')
 const linkedinSaving = ref(false)
@@ -847,8 +830,6 @@ function linkedinSearchUrl(c: any): string | null {
   return `https://www.google.com/search?q=${q}`
 }
 
-// Display LinkedIn badge inline as soon as we have at least 2 identifying tokens
-// (a single name is not enough for useful search) or an already-verified URL.
 function canShowLinkedin(c: any): boolean {
   if (c?.linkedinUrl) return true
   let tokens = 0
@@ -858,9 +839,6 @@ function canShowLinkedin(c: any): boolean {
   return tokens >= 2
 }
 
-// Annuaire-entreprises.data.gouv.fr — fiche officielle INSEE/RNE.
-// Known SIREN (first 9 digits of SIRET) → direct record.
-// Otherwise: search by business name if ≥ 3 characters.
 function inseeUrl(c: any): string | null {
   const raw = c?.siret ? String(c.siret).replace(/\D/g, '') : ''
   if (raw.length >= 9) {
@@ -890,7 +868,7 @@ async function submitLinkedin() {
       method: 'PUT',
       body: { url: linkedinUrlInput.value.trim() },
     })
-    // Local patch to reflect immediately
+    
     const row = customers.value.find((c) => c.id === linkedinClient.value!.id)
     if (row) row.linkedinUrl = res?.url || linkedinUrlInput.value.trim()
     closeLinkedinModal()
@@ -919,7 +897,6 @@ async function clearLinkedin() {
   }
 }
 
-// ── Email verify (single via modal) ──────────────────────────────────
 const emailClient = ref<any | null>(null)
 const emailVerifying = ref(false)
 const emailVerifyResult = ref<any | null>(null)
@@ -944,7 +921,7 @@ async function runEmailVerify() {
       timeout: 12000,
     })
     emailVerifyResult.value = res
-    // Local patch to refresh badges
+    
     const row = customers.value.find((c) => c.id === emailClient.value!.id)
     if (row) {
       row.emailVerifiedStatus = res?.status
@@ -957,7 +934,6 @@ async function runEmailVerify() {
   }
 }
 
-// ── Email verify (bulk) ──────────────────────────────────────────────
 const bulkVerifyOpen = ref(false)
 const bulkVerifyRunning = ref(false)
 const bulkVerifyShouldStop = ref(false)
@@ -1033,7 +1009,6 @@ async function runBulkVerify() {
   }
 }
 
-// ── Helpers status email ─────────────────────────────────────────────
 const EMAIL_STATUS_LABELS: Record<string, string> = {
   ok: 'Vérifié',
   rejected: 'Rejeté',

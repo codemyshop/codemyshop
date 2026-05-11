@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/bo/orders/export?clientId=... — CSV export of orders.
- * Direct PG DB (cs_main), doctrine "Zero PrestaShop webservice" 2026-04-22.
- */
+
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 

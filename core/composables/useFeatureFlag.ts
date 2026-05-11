@@ -1,9 +1,4 @@
-/**
- *
- * Client-side composable for multi-tenant feature flags.
- * Loads enabled features for the current tenant on mount,
- * exposes a reactive helper `hasFeature(id)` for v-if in templates.
- */
+
 
 export interface CatalogFeatureWithState {
   id:           string
@@ -43,7 +38,7 @@ export const useFeatureFlag = () => {
       method: 'POST',
       body: { clientId: resolvedClientId.value, featureId, action: enable ? 'enable' : 'disable' },
     })
-    // Mettre à jour localement
+    
     const idx = features.value.findIndex(f => f.id === featureId)
     if (idx >= 0) features.value[idx].enabled = enable
   }

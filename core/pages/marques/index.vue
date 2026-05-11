@@ -1,13 +1,4 @@
-<!--
-  Page listing des marques — /marques/
-  Données : GET /api/catalogue/manufacturers (ps_manufacturer).
 
-  Tenant-neutre : titre et meta dérivés de brandName (runtimeConfig).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { t } = useHubT()
 const { localePath } = useLocalePath()
@@ -36,7 +27,7 @@ useHead({
     <section class="py-12 bg-white">
       <div class="max-w-6xl mx-auto px-4 sm:px-6">
 
-        <!-- Breadcrumb -->
+        
         <nav class="text-xs text-gray-400 mb-6" :aria-label="t('silo.breadcrumb_aria', 'Fil d\x27Ariane')">
           <NuxtLink :to="localePath('/')" class="hover:text-primary-600 transition-colors">{{ t('silo.breadcrumb_home', 'Accueil') }}</NuxtLink>
           <span class="mx-1.5">/</span>

@@ -1,15 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Bandeau démo affiché en haut du layout hub si le tenant a `isDemo: true`
-  dans runtimeConfig.public. Pendant : DemoControlBar (front shop), ici =
-  hub admin du tenant. Indique que les données sont réinitialisées la nuit
-  via le cron 03:00 UTC (cf. travail codemyshop-demo-cron-reset).
-
-  Bouton "Reset maintenant" (admin uniquement) → POST /api/admin/codemyshop-demo/reset.
--->
 <script setup lang="ts">
 const _cfg = useRuntimeConfig()
 const isDemo = computed(() => Boolean((_cfg.public as any)?.isDemo))

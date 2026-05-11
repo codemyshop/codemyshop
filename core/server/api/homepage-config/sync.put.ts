@@ -1,19 +1,5 @@
-/**
- *
- * PUT /api/homepage-config/sync — UPSERT homepage (normalized #205 Phase 2,
- * master cs_homepage dropped #200).
- *
- * Persiste `body.homepage` (hero, features, personas, categories, testimonials,
- * about, blog, faq, malt) in cs_homepage_section + cs_homepage_block
- * (+ _lang). Strategy: purge + re-insert, exact mirror of
- * `synedre/archive/hp_normalize_205.py`.
- *
- * Mono-lang FR (id_lang=1) — consistent with the Phase 1 migration. The i18n
- * multi-lang will go through a translation automation system like the other modules.
- *
- * `body.sections` (historical ordering/visibility) is ignored — this state
- * lives on the front end (DEFAULT_SECTIONS in clients/example/pages/index.vue).
- */
+
+
 import { resolveClientId } from '~/server/utils/db'
 import {
   wipeHomepage,
@@ -30,13 +16,13 @@ const SECTION_ORDER = ['hero', 'features', 'personas', 'categories', 'testimonia
 const ID_LANG = 1
 
 export default defineEventHandler(async (event) => {
-  // ── GUARD TENANT : AC-HUB ONLY ──────────────────────────────────────────
-  // Cet endpoint est un RESET complet (WIPE + reseed via SECTION_ORDER AC-only).
-  // Appelé par erreur sur un tenant (ex: SMOKE v2) il détruit tout le contenu
-  // tenant-spécifique puis recrée les sections AC (personas/about/malt que les
-  // tenants n'utilisent pas). Cicatrice 2026-04-22 : wipe accidentel SMOKE via
-  // ac_builder. Lock au clientId 'ac-hub' (legacy endpoint de migration #205,
-  // n'a plus lieu d'être appelé hors AC).
+  
+  
+  
+  
+  
+  
+  
   const clientId = resolveClientId(event)
   if (clientId !== 'ac-hub') {
     throw createError({
@@ -48,8 +34,8 @@ export default defineEventHandler(async (event) => {
   const body = await readBody<{ homepage: any; sections?: any }>(event)
   if (!body?.homepage) throw createError({ statusCode: 400, message: 'homepage requis' })
 
-  // Anti-wipe : refuser si le payload ne contient pas au minimum un hero.
-  // Un homepage vide après WIPE = page blanche, jamais voulu.
+  
+  
   const h = body.homepage
   if (!h.hero || typeof h.hero !== 'object') {
     throw createError({
@@ -58,12 +44,12 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // 1. Purge sections/blocks existants (single homepage AC, pas de FK client_id
-  //    sur cs_homepage_section — tenant-scoped par useClientDb).
-  //    Guard ci-dessus garantit qu'on est bien sur la DB AC, pas un tenant.
+  
+  
+  
   await wipeHomepage({ event })
 
-  // 2. Re-insert miroir du script de migration
+  
   for (let i = 0; i < SECTION_ORDER.length; i++) {
     const name = SECTION_ORDER[i]
     const data = h[name]
@@ -72,8 +58,6 @@ export default defineEventHandler(async (event) => {
 
   return { ok: true }
 })
-
-// ─── Mappers par section-type (miroir de hp_normalize_205.py) ──────────────
 
 async function insertSectionByType(event: any, position: number, name: string, data: any): Promise<void> {
   switch (name) {

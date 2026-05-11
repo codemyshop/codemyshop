@@ -1,17 +1,7 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  ScenarioEditor — Éditeur du flow chatbot (nodes + options + i18n FR/EN/DE).
-  Layout 3 colonnes : scenarios / nodes / édition node sélectionné.
-
-  Backend : /api/bo/chatbot/flow (GET), /node (POST), /node/:id (PUT, DELETE),
-            /option (POST), /option/:id (PUT, DELETE).
--->
 <template>
   <div class="flex min-h-0 overflow-hidden h-[calc(100vh-7rem)] bg-white dark:bg-slate-900">
-    <!-- ─── Col 1 : Scenarios ─── -->
+    
     <aside class="w-56 shrink-0 flex flex-col border-r border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-950">
       <header class="px-4 py-3 border-b border-gray-100 dark:border-slate-800">
         <h2 class="text-xs font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider">Scénarios</h2>
@@ -40,7 +30,7 @@
       </footer>
     </aside>
 
-    <!-- ─── Col 2: Scenario nodes ─── -->
+    
     <section class="w-80 shrink-0 flex flex-col border-r border-gray-100 dark:border-slate-800">
       <header class="px-4 py-3 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
         <h3 class="text-xs font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider">Nodes</h3>
@@ -85,7 +75,7 @@
       </div>
     </section>
 
-    <!-- ─── Col 3 : Edition ─── -->
+    
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
       <div v-if="!selectedNode && !creatingNode" class="flex-1 flex items-center justify-center text-xs text-gray-400">
         Sélectionnez un node pour l'éditer ou cliquez sur « Nouveau ».
@@ -157,7 +147,7 @@
             </label>
           </div>
 
-          <!-- Translations -->
+          
           <div class="border-t border-gray-100 dark:border-slate-800 pt-4">
             <h4 class="text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-slate-400 mb-2">Messages traduits</h4>
             <div class="space-y-3">
@@ -179,7 +169,7 @@
             </div>
           </div>
 
-          <!-- Options (if type=buttons) -->
+          
           <div v-if="form.type === 'buttons' && !creatingNode" class="border-t border-gray-100 dark:border-slate-800 pt-4">
             <div class="flex items-center justify-between mb-2">
               <h4 class="text-[11px] uppercase tracking-wider font-bold text-gray-500 dark:text-slate-400">Options (boutons)</h4>

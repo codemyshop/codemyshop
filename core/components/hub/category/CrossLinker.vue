@@ -1,9 +1,4 @@
-<!--
-  Bloc Maillage > Cross Categories.
-  Permet de lier d'autres catégories en tant que "fausses sous-catégories" :
-  elles s'affichent côté front en queue de la liste des sous-cats natives.
-  Pivot : cs_category_cross. Auto-save (PUT replace) à chaque mutation.
--->
+
 <template>
   <div class="space-y-4">
     <div class="flex items-center justify-between">
@@ -131,7 +126,7 @@ async function runSearch() {
     const res = await $fetch<{ products?: any; categories?: SearchResult[] } | { items: SearchResult[] } | any>('/api/bo/categories', {
       query: { search: searchQuery.value, perPage: 30 },
     })
-    // The API returns { categories: [...] } or { items: [...] } depending on implementation.
+    
     const arr: any[] = (res?.categories || res?.items || []) as any[]
     results.value = arr.map((c) => ({
       id: Number(c.id ?? c.id_category),

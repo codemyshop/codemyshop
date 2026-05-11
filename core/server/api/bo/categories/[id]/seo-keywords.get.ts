@@ -1,40 +1,6 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/bo/categories/[id]/seo-keywords
- *
- * Filters GSC opportunities to keep only those targeting this
- * category, with different logic depending on whether the category is
- * a pillar page or not.
- *
- * Definition (business convention 2026-04-25):
- *   isPillar ⟺ category.id_parent === 2
- *   (id_parent=2 = enfant direct de "Accueil" PrestaShop = niveau 1
- * of the public taxonomy → these are the strategic hubs.)
- *
- * Page pilier :
- * - Loads direct children + tokens of all their descendants.
- * - A keyword that matches descendants of a SINGLE direct child
- * is classified as "silo" under that child.
- * - Remaining keywords (broad / multi-thematic) stay at the
- *     pilier → pillarKeywords + recommendedH1.
- *
- * Page non-pilier (feuille ou mid-tier) :
- * - Direct behavior: any matched keyword stays for this page.
- *
- * Response:
- * {
- *   category: { id, name, slug, level_depth, id_parent },
- *   isPillar: boolean,
- *   children: [{ id, name, slug }, ...],
- *   siteUrl: 'https://example-shop.com/',
- * pillarKeywords: GscOpportunity[],          // broad, stay here
- *   siloKeywords: { childId, child, keywords: GscOpportunity[] }[],
- *   bestKeyword: GscOpportunity | null,
- *   recommendedH1: string | null,
- * }
- */
-const PILLAR_PARENT_ID = 2  // PrestaShop "Accueil" — root fonctionnel
+
+const PILLAR_PARENT_ID = 2  
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
@@ -76,16 +42,16 @@ interface CategoryNode {
 }
 
 interface DescendantEntry {
-  name: string         // normalisé
-  slug: string         // normalisé
-  level_depth: number  // profondeur PS (root=0, "Accueil"=1, pilier=2, …)
+  name: string         
+  slug: string         
+  level_depth: number  
 }
 
 interface DescendantToken {
-  childId: number       // ID du child de niveau +1 (= "silo bucket")
+  childId: number       
   childName: string
   childSlug: string
-  childDepth: number    // profondeur du child de niveau +1 lui-même
+  childDepth: number    
   descendants: DescendantEntry[]
 }
 
@@ -97,14 +63,14 @@ export default defineEventHandler(async (event) => {
 
   const d = usePocPg()
 
-  // Langue par défaut du shop (utilisée pour tous les SELECT _lang).
+  
   const defaultLangResult: any = await d.execute(sql`
     SELECT value AS "id_lang" FROM cs_main.ps_configuration WHERE name = 'PS_LANG_DEFAULT' LIMIT 1
   `)
   const defaultLangRow = ((defaultLangResult as any) as any[])[0]
   const idLang = Number(defaultLangRow?.id_lang) || 1
 
-  // 1. Charger la catégorie courante (avec id_parent + nleft/nright/level_depth)
+  
   const catResult: any = await d.execute(sql`
     SELECT c.id_category AS "id", c.id_parent, cl.name, cl.link_rewrite AS "slug",
            c.level_depth, c.nleft, c.nright
@@ -119,12 +85,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Category not found' })
   }
 
-  // 2. Définition pilier : id_parent === 2 (= enfant direct de "Accueil" PS)
+  
   const isPillar = cat.id_parent === PILLAR_PARENT_ID
 
-  // 2bis. Si non-pilier, remonter la chaîne id_parent jusqu'au premier
-  // ancêtre dont id_parent === 2 → c'est la pilier sous laquelle vit
-  // cette catégorie. Sert au "lien remontant" dans le §1 du résumé.
+  
+  
+  
   let pillarAncestor: { id: number; name: string; slug: string } | null = null
   let pillarAncestorId: number | null = null
   if (!isPillar) {
@@ -151,9 +117,9 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // 2ter. Sous-catégories sœurs : enfants directs de la pilier ancêtre,
-  // hors la cat courante. Sert à enrichir le maillage interne dans la
-  // description longue (cross-link entre pages feuilles d'un même silo).
+  
+  
+  
   let siblings: { id: number; name: string; slug: string }[] = []
   if (pillarAncestorId) {
     const sibResult: any = await d.execute(sql`
@@ -169,7 +135,7 @@ export default defineEventHandler(async (event) => {
     siblings = sibRows.map((s) => ({ id: s.id, name: s.name, slug: s.slug }))
   }
 
-  // 3. Charger les enfants directs — sert au siloing si pilier
+  
   const childrenResult: any = await d.execute(sql`
     SELECT c.id_category AS "id", c.id_parent, cl.name, cl.link_rewrite AS "slug",
            c.level_depth, c.nleft, c.nright
@@ -180,9 +146,9 @@ export default defineEventHandler(async (event) => {
   `)
   const children = (((childrenResult as any) as any[]) ?? []) as CategoryNode[]
 
-  // 3. Pour chaque enfant direct, collecter les noms/slugs/profondeurs de
-  //    tous ses descendants (langue par défaut). Sert à scorer + tie-break
-  //    par "shallow first" sur les keywords GSC.
+  
+  
+  
   const descendantTokens: DescendantToken[] = []
   if (isPillar) {
     for (const child of children) {
@@ -205,7 +171,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // 4. Tirer les opportunités GSC pour le tenant
+  
   const siteUrl = await resolveTenantSiteUrl(event)
   if (!siteUrl) {
     return {
@@ -223,8 +189,8 @@ export default defineEventHandler(async (event) => {
 
   const allOpps = await getTopOpportunities(siteUrl, 28, 100)
 
-  // 5. Premier filtre : keywords matchés à la catégorie courante
-  //    (URL contient le slug, OU keyword/page contient un token de la catégorie)
+  
+  
   const slugNorm = normalize(cat.slug)
   const nameTokens = tokenize(cat.name)
   const slugTokens = tokenize(cat.slug)
@@ -263,19 +229,19 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // 6. Si pilier : classer chaque keyword matché en pillar OU silo
+  
   let pillarKeywords: EnrichedOpp[] = matched
   const siloMap = new Map<number, { child: CategoryNode; keywords: EnrichedOpp[] }>()
 
   if (isPillar) {
     pillarKeywords = []
-    // Tokens "génériques" à ignorer dans le scoring (= tokens du nom de la pilier).
+    
     const pillarTokenSet = new Set([...tokenize(cat.name), ...tokenize(cat.slug)])
 
     interface ChildScore {
-      score: number       // somme pondérée (exact +100 / partiel-name +30 / partiel-slug +20)
-      hits: number        // nb de tokens distincts du keyword qui ont matché
-      minDepth: number    // profondeur du descendant le plus shallow ayant matché (Infinity si aucun)
+      score: number       
+      hits: number        
+      minDepth: number    
     }
 
     for (const opp of matched) {
@@ -291,7 +257,7 @@ export default defineEventHandler(async (event) => {
           let tokenHit = false
           let tokenBestDepth = Infinity
 
-          // Pass 1 : exact match du nom d'un descendant (le plus fort)
+          
           for (const d of dt.descendants) {
             if (d.name === t) {
               tokenHit = true
@@ -305,7 +271,7 @@ export default defineEventHandler(async (event) => {
             continue
           }
 
-          // Pass 2 : nom partiel
+          
           for (const d of dt.descendants) {
             if (d.name && d.name.includes(t)) {
               tokenHit = true
@@ -319,7 +285,7 @@ export default defineEventHandler(async (event) => {
             continue
           }
 
-          // Pass 3 : slug partiel
+          
           for (const d of dt.descendants) {
             if (d.slug && d.slug.includes(t)) {
               tokenHit = true
@@ -341,11 +307,11 @@ export default defineEventHandler(async (event) => {
         continue
       }
 
-      // Tri : (score desc, hits desc, minDepth asc). Le 1er strict gagne.
+      
       const ranking = [...scoreByChild.entries()].sort((a, b) => {
         if (b[1].score !== a[1].score) return b[1].score - a[1].score
         if (b[1].hits !== a[1].hits)   return b[1].hits  - a[1].hits
-        return a[1].minDepth - b[1].minDepth   // shallow first
+        return a[1].minDepth - b[1].minDepth   
       })
 
       const winner = ranking[0]
@@ -357,7 +323,7 @@ export default defineEventHandler(async (event) => {
         winner[1].minDepth < runnerUp[1].minDepth
 
       if (!isStrictWin) {
-        // Vraie égalité parfaite sur les 3 critères → keyword broad
+        
         pillarKeywords.push(opp)
       } else {
         const childId = winner[0]
@@ -373,7 +339,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Tri pillar par score combiné
+  
   pillarKeywords.sort((a, b) => b.matchScore - a.matchScore || b.score - a.score)
   pillarKeywords = pillarKeywords.slice(0, 15)
 

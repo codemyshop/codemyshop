@@ -1,9 +1,9 @@
 <template>
-  <!-- Render if: skeleton loading, OR at least 1 individual review, OR aggregated global score available (aggregate-only mode: display just the rating + CTA to Google). -->
+  
   <section v-if="status === 'pending' || reviews.length > 0 || hasAggregate" aria-labelledby="reviews-heading" :class="sectionClass">
     <div :class="containerClass">
 
-      <!-- ── Header ─────────────────────────────────────────────────────── -->
+      
       <div class="text-center mb-12">
         <span class="inline-block bg-warning-50 dark:bg-warning-900/30 text-warning-700 dark:text-warning-400 text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-4 border border-warning-100 dark:border-warning-700/30">
           {{ t('reviews.verified_badge') }}
@@ -15,7 +15,7 @@
           {{ resolvedTitle }}
         </h2>
 
-        <!-- Score global -->
+        
         <div class="inline-flex items-center gap-3 bg-white dark:bg-white/[0.06] border border-gray-100 dark:border-white/[0.08] rounded-2xl px-5 py-3 shadow-sm">
           <div class="flex gap-0.5" role="img" :aria-label="`${t('reviews.avg_rating')} : ${aggregateRating} ${t('reviews.out_of')} 5`">
             <svg
@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <!-- ── Squelettes ──────────────────────────────────────────────────── -->
+      
       <div v-if="status === 'pending'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div v-for="n in limit" :key="n" class="bg-white dark:bg-white/[0.04] rounded-2xl border border-gray-100 dark:border-white/[0.06] shadow-sm p-6 space-y-4 animate-pulse">
           <div class="flex gap-1">
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-      <!-- ── Reviews grid (only if at least 1 individual review collected) -->
+      
       <div v-else-if="reviews.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <article
           v-for="(review, i) in reviews"
@@ -64,7 +64,7 @@
           class="flex flex-col bg-white dark:bg-white/[0.04] rounded-2xl border border-gray-100 dark:border-white/[0.06] shadow-sm hover:shadow-md dark:hover:shadow-white/5 transition-shadow duration-200 p-6"
           :aria-label="`${t('reviews.review_by')} ${review.author}`"
         >
-          <!-- Stars -->
+          
           <div class="flex items-center gap-1 mb-4" role="img" :aria-label="`${review.rating} ${t('reviews.stars_out_of_5')}`">
             <svg
               v-for="n in 5"
@@ -79,7 +79,7 @@
             <span class="ml-1 text-xs text-gray-500 dark:text-slate-400">{{ review.date ? formatDate(review.date) : '' }}</span>
           </div>
 
-          <!-- Titre de l'avis -->
+          
           <h3
             v-if="review.title"
             class="text-sm font-bold text-gray-900 dark:text-white mb-2 leading-snug"
@@ -87,18 +87,18 @@
             {{ review.title }}
           </h3>
 
-          <!-- Corps de l'avis -->
+          
           <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed line-clamp-4 flex-1">
             {{ review.text }}
           </p>
 
-          <!-- Pied de carte : auteur + entreprise + source -->
+          
           <footer class="mt-4 pt-4 border-t border-gray-50 dark:border-white/[0.06] flex items-center justify-between gap-3">
             <div class="min-w-0">
               <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ review.author }}</p>
               <p v-if="review.company" class="text-xs text-gray-500 dark:text-slate-400 truncate mt-0.5">{{ review.company }}</p>
             </div>
-            <!-- Badge source -->
+            
             <span
               class="shrink-0 inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full border"
               :class="sourceBadge(review.source)"
@@ -119,7 +119,7 @@
         </article>
       </div>
 
-      <!-- ── Centered CTA ──────────────────────────────────────────────────── -->
+      
       <div v-if="ctaUrl" class="mt-10 text-center">
         <a
           :href="ctaUrl"
@@ -169,13 +169,13 @@ interface ReviewsResponse {
 
 const { t } = useT()
 const props = withDefaults(defineProps<{
-  /** Number of reviews to display (default 6) */
+  
   limit?:          number
-  /** Title displayed in h2 — if omitted, reads the i18n key `reviews.heading` */
+  
   title?:          string
-  /** CSS classes on the `<section>` tag */
+  
   sectionClass?:   string
-  /** CSS classes on the inner container */
+  
   containerClass?: string
 }>(), {
   limit:          6,
@@ -186,7 +186,6 @@ const props = withDefaults(defineProps<{
 
 const resolvedTitle = computed(() => props.title || t('reviews.heading'))
 
-// ── Data fetching ────────────────────────────────────────────────────────────
 const { data, status } = await useFetch<ReviewsResponse>('/api/reviews', {
   query: { limit: props.limit },
 })
@@ -196,14 +195,9 @@ const total    = computed<number>(() => data.value?.total ?? 0)
 const business = computed<BusinessMeta | null>(() => data.value?.business ?? null)
 const hasAggregate = computed<boolean>(() => !!business.value && business.value.total_rating !== null && business.value.total_rating !== undefined)
 
-// CTA — "View all our reviews" button: opens Google Maps if `gmaps_url` is provided,
-// otherwise hidden (the component doesn't push to a page if there's no target).
 const ctaUrl   = computed(() => business.value?.gmaps_url ?? null)
 const ctaLabel = computed(() => t('reviews.cta_google'))
 
-// ── Metrics ────────────────────────────────────────────────────────────────
-// Prefers the global average (`business.total_rating`, e.g., Google Places aggregate)
-// if provided, otherwise recalculates from returned reviews.
 const aggregateRating = computed(() => {
   if (business.value?.total_rating !== null && business.value?.total_rating !== undefined) {
     return business.value.total_rating.toFixed(1)
@@ -215,7 +209,6 @@ const aggregateRating = computed(() => {
 
 const reviewCountDisplay = computed(() => business.value?.total_reviews ?? total.value)
 
-// ── Helpers UI ───────────────────────────────────────────────────────────────
 function formatDate(iso: string): string {
   if (!iso) return ''
   try {
@@ -237,9 +230,6 @@ function sourceLabel(source: string): string {
   return t('reviews.source_verified')
 }
 
-// ── JSON-LD Schema.org (LocalBusiness + AggregateRating + Reviews) ───────────
-// Tenant-aware: uses `data.business` for name/url. Without business metadata,
-// JSON-LD is NOT injected (we avoid pushing a false `LocalBusiness`).
 useHead(() => {
   if (!reviews.value.length) return {}
   if (!business.value) return {}

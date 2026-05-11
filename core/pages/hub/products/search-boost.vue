@@ -1,13 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  PIM — Recherche & Tri.
-  Tab 1 : Synonymes (CRUD ps_alias PS natif → s'appliquent à la recherche front)
-  Tab 2 : Vocabulaire (top mots indexés dans ps_search_word / ps_search_index)
-  Tab 3 : Sémantique (KPIs cs_product_embedding + toggle AC_SEARCH_MODE)
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
@@ -41,7 +32,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- ═══ TAB: Synonymes ═══════════════════════════════════════════════ -->
+      
       <template v-if="activeTab === 'synonyms'">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm"><p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total synonymes</p><p class="text-2xl font-extrabold">{{ aliases?.total ?? 0 }}</p></div>
@@ -49,7 +40,7 @@
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm"><p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Inactifs</p><p class="text-2xl font-extrabold text-gray-400">{{ (aliases?.total ?? 0) - (aliases?.activeCount ?? 0) }}</p></div>
         </div>
 
-        <!-- Creation / editing -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
             <h2 class="text-sm font-bold">{{ editingId ? 'Modifier un synonyme' : 'Ajouter un synonyme' }}</h2>
@@ -83,7 +74,7 @@
           </div>
         </div>
 
-        <!-- Liste -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
             <h2 class="text-sm font-bold">Synonymes existants</h2>
@@ -128,7 +119,7 @@
         </div>
       </template>
 
-      <!-- ═══ TAB: Semantic ══════════════════════════════════════════════ -->
+      
       <template v-if="activeTab === 'semantics'">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm">
@@ -155,7 +146,7 @@
           </div>
         </div>
 
-        <!-- Toggle mode -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
             <h2 class="text-sm font-bold">Mode de recherche actif</h2>
@@ -184,7 +175,7 @@
           </div>
         </div>
 
-        <!-- Reindexing -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
             <h2 class="text-sm font-bold">Réindexer le catalogue</h2>
@@ -203,7 +194,7 @@
         </div>
       </template>
 
-      <!-- ═══ TAB: Vocabulaire ═════════════════════════════════════════════ -->
+      
       <template v-if="activeTab === 'vocabulary'">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm"><p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Mots indexés (FR)</p><p class="text-2xl font-extrabold">{{ vocabulary?.totalWords ?? 0 }}</p></div>
@@ -272,7 +263,6 @@ interface SemanticsStats {
 
 const activeTab = ref<'synonyms' | 'vocabulary' | 'semantics'>('synonyms')
 
-// ── Onglet Synonymes ──
 const aliases        = ref<{ total: number; activeCount: number; aliases: Alias[] } | null>(null)
 const loadingAliases = ref(true)
 const aliasSearch    = ref('')
@@ -352,7 +342,6 @@ async function deleteAlias(a: Alias) {
   finally { deletingId.value = null }
 }
 
-// ── Onglet Vocabulaire ──
 const vocabulary  = ref<{ totalWords: number; indexedProducts: number; words: Word[] } | null>(null)
 const loadingVocab = ref(true)
 const vocabSearch = ref('')
@@ -380,7 +369,6 @@ function prefillAlias(word: string) {
   })
 }
 
-// ── Semantic tab ──
 const MODE_OPTIONS = [
   { value: 'lex',    label: 'Lexical',  desc: 'ILIKE + trigram + ps_alias. Pas d\'appel Mistral. Plus rapide, moins tolérant aux reformulations.' },
   { value: 'sem',    label: 'Sémantique', desc: 'pgvector cosine pur. Tolère reformulations, synonymes implicites. Coût Mistral à chaque query non-cachée.' },

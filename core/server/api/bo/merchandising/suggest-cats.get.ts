@@ -1,16 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { spawn } from 'node:child_process'
 
-/**
- * GET /api/bo/merchandising/suggest-cats?id_product=N
- *
- * Calls the LLM (claude CLI) to suggest top-3 categories for an
- * orphan product. Reuses the pre-filtering dictionary logic
- * (`synedre/ac_example-shop_silo_dict.py`) eventually — for V1 we just send
- * the complete tree of leaf categories to the LLM.
- */
 export default defineEventHandler(async (event) => {
   const { id_product } = getQuery(event)
   const idProduct = Number(id_product)
@@ -20,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   const db = useClientDb(event)
 
-  // 1. Charge produit + nom
+  
   const prod = await db.get<{ id_product: number; name: string; description_short: string | null }>(
     `SELECT p.id_product, pl.name, pl.description_short
        FROM ps_product p JOIN ps_product_lang pl ON pl.id_product = p.id_product
@@ -32,7 +24,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Produit introuvable' })
   }
 
-  // 2. Charge le tree des leaf cats sous /grossiste/
+  
   const cats = await db.query<{ id_category: number; silo_path: string }>(`
     WITH RECURSIVE tree AS (
       SELECT c.id_category, c.id_parent, cl.link_rewrite, 0 AS depth, cl.link_rewrite AS path
@@ -79,7 +71,7 @@ FORMAT RÉPONSE : array JSON pur (PAS de markdown), MAX 3 entrées, ordonnées d
 [{"id_category": int, "silo_path": "string", "reason": "5-10 mots"}]
 `
 
-  // 3. Appel claude CLI
+  
   const claudeBin = process.env.CLAUDE_BIN || 'claude'
   const result = await new Promise<string>((resolve, reject) => {
     const proc = spawn(claudeBin, ['-p', prompt], { stdio: ['ignore', 'pipe', 'pipe'] })

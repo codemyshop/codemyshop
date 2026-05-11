@@ -1,28 +1,24 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <template>
-  <!-- Layout PORTFOLIO: text + photo side by side -->
+  
   <section v-if="hero.layout === 'portfolio'" class="relative pt-28 md:pt-32 pb-10 md:pb-14 overflow-hidden" :class="heroBgClass">
 
-    <!-- Light mode: 2 orbs aligned with primary (indigo) + secondary (teal) -->
+    
     <div v-if="wowEffect" class="dark:hidden absolute inset-0 pointer-events-none" aria-hidden="true">
-      <!-- Orbe 1 : primary indigo — haut gauche -->
+      
       <div class="absolute -top-20 -left-10 w-[550px] h-[550px] rounded-full blur-[130px] animate-energy-flow-1"
            style="background: radial-gradient(circle, rgba(79,70,229,0.18) 0%, rgba(99,102,241,0.10) 50%, transparent 70%)" />
-      <!-- Orbe 2 : secondary teal — bas droite -->
+      
       <div class="absolute top-[20%] right-[-5%] w-[450px] h-[450px] rounded-full blur-[110px] animate-energy-flow-2"
            style="background: radial-gradient(circle, rgba(13,148,136,0.15) 0%, rgba(20,184,166,0.08) 50%, transparent 70%)" />
-      <!-- Gloss overlay -->
+      
       <div class="absolute inset-0 hero-gloss-overlay" />
     </div>
 
-    <!-- ── Light mode: bottom gradient fade ───────────────────────────── -->
+    
     <div v-if="wowEffect" class="dark:hidden absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#F9FAFB] via-[#F9FAFB]/80 to-transparent pointer-events-none" aria-hidden="true" />
 
-    <!-- ── Dark mode: mesh gradient background ────────────────────────── -->
+    
     <div v-if="wowEffect" class="hidden dark:block absolute inset-0 pointer-events-none" aria-hidden="true">
       <div class="absolute -top-32 -left-32 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] animate-hero-orb-1" />
       <div class="absolute top-10 right-[-80px] w-[400px] h-[400px] bg-purple-600/15 rounded-full blur-[100px] animate-hero-orb-2" />
@@ -30,14 +26,14 @@
       <div class="absolute inset-0 hero-grid-pattern opacity-[0.04]" />
     </div>
 
-    <!-- ── Dark mode: bottom gradient fade ────────────────────────────── -->
+    
     <div v-if="wowEffect" class="hidden dark:block absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none" aria-hidden="true" />
 
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
 
-      <!-- Texte -->
+      
       <div class="flex-1">
-        <!-- Badge statut -->
+        
         <div v-if="hero.badge" class="inline-flex items-center gap-2 bg-success-50 text-success-700 dark:bg-green-900/30 dark:text-green-400 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
           <span class="w-2 h-2 rounded-full bg-success-500 animate-pulse" />
           {{ heroBadge }}
@@ -49,7 +45,7 @@
           {{ heroSubtitle }}
         </p>
 
-        <!-- Tags -->
+        
         <div v-if="hero.tags?.length" class="flex flex-wrap gap-1.5 mb-6">
           <span
             v-for="tag in hero.tags" :key="tag"
@@ -57,7 +53,7 @@
           >{{ tag }}</span>
         </div>
 
-        <!-- Quote client -->
+        
         <div v-if="hero.quote" class="flex items-start gap-2 mb-5 p-3 rounded-lg bg-white/50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.06] max-w-lg">
           <span class="text-accent-500 text-xl leading-none shrink-0">"</span>
           <div>
@@ -68,20 +64,20 @@
 
       </div>
 
-      <!-- Photo + CTA (colonne droite desktop, en haut mobile) -->
+      
       <div v-if="hero.image" class="flex flex-col items-center shrink-0">
         <div class="relative">
-          <!-- Light mode: ring indigo/teal aligned with the design system -->
+          
           <div class="dark:hidden absolute inset-0 rounded-full scale-[1.18]">
             <div class="absolute inset-0 rounded-full"
                  style="background: conic-gradient(from 0deg, rgba(79,70,229,0.25), rgba(13,148,136,0.20), rgba(99,102,241,0.15), rgba(13,148,136,0.20), rgba(79,70,229,0.25))" />
             <div class="absolute inset-[-6px] rounded-full blur-xl"
                  style="background: conic-gradient(from 180deg, rgba(79,70,229,0.15), rgba(13,148,136,0.10), rgba(79,70,229,0.15))" />
           </div>
-          <!-- Light mode: pulse glow -->
+          
           <div class="dark:hidden absolute inset-[-12px] rounded-full blur-xl animate-hero-pulse"
                style="background: radial-gradient(circle, rgba(79,70,229,0.25) 0%, rgba(13,148,136,0.15) 50%, transparent 70%)" />
-          <!-- Dark mode: animated glow ring -->
+          
           <div class="hidden dark:block absolute inset-0 rounded-full scale-[1.15]">
             <div class="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500/30 via-purple-500/20 to-blue-500/10 animate-hero-glow" />
             <div class="absolute inset-[-4px] rounded-full bg-gradient-to-tr from-indigo-500/20 to-transparent blur-xl" />
@@ -97,7 +93,7 @@
           />
         </div>
 
-        <!-- CTA below the photo (centered) -->
+        
         <div class="flex flex-wrap gap-3 mt-8 justify-center w-full">
           <a
             v-if="hero.cta"
@@ -115,7 +111,7 @@
           </a>
         </div>
 
-        <!-- Scarcity -->
+        
         <p class="text-[11px] text-gray-500 dark:text-slate-400 mt-3 leading-relaxed text-center max-w-sm mx-auto">
           Je ne vends pas mon temps. Je déploie un système.<br>
           <span class="text-gray-500 dark:text-slate-400 font-medium">C'est pourquoi je limite à {{ maxClients }} nouveaux clients par mois.</span>
@@ -125,7 +121,7 @@
     </div>
   </section>
 
-  <!-- Layout BANNER: full-screen background image (default) -->
+  
   <section
     v-else
     class="relative overflow-hidden flex items-center"
@@ -145,7 +141,7 @@
       <div class="absolute inset-0 bg-black/55" />
     </template>
 
-    <!-- Click link on the banner (covers entire section, below content) -->
+    
     <NuxtLink
       v-if="hero.imageHref"
       :to="hero.imageHref"
@@ -194,13 +190,11 @@ const { t } = useI18nField()
 const { tokens } = useDesignSystem()
 const { available, remaining, maxClients } = useAvailability()
 
-/** Resolves i18n fields (raw string OR dict {fr:..., en:...}) */
 const heroTitle    = computed(() => t(props.hero.title as any))
 const heroSubtitle = computed(() => t(props.hero.subtitle as any))
 const heroBadge    = computed(() => t(props.hero.badge as any))
 const heroAlt      = computed(() => heroTitle.value.replace(/<[^>]*>/g, ''))
 
-/** Section background classes: wow (orbs + gradient) or flat (subtle) */
 const heroBgClass = computed(() =>
   props.wowEffect
     ? `${tokens.value.bgWow} ${tokens.value.bgWowDark}`

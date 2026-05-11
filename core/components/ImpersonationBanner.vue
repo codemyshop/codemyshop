@@ -1,17 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  ImpersonationBanner — bandeau orange permanent affiché en haut de TOUTES
-  les pages quand un commercial est en session d'impersonation B2B
-  (verticale food, brique food-impersonate).
-
-  Lit /api/impersonate/active au montage + refresh toutes les 60s pour
-  capturer l'auto-expire 2h. Bouton "Quitter" → POST /api/impersonate/stop.
-
-  Visible uniquement si une session active existe — sinon ne rend rien.
--->
 <template>
   <div
     v-if="active"
@@ -78,8 +65,8 @@ async function quit() {
       body: { closeReason: 'manual' },
     })
     active.value = null
-    // Hard reload: we want all in-flight requests to fetch a
-    // dedicated identity (cart, addresses, etc.) rather than a mixed state.
+    
+    
     if (typeof window !== 'undefined') window.location.reload()
   } catch (err) {
     console.error('[ImpersonationBanner] stop error', err)

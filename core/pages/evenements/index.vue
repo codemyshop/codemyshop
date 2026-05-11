@@ -1,11 +1,4 @@
-<!--
-  Liste des événements — /evenements/
-  Cards events à venir, filtre par type (online/IRL/hybrid).
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -70,7 +63,7 @@ function formatDate(s: string): string {
       </div>
 
       <div class="mx-auto max-w-6xl px-4 sm:px-6 py-8">
-        <!-- Filtre type -->
+        
         <div class="mb-8 flex flex-wrap gap-2">
           <button v-for="opt in [
             { v: 'all',    l: 'Tous' },
@@ -87,7 +80,7 @@ function formatDate(s: string): string {
           </button>
         </div>
 
-        <!-- Grille events -->
+        
         <div v-if="filteredEvents.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <NuxtLink v-for="ev in filteredEvents" :key="ev.id"
                     :to="`/evenements/${ev.slug}/`"

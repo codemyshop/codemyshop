@@ -1,15 +1,4 @@
-/**
- *
- * Drizzle PG schema for `cs_category_cms` — task #44 port-drizzle-mariadb-pg.
- *
- * N-N pivot product category ↔ CMS article, owned by `ac_cmscategoryextra`.
- * Pure association (no _lang field). Composite PK (id_category, id_cms).
- * Position carries the ordering in the SEO silo on the category side.
- *
- * Mapping types MariaDB -> PG :
- *   - INT NOT NULL  -> integer (PK composite)
- *   - DATETIME      -> timestamp(0) without time zone
- */
+
 
 import { index, integer, pgSchema, primaryKey, timestamp } from 'drizzle-orm/pg-core'
 

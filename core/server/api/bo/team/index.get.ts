@@ -1,24 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession, isSuperAdminSaaS } from '~/server/utils/session'
 
-/**
- * GET /api/bo/team — team list (Sprint 17).
- *
- * JOIN ps_employee + ps_profile_lang (?lang=X) to display the
- * human name of the role.
- *
- * Visibility filter:
- * - SaaS SuperAdmin (root and founder administrators) sees everything,
- * including employee id=1 and SuperAdmin PS profile (id 1).
- * - Other employees (including tenant admins) DO NOT see:
- *       - id_employee = 1             (compte technique PS/install)
- *       - id_profile = 1              (profil SuperAdmin natif PS —
- * complete technical access)
- * → this is the separation between "platform internals" and "tenant team"
- *     voulue par Aude.
- */
 export default defineEventHandler(async (event) => {
   const session = requireEmployeeSession(event)
   const isSaas = isSuperAdminSaaS(session)

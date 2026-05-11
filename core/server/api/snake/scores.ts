@@ -1,10 +1,4 @@
-/**
- *
- * GET  /api/snake/scores → top 10 leaderboard
- * POST /api/snake/scores → submit score
- *
- * Phase 9b.4d: Direct Drizzle on cs_snake_score (database layer v1.1.0).
- */
+
 
 import { getMethod, readBody, createError } from 'h3'
 import { insertSnakeScore, readSnakeScores } from '~/server/utils/snake-scores'

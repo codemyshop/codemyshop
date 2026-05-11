@@ -1,7 +1,5 @@
 <script setup lang="ts">
-// DB-Only (Vague 3) : reviews depuis cs_reviews via /api/reviews.
-// Mapping {author, company, text, date} → {auteur, marque_nom, corps_du_message, date}
-// to preserve legacy templates.
+
 interface ApiReview { author: string; company?: string; text: string; date: string; rating: number }
 interface Review { auteur: string; date: string; marque_nom: string; corps_du_message: string }
 
@@ -18,22 +16,22 @@ const reviews = computed<Review[]>(() => (reviewsData.value?.reviews ?? []).map(
 </script>
 
 <template>
-  <!-- Hides lateral overflows -->
+  
   <div class="overflow-hidden relative">
-    <!-- Fondu gauche -->
+    
     <div class="testimonial-fade absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-r from-gray-50 to-transparent" />
-    <!-- Fondu droite -->
+    
     <div class="testimonial-fade absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none bg-gradient-to-l from-gray-50 to-transparent" />
 
-    <!-- Animated track: two copies for a seamless loop -->
+    
     <div class="flex gap-5 marquee-track">
-      <!-- Copie 1 -->
+      
       <div
         v-for="(review, i) in reviews"
         :key="`a-${i}`"
         class="shrink-0 w-72 bg-white rounded-xl shadow-md border border-gray-100 p-5 flex flex-col gap-3"
       >
-        <!-- Stars -->
+        
         <div class="flex gap-0.5">
           <svg
             v-for="s in 5"
@@ -45,12 +43,12 @@ const reviews = computed<Review[]>(() => (reviewsData.value?.reviews ?? []).map(
           </svg>
         </div>
 
-        <!-- Texte de l'avis -->
+        
         <p class="text-sm text-gray-600 leading-relaxed line-clamp-4">
           {{ review.corps_du_message }}
         </p>
 
-        <!-- Auteur -->
+        
         <div class="mt-auto pt-2 border-t border-gray-50">
           <p class="text-sm font-bold text-gray-900">{{ review.auteur }}</p>
           <p v-if="review.marque_nom" class="text-xs text-gray-400">
@@ -60,7 +58,7 @@ const reviews = computed<Review[]>(() => (reviewsData.value?.reviews ?? []).map(
         </div>
       </div>
 
-      <!-- Copy 2 (identical, for seamless loop) -->
+      
       <div
         v-for="(review, i) in reviews"
         :key="`b-${i}`"
@@ -93,7 +91,7 @@ const reviews = computed<Review[]>(() => (reviewsData.value?.reviews ?? []).map(
 
 <style scoped>
 .marquee-track {
-  /* width = 2 × sum of cards (w-72 = 288px + gap 20px = 308px × n) */
+  /* largeur = 2 × somme des cartes (w-72 = 288px + gap 20px = 308px × n) */
   width: max-content;
   animation: marquee 80s linear infinite;
 }

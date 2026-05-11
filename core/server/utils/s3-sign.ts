@@ -1,13 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Minimal S3 AWS Signature V4 — request signing and generation of
- * presigned URLs for Scaleway Object Storage. Avoids bundling the entire
- * @aws-sdk/client-s3 (~15 MB) for two occasional use cases (list + download).
- *
- * Spec implemented: https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
- * Target service: "s3" (path-style for Scaleway, explicit endpoint).
- */
 
 import { createHash, createHmac } from 'node:crypto'
 
@@ -15,7 +6,7 @@ export interface S3Creds {
   accessKey: string
   secretKey: string
   region: string
-  endpoint: string  // ex: https://s3.fr-par.scw.cloud
+  endpoint: string  
   bucket: string
 }
 
@@ -49,7 +40,6 @@ function nowStamps(): { iso: string; date: string } {
   return { iso, date }
 }
 
-// URI encoder selon RFC 3986 (AWS style : préserve /, encode tout le reste)
 function uriEncode(str: string, preserveSlash = false): string {
   const enc = encodeURIComponent(str).replace(
     /[!'()*]/g,
@@ -58,10 +48,6 @@ function uriEncode(str: string, preserveSlash = false): string {
   return preserveSlash ? enc.replace(/%2F/g, '/') : enc
 }
 
-/**
- * Signs an S3 GET request (list/get) and returns Headers ready for fetch.
- * Path-style mandatory for Scaleway — always construct `/bucket/key`.
- */
 export function signS3GetRequest(
   creds: S3Creds,
   path: string,
@@ -70,7 +56,7 @@ export function signS3GetRequest(
   const { iso, date } = nowStamps()
   const host = new URL(creds.endpoint).host
 
-  // Path-style : /bucket/<path>
+  
   const canonicalUri = '/' + uriEncode(creds.bucket, true) +
     (path ? '/' + uriEncode(path, true) : '/')
 
@@ -111,10 +97,6 @@ export function signS3GetRequest(
   }
 }
 
-/**
- * Presigned URL GET (everything in the querystring, no headers required on the
- * client side). Used to download an object directly from the browser.
- */
 export function presignS3GetUrl(
   creds: S3Creds,
   path: string,
@@ -126,7 +108,7 @@ export function presignS3GetUrl(
   const canonicalUri = '/' + uriEncode(creds.bucket, true) + '/' + uriEncode(path, true)
   const scope = `${date}/${creds.region}/${SERVICE}/aws4_request`
 
-  // Paramètres signés dans le querystring
+  
   const query: Record<string, string> = {
     'X-Amz-Algorithm':     ALGO,
     'X-Amz-Credential':    `${creds.accessKey}/${scope}`,
@@ -139,8 +121,8 @@ export function presignS3GetUrl(
   )
   const canonicalQs = qsPairs.join('&')
 
-  // Payload hash "UNSIGNED-PAYLOAD" possible, mais pour GET le plus simple
-  // est de mettre le même hash que pour les requêtes non-presigned.
+  
+  
   const canonicalHeaders = `host:${host}\n`
   const signedHeaders = 'host'
   const payloadHash = 'UNSIGNED-PAYLOAD'
@@ -161,10 +143,6 @@ export function presignS3GetUrl(
   return `${creds.endpoint}${canonicalUri}?${canonicalQs}&X-Amz-Signature=${signature}`
 }
 
-/**
- * Lists objects in a bucket under a given prefix. Parses the ListBucket XML
- * en minimaliste (extrait Key, Size, LastModified).
- */
 export interface S3Object {
   key: string
   size: number
@@ -186,7 +164,7 @@ export async function listS3Objects(
   const xml = await res.text()
 
   const objects: S3Object[] = []
-  // Parsing minimaliste — un objet <Contents>…</Contents> par fichier
+  
   const contentsRe = /<Contents>([\s\S]*?)<\/Contents>/g
   const keyRe      = /<Key>([^<]+)<\/Key>/
   const sizeRe     = /<Size>(\d+)<\/Size>/

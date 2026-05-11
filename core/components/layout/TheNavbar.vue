@@ -1,13 +1,13 @@
 <template>
   <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
 
-    <!-- ── Barre principale ───────────────────────────────────────────────── -->
+    
     <nav
       class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-6"
       :aria-label="`${t('common.main_navigation')} ${config?.clientId}`"
     >
 
-      <!-- Logo -->
+      
       <component
         :is="config?.logo.href ? NuxtLink : 'span'"
         :to="config?.logo.href"
@@ -34,7 +34,7 @@
         </span>
       </component>
 
-      <!-- ── Desktop nav ──────────────────────────────────────────────────── -->
+      
       <ul class="hidden lg:flex items-center gap-1 flex-1">
         <li
           v-for="item in config?.items"
@@ -42,7 +42,7 @@
           class="relative group"
         >
 
-          <!-- ① Simple link: megaMenu not defined -->
+          
           <template v-if="!item.megaMenu">
             <component
               :is="item.external ? 'a' : NuxtLink"
@@ -61,8 +61,8 @@
             </component>
           </template>
 
-          <!-- ② Simple dropdown: megaMenu defined, isMegaMenu absent/false -->
-          <!-- Ideal for a clean showcase site: vertical list without columns -->
+          
+          
           <template v-else-if="item.megaMenu && !item.isMegaMenu">
             <button
               type="button"
@@ -79,7 +79,7 @@
               </svg>
             </button>
 
-            <!-- Panneau dropdown simple — CSS only ────────────────────────── -->
+            
             <div
               class="
                 absolute top-full left-0 pt-2 z-50 min-w-[180px]
@@ -91,7 +91,7 @@
             >
               <div class="bg-white border border-gray-100 rounded-xl shadow-lg py-1 overflow-hidden">
                 <template v-for="col in item.megaMenu" :key="col.title ?? col.links[0]?.href">
-                  <!-- Group separator if multiple columns flattened -->
+                  
                   <div
                     v-if="col.title"
                     class="px-3 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-widest"
@@ -113,8 +113,8 @@
             </div>
           </template>
 
-          <!-- ③ Full mega menu: megaMenu defined AND isMegaMenu: true -->
-          <!-- Multi-column grid with titles, icons, and descriptions       -->
+          
+          
           <template v-else-if="item.megaMenu && item.isMegaMenu">
             <button
               type="button"
@@ -131,7 +131,7 @@
               </svg>
             </button>
 
-            <!-- Panneau Mega Menu — CSS only via group-hover ───────────────── -->
+            
             <div
               class="
                 absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50
@@ -141,7 +141,7 @@
               "
               role="menu"
             >
-              <!-- Decorative arrow -->
+              
               <div class="absolute top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-white border-l border-t border-gray-100 shadow-sm" />
 
               <div
@@ -153,7 +153,7 @@
                   :key="ci"
                   class="space-y-1"
                 >
-                  <!-- Titre de colonne -->
+                  
                   <div
                     v-if="col.title"
                     class="flex items-center gap-1.5 px-3 pb-1 mb-1 border-b border-gray-100"
@@ -163,7 +163,7 @@
                     <span class="text-xs font-semibold text-gray-500 uppercase tracking-widest">{{ col.title }}</span>
                   </div>
 
-                  <!-- Sub-links with description -->
+                  
                   <component
                     v-for="sub in col.links"
                     :key="sub.href"
@@ -190,7 +190,7 @@
         </li>
       </ul>
 
-      <!-- ── Actions droite ───────────────────────────────────────────────── -->
+      
       <div class="hidden lg:flex items-center gap-2 shrink-0">
         <slot name="actions">
           <EmployeeMenu />
@@ -198,7 +198,7 @@
         </slot>
       </div>
 
-      <!-- ── Bouton hamburger mobile ──────────────────────────────────────── -->
+      
       <button
         class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
         :aria-expanded="mobileOpen"
@@ -216,13 +216,13 @@
 
     </nav>
 
-    <!-- ── Badge mode preview ─────────────────────────────────────────────── -->
+    
     <div v-if="previewMode" class="bg-warning-400 text-warning-900 text-xs font-semibold text-center py-1 px-4">
       <span v-html="t('common.preview_mode_label', { client: `<strong>${previewClient}</strong>` })" />
       · <a :href="currentPathWithoutPreview" class="underline hover:no-underline">{{ t('common.preview_exit_link') }}</a>
     </div>
 
-    <!-- ── Menu mobile ───────────────────────────────────────────────────── -->
+    
     <Transition
       enter-active-class="transition-all duration-200 ease-out"
       enter-from-class="opacity-0 -translate-y-2"
@@ -238,7 +238,7 @@
       >
         <template v-for="item in config?.items" :key="item.label">
 
-          <!-- ① Lien simple mobile -->
+          
           <template v-if="!item.megaMenu">
             <component
               :is="item.external ? 'a' : NuxtLink"
@@ -257,7 +257,7 @@
             </component>
           </template>
 
-          <!-- ② & ③ Mobile accordion (same rendering for both dropdown modes) -->
+          
           <template v-else>
             <div>
               <button
@@ -285,7 +285,7 @@
               >
                 <div v-if="mobileAccordion === item.label" class="ml-3 mt-1 space-y-0.5 border-l-2 border-primary-100 pl-3">
                   <template v-for="col in item.megaMenu" :key="col.title ?? col.links[0]?.href">
-                    <!-- Group title displayed only in mega menu mode -->
+                    
                     <p
                       v-if="col.title && item.isMegaMenu"
                       class="flex items-center gap-1.5 text-xs font-semibold text-gray-400 uppercase tracking-widest px-2 pt-2 pb-1"
@@ -303,7 +303,7 @@
                       @click="mobileOpen = false"
                     >
                       <span class="font-medium">{{ sub.label }}</span>
-                      <!-- Description uniquement en mode mega menu -->
+                      
                       <span v-if="sub.description && item.isMegaMenu" class="text-xs text-gray-400 mt-0.5">
                         {{ sub.description }}
                       </span>
@@ -316,7 +316,7 @@
 
         </template>
 
-        <!-- Menus mobile : staff + customer -->
+        
         <div class="pt-3 mt-3 border-t border-gray-100 flex items-center gap-3">
           <slot name="actions-mobile">
             <EmployeeMenu />
@@ -333,9 +333,6 @@
 import { NuxtLink } from '#components'
 import type { MenuConfig } from '~/types/menu'
 
-// DB-only (phase 2): uses `useClientDetection` (which reads `cs_client_config`
-// via `useState` `'client_db_config'`) instead of a static local registry. No more
-// TS import duplication — clientId resolution + config come from the composable.
 const route = useRoute()
 const { t } = useT()
 const { resolvedClientId, previewClient, previewMode, config: clientConfig, currentPathWithoutPreview } = useClientDetection()

@@ -1,17 +1,10 @@
-/**
- *
- * AI Task Queue — Phase 9b.4b chantier headless-modules-ts.
- * Drizzle PG directly on cs_aiqueue (project #44 MariaDB -> PG cutover).
- *
- * SECURITY.md R1: API keys are never stored in tasks.
- */
+
+
 import { randomUUID } from 'node:crypto'
 import { eq, sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
 import { aiQueueVaisseau, type AiQueuePgRow } from '../db/schema-pg/ai-queue'
 import { callAnthropicRaw } from './anthropic'
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 export type AiTaskStatus = 'pending' | 'processing' | 'completed' | 'failed'
 
@@ -21,30 +14,28 @@ export interface AiTask {
   clientId:        string
   model:           string
   status:          AiTaskStatus
-  // Batch progress
+  
   totalItems:      number
   completedItems:  number
-  // Prompts (R3 : pas de PII en clair côté logs ; en DB tenant-isolée OK)
+  
   systemPrompt:    string
   userPrompt:      string
-  // Résultat
+  
   response?:       string
   errorMessage?:   string
-  // FinOps — tokens
+  
   estimatedTokens: { input: number; output: number; total: number }
   actualTokens?:   { prompt: number; completion: number; total: number }
-  estimatedCost:   number   // en USD
-  actualCost?:     number   // en USD
-  // Métriques
+  estimatedCost:   number   
+  actualCost?:     number   
+  
   latencyMs?:      number
   httpStatus?:     number
-  // Timestamps
+  
   createdAt:       string
   startedAt?:      string
   completedAt?:    string
 }
-
-// ── Grille de prix par modèle (USD / 1M tokens) ──────────────────────────────
 
 export const MODEL_PRICING: Record<string, { input: number; output: number }> = {
   'claude-sonnet-4-6':          { input: 3.00,  output: 15.00 },
@@ -53,8 +44,6 @@ export const MODEL_PRICING: Record<string, { input: number; output: number }> = 
   'gpt-4o':                     { input: 2.50,  output: 10.00 },
   'gpt-4o-mini':                { input: 0.15,  output: 0.60 },
 }
-
-// ── Estimation de tokens (heuristique ~4 chars/token) ─────────────────────────
 
 export function estimateTokens(text: string): number {
   return Math.ceil(text.length / 4)
@@ -69,8 +58,6 @@ export function calculateActualCost(model: string, usage: { prompt_tokens: numbe
   const pricing = MODEL_PRICING[model] ?? MODEL_PRICING['claude-sonnet-4-6']
   return ((usage.prompt_tokens * pricing.input) + (usage.completion_tokens * pricing.output)) / 1_000_000
 }
-
-// ── Mapping DB row ↔ AiTask ───────────────────────────────────────────────────
 
 function toIso(d: Date | string | null | undefined): string | undefined {
   if (!d) return undefined
@@ -94,7 +81,7 @@ function rowToTask(r: AiQueuePgRow): AiTask {
     response:       r.response ?? undefined,
     errorMessage:   r.errorMessage ?? undefined,
     estimatedTokens: {
-      input: 0, output: 0, total: 0, // Non persisté — recomputable au besoin
+      input: 0, output: 0, total: 0, 
     },
     actualTokens: tokens > 0
       ? { prompt: tokensIn, completion: tokensOut, total: tokens }
@@ -108,8 +95,6 @@ function rowToTask(r: AiQueuePgRow): AiTask {
     completedAt:   toIso(r.completedAt),
   }
 }
-
-// ── Persistance — Drizzle PG direct ──────────────────────────────────────────
 
 export async function readAiQueue(_event?: any, limit = 200): Promise<AiTask[]> {
   const d = usePocPg()
@@ -135,10 +120,6 @@ export async function deleteTask(id: string, _event?: any): Promise<boolean> {
   return true
 }
 
-/**
- * UPDATE by task_id — accepts a partial patch of AiTask, maps to
- * DB columns. Unprovided fields are not modified.
- */
 export async function updateTask(id: string, patch: Partial<AiTask>, _event?: any): Promise<void> {
   if (!id) return
   const d = usePocPg()
@@ -167,8 +148,6 @@ export async function updateTask(id: string, patch: Partial<AiTask>, _event?: an
     UPDATE cs_main.cs_aiqueue SET ${sql.join(sets, sql`, `)} WHERE task_id = ${id}
   `)
 }
-
-// ── Statistiques FinOps ───────────────────────────────────────────────────────
 
 export interface AiQueueStats {
   total:          number
@@ -204,8 +183,6 @@ export async function getStats(_event?: any): Promise<AiQueueStats> {
     totalTokens:  Number(r.total_tokens || 0),
   }
 }
-
-// ── Créer une tâche ───────────────────────────────────────────────────────────
 
 export async function createAiTask(
   params: {
@@ -254,8 +231,6 @@ export async function createAiTask(
   }
 }
 
-// ── Exécuter une tâche ────────────────────────────────────────────────────────
-
 export async function executeAiTask(taskId: string, event?: any): Promise<AiTask> {
   const task = await getTask(taskId, event)
   if (!task) throw new Error('Task not found')
@@ -270,7 +245,7 @@ export async function executeAiTask(taskId: string, event?: any): Promise<AiTask
     const apiKey = config.anthropicApiKey as string
 
     if (!apiKey) {
-      // Mode stub
+      
       const stubResponse = '[STUB] Réponse IA simulée — activez ANTHROPIC_API_KEY.'
       const completedAt = new Date().toISOString()
       await updateTask(taskId, {

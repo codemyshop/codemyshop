@@ -1,41 +1,22 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 
-/**
- * POST /api/bo/appointment/availability/bulk
- *
- * Body :
- *   dateFrom            : ISO date "2026-05-07"
- *   dateTo              : ISO date "2027-05-07"
- * hourStart           : 6   (hour of first slot, 0-23)
- * hourEnd             : 13  (exclusive hour of first slot, 0-23 — appointment must
- * end at the latest at hourEnd)
- * slotMinutes         : 30  (duration + interval)
- *   daysOfWeek          : [1,2,3,4,5]  (1=lun … 7=dim, ISO)
- *   excludeFrenchHolidays : true
- *
- * Generates slots server-side via generate_series, NOT EXISTS to
- * avoid duplicates on (date_start). Returns the count created.
- */
-
-// 11 fériés FR sur 5 ans glissants — calculés ici plutôt qu'une lib pour
-// éviter une dépendance npm sur si peu de logique.
 function frenchHolidays(yearStart: number, yearEnd: number): string[] {
   const out: string[] = []
   for (let y = yearStart; y <= yearEnd; y++) {
     out.push(
-      `${y}-01-01`, // Jour de l'An
-      `${y}-05-01`, // Fête du Travail
-      `${y}-05-08`, // Victoire 1945
-      `${y}-07-14`, // Fête nationale
-      `${y}-08-15`, // Assomption
-      `${y}-11-01`, // Toussaint
-      `${y}-11-11`, // Armistice
-      `${y}-12-25`, // Noël
+      `${y}-01-01`, 
+      `${y}-05-01`, 
+      `${y}-05-08`, 
+      `${y}-07-14`, 
+      `${y}-08-15`, 
+      `${y}-11-01`, 
+      `${y}-11-11`, 
+      `${y}-12-25`, 
     )
-    // Pâques (algo de Gauss / Butcher) → lundi de Pâques + Ascension + Pentecôte
+    
     const a = y % 19
     const b = Math.floor(y / 100)
     const c = y % 100
@@ -55,9 +36,9 @@ function frenchHolidays(yearStart: number, yearEnd: number): string[] {
       const d = new Date(base.getTime() + n * 86400000)
       return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`
     }
-    out.push(addDays(easter, 1))  // Lundi de Pâques
-    out.push(addDays(easter, 39)) // Ascension
-    out.push(addDays(easter, 50)) // Lundi de Pentecôte
+    out.push(addDays(easter, 1))  
+    out.push(addDays(easter, 39)) 
+    out.push(addDays(easter, 50)) 
   }
   return out
 }
@@ -90,20 +71,20 @@ export default defineEventHandler(async (event) => {
   const holidays = excludeHolidays ? frenchHolidays(yFrom, yTo) : []
 
   const d = usePocPg()
-  // PG DOW : Sunday=0, Monday=1 … Saturday=6. ISO : Lundi=1 … Dimanche=7.
-  // On convertit notre liste ISO en PG DOW (Dimanche ISO 7 → PG 0).
+  
+  
   const pgDow = daysOfWeek.map((iso: number) => (iso === 7 ? 0 : iso))
   const pgDowList = sql.join(pgDow.map(n => sql`${n}`), sql`, `)
   const holidayList = holidays.length
     ? sql.join(holidays.map(h => sql`${h}::date`), sql`, `)
     : sql`NULL::date`
 
-  // Génère TOUS les pas de slotMinutes sur la période, puis filtre :
-  //   - DOW dans la liste autorisée
-  //   - heure entre hourStart et hourEnd (le dernier slot doit FINIR au plus
-  //     tard à hourEnd → start ≤ hourEnd - slotMinutes)
-  //   - jour pas férié si excludeHolidays
-  //   - pas déjà inséré (NOT EXISTS sur date_start, pas d'unique constraint)
+  
+  
+  
+  
+  
+  
   const result = await d.execute<any>(sql`
     INSERT INTO cs_main.cs_appointment_availability
         (date_start, duration_min, is_booked, notes)

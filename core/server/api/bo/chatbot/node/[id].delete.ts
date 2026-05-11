@@ -1,8 +1,5 @@
-/**
- *
- * DELETE /api/bo/chatbot/node/:id — Deletes a node + cascades to options + languages.
- * Safeguard: refuses if active conversations reference this node.
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
@@ -11,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   const db = useClientDb(event)
 
-  // Récupère node_key pour le check conversations
+  
   const node = await db.query<{ node_key: string }>(
     `SELECT node_key FROM cs_chatbot_node WHERE id_node = ?`,
     [idNode],
@@ -19,7 +16,7 @@ export default defineEventHandler(async (event) => {
   if (!node.length) throw createError({ statusCode: 404, message: 'Node introuvable' })
   const nodeKey = node[0].node_key
 
-  // Garde-fou : refuse si conversations actives ou options pointent vers ce node
+  
   const refByConv = await db.query<{ n: number }>(
     `SELECT COUNT(*)::int AS n FROM cs_chatbot_conversation
       WHERE current_node_key = ? AND status != 'closed'`,
@@ -54,7 +51,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // CASCADE : option_lang → option → node_lang → node
+  
   await db.run(
     `DELETE FROM cs_chatbot_option_lang
       WHERE id_option IN (SELECT id_option FROM cs_chatbot_option WHERE id_node = ?)`,

@@ -1,21 +1,4 @@
-<!--
-  /hub/crm/email — Configuration centralisée des emails (Aude/Alex 04/05).
 
-  5 tabs :
-    - Templates clients : emails transactionnels envoyés aux clients
-      (commande, expédition, devis…). Édition HTML + variables.
-    - Queue d'envoi : file d'attente cs_email_queue + Process now.
-    - Templates notifs : emails envoyés aux admins du site
-      (nouvelle commande, contact form, alerte stock…).
-    - SMTP : configuration serveur d'envoi (host, port, user, from).
-    - Mail : client mail intégré (mailbox DB cs_email_message —
-      Reçus / Envoyés / Brouillons, sync IMAP auto 5min, IMAP APPEND
-      vers Sent à l'envoi, modèles + signature + pièces jointes).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: 'hub' })
 
@@ -41,9 +24,6 @@ interface EmailTemplate {
   recipient_to:   string
 }
 
-// DB-first since 2026-05-06 — reading cs_email_template + _lang. All
-// new templates seeded in DB (active=1) appear automatically in the
-// list, without source modification. Endpoint: /api/bo/email-templates.
 interface EmailTemplateRow {
   slug:         string
   audience:     'client' | 'admin'
@@ -64,8 +44,8 @@ const allTemplates = computed<EmailTemplate[]>(() => {
   return (templatesData.value?.templates ?? []).map(r => ({
     slug:         r.slug,
     audience:     r.audience,
-    // Fallback display if label is empty in DB (freshly seeded template):
-    // falls back to the humanized slug to never display an empty card.
+    
+    
     label:        r.label || r.slug.replace(/_/g, ' '),
     description:  r.description || '',
     trigger:      r.trigger_hint || '',
@@ -75,7 +55,6 @@ const allTemplates = computed<EmailTemplate[]>(() => {
 const clientTemplates = computed(() => allTemplates.value.filter(t => t.audience === 'client'))
 const adminTemplates  = computed(() => allTemplates.value.filter(t => t.audience === 'admin'))
 
-// Editable SMTP configuration (cs_email_config singleton + fallback env)
 interface SmtpConfig {
   host:       string
   port:       number
@@ -134,7 +113,6 @@ async function saveSmtp() {
   }
 }
 
-// ─── Queue d'envoi (cs_email_queue) ──────────────────────────────────
 interface QueuedEmail {
   id_ac_email_queue: number
   to_email:          string
@@ -153,8 +131,6 @@ interface QueuedEmail {
   date_upd:          string
 }
 
-// 4 standard levels (see template/[slug].vue). Not DB-backed,
-// pure UI projection for badges.
 function priorityBadge(p: number | null | undefined): { label: string; cls: string } {
   const v = Number(p ?? 50)
   if (v <= 15) return { label: 'Critique',  cls: 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-200' }
@@ -172,7 +148,6 @@ const { data: queueData, refresh: refreshQueue } = await useFetch<QueueResponse>
   { default: () => ({ emails: [], summary: { pending: 0, sending: 0, sent: 0, failed: 0, cancelled: 0 } }) },
 )
 
-// Polling 30s while the Queue tab is open (counters refresh)
 let queueTimer: ReturnType<typeof setInterval> | null = null
 watch(activeTab, (tab) => {
   if (tab === 'queue') {
@@ -253,7 +228,6 @@ const STATUS_BADGE: Record<QueuedEmail['status'], string> = {
   cancelled: 'bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-slate-400',
 }
 
-// ─── Mail Tab: integrated IMAP/SMTP client (DB-backed) ────────────────────
 interface InboxMessage {
   id:             number
   uid:            number | null
@@ -356,7 +330,6 @@ function formatDate(iso: string | null): string {
     : d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })
 }
 
-// ── Templates + signature + attachments ───────────────────────────────────
 interface CannedTemplate { id: number; label: string; subject: string; body: string; position: number }
 interface SignatureData { bodyText: string; bodyHtml: string }
 interface PickedAttachment { filename: string; mimeType: string; sizeBytes: number; contentBase64: string }
@@ -389,7 +362,6 @@ function bodyWithSignature(body: string): string {
   return `${body}\n\n-- \n${signature.value.bodyText}`
 }
 
-// Compose
 const composeForm = reactive({ to: '', subject: '', body: '', replyTo: '' })
 const composeAttachments = ref<PickedAttachment[]>([])
 const composeSending = ref(false)
@@ -399,16 +371,14 @@ const cannedPickerId = ref<number | null>(null)
 const currentDraftId = ref<number | null>(null)
 const draftSavingState = ref<'idle' | 'saving' | 'saved' | 'error'>('idle')
 let draftDebounceTimer: ReturnType<typeof setTimeout> | null = null
-// Blocks the save watcher during programmatic assignments
-// (openCompose, loadDraft, applyCanned…) — otherwise double creation of
-// drafts on each load.
+
 let suppressDraftSave = false
 
 function withoutDraftSave(fn: () => void) {
   suppressDraftSave = true
   fn()
-  // Disables after the current tick to allow the propagation
-  // to pass synchronously without triggering the watcher.
+  
+  
   nextTick(() => { suppressDraftSave = false })
 }
 
@@ -445,7 +415,7 @@ function loadDraft(m: InboxMessage) {
 }
 
 async function saveDraftNow() {
-  // Skip if everything is empty
+  
   if (!composeForm.to && !composeForm.subject && !composeForm.body) {
     draftSavingState.value = 'idle'
     return
@@ -509,7 +479,7 @@ async function discardDraft() {
 }
 
 function closeComposeKeepDraft() {
-  // Flush save before closing if in progress
+  
   if (draftDebounceTimer) {
     clearTimeout(draftDebounceTimer)
     draftDebounceTimer = null
@@ -560,7 +530,6 @@ function openReply(m: InboxMessage) {
   composeOpen.value = true
 }
 
-
 async function sendCompose() {
   composeSending.value = true
   composeMsg.value = ''
@@ -591,7 +560,7 @@ async function sendCompose() {
     if (draftDebounceTimer) { clearTimeout(draftDebounceTimer); draftDebounceTimer = null }
     setTimeout(() => {
       composeOpen.value = false
-      // Refresh the list if on Drafts (the draft is gone)
+      
       if (inboxFolder.value === 'draft') loadInbox()
     }, 1200)
   } catch (err: any) {
@@ -601,7 +570,6 @@ async function sendCompose() {
   }
 }
 
-// ── Preferences Modal (CRUD templates + signature editing) ────────────────
 const prefsOpen = ref(false)
 const prefsTab = ref<'canned' | 'signature'>('canned')
 const cannedDraft = reactive({ id: 0 as number | null, label: '', subject: '', body: '' })
@@ -701,7 +669,6 @@ function formatPickedSize(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`
 }
 
-// ─── Tab Newsletter : cs_newsletter_subscriber ────────────────────────
 type NewsletterStatus = 'pending' | 'confirmed' | 'unsubscribed' | 'bounced'
 interface NewsletterSubscriber {
   id_subscriber:     number
@@ -823,7 +790,7 @@ function formatNewsletterDate(iso: string | null): string {
       </p>
     </div>
 
-    <!-- Tabs -->
+    
     <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm mb-6">
       <nav class="flex items-center gap-1 px-4 border-b border-gray-100 dark:border-slate-800 overflow-x-auto" role="tablist">
         <button
@@ -845,7 +812,7 @@ function formatNewsletterDate(iso: string | null): string {
       </nav>
     </div>
 
-    <!-- ─── TAB : Templates clients ──────────────────────────────────── -->
+    
     <div v-show="activeTab === 'templates_client'" class="space-y-3">
       <p class="text-xs text-gray-500 dark:text-slate-400 mb-2">
         {{ t('hub.email_clients_help', 'Emails transactionnels envoyés automatiquement aux clients suite à un événement (commande, paiement, expédition, devis, mot de passe…).') }}
@@ -873,7 +840,7 @@ function formatNewsletterDate(iso: string | null): string {
       </div>
     </div>
 
-    <!-- ─── TAB : Queue d'envoi ──────────────────────────────────────── -->
+    
     <div v-show="activeTab === 'queue'" class="space-y-4">
       <div class="flex items-start justify-between gap-4 flex-wrap">
         <p class="text-xs text-gray-500 dark:text-slate-400 max-w-2xl">
@@ -890,7 +857,7 @@ function formatNewsletterDate(iso: string | null): string {
         </button>
       </div>
 
-      <!-- Compteurs -->
+      
       <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <div v-for="(label, key) in STATUS_LABEL" :key="key" class="rounded-xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-3">
           <div class="text-[10px] uppercase tracking-wide text-gray-400">{{ label }}</div>
@@ -903,7 +870,7 @@ function formatNewsletterDate(iso: string | null): string {
       <div v-if="processNowMsg" class="px-4 py-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">{{ processNowMsg }}</div>
       <div v-if="queueErrorMsg" class="px-4 py-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm">{{ queueErrorMsg }}</div>
 
-      <!-- Liste -->
+      
       <div v-if="!queueData?.emails?.length" class="rounded-xl bg-gray-50 dark:bg-slate-800/40 border border-dashed border-gray-200 dark:border-slate-700 p-8 text-center text-sm text-gray-500 dark:text-slate-400">
         {{ t('hub.email_queue_empty', 'Aucun email dans la queue.') }}
       </div>
@@ -982,7 +949,7 @@ function formatNewsletterDate(iso: string | null): string {
       </div>
     </div>
 
-    <!-- ─── TAB : Templates notifs ───────────────────────────────────── -->
+    
     <div v-show="activeTab === 'notifs_admin'" class="space-y-3">
       <p class="text-xs text-gray-500 dark:text-slate-400 mb-2">
         {{ t('hub.email_admin_help', 'Emails de notification envoyés aux administrateurs du site lors d\'événements clients (nouvelle commande, lead, contact, alertes).') }}
@@ -1026,7 +993,7 @@ function formatNewsletterDate(iso: string | null): string {
       </div>
     </div>
 
-    <!-- ─── TAB : SMTP ───────────────────────────────────────────────── -->
+    
     <div v-show="activeTab === 'smtp'" class="space-y-6">
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <div class="flex items-center justify-between gap-4 flex-wrap mb-1">
@@ -1110,7 +1077,7 @@ function formatNewsletterDate(iso: string | null): string {
       </section>
     </div>
 
-    <!-- ─── TAB: Mail (integrated IMAP/SMTP client, DB-backed) ─────────── -->
+    
     <div v-show="activeTab === 'mail'" class="space-y-4">
       <div class="flex items-start justify-between gap-4 flex-wrap">
         <div class="min-w-0">
@@ -1184,9 +1151,9 @@ function formatNewsletterDate(iso: string | null): string {
       <div v-if="syncMsg" class="px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs">{{ syncMsg }}</div>
       <div v-if="inboxError" class="px-4 py-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm">{{ inboxError }}</div>
 
-      <!-- Layout 2 colonnes : liste + lecteur -->
+      
       <div class="grid grid-cols-1 lg:grid-cols-[minmax(280px,360px)_1fr] gap-4 min-h-[480px]">
-        <!-- Liste -->
+        
         <div class="rounded-xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 overflow-hidden">
           <div v-if="inboxLoading && !inboxData" class="p-8 text-center text-sm text-gray-500">
             Chargement IMAP…
@@ -1231,7 +1198,7 @@ function formatNewsletterDate(iso: string | null): string {
           </ul>
         </div>
 
-        <!-- Lecteur -->
+        
         <div class="rounded-xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800">
           <div v-if="!selectedMessage" class="p-12 text-center text-sm text-gray-400">
             <template v-if="inboxFolder === 'draft'">← Clique sur un brouillon pour reprendre la rédaction</template>
@@ -1257,7 +1224,7 @@ function formatNewsletterDate(iso: string | null): string {
               </div>
             </div>
 
-            <!-- Attachments -->
+            
             <div v-if="selectedMessage.hasAttachments && attachmentsBy[selectedMessage.id]?.length" class="px-5 py-3 border-b border-gray-100 dark:border-slate-800">
               <p class="text-[10px] uppercase tracking-wide text-gray-400 mb-2">📎 {{ attachmentsBy[selectedMessage.id].length }} pièce{{ attachmentsBy[selectedMessage.id].length > 1 ? 's' : '' }} jointe{{ attachmentsBy[selectedMessage.id].length > 1 ? 's' : '' }}</p>
               <div class="flex flex-wrap gap-2">
@@ -1283,7 +1250,7 @@ function formatNewsletterDate(iso: string | null): string {
         </div>
       </div>
 
-      <!-- Compose modal -->
+      
       <div
         v-if="composeOpen"
         class="fixed inset-0 z-50 bg-black/40 dark:bg-black/60 flex items-center justify-center px-4 py-8"
@@ -1318,7 +1285,7 @@ function formatNewsletterDate(iso: string | null): string {
               <input v-model="composeForm.to" type="email" placeholder="contact@exemple.com" class="w-full px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg text-sm focus:border-primary-600 focus:outline-none bg-white dark:bg-slate-900" />
             </div>
 
-            <!-- Insert predefined template -->
+            
             <div v-if="cannedList.length > 0" class="flex items-center gap-2">
               <select
                 v-model.number="cannedPickerId"
@@ -1349,7 +1316,7 @@ function formatNewsletterDate(iso: string | null): string {
               <label class="block text-[10px] uppercase text-gray-500 tracking-wide mb-1">Message</label>
               <textarea v-model="composeForm.body" rows="10" class="w-full px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg text-sm font-mono focus:border-primary-600 focus:outline-none bg-white dark:bg-slate-900"></textarea>
 
-              <!-- Toggle signature + preview -->
+              
               <div v-if="signature.bodyText" class="mt-2 space-y-1">
                 <label class="flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400">
                   <input v-model="useSignature" type="checkbox" class="rounded" />
@@ -1359,7 +1326,7 @@ function formatNewsletterDate(iso: string | null): string {
               </div>
             </div>
 
-            <!-- Attachments -->
+            
             <div>
               <div class="flex items-center justify-between mb-1">
                 <label class="text-[10px] uppercase text-gray-500 tracking-wide">Pièces jointes</label>
@@ -1415,7 +1382,7 @@ function formatNewsletterDate(iso: string | null): string {
         </div>
       </div>
 
-      <!-- Preferences modal (templates + signature) -->
+      
       <div
         v-if="prefsOpen"
         class="fixed inset-0 z-50 bg-black/40 dark:bg-black/60 flex items-center justify-center px-4 py-8"
@@ -1439,7 +1406,7 @@ function formatNewsletterDate(iso: string | null): string {
             >Signature</button>
           </nav>
 
-          <!-- TAB Templates -->
+          
           <div v-if="prefsTab === 'canned'" class="flex-1 overflow-hidden grid grid-cols-1 md:grid-cols-[260px_1fr]">
             <div class="border-r border-gray-100 dark:border-slate-800 overflow-y-auto">
               <button type="button" class="w-full text-left px-4 py-2.5 text-xs font-medium text-primary-700 hover:bg-primary-50 dark:hover:bg-primary-900/20 border-b border-gray-100 dark:border-slate-800" @click="newCanned">+ Nouveau modèle</button>
@@ -1501,7 +1468,7 @@ function formatNewsletterDate(iso: string | null): string {
             </div>
           </div>
 
-          <!-- TAB Signature -->
+          
           <div v-else class="p-5 flex-1 overflow-y-auto space-y-3">
             <p class="text-xs text-gray-500 dark:text-slate-400">
               Signature ajoutée automatiquement à tes nouveaux mails (toggle "Ajouter ma signature" coché par défaut).
@@ -1526,13 +1493,13 @@ function formatNewsletterDate(iso: string | null): string {
       </div>
     </div>
 
-    <!-- ─── TAB : Newsletter (opt-ins cs_newsletter_subscriber) ───── -->
+    
     <div v-show="activeTab === 'newsletter'" class="space-y-4">
       <p class="text-xs text-gray-500 dark:text-slate-400 mb-2">
         {{ t('hub.email_newsletter_help', 'Liste des inscrits à la newsletter (footer du site). Stockage RGPD : email, IP, user-agent, texte de consentement, date — preuve du recueil. Désabonnement en 1 clic disponible côté visiteur.') }}
       </p>
 
-      <!-- Compteurs par statut -->
+      
       <div v-if="newsletterData" class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <button
           v-for="s in (['confirmed','pending','unsubscribed','bounced'] as NewsletterStatus[])"
@@ -1555,7 +1522,7 @@ function formatNewsletterDate(iso: string | null): string {
         </button>
       </div>
 
-      <!-- Toolbar -->
+      
       <div class="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-3">
         <div class="flex items-center gap-2">
           <label class="text-[10px] uppercase font-semibold text-gray-500 dark:text-slate-400">Statut</label>
@@ -1590,11 +1557,11 @@ function formatNewsletterDate(iso: string | null): string {
         </button>
       </div>
 
-      <!-- Loader / Error -->
+      
       <p v-if="newsletterLoading" class="text-xs text-gray-400 italic text-center py-4">Chargement…</p>
       <p v-else-if="newsletterError" class="text-xs text-rose-600 dark:text-rose-400 text-center py-4">{{ newsletterError }}</p>
 
-      <!-- Liste -->
+      
       <div
         v-else-if="newsletterData && newsletterData.rows.length > 0"
         class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 overflow-hidden"
@@ -1644,7 +1611,7 @@ function formatNewsletterDate(iso: string | null): string {
           </tbody>
         </table>
 
-        <!-- Pagination -->
+        
         <div class="flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-slate-800 text-[10px] text-gray-500 dark:text-slate-400">
           <span>
             {{ newsletterData.rows.length }} / {{ newsletterData.total }}
@@ -1668,7 +1635,7 @@ function formatNewsletterDate(iso: string | null): string {
         </div>
       </div>
 
-      <!-- Empty state -->
+      
       <div
         v-else-if="newsletterData"
         class="bg-white dark:bg-slate-900 rounded-xl border border-dashed border-gray-200 dark:border-slate-700 p-8 text-center"

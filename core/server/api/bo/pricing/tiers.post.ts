@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { upsertTier } from '~/enterprise/misc/pricing/server/utils/pricing'
 
-/** POST /api/bo/pricing/tiers — creates a pricing tier. */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     idGroup: number

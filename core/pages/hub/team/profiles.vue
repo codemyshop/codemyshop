@@ -93,7 +93,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
@@ -102,8 +101,6 @@ if (!canAccess('founder_admin')) {
   navigateTo('/hub/dashboard')
 }
 
-// Visual groups — map the hub-nav acronyms (CRM/PIM/OMS…) to
-// internal sections useRoles.ts. Cf. feedback_hub_nav_acronyms.
 const SECTION_GROUPS = [
   {
     label: 'Cœur métier',

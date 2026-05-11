@@ -1,15 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { getLotById, listRecallCustomers } from '~/enterprise/vertical-food/lot/server/utils/lot'
 
-/**
- * GET /api/bo/lots/:id/recall — customers to notify in case of recall.
- *
- * Priority 1: exact link cs_lot_order_detail (populated by the hook
- *              actionValidateOrder depuis ac_lot 1.1.0).
- * Fallback: if no line (batch pre-1.1.0 or outside FIFO scope),
- * approximation by product + entry/expiry window.
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!id) throw createError({ statusCode: 400, statusMessage: 'id invalide' })

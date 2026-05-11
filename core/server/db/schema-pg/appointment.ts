@@ -1,14 +1,4 @@
-/**
- *
- * Drizzle PG schema — appointment domain (independent booking, Calendly-like).
- *
- * Doctrine 2026-05-02 (chantier ac-appointment) :
- *   - cs_appointment_availability : slots ouverts par l'admin (Aude / Vincent / Alex)
- * - cs_appointment             : prospect booking on a slot
- *
- * An availability becomes is_booked=1 as soon as an appointment is created on it.
- * id_ac_smartlead = nullable FK to cs_smartlead (links the booking to an existing lead).
- */
+
 
 import {
   integer,

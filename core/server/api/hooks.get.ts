@@ -1,17 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/hooks
- * Lists active hooks on a target (page/cms/category/product).
- *
- * Query params :
- *   target_type  — page | cms | category | product  (obligatoire)
- * target_id    — slug or id of the target (required)
- *   slot         — before_content | main | after_content | sidebar (optionnel, filtre)
- *
- * Source: cs_hook (PS module ac_hook). Read via Drizzle facade —
- * cf. core/modules/hook/server/utils/hook.ts.
- */
+
 import { listHooksForTarget } from '~/modules/hook/server/utils/hook'
 
 export default defineEventHandler(async (event) => {

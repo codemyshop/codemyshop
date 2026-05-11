@@ -1,12 +1,4 @@
-<!--
-  QuoteDrawer — devis slide-in latéral B2B (module devis Example Shop)
-  Composant générique branché sur useQuoteCart, monté dans white-label.vue
-  Ouvre/ferme via useQuoteDrawer (état partagé).
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { isOpen, close } = useQuoteDrawer()
 const { items, updateQuantity, removeFromQuote, totalItems } = useQuoteCart()
@@ -46,7 +38,7 @@ watch(isOpen, (val) => {
         aria-modal="true"
         aria-labelledby="quote-drawer-title"
       >
-        <!-- Header -->
+        
         <header class="flex items-center justify-between px-5 py-4 border-b border-gray-100 shrink-0">
           <h2
             id="quote-drawer-title"
@@ -70,14 +62,14 @@ watch(isOpen, (val) => {
           </button>
         </header>
 
-        <!-- Info B2B -->
+        
         <div class="px-5 py-3 border-b border-gray-100 shrink-0 bg-amber-50">
           <p class="text-xs text-amber-700">
             Les prix seront communiqués dans votre devis personnalisé.
           </p>
         </div>
 
-        <!-- Liste articles -->
+        
         <div class="flex-1 overflow-y-auto px-5 py-4">
           <div v-if="items.length" class="space-y-3">
             <div
@@ -130,7 +122,7 @@ watch(isOpen, (val) => {
             </div>
           </div>
 
-          <!-- Devis vide -->
+          
           <div v-else class="text-center py-16">
             <svg class="w-14 h-14 mx-auto text-gray-200 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
@@ -140,7 +132,7 @@ watch(isOpen, (val) => {
           </div>
         </div>
 
-        <!-- Footer CTA -->
+        
         <footer
           v-if="items.length"
           class="border-t border-gray-100 px-5 py-4 shrink-0 bg-gray-50/50"

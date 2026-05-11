@@ -1,19 +1,4 @@
-<!--
-  /hub/payments — Paiements (CB SystemPay + virement bancaire).
 
-  Sources :
-    - ps_configuration : BANK_WIRE_OWNER, BANK_WIRE_DETAILS, BANK_WIRE_ADDRESS,
-      BANK_WIRE_CUSTOM_TEXT, SYSTEMPAY_MODE
-    - .env du VPS : SYSTEMPAY_ID_SHOP, SYSTEMPAY_TEST_KEY, SYSTEMPAY_PROD_KEY
-      (présence seulement, jamais exposées)
-
-  Runtime PostgreSQL via useClientDb sur la DB du tenant courant. Toute
-  modification va directement en DB, pas de redeploy nécessaire.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: 'hub' })
 
@@ -100,7 +85,7 @@ useHead({ title: `Paiements — Hub` })
       </p>
     </div>
 
-    <!-- Toast save / error -->
+    
     <div v-if="savedMessage" class="mb-4 px-4 py-3 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-sm">
       {{ savedMessage }}
     </div>
@@ -110,7 +95,7 @@ useHead({ title: `Paiements — Hub` })
 
     <div class="space-y-6">
 
-      <!-- Section Virement bancaire -->
+      
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">{{ t('hub.section_bankwire_title', 'Virement bancaire (RIB)') }}</h2>
         <p class="text-sm text-gray-500 dark:text-slate-400 mb-6">
@@ -160,7 +145,7 @@ useHead({ title: `Paiements — Hub` })
         </div>
       </section>
 
-      <!-- Section SystemPay (CB) -->
+      
       <section class="rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-6">
         <div class="flex items-start justify-between gap-4 mb-1">
           <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ t('hub.section_systempay_title', 'SystemPay (CB)') }}</h2>
@@ -177,7 +162,7 @@ useHead({ title: `Paiements — Hub` })
           {{ t('hub.section_systempay_subtitle', 'Paiement carte bancaire via SystemPay (Lyra Network — Banque Populaire / Crédit Agricole). Mode TEST = redirection sandbox sans débit réel ; PROD = vrais paiements.') }}
         </p>
 
-        <!-- Switch TEST / PROD -->
+        
         <div class="flex items-center gap-2 mb-6 p-1 bg-gray-100 dark:bg-slate-800 rounded-lg w-fit">
           <button
             type="button"
@@ -195,7 +180,7 @@ useHead({ title: `Paiements — Hub` })
           >PROD (réel)</button>
         </div>
 
-        <!-- Key presence (read-only) -->
+        
         <div class="mb-6 p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-gray-100 dark:border-slate-800">
           <p class="text-xs font-semibold text-gray-700 dark:text-slate-200 mb-3">{{ t('hub.systempay_keys', 'Clés API (.env du VPS)') }}</p>
           <dl class="space-y-2 text-xs">
@@ -226,7 +211,7 @@ useHead({ title: `Paiements — Hub` })
           </p>
         </div>
 
-        <!-- Cartes de test (visible seulement en TEST) -->
+        
         <div v-if="paymentForm.SYSTEMPAY_MODE === 'TEST'" class="rounded-lg border border-amber-200 dark:border-amber-500/30 bg-amber-50/50 dark:bg-amber-500/5 p-4">
           <p class="text-xs font-semibold text-amber-800 dark:text-amber-400 mb-3 flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>

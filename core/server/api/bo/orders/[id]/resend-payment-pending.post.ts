@@ -1,19 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/orders/:id/resend-payment-pending
- *
- * Manual resend of bank account details to customer. Reuses the tenant's bank account information
- * (ps_configuration BANK_WIRE_*) and sends the `order_payment_pending` template
- * via `sendPaymentPendingEmail` (DB-first + fallback HTML inline).
- *
- * Use cases :
- * - Back-office button 'Resend bank details' on order sheet
- * - Auto-resend cron for unpaid wire transfer orders after N days
- *
- * Note: order confirmation already contains bank details inline (checkout UX
- * ideal — 1 email), this endpoint serves later resends.
- */
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'

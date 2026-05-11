@@ -1,10 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/shipping/methods?clientId=...&addressId=...&totalHT=...&weight=...
- * List of active carriers with prices resolved for the context.
- * DB direct (doctrine: Zero PrestaShop webservice, 2026-04-22).
- */
+
 import { getCarriersFromDb } from '~/server/utils/orders-db'
 import { resolveIdLang } from '~/server/utils/lang'
 

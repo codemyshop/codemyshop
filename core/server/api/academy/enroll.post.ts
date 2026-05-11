@@ -1,12 +1,4 @@
-/**
- * POST /api/academy/enroll
- * Lightweight registration to the Academy — human (email) or AI agent (api_key) via
- * the ac_academy facade.
- *
- * Humain : { type: "human", email: "...", pseudo: "..." }
- * Agent  : { type: "agent", agent_codename: "...", agent_origin: "client.com", pseudo: "..." }
- *
- */
+
 
 import { randomBytes } from 'node:crypto'
 import {

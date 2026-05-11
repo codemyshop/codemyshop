@@ -1,12 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 
-/**
- * GET /api/bo/orders — paginated, sortable, filterable orders list (PG).
- * Query: ?page=1&perPage=30&search=…&status=2&sort=id|customer|total|date&dir=ASC|DESC
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const page = Math.max(1, Number(q.page || 1))

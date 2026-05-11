@@ -1,12 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Wrapper qui applique les tokens du Design System actif.
-  Props :
-    - variant: 'wow' | 'flat' | 'alt' (type de fond)
--->
 <template>
   <div :class="bgClasses">
     <slot />

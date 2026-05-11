@@ -1,11 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  PRM — Création d'un bon de commande.
-  Sélection fournisseur → produits rattachés à ce fournisseur → quantités/prix → création BC.
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
@@ -21,7 +14,7 @@
 
     <div class="p-6 max-w-4xl mx-auto space-y-6">
 
-      <!-- 1. Fournisseur + livraison -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
           <h2 class="text-sm font-bold">1 · Fournisseur</h2>
@@ -44,7 +37,7 @@
         </div>
       </div>
 
-      <!-- 2. Produits -->
+      
       <div v-if="idSupplier" class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
           <div>
@@ -57,7 +50,7 @@
           </div>
         </div>
 
-        <!-- Search results -->
+        
         <div v-if="searchResults.length" class="border-b border-gray-100 dark:border-slate-800 max-h-48 overflow-auto bg-gray-50 dark:bg-slate-800/30">
           <button v-for="p in searchResults" :key="p.id" @click="addLine(p)"
             class="w-full text-left px-4 py-2 text-xs hover:bg-white dark:hover:bg-slate-700 border-b border-gray-100 dark:border-slate-700 last:border-b-0 flex items-center justify-between">
@@ -69,7 +62,7 @@
           </button>
         </div>
 
-        <!-- Lignes -->
+        
         <table class="min-w-full text-xs">
           <thead class="bg-gray-50 dark:bg-slate-800/50">
             <tr>
@@ -115,7 +108,7 @@
         </table>
       </div>
 
-      <!-- 3. Validation -->
+      
       <div v-if="idSupplier" class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm flex items-center justify-between">
         <div>
           <p v-if="error" class="text-xs text-danger-600">{{ error }}</p>

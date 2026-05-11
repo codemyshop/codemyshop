@@ -1,15 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/hub/configuration/shop-info
- *
- * Return the tenant's company information stored in ps_configuration
- * (native PS). SIRET/SIREN are custom keys added by us (no schema
- * additionnel, pattern PS standard).
- *
- * Source of truth: ps_configuration. Used by the "Company" tab of
- * /hub/informations.
- */
 
 import { useClientDb } from '~/server/utils/db'
 

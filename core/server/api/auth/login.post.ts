@@ -1,15 +1,5 @@
-/**
- *
- * POST /api/auth/login
- * Body : { email, password }
- *
- * Authentification duale AC Hub :
- * 1. Look in ps_employee (admin/hub access)
- * 2. Otherwise in ps_customer (client access)
- *
- * Bcrypt verification for both (PS 8+). Direct DB (doctrine
- * "Zero PrestaShop webservice" 2026-04-22). Creates a hub_session cookie.
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 import { getFrontRole, isProfileAdmin } from '~/server/utils/roles'
 import { signToken } from '~/server/utils/session-crypto'
@@ -26,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
   const db = useClientDb(event)
 
-  // ── 1. Employee (admin/hub) ──────────────────────────────────────────────
+  
   try {
     const emp = await db.get<any>(
       `SELECT id_employee, email, firstname, lastname, passwd, active, id_profile
@@ -58,7 +48,7 @@ export default defineEventHandler(async (event) => {
     console.warn('[auth/login] Employee lookup failed:', err?.message)
   }
 
-  // ── 2. Customer (client) ─────────────────────────────────────────────────
+  
   try {
     const cust = await db.get<any>(
       `SELECT id_customer, email, firstname, lastname, passwd, active
@@ -90,8 +80,6 @@ export default defineEventHandler(async (event) => {
 
   return { success: false, error: 'Identifiants incorrects' }
 })
-
-// ── Helpers ────────────────────────────────────────────────────────────────
 
 async function verifyBcrypt(plain: string, hash: string): Promise<boolean> {
   if (!hash) return false

@@ -1,14 +1,4 @@
-<!--
-  Page devis B2B — /devis
-  Double parcours :
-  - Client connecté → convertit le devis en panier PS + redirige vers /commander
-  - Visiteur non connecté → formulaire B2B → SmartLead + SmartProject
-  clientId via useRuntimeConfig().public.clientId.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: 'funnel' })
 
@@ -22,13 +12,10 @@ const _cfg = useRuntimeConfig()
 const _clientId = String((_cfg.public as any).clientId ?? '')
 const _brand = String((_cfg.public as any).brandName ?? '')
 
-// Server-side cart — to migrate quote → cart when logged in
 const { addToCart, initServerCart } = useServerCart(_clientId)
 
-// Onglet actif : 'login' ou 'quote'
 const activeTab = ref<'login' | 'quote'>('quote')
 
-// ── Formulaire connexion client ───────────────────────────────────────
 const loginForm = reactive({ email: '', password: '' })
 const loginError = ref('')
 const loginLoading = ref(false)
@@ -44,7 +31,7 @@ async function loginAndConvert() {
       return
     }
 
-    // Migrate quote items to the server-side cart
+    
     converting.value = true
     for (const item of items.value) {
       await addToCart({
@@ -66,7 +53,6 @@ async function loginAndConvert() {
   }
 }
 
-// ── Formulaire demande de devis (prospect) ────────────────────────────
 const form = reactive({
   firstname: '',
   lastname: '',
@@ -145,7 +131,7 @@ useHead({ title: _brand ? `Demande de devis — ${_brand}` : 'Demande de devis' 
 <template>
   <div class="bg-white">
 
-      <!-- Breadcrumb -->
+      
       <div class="bg-gray-50 border-b border-gray-100">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
           <nav class="flex items-center gap-2 text-xs text-gray-400">
@@ -158,7 +144,7 @@ useHead({ title: _brand ? `Demande de devis — ${_brand}` : 'Demande de devis' 
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
-        <!-- Confirmation (envoi prospect) -->
+        
         <div v-if="submitted" class="max-w-lg mx-auto text-center py-20">
           <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-primary-600/10 flex items-center justify-center">
             <svg class="w-8 h-8 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -177,7 +163,7 @@ useHead({ title: _brand ? `Demande de devis — ${_brand}` : 'Demande de devis' 
           </NuxtLink>
         </div>
 
-        <!-- Contenu principal -->
+        
         <template v-else>
           <h1 class="text-2xl font-bold text-gray-900 mb-2">
             {{ t('devis.devis_title') }}
@@ -191,7 +177,7 @@ useHead({ title: _brand ? `Demande de devis — ${_brand}` : 'Demande de devis' 
 
           <div class="grid lg:grid-cols-3 gap-8">
 
-            <!-- Liste produits (2/3) -->
+            
             <div class="lg:col-span-2">
               <div v-if="items.length" class="space-y-3 mb-8">
                 <div
@@ -221,7 +207,7 @@ useHead({ title: _brand ? `Demande de devis — ${_brand}` : 'Demande de devis' 
                 </div>
               </div>
 
-              <!-- Devis vide -->
+              
               <div v-else class="text-center py-16 border border-dashed border-gray-200 rounded-xl mb-8">
                 <p class="text-gray-400 text-sm mb-4">{{ t('devis.devis_empty') }}</p>
                 <NuxtLink to="/" class="text-primary-600 text-sm font-medium hover:underline">
@@ -230,11 +216,11 @@ useHead({ title: _brand ? `Demande de devis — ${_brand}` : 'Demande de devis' 
               </div>
             </div>
 
-            <!-- Sidebar : double parcours (1/3) -->
+            
             <div class="lg:col-span-1">
               <div class="bg-gray-50 rounded-2xl p-6 sticky top-24">
 
-                <!-- Onglets -->
+                
                 <div class="flex rounded-lg bg-gray-200 p-0.5 mb-5">
                   <button
                     class="flex-1 py-2 text-xs font-semibold rounded-md transition-colors"
@@ -252,7 +238,7 @@ useHead({ title: _brand ? `Demande de devis — ${_brand}` : 'Demande de devis' 
                   </button>
                 </div>
 
-                <!-- Tab 1 : Connexion client → convertir en panier + commander -->
+                
                 <div v-if="activeTab === 'login'">
                   <p class="text-xs text-gray-500 mb-4">
                     {{ t('devis.devis_login_subtitle') }}
@@ -300,7 +286,7 @@ useHead({ title: _brand ? `Demande de devis — ${_brand}` : 'Demande de devis' 
                   </form>
                 </div>
 
-                <!-- Tab 2 : Formulaire prospect (demande de devis) -->
+                
                 <div v-else>
                   <p class="text-xs text-gray-500 mb-4">
                     {{ t('devis.devis_prospect_subtitle') }}

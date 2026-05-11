@@ -1,24 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Lightweight IMAP4rev1 pure Node client (TLS) — no external library.
- * Sufficient for OVH ssl0.ovh.net:993 (LOGIN, SELECT, UID SEARCH/FETCH).
- *
- * Scope:
- *  - LOGIN
- *  - SELECT INBOX (lecture seule)
- * - UID SEARCH SINCE <date> (server-side filtering)
- *  - UID FETCH (BODY.PEEK[HEADER] BODY.PEEK[TEXT])
- *  - LOGOUT
- *
- * Parsing MIME minimal :
- * - RFC2047 header decoding (=?UTF-8?B?...?= and =?UTF-8?Q?...?=).
- *  - Extraction text/plain depuis multipart (boundary scan).
- * - Content-Transfer-Encoding decoding: base64 / quoted-printable / 8bit.
- *
- * For advanced features (DKIM, IDLE, attachments, threads), use
- * imapflow. But the MVP for this project = simple inbox reading, that's enough.
- */
 
 import * as tls from 'node:tls'
 
@@ -27,11 +7,11 @@ export interface ImapOptions {
   port:     number
   user:     string
   pass:     string
-  /** Combien de jours en arrière (UID SEARCH SINCE). Défaut 7. */
+  
   sinceDays?: number
-  /** IMAP folder. Default INBOX. */
+  
   folder?:  string
-  /** Total timeout (ms). Default 60000. */
+  
   timeoutMs?: number
 }
 
@@ -39,7 +19,7 @@ export interface ImapAttachment {
   filename:    string
   mimeType:    string
   sizeBytes:   number
-  /** Decoded binary content. */
+  
   content:     Buffer
 }
 
@@ -58,10 +38,8 @@ export interface ImapMessage {
   raw?:       string
 }
 
-// ─── RFC2047 header decode ────────────────────────────────────────────────
-
 function decodeQuotedPrintable(s: string): string {
-  // Q-encoding for headers: '_' = space, =XX = byte hex
+  
   const bytes: number[] = []
   let i = 0
   while (i < s.length) {
@@ -81,7 +59,7 @@ function decodeQuotedPrintable(s: string): string {
 
 function decodeMimeHeader(raw: string): string {
   if (!raw) return ''
-  // =?charset?encoding?text?=
+  
   return raw.replace(
     /=\?([^?]+)\?([BbQq])\?([^?]*)\?=/g,
     (_m, charset, enc, text) => {
@@ -89,18 +67,18 @@ function decodeMimeHeader(raw: string): string {
         if (enc.toUpperCase() === 'B') {
           return Buffer.from(text, 'base64').toString(String(charset).toLowerCase().includes('utf') ? 'utf-8' : 'latin1')
         }
-        // Q encoding
+        
         return decodeQuotedPrintable(text)
       } catch {
         return text
       }
     },
-  ).replace(/\?=\s+=\?/g, '') // Joindre les fragments adjacents (déjà décodés)
+  ).replace(/\?=\s+=\?/g, '') 
 }
 
 function parseFromHeader(raw: string): { email: string; name: string } {
   const decoded = decodeMimeHeader(raw)
-  // "Name" <email@domain> ou Name <email@domain> ou email@domain
+  
   const m = decoded.match(/^\s*(?:"?([^"<]*?)"?\s*)?<([^>]+)>\s*$/)
   if (m) return { name: (m[1] || '').trim(), email: m[2].trim() }
   return { name: '', email: decoded.trim() }
@@ -112,8 +90,6 @@ function parseDateHeader(raw: string): Date | null {
   return isNaN(d.getTime()) ? null : d
 }
 
-// ─── MIME body parse ──────────────────────────────────────────────────────
-
 function decodeBodyPart(body: string, encoding: string, charset: string): string {
   const enc = (encoding || '').toLowerCase().trim()
   const cs = (charset || 'utf-8').toLowerCase().trim()
@@ -122,7 +98,7 @@ function decodeBodyPart(body: string, encoding: string, charset: string): string
       return Buffer.from(body.replace(/\s+/g, ''), 'base64').toString(cs.includes('utf') ? 'utf-8' : 'latin1')
     }
     if (enc === 'quoted-printable') {
-      // QP body : =XX hex, soft line breaks =\r\n
+      
       const cleaned = body.replace(/=\r?\n/g, '')
       const bytes: number[] = []
       let i = 0
@@ -186,15 +162,10 @@ function decodeBodyToBuffer(body: string, encoding: string): Buffer {
     }
     return Buffer.from(bytes)
   }
-  // 7bit / 8bit / binary : binaire latin1 brut
+  
   return Buffer.from(body, 'binary')
 }
 
-/**
- * Parses a complete FETCH response (headers + body) into text/plain.
- * If multipart: looks for the first text/plain part; otherwise text/html
- * stripped of tags; otherwise the raw body.
- */
 export function parseMessageBody(headers: string, body: string): string {
   const out = parseMessageParts(headers, body)
   if (out.text) return out.text.trim()
@@ -202,9 +173,6 @@ export function parseMessageBody(headers: string, body: string): string {
   return ''
 }
 
-/**
- * Full parse: returns text + html + attachments[]. Recursive on multipart.
- */
 export function parseMessageParts(headers: string, body: string): { text: string; html: string; attachments: ImapAttachment[] } {
   const ct = extractContentType(headers)
   const result = { text: '', html: '', attachments: [] as ImapAttachment[] }
@@ -227,8 +195,8 @@ export function parseMessageParts(headers: string, body: string): { text: string
         continue
       }
 
-      // Pièce jointe : Content-Disposition: attachment OU filename présent
-      // OU type non texte (image/*, application/*, etc.) hors text/* inline.
+      
+      
       const isAttachment =
         sub.disposition === 'attachment'
         || (sub.filename && sub.filename.length > 0)
@@ -257,8 +225,6 @@ export function parseMessageParts(headers: string, body: string): { text: string
   else result.text = decoded
   return result
 }
-
-// ─── Protocol IMAP ────────────────────────────────────────────────────────
 
 interface ImapConn {
   socket:    tls.TLSSocket
@@ -293,26 +259,26 @@ function processBuffer(conn: ImapConn) {
     const nl = conn.buffer.indexOf('\r\n')
     if (nl < 0) return
     const line = conn.buffer.slice(0, nl)
-    // Réponses littérales {N} : on doit lire N bytes en plus avant le \r\n suivant
+    
     const litMatch = line.match(/\{(\d+)\}$/)
     if (litMatch) {
       const need = nl + 2 + Number(litMatch[1])
-      if (conn.buffer.length < need + 2) return // attendre plus de data
-      // On garde tout dans le buffer ; on consomme jusqu'à la fin du fragment littéral
+      if (conn.buffer.length < need + 2) return 
+      
       const block = conn.buffer.slice(0, need)
       conn.buffer = conn.buffer.slice(need)
-      // Le tag se trouve en cherchant la prochaine ligne (continuation)
-      // Pour simplifier, on accumule tous les fragments dans le pending courant
-      // identifié par la dernière commande envoyée. Approche : on append au
-      // pending qui matche le tag déjà émis le plus récent.
+      
+      
+      
+      
       const lastTag = `A${String(conn.tag).padStart(3, '0')}`
       const p = conn.pending.get(lastTag)
       if (p) p.chunks.push(block)
       continue
     }
-    // Ligne non-littérale
+    
     conn.buffer = conn.buffer.slice(nl + 2)
-    // Tag de complétion ?
+    
     const tagMatch = line.match(/^(A\d{3,})\s+(OK|NO|BAD)\s+(.*)$/)
     if (tagMatch) {
       const [, tag, status, msg] = tagMatch
@@ -326,7 +292,7 @@ function processBuffer(conn: ImapConn) {
       }
       continue
     }
-    // Ligne untagged * : on l'append au pending courant
+    
     const lastTag = `A${String(conn.tag).padStart(3, '0')}`
     const p = conn.pending.get(lastTag)
     if (p) p.chunks.push(line + '\r\n')
@@ -340,9 +306,9 @@ async function connect(opts: ImapOptions): Promise<ImapConn> {
     let greeted = false
     const onTimeout = setTimeout(() => reject(new Error('IMAP connect timeout')), opts.timeoutMs || 30000)
     socket.on('data', (chunk: Buffer) => {
-      conn.buffer += chunk.toString('binary') // binary pour préserver bytes avant decode
+      conn.buffer += chunk.toString('binary') 
       if (!greeted) {
-        // Première ligne = greeting "* OK ..."
+        
         const nl = conn.buffer.indexOf('\r\n')
         if (nl >= 0 && conn.buffer.startsWith('* OK')) {
           conn.buffer = conn.buffer.slice(nl + 2)
@@ -367,18 +333,12 @@ function quoteDate(d: Date): string {
   return `${d.getUTCDate()}-${months[d.getUTCMonth()]}-${d.getUTCFullYear()}`
 }
 
-/**
- * Fetches messages from IMAP, with no server-side persistent state:
- * filters on the SQL side via `imap_id` unique at INSERT time (each
- * already-known row is skipped by ON CONFLICT). The `SINCE` filter here serves
- * only to limit the quantity fetched.
- */
 export async function fetchRecentMessages(opts: ImapOptions): Promise<ImapMessage[]> {
   const conn = await connect(opts)
   const messages: ImapMessage[] = []
   try {
-    // IMAP exige les guillemets autour des arguments avec caractères spéciaux
-    // mais on garde simple : login user/pass sans quotes — OVH accepte.
+    
+    
     const safePass = opts.pass.replace(/(["\\])/g, '\\$1')
     await sendCommand(conn, `LOGIN "${opts.user}" "${safePass}"`)
     await sendCommand(conn, `SELECT "${opts.folder || 'INBOX'}"`)
@@ -387,7 +347,7 @@ export async function fetchRecentMessages(opts: ImapOptions): Promise<ImapMessag
     const since = new Date(Date.now() - sinceDays * 24 * 3600 * 1000)
     const sinceStr = quoteDate(since)
     const searchResp = await sendCommand(conn, `UID SEARCH SINCE ${sinceStr}`)
-    // Réponse : "* SEARCH 12 14 18 22\r\n"
+    
     const searchLine = searchResp.split('\r\n').find((l) => l.startsWith('* SEARCH'))
     const uids = (searchLine || '').replace('* SEARCH', '').trim().split(/\s+/).filter(Boolean).map(Number)
 
@@ -398,8 +358,8 @@ export async function fetchRecentMessages(opts: ImapOptions): Promise<ImapMessag
           `UID FETCH ${uid} (BODY.PEEK[HEADER] BODY.PEEK[TEXT])`,
           60000,
         )
-        // Parse FETCH response : on cherche les blocs littéraux successifs
-        // (HEADER puis TEXT). On simplifie : on splitte par "BODY[" markers.
+        
+        
         const headerMatch = fetchResp.match(/BODY\[HEADER\][^{]*\{(\d+)\}\r\n([\s\S]+?)(?=\r\n[A-Z ]+BODY\[|\r\n\)\r\n|$)/)
         const textMatch   = fetchResp.match(/BODY\[TEXT\][^{]*\{(\d+)\}\r\n([\s\S]+?)(?=\r\n\)\r\n|$)/)
         if (!headerMatch) continue
@@ -434,7 +394,7 @@ export async function fetchRecentMessages(opts: ImapOptions): Promise<ImapMessag
           attachments: parts.attachments,
         })
       } catch (err) {
-        // Skip ce message si parse impossible, on continue
+        
         console.warn(`[imap] skip uid=${uid}: ${(err as Error).message}`)
       }
     }
@@ -445,16 +405,6 @@ export async function fetchRecentMessages(opts: ImapOptions): Promise<ImapMessag
   return messages
 }
 
-/**
- * IMAP APPEND: pushes an RFC822 message into a folder (default Sent).
- *
- * OVH: the Sent folder has the name `INBOX.Sent Messages` (cf. incidents
- * feedback_invoicing_mailer_imap_ovh). Override via opts.folder if needed.
- *
- * Implementation: dedicated TLS connection, minimal parsing of IMAP responses
- * to handle the continuation `+ ...` that follows the APPEND command with
- * literal `{N}`. No connection reuse.
- */
 export async function appendMessage(
   opts: ImapOptions & { folder: string },
   rfc822: Buffer,
@@ -503,12 +453,12 @@ export async function appendMessage(
 
         if (state === 'append') {
           if (line.startsWith('+')) {
-            // Serveur prêt pour le literal
+            
             state = 'literal'
             socket.write(rfc822)
             socket.write('\r\n')
           } else if (line.startsWith('A002 ')) {
-            // Refus avant continuation (NO/BAD)
+            
             return fail(new Error(`IMAP APPEND rejected: ${line}`))
           }
           continue
@@ -537,9 +487,9 @@ export async function appendMessage(
     socket.on('end', () => {
       if (state !== 'logout') {
         clearTimeout(timer)
-        // Connexion fermée prématurément
+        
         if (state === 'literal' || state === 'append') {
-          // Si on a déjà reçu OK avant, on serait passé en logout
+          
           reject(new Error('IMAP connection closed before APPEND completed'))
         }
       }

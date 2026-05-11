@@ -1,9 +1,4 @@
-/**
- *
- * POST /api/ai/generate-short
- * Body : { source: 'product'|'event'|'news', content: string, clientId: string, tone: string }
- * Returns : ShortScript
- */
+
 
 export interface ShortScript {
   hook:              string
@@ -78,7 +73,7 @@ Ton : ${tonePref}`
   try {
     const raw = await callAI(systemPrompt, userPrompt)
 
-    // Si stub (callAI renvoie '[STUB]…' quand pas de clé API)
+    
     if (raw.startsWith('[STUB]')) return STUB
 
     const match = raw.match(/\{[\s\S]*\}/)

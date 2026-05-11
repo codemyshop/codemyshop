@@ -1,14 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/cart/coupon — Applies a promo code (ps_cart_rule) to the cart.
- * Body: { cartId, code, clientId }
- *
- * Direct PG database (zero external service principle, 2026-04-22). Valid
- * active + time window + minimum_amount, then INSERT into
- * ps_cart_cart_rule (MVP: one rule at a time). Discount calculation is
- * applied on the next getCart() call.
- */
+
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 import { getCartFromDb, applyCouponToCart } from '~/server/utils/cart-db'
@@ -23,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const cart = await getCartFromDb(Number(cartId), ctx)
   if (!cart) throw createError({ statusCode: 404, message: 'Panier introuvable' })
 
-  // Validation minimum_amount avant applyCouponToCart pour message UX précis (PG).
+  
   const d = usePocPg()
   const ruleRows: any[] = await d.execute(sql`
     SELECT minimum_amount FROM cs_main.ps_cart_rule WHERE code = ${String(code)} AND active = 1 LIMIT 1

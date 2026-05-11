@@ -1,10 +1,4 @@
-/**
- *
- * PUT /api/hub/translations/profiles
- * Body : { id_lang, profile, tone, culture_notes, glossary? }
- * UPSERT to the translation profile via the facade. Requires the translation
- * module installed (table created on install).
- */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { upsertTranslateProfile } from '~/enterprise/misc/translate/server/utils/translate'
@@ -22,7 +16,7 @@ export default defineEventHandler(async (event) => {
   if (!idLang) throw createError({ statusCode: 400, statusMessage: 'id_lang requis' })
 
   const db = useClientDb(event)
-  // Résoudre iso_code via ps_lang (PS native — pas dans Drizzle pour l'instant).
+  
   const lang = await db.get<{ iso_code: string }>(
     `SELECT iso_code FROM ps_lang WHERE id_lang = ? LIMIT 1`,
     [idLang],

@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import {
   type SmartLeadUpdateSet,
@@ -7,15 +7,6 @@ import {
   updateSmartLeadFields,
 } from '~/enterprise/base/smartlead/server/utils/smartlead'
 
-/**
- * POST /api/bo/leads/import — UPSERT leads in bulk (cs_smartlead).
- *
- * Body : { rows, mapping, createMissing? }
- * Match key: email (implicitly unique on CRM side).
- *
- * Only cs_smartlead is modified. contact_messages (inbound) remain
- * untouched by the import — they have their own lifecycle.
- */
 interface ImportBody {
   rows: Record<string, any>[]
   mapping: {

@@ -1,8 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <script setup lang="ts">
 definePageMeta({ layout: 'hub', middleware: 'crm-auth' })
 useHead({ title: 'Gestion de Flotte — Admin Hub' })
@@ -58,7 +54,7 @@ function statusColor(status: string) {
 function offerLabel(site: SiteRecord) {
   if (site.offer === 'starter') return 'Starter'
   if (site.offer === 'premium') return 'Premium'
-  // Guess from domain
+  
   if (site.id === 'ac-hub') return 'Hub (master)'
   return 'Custom'
 }
@@ -67,7 +63,7 @@ function offerLabel(site: SiteRecord) {
 <template>
   <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
-    <!-- Header -->
+    
     <div class="flex items-center justify-between mb-8">
       <div>
         <h1 class="text-2xl font-extrabold text-gray-900 dark:text-white">Gestion de Flotte</h1>
@@ -92,7 +88,7 @@ function offerLabel(site: SiteRecord) {
       </div>
     </div>
 
-    <!-- Loading -->
+    
     <div v-if="pending" class="text-center py-16">
       <svg class="w-8 h-8 animate-spin text-primary-500 mx-auto" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
@@ -100,7 +96,7 @@ function offerLabel(site: SiteRecord) {
       </svg>
     </div>
 
-    <!-- Tableau -->
+    
     <div v-else class="bg-white dark:bg-slate-800/60 border border-gray-200 dark:border-white/[0.06] rounded-2xl overflow-hidden">
       <table class="w-full">
         <thead>
@@ -165,12 +161,12 @@ function offerLabel(site: SiteRecord) {
       </table>
     </div>
 
-    <!-- Modal de confirmation -->
+    
     <Teleport to="body">
       <div v-if="deleteTarget" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-white/[0.06] rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
 
-          <!-- Result after deletion -->
+          
           <div v-if="deleteResult">
             <h3 class="text-lg font-bold mb-4" :class="deleteResult.success ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'">
               {{ deleteResult.success ? 'Suppression terminée' : 'Erreur' }}
@@ -183,7 +179,7 @@ function offerLabel(site: SiteRecord) {
             </button>
           </div>
 
-          <!-- Confirmation before deletion -->
+          
           <div v-else>
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Supprimer {{ deleteTarget.name || deleteTarget.id }} ?</h3>
             <p class="text-sm text-gray-500 dark:text-slate-400 mb-2">

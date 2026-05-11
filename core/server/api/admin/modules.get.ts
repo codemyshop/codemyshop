@@ -1,12 +1,5 @@
-/**
- * GET /api/admin/modules — module loader state (debug + admin marketplace).
- *
- * Lists all detected manifests and indicates which ones are active for
- * the current tenant. Used by the marketplace UI (Phase 7) to display
- * the available modules with their status: enabled/included/to purchase.
- *
- * Chantier codemyshop-oss Phase 1.2 (2026-05-10).
- */
+
+
 import { resolveClientId } from '~/server/utils/db'
 import { listAllManifests, isModuleActive } from '~/server/utils/module-loader'
 import { resolveTenantInfo } from '~/server/utils/tier-resolver'

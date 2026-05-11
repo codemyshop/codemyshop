@@ -1,14 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/products/search-boost/vocabulary — indexed vocabulary.
- * Returns the most frequent words in ps_search_index (weighted
- * frequency summed by word), top N of the searchable catalog.
- *
- * Query: ?search=…&limit=100
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const search = (q.search || '').trim()

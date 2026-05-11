@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/smartproject/projects/:id/tasks
- * Remplace ac_smartproject/ajaxaddprojecttask (bulk insert, chantier #38 Phase B1.1).
- *
- * Body : { tasks: [{ name, status?, description?, assigned_to?, date_deadline? }, ...] }
- */
+
 import { createProjectTasks, type CreateTaskInput } from '~/enterprise/base/smartproject/server/utils/smartproject'
 
 export default defineEventHandler(async (event) => {

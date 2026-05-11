@@ -1,8 +1,4 @@
-/**
- * POST /api/academy/register
- * Academy student registration — free, email required, via the ac_academy facade.
- *
- */
+
 
 import {
   createLearnerHuman,
@@ -40,10 +36,10 @@ export default defineEventHandler(async (event) => {
 
     const learnerId = await createLearnerHuman(email, pseudo, { event })
 
-    // Lien legacy student (table optionnelle selon tenant)
+    
     try {
       await createStudentLink(learnerId, pseudo, { event })
-    } catch { /* table may not exist on all envs */ }
+    } catch {  }
 
     const sessionData = {
       learnerId,

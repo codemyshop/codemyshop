@@ -1,23 +1,15 @@
-<!--
-  /**
-   *
-   * Homepage section: gift card promo. Activable via the builder
-   * (insertion of a cs_homepage_section row type='giftcard-promo').
-   *
-   * All visible labels go through t() (rule 10bis CLAUDE.md).
-   */
--->
+
 <template>
   <ThemeSection variant="alt">
     <section class="max-w-6xl mx-auto px-6 py-16 sm:py-20">
       <div class="grid lg:grid-cols-2 gap-10 items-center">
 
-        <!-- Visuel : carte stylée -->
+        
         <div class="relative">
           <div
             class="aspect-[5/3] rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-amber-400 relative"
           >
-            <!-- Pattern subtil -->
+            
             <div class="absolute inset-0 opacity-20"
               style="background-image: radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 30%, white 1px, transparent 1px); background-size: 30px 30px;"
               aria-hidden="true"
@@ -34,7 +26,7 @@
           </div>
         </div>
 
-        <!-- Texte + CTA -->
+        
         <div class="space-y-5">
           <p class="text-[11px] tracking-[0.3em] uppercase text-primary-600">
             {{ resolvedTitle || t('home_giftcard.kicker') }}

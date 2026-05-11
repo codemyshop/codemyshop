@@ -1,10 +1,4 @@
-/**
- *
- * GET    /api/hub/ai-queue              — list of tasks
- * POST   /api/hub/ai-queue              — create a task
- * PUT    /api/hub/ai-queue?action=exec  — execute a task
- * DELETE /api/hub/ai-queue?id=xxx       — supprimer
- */
+
 
 import {
   createAiTask,

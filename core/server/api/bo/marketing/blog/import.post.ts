@@ -1,24 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * POST /api/bo/marketing/blog/import — UPSERT articles de blog.
- *
- * Body : { rows, mapping, createMissing? }
- * Match key: id (id_cms) OR linkRewrite (unique slug per active article).
- *
- * Rules:
- * - Only touch metadata (title, linkRewrite, metaDescription,
- * active, indexation, categoryId) — NEVER to `content`.
- * Editorial content remains protected (AI-generated or manual writing) ;
- * to edit it, you must go through the article editor.
- * - Write in master language only (id_lang=1). Translations are
- * managed per language in the admin interface.
- * - Sprint 18.1 isolation: reject if the existing article is at root.
- * - createMissing requires categoryId + title (same constraint as PUT).
- */
 interface ImportBody {
   rows: Record<string, any>[]
   mapping: {
@@ -85,7 +69,7 @@ export default defineEventHandler(async (event) => {
     const indexation = toBool(pick(mapping.indexation))
 
     try {
-      // Match
+      
       let existingId: number | null = null
       let existingCat: number | null = null
       if (idRaw && !Number.isNaN(Number(idRaw))) {
@@ -107,14 +91,14 @@ export default defineEventHandler(async (event) => {
       }
 
       if (existingId) {
-        // Isolation : refuser si racine
+        
         if (existingCat === 1) {
           stats.skipped++
           stats.errors.push({ row: i + 1, reason: `article #${existingId} en racine (landing) — ignoré` })
           continue
         }
 
-        // ps_cms
+        
         const cf: string[] = []
         const cp: any[] = []
         if (catRaw !== undefined && !Number.isNaN(Number(catRaw))) {
@@ -127,7 +111,7 @@ export default defineEventHandler(async (event) => {
           await db.run(`UPDATE ps_cms SET ${cf.join(', ')} WHERE id_cms = ?`, [...cp, existingId])
         }
 
-        // ps_cms_lang (master seulement)
+        
         const lf: string[] = []
         const lp: any[] = []
         if (title !== undefined) { lf.push('meta_title = ?'); lp.push(String(title).trim().slice(0, 255)) }
@@ -162,7 +146,7 @@ export default defineEventHandler(async (event) => {
           stats.errors.push({ row: i + 1, reason: 'slug impossible à générer' })
           continue
         }
-        // Garde-fou doublon slug
+        
         const dup = await db.get<any>(
           `SELECT c.id_cms FROM ps_cms c
            JOIN ps_cms_lang cl ON cl.id_cms = c.id_cms AND cl.id_lang = 1

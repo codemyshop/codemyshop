@@ -1,13 +1,4 @@
-/**
- *
- * cs_email_config facade (singleton): reads SMTP/Resend config from
- * the DB first, fallback to process.env.*. Cache TTL 60s.
- *
- * Usage :
- *   const cfg = await loadEmailConfig()        // lecture (DB > env)
- *   await saveEmailConfig({ smtp_host, ... })   // upsert
- * clearEmailConfigCache()                     // invalidates after save
- */
+
 
 import { getPgClient } from './db-pg-adapter'
 
@@ -22,7 +13,7 @@ export interface EmailConfig {
   smtp_secure: boolean
   from_email:  string
   reply_to:    string
-  /** D'où vient la valeur affichée : 'db' (row présente) ou 'env' (fallback). */
+  
   source:      'db' | 'env'
 }
 

@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import {
   bankTransactionTotals,
@@ -6,16 +6,6 @@ import {
   listBankTransactions,
 } from '~/enterprise/banking/bank/server/utils/bank'
 
-/**
- * GET /api/bo/finance/bank — lignes de compte bancaire.
- *
- * Query :
- * - period: 30 | 90 | 365 (days, default 90)
- * - status: all | unreconciled | reconciled (default all)
- *   - accountId : id_bank_account (optionnel)
- *
- * Source: cs_bank_transactions (fed by the ac_bank_sync cron).
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const periodDays = [30, 90, 365].includes(Number(q.period)) ? Number(q.period) : 90

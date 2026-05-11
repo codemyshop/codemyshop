@@ -1,14 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { countLeadsUnion, listLeadsUnion } from '~/enterprise/base/smartlead/server/utils/smartlead'
 
-/**
- * GET /api/bo/leads — leads (smartlead) + paginated contact messages.
- * Query : ?page=1&perPage=30&search=…&source=lead|contact
- * Filtres par colonne (style BO PrestaShop) : fName, fProfession, fCompany,
- * fActivite, fCity, fWebsite, fEmail, fPhone, fCaMin, fSourceCol,
- * fEmailVerified (ok|rejected|unknown|none).
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const page = Math.max(1, Number(q.page || 1))

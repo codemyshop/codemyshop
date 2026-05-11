@@ -1,15 +1,4 @@
-/**
- *
- * Drizzle PG schemas for ac_faq — task #38 Phase 1 step 6.
- *
- * 2 tables (cs_main, internal-only for this step; tenant cohabitation
- * via dedicated schemas possible later when the database migrates):
- * - cs_faq      : polymorphic entity (parent_type / parent_id)
- *   - cs_faq_lang : i18n (question + answer)
- *
- * Polymorphic pattern preserved as-is. Composite PK (id_faq, id_lang)
- * on _lang, index (parent_type, parent_id, position) on parent.
- */
+
 
 import {
   index,

@@ -1,18 +1,4 @@
-/**
- *
- * Drizzle PG schema for `cs_capa_config` — tenant-aware configuration for
- * purchasing capacity scoring (UI /hub/leads).
- *
- * 1 row per tenant (key id_shop, default 1). Thresholds are stored as
- * NUMERIC to allow revenue in M€ on B2B tenants and revenue in
- * k€ on SMB tenants (vape shops, etc.).
- *
- * Reasonable defaults if the table is empty:
- *   - ticket_annuel_eur : 10000 (= 10 k€/an de SaaS + projet)
- *   - ca_confortable_min : 5_000_000
- *   - ca_faisable_min : 1_000_000
- * - loss_ratio_max: 0.10 (= loss > 10% of revenue → Risky)
- */
+
 
 import {
   integer,

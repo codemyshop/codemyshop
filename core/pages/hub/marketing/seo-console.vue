@@ -1,12 +1,8 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- ── Header ────────────────────────────────────────────────────────────── -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -27,7 +23,7 @@
 
     <div class="p-6 max-w-5xl mx-auto space-y-6">
 
-      <!-- ── GSC Connection (if not connected) ────────────────────────────────── -->
+      
       <div v-if="!gscConnected" class="bg-white dark:bg-slate-900 rounded-2xl border border-amber-200 dark:border-amber-500/20 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-amber-100 dark:border-amber-500/10 bg-amber-50/50 dark:bg-amber-500/5">
           <h2 class="text-sm font-bold text-amber-800 dark:text-amber-300">Connectez votre Google Search Console</h2>
@@ -57,7 +53,7 @@
         </div>
       </div>
 
-      <!-- ── Dashboard SEO ───────────────────────────────────────────────────── -->
+      
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div v-for="kpi in kpis" :key="kpi.label" class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm">
           <p class="text-xs font-semibold text-gray-500 dark:text-slate-500 uppercase tracking-wider mb-1">{{ kpi.label }}</p>
@@ -68,10 +64,10 @@
         </div>
       </div>
 
-      <!-- ── Outils SEO ──────────────────────────────────────────────────────── -->
+      
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <!-- Audit Cannibalisation -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50">
             <div class="flex items-center gap-3">
@@ -100,7 +96,7 @@
           </div>
         </div>
 
-        <!-- Optimisation URLs -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50">
             <div class="flex items-center gap-3">
@@ -127,7 +123,7 @@
           </div>
         </div>
 
-        <!-- Monitoring 404 -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50">
             <div class="flex items-center gap-3">
@@ -154,7 +150,7 @@
           </div>
         </div>
 
-        <!-- AI SEO strategy -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50">
             <div class="flex items-center gap-3">
@@ -184,7 +180,7 @@
 
       </div>
 
-      <!-- ── Top Keywords GSC (overview) ─────────────────────────────────────── -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50 flex items-center justify-between">
           <div>
@@ -255,21 +251,16 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
+
 definePageMeta({ layout: 'hub', middleware: 'crm-auth' })
 
 const { resolvedClientId } = useClientDetection()
 
-// Vérifier si GSC est configuré pour ce tenant :
-//   - SA global présent (DB row _global.secrets.gscServiceAccount)
-//   - siteUrl tenant configuré (cs_client_config.gscSiteUrl)
 const gscConnected = ref(false)
 const gscMissing   = ref<'none' | 'sa' | 'siteUrl' | 'both'>('both')
 const gscSiteUrl   = ref<string>('')
 const auditLoading = ref(false)
 
-// Top opportunités GSC (live)
 interface GscOpportunity {
   query: string; page: string; position: number; clicks: number
   impressions: number; ctr: number; score: number
@@ -306,13 +297,13 @@ onMounted(async () => {
   let saExists = false
   let siteUrl = ''
 
-  // SA global — public read OK pour la métadonnée existence (mais endpoint = SuperAdmin only).
-  // Côté tenant non-admin, on déduit la présence via gsc-opportunities qui renverra success.
+  
+  
   try {
     const sa = await $fetch<{ gscServiceAccount: { exists: boolean } }>('/api/hub/global-secrets')
     saExists = sa.gscServiceAccount.exists
   } catch {
-    // Non SuperAdmin — on tentera la validation indirecte via /api/gsc-opportunities
+    
     try {
       const probe = await $fetch<{ success: boolean; error?: string }>('/api/gsc-opportunities')
       saExists = probe.success || (probe.error?.includes('gscSiteUrl') ?? false)
@@ -351,6 +342,6 @@ function runCannibalizationAudit() {
 }
 
 function generateStrategy() {
-  // BACKLOG #145: appel API IA pour générer la stratégie
+  
 }
 </script>

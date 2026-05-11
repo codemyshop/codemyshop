@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * DELETE /api/admin/faq/items/:id
- * Remplace ac_base/ajaxfaqmanager?action=delete (chantier #38 Phase B4).
- *
- * Cascade _lang. Auth admin obligatoire (cookie hub_session).
- */
+
 import { deleteFaqById } from '~/modules/faq/server/utils/faq'
 import { verifyToken } from '~/server/utils/session-crypto'
 

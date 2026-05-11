@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/cms/:slug
- * CMS article by slug from the tenant DB via the cms-extra facade.
- */
+
 import { getCmsArticleBySlug } from '~/modules/cms-extra/server/utils/cms-extra'
 import { resolveIdLang } from '~/server/utils/lang'
 

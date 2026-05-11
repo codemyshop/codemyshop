@@ -1,15 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/blog/categories
- * Blog pillar and subcategory hierarchy from ps_cms_category (native PS).
- *
- * Single source of truth: ps_cms_category + ps_cms_category_lang.
- * The "Blog" root (link_rewrite='blog') is identified by its slug.
- * Pillars are its direct children, subcategories are its grandchildren.
- *
- * Multi-tenant: resolves the correct database based on hostname.
- */
+
 import { useClientDb } from '~/server/utils/db'
 
 export interface BlogPillarNode {
@@ -34,7 +24,7 @@ export interface BlogSubcategoryNode {
 }
 
 export interface BlogCategoriesResponse {
-  /** id_cms_category de la racine "Blog" (sous Accueil). null si pas de racine blog. */
+  
   rootId: number | null
   pillars: BlogPillarNode[]
 }

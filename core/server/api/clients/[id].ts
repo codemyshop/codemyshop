@@ -1,12 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET   /api/clients/:id  → client details
- * PATCH /api/clients/:id  → update (status, etc.)
- * DELETE /api/clients/:id → deletion (deactivation)
- *
- * Source of truth: cs_client_vps (DB) via ac_hub facade.
- */
 
 import {
   deactivateClientVps,

@@ -1,26 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/sav — list of support tickets (Sprint 16).
- *
- * Replaces the old /api/bo/customer-threads which had neither pagination
- * nor search and loaded messagesCount as a subquery per row.
- *
- * - LEFT JOIN ps_customer for the name, ps_orders for the reference.
- * - Aggregated subquery ps_customer_message for messagesCount (one
- * only once, not per row).
- * - Counts by status calculated in one separate grouped query — badges
- * header (open / pending / closed) always accurate even with
- * filters/search (we return them unfiltered so the badges
- * show the global total, not the filtered total).
- *
- * Query :
- *   ?page=1&perPage=30  — pagination serveur
- *   ?search=…           — email client OR nom OR id commande
- * ?status=open        — status filter (otherwise all)
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const page = Math.max(1, Number(q.page || 1))
@@ -51,7 +32,7 @@ export default defineEventHandler(async (event) => {
 
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''
 
-    // Count total (paginé)
+    
     const countRow = await db.get<any>(`
       SELECT COUNT(*) AS total
       FROM ps_customer_thread ct
@@ -61,7 +42,7 @@ export default defineEventHandler(async (event) => {
     const total = countRow?.total ?? 0
     const offset = (page - 1) * perPage
 
-    // Counts par statut (non filtrés — header badges globaux)
+    
     const statusRows = await db.query<any>(`
       SELECT status, COUNT(*) AS n FROM ps_customer_thread GROUP BY status
     `)

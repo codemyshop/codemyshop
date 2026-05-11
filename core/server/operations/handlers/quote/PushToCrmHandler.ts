@@ -1,14 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Handler: pushes the lead to the database via Drizzle ORM
- * (Phase 9b.4e, option C-hard). Remplace l'ancien psProxy ac_smartlead/
- * ajaxpubliclead — clientId ↔ DB tenant resolution passes through the
- * helpers crm-direct + linkCrmToQuoteRequest (dedicated facades).
- *
- * Single responsibility: external system synchronization
- * Silent on failure — the local quote (SaveToDatabaseHandler) is the safety net.
- */
 
 import type { DomainEvent } from '../../bus/EventBus'
 import type { QuoteRequestedPayload } from '../../events/QuoteRequestedEvent'

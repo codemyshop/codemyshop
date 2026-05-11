@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { createAvailability } from '~/enterprise/base/appointment/server/utils/appointment'
 
-/**
- * POST /api/bo/appointment/availability — admin opens a time slot.
- * Body : { dateStart: ISO string, durationMin?: number, notes?: string }
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const dateStartRaw = String(body?.dateStart ?? '').trim()

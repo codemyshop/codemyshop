@@ -1,15 +1,5 @@
-/**
- *
- * Helper to read front-end client session (from `ac_session` cookie).
- * Set by `catalogue/customer/login.post.ts`, consumed by any endpoint
- * that needs to know the current customerId (wishlist, cart, RMA...).
- *
- * Staff impersonation mode: if the logged-in sales staff has
- * a valid `hub_impersonation` token for a target client, `getCustomerSession`
- * returns that client (override). The `isImpersonated` flag allows endpoints
- * critical (checkout/payment) to log `id_session_impersonation` for
- * GDPR traceability.
- */
+
+
 import type { H3Event } from 'h3'
 import { sql } from 'drizzle-orm'
 import { verifyToken } from '~/server/utils/session-crypto'
@@ -58,7 +48,6 @@ export function getCustomerSession(event: H3Event): CustomerSession | null {
   }
 }
 
-/** Variante stricte qui lance 401 si pas connecté. */
 export function requireCustomer(event: H3Event): CustomerSession {
   const session = getCustomerSession(event)
   if (!session) {
@@ -67,17 +56,6 @@ export function requireCustomer(event: H3Event): CustomerSession {
   return session
 }
 
-/**
- * Resolves the customerId to use for a request that accepts one
- * in body/query (cart/create, cart/last, addresses, checkout). If an
- * impersonation is active for the requesting sales staff, their idCustomer
- * target **takes precedence** over the provided value — a sales staff member cannot
- * place an order for a client other than the one for which they opened
- * a session (otherwise GDPR audit bypass).
- *
- * Without impersonation: returns providedId as-is (Number).
- * 0/NaN if nothing usable — the endpoint remains responsible for validation.
- */
 export function resolveCustomerIdForRequest(event: H3Event, providedId: any): number {
   const impersonated = resolveImpersonatedCustomer(event)
   if (impersonated && impersonated.idCustomer > 0) return impersonated.idCustomer
@@ -85,13 +63,6 @@ export function resolveCustomerIdForRequest(event: H3Event, providedId: any): nu
   return Number.isFinite(n) && n > 0 ? n : 0
 }
 
-/**
- * Async variant — re-validates in DB the impersonation session (status=active,
- * not expired). To use on sensitive actions: checkout, payment,
- * profile mutations. Throw 403 if cookie present but DB session is stale
- * (revoked, expired, closed). No regression for real clients (skip
- * DB validation if not in impersonation mode).
- */
 export async function requireCustomerStrict(event: H3Event): Promise<CustomerSession> {
   const session = requireCustomer(event)
   if (!session.isImpersonated || !session.impersonationSessionId) return session

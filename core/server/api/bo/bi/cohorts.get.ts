@@ -1,22 +1,13 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/bi/cohorts — analyzes cohorts (monthly retention), LTV, RFM segmentation.
- *
- * Cohort = month of the customer's first validated order.
- * Window: 12 rolling months.
- * Retention[c][m] = % of customers in cohort c who ordered in relative month m.
- * LTV[c]          = average cumulative revenue per customer in cohort c.
- * RFM             = behavioral segmentation based on recency/frequency/monetary.
- */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
 
   try {
     const [cohortSizes, retention, ltvRows, rfm] = await Promise.all([
-      // Taille de chaque cohorte (nouveaux clients par mois d'acquisition)
+      
       db.query<any>(`
         WITH first_order AS (
           SELECT id_customer, DATE_FORMAT(MIN(date_add), '%Y-%m') AS cohort
@@ -31,7 +22,7 @@ export default defineEventHandler(async (event) => {
         ORDER BY cohort ASC
       `),
 
-      // Matrice rétention : par cohorte × delta mois → clients distincts + revenu
+      
       db.query<any>(`
         WITH first_order AS (
           SELECT id_customer, DATE_FORMAT(MIN(date_add), '%Y-%m') AS cohort
@@ -53,7 +44,7 @@ export default defineEventHandler(async (event) => {
         ORDER BY fo.cohort ASC, monthDelta ASC
       `),
 
-      // LTV moyen par cohorte (CA total cohorte / taille cohorte)
+      
       db.query<any>(`
         WITH first_order AS (
           SELECT id_customer, DATE_FORMAT(MIN(date_add), '%Y-%m') AS cohort
@@ -76,7 +67,7 @@ export default defineEventHandler(async (event) => {
         ORDER BY fo.cohort ASC
       `),
 
-      // Segmentation RFM
+      
       db.query<any>(`
         WITH cust_stats AS (
           SELECT
@@ -100,7 +91,7 @@ export default defineEventHandler(async (event) => {
       `),
     ])
 
-    // Transforme retention en matrice indexée par cohorte
+    
     type CellRaw = { cohort: string; monthDelta: number; activeCustomers: number; revenue: number }
     const byCohort: Record<string, CellRaw[]> = {}
     for (const r of retention as CellRaw[]) {

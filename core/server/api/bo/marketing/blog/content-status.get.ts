@@ -1,15 +1,9 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { resolveClientId } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 import { getLatestStatusForCms, countQueueAhead } from '~/enterprise/ai/cms-queue/server/utils/cms-queue'
 
-/**
- * GET /api/bo/marketing/blog/content-status?id_cms=227
- *
- * Returns the latest status of AI writing for an article.
- * Used by the back office for polling after 'AI writing' click.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -30,13 +24,13 @@ export default defineEventHandler(async (event) => {
     if (row.status === 'pending' || row.status === 'processing') {
       try {
         queuePosition = await countQueueAhead(row.id_redaction, { event })
-        estimatedSeconds = queuePosition * 180 // ~3 min/article
+        estimatedSeconds = queuePosition * 180 
         if (row.status === 'processing') {
           const elapsed = Math.floor((Date.now() - new Date(row.date_upd).getTime()) / 1000)
           estimatedSeconds = Math.max(30, 180 - elapsed)
           queuePosition = 0
         }
-      } catch { /* silent */ }
+      } catch {  }
     }
 
     return { found: true, ...row, queuePosition, estimatedSeconds }

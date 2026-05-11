@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto">
 
-    <!-- ── Header ────────────────────────────────────────────────────── -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
       <h1 class="text-lg font-bold text-gray-800 dark:text-slate-100">Événements</h1>
       <button
@@ -17,7 +17,7 @@
 
     <div class="p-6">
 
-      <!-- ── Filtres ──────────────────────────────────────────────────── -->
+      
       <div class="flex flex-wrap gap-3 mb-5">
         <select v-model="filterStatus" class="px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-300">
           <option value="">Tous les statuts</option>
@@ -33,15 +33,15 @@
         <span class="text-xs text-gray-400 self-center ml-auto">{{ filteredEvents.length }} événement(s)</span>
       </div>
 
-      <!-- ── Loading ─────────────────────────────────────────────────── -->
+      
       <div v-if="loading" class="text-center py-20 text-gray-400">Chargement…</div>
 
-      <!-- ── Empty ───────────────────────────────────────────────────── -->
+      
       <div v-else-if="!filteredEvents.length" class="text-center py-20 text-gray-400 text-sm">
         Aucun événement. Créez votre premier événement !
       </div>
 
-      <!-- ── Table ───────────────────────────────────────────────────── -->
+      
       <div v-else class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 overflow-hidden shadow-sm">
         <table class="w-full text-sm">
           <thead>
@@ -122,7 +122,7 @@
 
     </div>
 
-    <!-- ── Modal Create / Edit ─────────────────────────────────────── -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div
@@ -223,7 +223,7 @@
       </Transition>
     </Teleport>
 
-    <!-- ── Slide-over Inscrits ────────────────────────────────────────── -->
+    
     <Teleport to="body">
       <Transition name="slide">
         <div v-if="showRegistrants" class="fixed inset-0 z-50 flex justify-end">
@@ -265,7 +265,7 @@
       </Transition>
     </Teleport>
 
-    <!-- ── Confirm Delete ─────────────────────────────────────────────── -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div
@@ -291,14 +291,12 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
+
 import type { EventRecord, EventRegistration } from '~/types/event'
 import type { ClientRecord } from '~/server/api/clients'
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
-// ── État principal ─────────────────────────────────────────────────────────
 const events       = ref<EventRecord[]>([])
 const loading      = ref(true)
 const filterStatus = ref('')
@@ -314,10 +312,8 @@ const filteredEvents = computed(() =>
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
 )
 
-// ── Clients (pour le select) ───────────────────────────────────────────────
 const clients = ref<ClientRecord[]>([])
 
-// ── Modal Create / Edit ────────────────────────────────────────────────────
 const showModal = ref(false)
 const editingId = ref<string | null>(null)
 const saving    = ref(false)
@@ -338,16 +334,13 @@ const emptyForm = () => ({
 })
 const form = ref(emptyForm())
 
-// ── Slide-over Inscrits ────────────────────────────────────────────────────
 const showRegistrants      = ref(false)
 const selectedEventForReg  = ref<EventRecord | null>(null)
 const registrations        = ref<EventRegistration[]>([])
 const regLoading           = ref(false)
 
-// ── Suppression ───────────────────────────────────────────────────────────
 const deleteTarget = ref<EventRecord | null>(null)
 
-// ── Helpers ───────────────────────────────────────────────────────────────
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('fr-FR', {
     day: 'numeric', month: 'short', year: 'numeric',
@@ -368,7 +361,6 @@ function statusClass(s: EventRecord['status']) {
   } as Record<string, string>)[s] ?? 'bg-gray-100 dark:bg-slate-800 text-gray-500'
 }
 
-// ── Chargement ────────────────────────────────────────────────────────────
 const loadEvents = async () => {
   loading.value = true
   try {
@@ -378,7 +370,6 @@ const loadEvents = async () => {
   }
 }
 
-// ── CRUD Événements ───────────────────────────────────────────────────────
 const openCreate = () => {
   editingId.value = null
   form.value      = emptyForm()
@@ -443,7 +434,6 @@ const deleteEvent = async () => {
   await loadEvents()
 }
 
-// ── Inscrits ─────────────────────────────────────────────────────────────
 const openRegistrants = async (ev: EventRecord) => {
   selectedEventForReg.value = ev
   showRegistrants.value     = true
@@ -455,7 +445,6 @@ const openRegistrants = async (ev: EventRecord) => {
   }
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────
 onMounted(async () => {
   await loadEvents()
   clients.value = await $fetch<ClientRecord[]>('/api/clients').catch(() => [])

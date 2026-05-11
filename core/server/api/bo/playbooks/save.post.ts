@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import {
   replacePlaybookRoles,
@@ -17,7 +17,6 @@ interface PlaybookBody {
   created_by?: number
 }
 
-/** POST /api/bo/playbooks/save — creates or updates a playbook via the playbook service (FOUNDER/ROOT). */
 export default defineEventHandler(async (event) => {
   const body = await readBody<PlaybookBody>(event)
   if (!body.title?.trim()) throw createError({ statusCode: 400, message: 'Titre requis' })

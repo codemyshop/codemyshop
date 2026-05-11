@@ -1,15 +1,4 @@
-<!--
-  Academy — Page listing (pillar page SEO) tenant-neutre.
-  Chaque module est un lien vers /academy/[slug].
 
-  Contenu : /api/academy (modules + mentors depuis la DB).
-  Présentation : strings paramétrées via t('academy.*') — chaque tenant override
-  les clés dans ps_translation (client_id scoped).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -50,7 +39,6 @@ const totalLessons = computed(() =>
   academy.value?.modules?.reduce((sum: number, m: any) => sum + (m.lessons?.length || 0), 0) || 0
 )
 
-// Auth (inscription + connexion)
 const authMode = ref<'none' | 'register' | 'login'>('none')
 const authLoading = ref(false)
 const authDone = ref(false)
@@ -69,7 +57,7 @@ onMounted(async () => {
       isLoggedIn.value = true
       sessionPseudo.value = session.pseudo ?? ''
     }
-  } catch { /* pas connecté */ }
+  } catch {  }
 })
 
 async function submitRegister() {
@@ -137,7 +125,7 @@ useHead({
 <template>
   <NuxtLayout name="white-label">
 
-    <!-- HERO -->
+    
     <section class="relative pt-28 md:pt-36 pb-20 overflow-hidden bg-white dark:bg-[#0f172a]">
       <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div class="absolute top-20 left-1/4 w-[500px] h-[500px] bg-primary-500/8 dark:bg-primary-500/5 rounded-full blur-[140px]" />
@@ -175,7 +163,7 @@ useHead({
           </div>
         </div>
 
-        <!-- Already connected -->
+        
         <div v-if="isLoggedIn && !authDone" class="flex items-center justify-center gap-4">
           <span class="text-sm text-gray-500 dark:text-slate-400">{{ t('academy.connected_as', 'Connecté en tant que') }} <strong class="text-gray-900 dark:text-white">{{ sessionPseudo }}</strong></span>
           <NuxtLink to="/academy/mon-parcours"
@@ -184,7 +172,7 @@ useHead({
           </NuxtLink>
         </div>
 
-        <!-- CTA inscription + connexion -->
+        
         <div v-if="!isLoggedIn && authMode === 'none' && !authDone" class="flex items-center justify-center gap-3">
           <button class="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-primary-600 hover:bg-primary-500 text-white font-semibold text-sm transition-colors" @click="authMode = 'register'">
             {{ t('academy.register_free', "S'inscrire gratuitement") }}
@@ -194,7 +182,7 @@ useHead({
           </button>
         </div>
 
-        <!-- Formulaire inscription -->
+        
         <form v-if="authMode === 'register' && !authDone" class="max-w-sm mx-auto space-y-3 mt-2" @submit.prevent="submitRegister">
           <input v-model="registerForm.pseudo" type="text" required minlength="3" :placeholder="t('academy.register_pseudo_placeholder', 'Pseudo')" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-white/[0.05] border border-gray-200 dark:border-white/[0.1] text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-600 focus:border-primary-500 focus:outline-none" />
           <input v-model="registerForm.email" type="email" required placeholder="Email" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-white/[0.05] border border-gray-200 dark:border-white/[0.1] text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-600 focus:border-primary-500 focus:outline-none" />
@@ -204,7 +192,7 @@ useHead({
           <p v-if="authError" class="text-red-500 text-xs text-center">{{ authError }}</p>
         </form>
 
-        <!-- Formulaire connexion -->
+        
         <form v-if="authMode === 'login' && !authDone" class="max-w-sm mx-auto space-y-3 mt-2" @submit.prevent="submitLogin">
           <input v-model="loginForm.email" type="email" required placeholder="Email" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-white/[0.05] border border-gray-200 dark:border-white/[0.1] text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-600 focus:border-primary-500 focus:outline-none" />
           <input v-model="loginForm.password" type="password" required :placeholder="t('academy.password_placeholder', 'Mot de passe')" class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-white/[0.05] border border-gray-200 dark:border-white/[0.1] text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-600 focus:border-primary-500 focus:outline-none" />
@@ -213,7 +201,7 @@ useHead({
           <p v-if="authError" class="text-red-500 text-xs text-center">{{ authError }}</p>
         </form>
 
-        <!-- Confirmation -->
+        
         <div v-if="authDone" class="mt-2">
           <p class="text-emerald-600 dark:text-emerald-400 font-semibold">{{ t('academy.welcome_title', 'Bienvenue !') }}</p>
           <p class="text-gray-400 text-sm mt-1">{{ t('academy.welcome_subtitle', 'Ton accès Academy est activé.') }}</p>
@@ -224,7 +212,7 @@ useHead({
       </div>
     </section>
 
-    <!-- MODULES GRID -->
+    
     <section id="modules" class="py-16 bg-gray-50 dark:bg-[#111827]">
       <div class="max-w-5xl mx-auto px-6">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -258,7 +246,7 @@ useHead({
       </div>
     </section>
 
-    <!-- MENTORS -->
+    
     <section v-if="mentorsList.length" class="py-20 bg-white dark:bg-[#0f172a]">
       <div class="max-w-5xl mx-auto px-6">
 
@@ -295,7 +283,7 @@ useHead({
           </NuxtLink>
         </div>
 
-        <!-- Brand expertise (3 paragraphs configured via t()) -->
+        
         <div v-if="t('academy.expertise_p1', '')" class="bg-gray-50 dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-8 max-w-3xl mx-auto">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">{{ t('academy.expertise_heading', `L'expertise ${brandName} à votre service`) }}</h3>
           <div class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed space-y-3">
@@ -309,7 +297,7 @@ useHead({
       </div>
     </section>
 
-    <!-- CTA -->
+    
     <section class="py-20 bg-gray-50 dark:bg-[#111827]">
       <div class="max-w-2xl mx-auto px-6 text-center">
         <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg shadow-primary-500/20">🎓</div>

@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { createListWithItems } from '~/modules/quickorder/server/utils/quickorder'
 
-/**
- * POST /api/bo/quick-order/lists — Create a persisted list and its items.
- *
- * Body : { idCustomer, name, isDefault?, items: [{idProduct, idProductAttribute?, quantity, position?}] }
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     idCustomer: number

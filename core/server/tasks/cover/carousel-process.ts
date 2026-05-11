@@ -1,17 +1,4 @@
-/**
- *
- * Nitro Task — cover:carousel-process
- *
- * Wave 4B of task #43. Consumer of cs_carousel_queue which replaces
- * `synedre/ac_carouselgen.py` (never activated in Python cron: the queue
- * was populated by /api/bo/marketing/blog/generate-carousel but no
- * consumer was running — direct port to Nitro avoids the Python cron).
- *
- * Pattern miroir cover:queue-process (defineTask + pgSchemaExists +
- * withAutomateLock + runAutomate). No AUDIT_MODE (operational consumer).
- *
- * Cron: 15 * * * * (every hour, sufficient for LinkedIn carousels).
- */
+
 
 import { defineTask } from 'nitropack/runtime'
 import { skipIfNotAcInternal } from '~/server/utils/cron-context'

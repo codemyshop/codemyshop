@@ -1,11 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  PRM — Fiche détail d'un bon de commande.
-  Entête + lignes + workflow états + saisie réception + annulation.
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
@@ -35,7 +28,7 @@
       <div v-if="loading" class="text-xs text-gray-400">Chargement…</div>
 
       <template v-else-if="data?.order">
-        <!-- Header -->
+        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm">
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fournisseur</p>
@@ -52,7 +45,7 @@
           </div>
         </div>
 
-        <!-- Workflow state -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm">
           <div class="flex items-center justify-between mb-3">
             <div>
@@ -79,7 +72,7 @@
           </div>
         </div>
 
-        <!-- Lignes -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
             <div>
@@ -139,7 +132,7 @@
           </div>
         </div>
 
-        <!-- Historique -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
             <h2 class="text-sm font-bold">Historique</h2>
@@ -185,7 +178,7 @@ async function load() {
   loading.value = true
   try {
     data.value = await $fetch(`/api/bo/procurement/purchase-orders/${route.params.id}`)
-    // init receipts with current values
+    
     receipts.value = {}
     for (const l of data.value?.lines || []) receipts.value[l.id] = l.quantityReceived
     receiptDirty.value = false

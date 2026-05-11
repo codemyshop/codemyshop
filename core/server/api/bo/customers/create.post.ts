@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/** POST /api/bo/customers/create — creates a customer. */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ firstname: string; lastname: string; email: string; company?: string; siret?: string; phone?: string }>(event)
   if (!body.firstname?.trim() || !body.lastname?.trim() || !body.email?.trim()) {
@@ -10,11 +9,11 @@ export default defineEventHandler(async (event) => {
   }
   const db = useClientDb(event)
 
-  // Check for duplicate email
+  
   const existing = await db.get<any>(`SELECT id_customer FROM ps_customer WHERE email = ?`, [body.email.trim().toLowerCase()])
   if (existing) throw createError({ statusCode: 409, message: 'Un client avec cet email existe déjà' })
 
-  // Temporary hashed password (the customer will have to reset it)
+  
   const bcrypt = await import('bcryptjs')
   const passwd = bcrypt.hashSync('TempPass2026!', 12).replace('$2a$', '$2y$')
 

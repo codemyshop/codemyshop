@@ -1,8 +1,5 @@
-/**
- *
- * POST /api/shelves — Create or update a shelf — Direct Drizzle DB.
- * Body : { id?, clientId, sectionType, position?, title?, subtitle?, content?, config?, active? }
- */
+
+
 import { upsertShelf } from '~/server/utils/shelves-db'
 
 export default defineEventHandler(async (event) => {

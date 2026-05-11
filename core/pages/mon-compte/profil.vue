@@ -1,9 +1,4 @@
-<!--
-  Mon compte — Profil + changement mot de passe
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <script setup lang="ts">
 import type { CustomerData } from '~/server/connectors/base'
 
@@ -41,7 +36,7 @@ async function loadProfile() {
     form.company = profile.value.company || ''
     form.siret = profile.value.siret || ''
     form.email = profile.value.email
-  } catch { /* ignore */ }
+  } catch {  }
   finally { loading.value = false }
 }
 
@@ -106,7 +101,7 @@ useHead({ title: brandName ? `Mon profil — ${brandName}` : 'Mon profil' })
         <div v-if="loading" class="text-center py-12 text-gray-400 text-sm">{{ t('account.account_loading') }}</div>
 
         <div v-else class="space-y-8">
-          <!-- Profil -->
+          
           <form class="bg-white rounded-xl p-6 border border-gray-100 space-y-4" @submit.prevent="onSaveProfile">
             <h2 class="text-sm font-bold text-gray-500">{{ t('account.profile_personal_info') }}</h2>
             <div class="grid grid-cols-2 gap-4">
@@ -141,7 +136,7 @@ useHead({ title: brandName ? `Mon profil — ${brandName}` : 'Mon profil' })
             </div>
           </form>
 
-          <!-- Mot de passe -->
+          
           <form class="bg-white rounded-xl p-6 border border-gray-100 space-y-4" @submit.prevent="onChangePassword">
             <h2 class="text-sm font-bold text-gray-500">{{ t('account.profile_change_password') }}</h2>
             <div>

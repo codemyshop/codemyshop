@@ -1,14 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/chatbot/unread-count — lightweight counter for the badge
- * sidebar. Renvoie 2 chiffres :
- * - unread: conversations with an unread user message
- * - takeoverOpen: conversations in takeover mode still open
- * (= handled by a sales agent, not yet closed)
- */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
   const r = await db.get<any>(

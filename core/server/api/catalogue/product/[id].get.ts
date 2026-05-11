@@ -1,13 +1,5 @@
-/**
- *
- * GET /api/catalogue/product/:id?clientId=example-shop
- * Uses the ConnectorManager — CMS-agnostic.
- *
- * Hydrate attachments (product datasheets PDF) via direct database: the
- * `product_attachments` resource does not exist in the native webservice
- * (only `attachments`, without id_product filtering). On single-database
- * instances we resolve via JOIN ps_product_attachment → ps_attachment.
- */
+
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 import { buildProductImage } from '~/server/utils/ps-image'
 import { localizeRootSegment } from '~/utils/locale-route-roots'
@@ -23,7 +15,6 @@ import {
 import { deriveUnitPricing } from '~/server/utils/unity-label'
 import { tenantHasUnitPricing } from '~/server/utils/tenant-vertical'
 
-/** "3kg" / "500g" → kg ; aligné avec by-category.get.ts + cart-db.ts. */
 function parseWeightToKg(s: string | null | undefined): number | null {
   if (!s) return null
   const m = String(s).trim().toLowerCase().replace(',', '.').match(/^([\d.]+)\s*(kg|g)$/)
@@ -211,8 +202,8 @@ async function fetchProductDetail(db: any, id: number, idLang: number, unitPrici
     [id, id],
   )
 
-  // Attributes (size / color…) linked to each variant — to display
-  // a labeled selector on the frontend ("Size: 36 / 37 / 38 …").
+  
+  
   const combinationAttrs = combinations.length === 0 ? [] : await db.query<any>(
     `SELECT pac.id_product_attribute,
             ag.id_attribute_group,
@@ -260,14 +251,14 @@ async function fetchProductDetail(db: any, id: number, idLang: number, unitPrici
 
   const basePrice = Number(row.price)
 
-  // Product promotion (ps_specific_price) — aligned with catalog card + cart.
+  
   const sp = (await getActiveSpecificPrices([id])).get(id)
   const finalPrice = applySpecificPrice(basePrice, sp)
   const hasPromo = sp !== undefined && finalPrice < basePrice
   const reductionLabel = hasPromo && sp ? specificPriceLabel(sp) : undefined
 
-  // pricePerKg derived: Net weight (× Units per package if > 1) or fallback
-  // to p.weight. Allows displaying the same HT/K hierarchy as the product card.
+  
+  
   const featByName = (name: string) =>
     features.find((f: any) => String(f.feature_name).toLowerCase() === name.toLowerCase())?.feature_value as string | undefined
   const netWeightStr = featByName('Poids net')
@@ -275,11 +266,11 @@ async function fetchProductDetail(db: any, id: number, idLang: number, unitPrici
   const unitsPerPack = Number.isFinite(unitsRaw) && unitsRaw > 1 ? unitsRaw : undefined
   const netWeightKg = parseWeightToKg(netWeightStr)
   const productWeightKg = Number(row.weight || 0)
-  // Source unique DB-First — multipack → HT/U, sinon unit_price_ratio + unity,
-  // sinon poids fallback (cf. core/server/utils/unity-label.ts).
+  
+  
   const totalNetKg = unitsPerPack && netWeightKg ? unitsPerPack * netWeightKg : netWeightKg
-  // Non-food tenants (skate / fashion / general): no price/kg calculation.
-  // The ProductDetail defaults to simple price rendering (HT/TTC based on b2bMode).
+  
+  
   const pricing = unitPricingEnabled
     ? deriveUnitPricing({
         priceHT: finalPrice,
@@ -295,7 +286,7 @@ async function fetchProductDetail(db: any, id: number, idLang: number, unitPrici
     ? basePrice / pricing.divisor
     : undefined
 
-  // taxRate (FR id_country=8) — display "Tax at X %, that is for 1 package".
+  
   const taxRow = await db.get<{ rate: number }>(
     `SELECT MAX(t.rate) AS rate
        FROM ps_product_shop ps
@@ -367,20 +358,20 @@ export default defineEventHandler(async (event) => {
   const product = await fetchProductDetail(db, id, idLang, tenantHasUnitPricing(event))
   if (!product) throw createError({ statusCode: 404, message: 'Produit introuvable' })
 
-  // Attachments: product datasheet PDF via ps_product_attachment (already direct DB).
+  
   const dbAttachments = await hydrateAttachmentsFromDb(event, id)
   if (dbAttachments.length) {
     (product as any).attachments = dbAttachments
   }
 
-  // Product MDM: hydrate cs_product_food if available (Example Shop v2).
+  
   const spec = await hydrateSpecFromDb(event, id, idLang)
   if (spec) {
     (product as any).spec = spec
   }
 
-  // Cross-selling : accessoires PS natif (ps_accessory). Lien bidirectionnel
-  // (id_product_1, id_product_2) — a product can be source or target.
+  
+  
   const accessories = await hydrateAccessoriesFromDb(event, db, id, idLang)
   if (accessories.length) {
     (product as any).accessories = accessories

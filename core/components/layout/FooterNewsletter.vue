@@ -1,17 +1,4 @@
-<!--
-  /**
-   *
-   * Newsletter form in the footer (below social networks). Enabled/disabled
-   * via `cs_footer_config.newsletter_enabled` (toggle builder).
-   *
-   * GDPR: requires an explicit consent checkbox. The `consent-text`
-   * is snapshotted server-side in `cs_newsletter_subscriber.consent_text`
-   * at the moment of opt-in to track informed consent.
-   *
-   * All visible labels go through `t('footer.newsletter.*')` (rule
-   * 10bis CLAUDE.md — zero hardcoded strings).
-   */
--->
+
 <template>
   <div class="space-y-3">
     <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-primary-400/80">
@@ -26,7 +13,7 @@
       novalidate
       @submit.prevent="submit"
     >
-      <!-- Honeypot (invisible aux humains, rempli par les bots) -->
+      
       <input
         v-model="honeypot"
         type="text"
@@ -67,7 +54,7 @@
       </label>
     </form>
 
-    <!-- Statuts (toujours rendus pour éviter le flash) -->
+    
     <p
       v-if="state === 'success'"
       class="text-[11px] text-emerald-400 leading-relaxed"

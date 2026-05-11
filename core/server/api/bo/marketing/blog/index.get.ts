@@ -1,24 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * GET /api/bo/marketing/blog — liste articles de blog (Sprint 18.1).
- *
- * Isolation constraint: WHERE id_cms_category <> 1. Only
- * pages attached to a blog category (everything except the institutional root)
- * are returned. Landing pages live under
- * /api/bo/marketing/landing-pages with the inverse constraint.
- *
- * Security: root/founder/market roles OR SaaS SuperAdmin.
- *
- * Note: this endpoint remains 100% raw SQL — it's a native PS view
- * (ps_cms + ps_cms_lang) that aggregates optional sub-queries
- * on cs_covergen_queue + cs_cms_queue. Refactoring into a facade
- * cross-domain not relevant (complex read-only view specific to
- * BO blog).
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -68,11 +52,11 @@ export default defineEventHandler(async (event) => {
     try {
       await db.query('SELECT 1 FROM cs_covergen_queue LIMIT 0')
       coverSelect = `, COALESCE((SELECT cq.thumb_url FROM cs_covergen_queue cq WHERE cq.id_cms = c.id_cms AND cq.status = 'done' ORDER BY cq.id_covergen DESC LIMIT 1), '') AS thumbUrl`
-    } catch { /* table doesn't exist */ }
+    } catch {  }
     try {
       await db.query('SELECT 1 FROM cs_cms_queue LIMIT 0')
       redactionSelect = `, COALESCE((SELECT rq.status FROM cs_cms_queue rq WHERE rq.id_cms = c.id_cms ORDER BY rq.id_redaction DESC LIMIT 1), '') AS redactionStatus`
-    } catch { /* table doesn't exist */ }
+    } catch {  }
 
     const pages = await db.query<any>(`
       SELECT

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-/**
- */
+
 interface CmsArticle {
   id: number
   title: string
@@ -29,7 +28,6 @@ const { getPillar, getSubcatLabel, getPillarMeta, getPillarId, blogTitle, author
 const pilier = getPillar(category)
 const seo = getPillarMeta(category)
 
-// Convention PS : <body id="cms-category-X" class="cms-category cms-category-X">
 useListingBodyId('cms-category', () => getPillarId(category))
 
 const pageTitle = seo.title || `${pilier.label} — ${blogTitle.value}`
@@ -42,16 +40,13 @@ const { data: articles, status } = await useFetch<CmsArticle[]>('/api/cms', {
   watch: [activeLang],
 })
 
-// Fallback URL plate `/blog/<slug>` (legacy SMOKE 2-niveaux, vs convention
-// 3-niveaux par défaut). Si la catégorie ne ramène aucun article ET qu'un
-// article existe avec ce slug, on rend l'article inline.
 const isKnownPilier = getPillarId(category) > 0
 const { data: directArticle } = await useFetch<{ id: number; title: string; content: string; metaTitle?: string; metaDescription?: string; datePublished?: string } | null>(
   `/api/cms/${category}`,
   {
     query: { lang: activeLang },
     watch: [activeLang],
-    server: !isKnownPilier,  // skip SSR fetch si on est sur un pilier connu (catalog)
+    server: !isKnownPilier,  
     lazy: isKnownPilier,
     default: () => null,
   },
@@ -89,8 +84,6 @@ const collectionJsonLd = computed(() => ({
   },
 }))
 
-// Title réactif : si on est en mode article fallback, on prend les meta de
-// l'article ; sinon les meta du pilier (catalog).
 const finalTitle = computed(() =>
   isArticleFallback.value
     ? (directArticle.value?.metaTitle || directArticle.value?.title || pageTitle)
@@ -139,10 +132,10 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
 <template>
   <div class="py-12">
 
-    <!-- ───────────────────────────────────────────────────────── -->
-    <!-- Mode article direct (URL plate /blog/<slug>) — fallback   -->
-    <!-- pour les tenants 2-niveaux type SMOKE v2 legacy.           -->
-    <!-- ───────────────────────────────────────────────────────── -->
+    
+    
+    
+    
     <article v-if="isArticleFallback" class="prose prose-lg dark:prose-invert max-w-3xl mx-auto">
       <nav aria-label="Fil d'Ariane" class="not-prose text-sm text-gray-600 dark:text-slate-400 mb-6 flex items-center gap-2">
         <NuxtLink to="/" class="hover:text-primary-600 transition-colors">Accueil</NuxtLink>
@@ -158,13 +151,13 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
       >
         {{ formatDateShort(directArticle.datePublished) }}
       </time>
-      <!-- eslint-disable-next-line vue/no-v-html -->
+      
       <div v-html="directArticle?.content || ''" />
     </article>
 
     <template v-else>
 
-    <!-- Fil d'Ariane -->
+    
     <nav aria-label="Fil d'Ariane" class="text-sm text-gray-600 dark:text-slate-400 mb-6 flex items-center gap-2">
       <NuxtLink to="/" class="hover:text-primary-600 transition-colors">Accueil</NuxtLink>
       <span aria-hidden="true">/</span>
@@ -173,7 +166,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
       <span>{{ pilier.label }}</span>
     </nav>
 
-    <!-- En-tête -->
+    
     <header class="mb-10">
       <div class="flex items-center gap-4 mb-4">
         <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shrink-0" :class="pilier.tagBg">{{ pilier.icon }}</div>
@@ -186,7 +179,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
         </div>
       </div>
 
-      <!-- Navigation sous-catégories -->
+      
       <div v-if="subcats.length" class="flex flex-wrap gap-2 mt-4">
         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border-2" :class="pilier.tagBg + ' border-current'">
           Tout ({{ articles?.length ?? 0 }})
@@ -200,7 +193,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
       </div>
     </header>
 
-    <!-- Loading -->
+    
     <div v-if="status === 'pending'" class="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div v-for="n in 4" :key="n" class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-6 animate-pulse">
         <div class="h-40 bg-gray-100 dark:bg-slate-800 rounded-xl mb-4" /><div class="h-4 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-3" /><div class="h-3 bg-gray-100 dark:bg-slate-800 rounded w-full" />
@@ -208,7 +201,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
     </div>
 
     <template v-else-if="articles && articles.length">
-      <!-- Article vedette (full-width) -->
+      
       <NuxtLink
         v-if="featured"
         :to="featured.nuxtUrl"
@@ -237,7 +230,7 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
         </div>
       </NuxtLink>
 
-      <!-- Articles suivants (grille 2 colonnes) -->
+      
       <div v-if="rest.length" class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <NuxtLink
           v-for="article in rest" :key="article.id" :to="article.nuxtUrl"
@@ -270,13 +263,13 @@ const rest = computed(() => articles.value?.slice(1) ?? [])
       </div>
     </template>
 
-    <!-- Vide -->
+    
     <div v-else class="text-center py-20 text-gray-500 dark:text-slate-500">
       <p class="text-5xl mb-4">📂</p>
       <p class="text-lg font-medium">Aucun article dans cette cat&eacute;gorie.</p>
       <NuxtLink to="/blog" class="text-sm mt-3 inline-block text-primary-500 hover:underline">Voir tous les articles &rarr;</NuxtLink>
     </div>
 
-    </template> <!-- /v-else article fallback -->
+    </template> 
   </div>
 </template>

@@ -1,24 +1,4 @@
-<!--
-  Hero slider homepage — layout 2-colonnes :
-  - Gauche (2/3 largeur) : slider défilant N slides
-  - Droite (1/3 largeur) : 2 blocs image fixes empilés
 
-  Payload DB attendu (table cs_homepage_section, type='hero-slider') :
-  {
-    "slides": [
-      { "image": "/img/hero/promo-1.jpg", "title": "...", "subtitle": "...", "cta_label": "...", "cta_to": "/grossiste/fruit-sec" }
-    ],
-    "side_blocks": [
-      { "image": "/img/hero/block-1.jpg", "alt": "...", "to": "/grossiste/oriental" },
-      { "image": "/img/hero/block-2.jpg", "alt": "...", "to": "/grossiste/charcuterie-halal" }
-    ],
-    "interval_ms": 5000
-  }
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 const { localePath } = useLocalePath()
 import type { I18nString } from '~/composables/useI18nField'
@@ -72,7 +52,7 @@ onBeforeUnmount(() => { if (timer) clearInterval(timer) })
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-        <!-- Slider principal (gauche, 2/3) -->
+        
         <div class="lg:col-span-2 relative overflow-hidden rounded-xl bg-gray-900 aspect-[16/9] lg:aspect-auto lg:h-[440px]">
           <transition-group name="fade" tag="div" class="absolute inset-0">
             <div
@@ -90,7 +70,7 @@ onBeforeUnmount(() => { if (timer) clearInterval(timer) })
                 :loading="i === 0 ? 'eager' : 'lazy'"
                 :fetchpriority="i === 0 ? 'high' : 'auto'"
               />
-              <!-- Overlay only if we have a title/subtitle/CTA -->
+              
               <div
                 v-if="i18nt(slide.sticker) || i18nt(slide.title) || i18nt(slide.subtitle) || i18nt(slide.cta_label)"
                 class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"
@@ -118,7 +98,7 @@ onBeforeUnmount(() => { if (timer) clearInterval(timer) })
             </div>
           </transition-group>
 
-          <!-- Pagination -->
+          
           <div v-if="slides.length > 1" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
             <button
               v-for="(_, i) in slides"
@@ -131,7 +111,7 @@ onBeforeUnmount(() => { if (timer) clearInterval(timer) })
           </div>
         </div>
 
-        <!-- 2 blocks on the right (1/3 width, stacked) -->
+        
         <div v-if="sideBlocks.length" class="grid grid-cols-2 lg:grid-cols-1 gap-4 lg:h-[440px]">
           <component
             :is="block.to ? 'NuxtLink' : 'div'"

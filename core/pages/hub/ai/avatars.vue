@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -22,7 +22,7 @@
 
     <div class="p-6 max-w-5xl mx-auto space-y-6">
 
-      <!-- Avatar grid -->
+      
       <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div v-for="i in 4" :key="i" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5 animate-pulse">
           <div class="flex gap-3"><div class="w-10 h-10 bg-gray-100 dark:bg-slate-800 rounded-xl" /><div class="flex-1 space-y-2"><div class="h-4 bg-gray-100 dark:bg-slate-800 rounded w-1/2" /><div class="h-3 bg-gray-50 rounded w-1/3" /></div></div>
@@ -52,7 +52,7 @@
                 <p class="text-sm font-bold text-gray-800 dark:text-slate-100 truncate">{{ av.name }}</p>
                 <span class="text-[10px] font-mono text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">{{ av.slug }}</span>
               </div>
-              <!-- Keywords -->
+              
               <div class="flex flex-wrap gap-1 mt-1.5 mb-2">
                 <span
                   v-for="kw in av.keywords.slice(0, 5)"
@@ -61,14 +61,14 @@
                 >{{ kw }}</span>
                 <span v-if="av.keywords.length > 5" class="text-[10px] text-gray-400">+{{ av.keywords.length - 5 }}</span>
               </div>
-              <!-- Pain points preview -->
+              
               <p v-if="av.painPoints" class="text-xs text-gray-400 line-clamp-1 leading-relaxed">
                 <span class="font-medium text-gray-500">Douleurs :</span> {{ av.painPoints }}
               </p>
               <p v-else-if="av.toneRules" class="text-xs text-gray-400 line-clamp-1 leading-relaxed">{{ av.toneRules }}</p>
               <p v-if="av.personas?.length" class="text-[10px] text-orange-500 mt-1 font-medium">{{ av.personas.length }} persona(s)</p>
 
-              <!-- Top produits cibles -->
+              
               <div v-if="(av.products?.length ?? 0)" class="mt-2 pt-2 border-t border-gray-50">
                 <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Top produits</p>
                 <div class="space-y-0.5">
@@ -79,7 +79,7 @@
                 </div>
               </div>
 
-              <!-- Zones d'influence -->
+              
               <div v-if="(av.zones?.length ?? 0)" class="mt-2 pt-2 border-t border-gray-50">
                 <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Zones d'influence</p>
                 <div class="flex flex-wrap gap-1">
@@ -93,7 +93,7 @@
                 </div>
               </div>
             </div>
-            <!-- Actions -->
+            
             <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
               <button
                 @click.stop="confirmDelete(av)"
@@ -106,7 +106,7 @@
               </button>
             </div>
           </div>
-          <!-- Completeness indicator -->
+          
           <div class="mt-3 pt-3 border-t border-gray-50 flex items-center gap-2">
             <div class="flex-1 bg-gray-100 dark:bg-slate-800 rounded-full h-1.5">
               <div class="h-1.5 rounded-full bg-primary-400 transition-all" :style="`width: ${completeness(av)}%`" />
@@ -118,14 +118,14 @@
 
     </div>
 
-    <!-- Slide-over Cr&eacute;er/Modifier -->
+    
     <Teleport to="body">
       <Transition enter-active-class="transition-opacity duration-200" enter-from-class="opacity-0" leave-active-class="transition-opacity duration-150" leave-to-class="opacity-0">
         <div v-if="slideOpen" class="fixed inset-0 z-50 flex justify-end">
           <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" @click="slideOpen = false" />
           <Transition enter-active-class="transition-transform duration-250" enter-from-class="translate-x-full" leave-active-class="transition-transform duration-200" leave-to-class="translate-x-full">
             <div v-if="slideOpen" class="relative w-full max-w-lg bg-white dark:bg-slate-900 shadow-2xl flex flex-col h-full">
-              <!-- Header -->
+              
               <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 shrink-0">
                 <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">{{ editingId ? 'Modifier l\u2019avatar' : 'Cr\u00e9er un avatar' }}</h2>
                 <button @click="slideOpen = false" class="text-gray-400 hover:text-gray-600 transition-colors">
@@ -133,10 +133,10 @@
                 </button>
               </div>
 
-              <!-- Formulaire -->
+              
               <form @submit.prevent="saveAvatar" class="flex-1 overflow-y-auto px-6 py-5 space-y-6">
 
-                <!-- Section : Identit&eacute; -->
+                
                 <fieldset>
                   <legend class="text-xs font-bold text-gray-700 dark:text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
                     <span class="w-5 h-5 rounded bg-primary-100 text-primary-600 flex items-center justify-center text-[10px] font-bold">1</span>
@@ -180,7 +180,7 @@
                   </div>
                 </fieldset>
 
-                <!-- Section : Profil IA -->
+                
                 <fieldset>
                   <legend class="text-xs font-bold text-gray-700 dark:text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
                     <span class="w-5 h-5 rounded bg-violet-100 text-violet-600 flex items-center justify-center text-[10px] font-bold">2</span>
@@ -210,7 +210,7 @@
                   </div>
                 </fieldset>
 
-                <!-- Section : D&eacute;mographie & Canaux -->
+                
                 <fieldset>
                   <legend class="text-xs font-bold text-gray-700 dark:text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
                     <span class="w-5 h-5 rounded bg-green-100 text-green-600 flex items-center justify-center text-[10px] font-bold">3</span>
@@ -247,7 +247,7 @@
                   </div>
                 </fieldset>
 
-                <!-- Section : Personas -->
+                
                 <fieldset>
                   <legend class="text-xs font-bold text-gray-700 dark:text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
                     <span class="w-5 h-5 rounded bg-orange-100 text-orange-600 flex items-center justify-center text-[10px] font-bold">4</span>
@@ -289,7 +289,7 @@
                         <textarea v-model="persona.characterSheet" rows="3" placeholder="Ex: Boulanger artisan depuis 25 ans, passionn&eacute; par les viennoiseries aux amandes." class="input-field resize-none text-xs" />
                       </div>
 
-                      <!-- Prompt Nano Banana -->
+                      
                       <div class="flex items-center gap-2">
                         <button
                           type="button"
@@ -302,7 +302,7 @@
                         <span class="text-[10px] text-gray-400">G&eacute;n&egrave;re le prompt pour cr&eacute;er le character sheet 10 expressions</span>
                       </div>
 
-                      <!-- Character Sheet Upload & Auto-slice -->
+                      
                       <div class="mt-2">
                         <label class="field-label">Planche d'expressions (character sheet)</label>
                         <div v-if="persona.characterSheetUrl" class="relative group/cs">
@@ -324,7 +324,7 @@
                         </button>
                       </div>
 
-                      <!-- Expressions faciales -->
+                      
                       <div class="mt-2 pt-3 border-t border-gray-100 dark:border-slate-700">
                         <div class="flex items-center justify-between mb-2">
                           <label class="field-label mb-0">Expressions faciales</label>
@@ -341,7 +341,7 @@
                             :key="ei"
                             class="flex items-start gap-3 bg-gray-50 dark:bg-slate-800 rounded-lg p-3 relative group/expr"
                           >
-                            <!-- Image preview / upload -->
+                            
                             <div class="shrink-0">
                               <div
                                 v-if="expr.imageUrl"
@@ -362,7 +362,7 @@
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
                               </button>
                             </div>
-                            <!-- Fields -->
+                            
                             <div class="flex-1 space-y-2 min-w-0">
                               <div class="grid grid-cols-2 gap-2">
                                 <input v-model="expr.slug" placeholder="slug (ex: confiant)" class="input-field text-[11px] font-mono py-1.5" />
@@ -370,7 +370,7 @@
                               </div>
                               <input v-model="expr.prompt" placeholder="Prompt visage (ex: sourire confiant, regard direct)" class="input-field text-[11px] py-1.5" />
                             </div>
-                            <!-- Delete -->
+                            
                             <button
                               type="button"
                               @click="persona.expressions.splice(ei, 1)"
@@ -394,7 +394,7 @@
                   </div>
                 </fieldset>
 
-                <!-- Section : Mapping Type → Expression -->
+                
                 <fieldset v-if="allExpressionSlugs.length">
                   <legend class="text-xs font-bold text-gray-700 dark:text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
                     <span class="w-5 h-5 rounded bg-rose-100 text-rose-600 flex items-center justify-center text-[10px] font-bold">5</span>
@@ -416,7 +416,7 @@
                   </div>
                 </fieldset>
 
-                <!-- Section : Top produits cibles -->
+                
                 <fieldset v-if="editingId">
                   <legend class="text-xs font-bold text-gray-700 dark:text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
                     <span class="w-5 h-5 rounded bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] font-bold">6</span>
@@ -483,7 +483,7 @@
                   </div>
                 </fieldset>
 
-                <!-- Geographic influence zones -->
+                
                 <fieldset v-if="editingId">
                   <legend class="text-xs font-bold text-gray-700 dark:text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
                     <span class="w-5 h-5 rounded bg-sky-100 text-sky-600 flex items-center justify-center text-[10px] font-bold">7</span>
@@ -554,7 +554,7 @@
                 <p v-if="formError" class="text-sm text-danger-500">{{ formError }}</p>
               </form>
 
-              <!-- Footer -->
+              
               <div class="px-6 py-4 border-t border-gray-100 dark:border-slate-800 flex gap-3 shrink-0">
                 <button @click="slideOpen = false" class="flex-1 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
                 <button @click="saveAvatar" :disabled="saving" class="flex-1 py-2.5 bg-primary-600 text-white rounded-xl text-sm font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50">
@@ -567,7 +567,7 @@
       </Transition>
     </Teleport>
 
-    <!-- Character Sheet Prompt Modal -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="csPromptVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" @click.self="csPromptVisible = false">
@@ -604,7 +604,7 @@
       </Transition>
     </Teleport>
 
-    <!-- Confirm Delete -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="deleteTarget" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" @click.self="deleteTarget = null">
@@ -625,8 +625,6 @@
 
 <script setup lang="ts">
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
-
-// ── Types ────────────────────────────────────────────────────────────────────
 
 interface Expression {
   slug:     string
@@ -693,8 +691,6 @@ interface AvatarDef {
   zones?:             GeographicZone[]
 }
 
-// ── Donn&eacute;es ───────────────────────────────────────────────────────────────────
-
 const avatars  = ref<AvatarDef[]>([])
 const loading  = ref(true)
 
@@ -702,7 +698,7 @@ async function loadAvatars() {
   loading.value = true
   try {
     const list = await $fetch<AvatarDef[]>('/api/hub/avatars')
-    // Loads in parallel target products + geographic zones for each avatar
+    
     await Promise.all(list.map(async (av) => {
       try {
         const [pr, zr] = await Promise.all([
@@ -721,7 +717,6 @@ async function loadAvatars() {
   finally { loading.value = false }
 }
 
-/** Tailwind class for a geographic zone badge based on its weight 0-100 */
 function zoneBadgeClass(weight: number): string {
   if (weight >= 80) return 'bg-emerald-50 text-emerald-700 border-emerald-200'
   if (weight >= 60) return 'bg-sky-50 text-sky-700 border-sky-200'
@@ -729,7 +724,6 @@ function zoneBadgeClass(weight: number): string {
   return 'bg-gray-50 text-gray-500 border-gray-200'
 }
 
-/** % of AI profile completeness (filled fields / total) */
 function completeness(av: AvatarDef): number {
   const fields = [
     av.toneRules, av.buyingBehavior, av.painPoints, av.goals,
@@ -750,7 +744,6 @@ const pageTypes = [
   { value: 'recette', icon: '🍳', label: 'Recette' },
 ]
 
-/** All expression slugs defined in the form personas */
 const allExpressionSlugs = computed(() => {
   const slugs = new Set<string>()
   for (const p of form.personas) {
@@ -777,7 +770,6 @@ function addExpression(personaIndex: number) {
   })
 }
 
-// Hidden file input for expression uploads
 const exprUploadRef = ref<HTMLInputElement | null>(null)
 const pendingUpload = ref<{ pi: number; ei: number } | null>(null)
 
@@ -820,13 +812,9 @@ async function handleExprUpload(e: Event) {
   pendingUpload.value = null
 }
 
-// ── Character Sheet Prompt Generator ─────────────────────────────────────────
-
 const csPromptVisible = ref(false)
 const csPromptText = ref('')
 const csPromptCopied = ref(false)
-
-// ── Character Sheet Upload & Auto-slice ──────────────────────────────────────
 
 const csUploadRef = ref<HTMLInputElement | null>(null)
 const pendingCsUpload = ref<number | null>(null)
@@ -898,7 +886,6 @@ async function handleCsUpload(e: Event) {
   pendingCsUpload.value = null
 }
 
-/** Standard 5-component descriptions for each expression (inspired by OUTIL_expressions.md) */
 const EXPRESSION_DEFS: Record<string, { label: string; desc: string }> = {
   neutral: {
     label: 'NEUTRAL',
@@ -991,7 +978,7 @@ function showCharacterSheetPrompt(personaIndex: number) {
   const persona = form.personas[personaIndex]
   if (!persona) return
 
-  // Build the physical description from persona fields
+  
   const physicalLines: string[] = []
   if (persona.ageRange) physicalLines.push(persona.ageRange)
   if (persona.appearance) physicalLines.push(persona.appearance)
@@ -999,7 +986,7 @@ function showCharacterSheetPrompt(personaIndex: number) {
 
   const charName = persona.name || form.name || 'Character'
 
-  // Build expression blocks
+  
   const exprOrder = ['neutral', 'happy', 'thinking', 'concerned', 'excited', 'skeptical', 'curious', 'determined', 'surprised', 'contemplative']
   const row1 = exprOrder.slice(0, 5)
   const row2 = exprOrder.slice(5)
@@ -1067,8 +1054,6 @@ function copyCharacterSheetPrompt() {
   setTimeout(() => { csPromptCopied.value = false }, 2000)
 }
 
-// ── CRUD ──────────────────────────────────────────────────────────────────────
-
 const slideOpen    = ref(false)
 const editingId    = ref<number | null>(null)
 const saving       = ref(false)
@@ -1095,7 +1080,6 @@ const form = reactive({
 })
 const keywordsInput = ref('')
 
-// Top target products + geographic zones (loaded at opening)
 const productsForm = ref<ProductTarget[]>([])
 const zonesForm    = ref<GeographicZone[]>([])
 const savingProducts = ref(false)
@@ -1249,15 +1233,14 @@ function openEdit(av: AvatarDef) {
   formError.value         = ''
   slideOpen.value         = true
 
-  // Pre-fills products + zones from already-loaded lists (or
-  // reloads from the API if the avatar was just created / not yet populated)
+  
+  
   productsForm.value = (av.products ?? []).map((p) => ({ ...p }))
   zonesForm.value    = (av.zones ?? []).map((z) => ({ ...z }))
   productSearch.value = {}
   productSearchResults.value = {}
 }
 
-// Auto-slug
 watch(() => form.name, (name) => {
   if (!editingId.value) {
     form.slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -1314,8 +1297,6 @@ async function doDelete() {
   deleteTarget.value = null
   await loadAvatars()
 }
-
-// ── Init ──────────────────────────────────────────────────────────────────────
 
 onMounted(() => {
   loadAvatars()

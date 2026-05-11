@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/stock — niveaux de stock via DB directe.
- * Query: ?limit=200&filter=low|out
- */
 export default defineEventHandler(async (event) => {
   const { limit, filter } = getQuery(event) as Record<string, string>
   const db = useClientDb(event)

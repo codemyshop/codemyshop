@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { upsertProductCatchWeight, type PriceUnit } from '~/enterprise/vertical-food/catchweight/server/utils/catchweight'
 
-/**
- * POST /api/bo/catch-weight/flag — Activates/updates the variable weight flag.
- *
- * Body : { idProduct, isActive?, nominalWeightKg, priceUnit?, tolerancePct? }
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     idProduct: number

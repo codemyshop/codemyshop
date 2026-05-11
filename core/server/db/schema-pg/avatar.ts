@@ -1,8 +1,4 @@
-/**
- *
- * Drizzle PG schema — avatar domain.
- * Generated 2026-05-01 (php-eviction-phase2) from live PG information_schema.
- */
+
 
 import {
   index,
@@ -45,19 +41,6 @@ export const avatarDefinition = vaisseauMereAcSchema.table(
   },
 )
 
-/**
- * Top N target products for an avatar (typically N=3, but the table
- * supports more). Allows managers to specify "this avatar purchases cashew nuts first,
- * then almonds, then dates" and enables the
- * AI system to prioritize these products in content / recommendations.
- *
- * `position` : ordre de pertinence (1 = top match). UNIQUE par (avatar,
- * position) AND by (avatar, product) → a product cannot be
- * listed twice for the same avatar.
- *
- * `id_product` references ps_product (native PrestaShop) — no formal FK
- * because the tenant can purge products without breaking the table.
- */
 export const avatarProductTarget = vaisseauMereAcSchema.table(
   'cs_avatar_product_target',
   {
@@ -79,18 +62,6 @@ export const avatarProductTarget = vaisseauMereAcSchema.table(
 export type AvatarProductTargetRow = typeof avatarProductTarget.$inferSelect
 export type AvatarProductTargetInsert = typeof avatarProductTarget.$inferInsert
 
-/**
- * Avatar geographic influence zones — lead prospecting targeting
- * by region/department/country. For example: avatar "retail Île-de-France" →
- * zones 75/77/78/91/92/93/94/95 ; avatar "caviste haut-de-gamme" →
- * Paris + major cities.
- *
- * `zone_type` : 'region' | 'departement' | 'country' | 'city'.
- * `zone_code` : INSEE region/department code, ISO country (FR, BE), or city slug.
- * `weight` : 0-100 (100 = core target, 30 = area to explore).
- *
- * UNIQUE by (avatar, position) AND by (avatar, zone_type, zone_code).
- */
 export const avatarGeographicZone = vaisseauMereAcSchema.table(
   'cs_avatar_geographic_zone',
   {

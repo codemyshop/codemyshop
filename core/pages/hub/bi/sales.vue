@@ -1,15 +1,8 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  BI — Ventes & CA. KPIs commande/CA/panier moyen avec delta vs période précédente,
-  évolution mensuelle sur 12 mois, top produits, répartition par statut.
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -36,7 +29,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- KPIs -->
+      
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div v-for="kpi in kpiCards" :key="kpi.key" class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm">
           <p class="text-xs font-semibold text-gray-500 dark:text-slate-500 uppercase tracking-wider mb-1">{{ kpi.label }}</p>
@@ -54,7 +47,7 @@
         </div>
       </div>
 
-      <!-- Monthly evolution -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
           <div>
@@ -76,7 +69,7 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- Top produits -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Top 10 produits</h2>
@@ -102,7 +95,7 @@
           </div>
         </div>
 
-        <!-- Status breakdown -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Répartition par statut</h2>

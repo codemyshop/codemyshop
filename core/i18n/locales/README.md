@@ -65,14 +65,35 @@ pnpm seed:translations
 docker exec codemyshop-app pnpm seed:translations
 ```
 
+## Tenant overrides
+
+Tenants can ship a per-shop override pack at `clients/<tenant>/i18n/<locale>.yaml`.
+Same key shape as this base — only put keys that DIVERGE from OSS, anything
+absent falls through. Same `seed:translations` task picks them up and writes
+them with `domain='tenant:<tenant>'`. The runtime API merges OSS + tenant on
+read and the tenant value wins on collision.
+
+```yaml
+# clients/<tenant>/i18n/fr.yaml
+product:
+  add_to_cart: Ajouter au panier de gros
+search:
+  placeholder: Rechercher un produit (SKU, EAN, nom…)
+```
+
 ## How the runtime reads it
 
-`useT()` (`core/composables/useT.ts`) reads `cs_translation` rows tagged
-`domain='oss'` for the active locale, caches them in a Nuxt `useState`,
-and exposes `t(key, params?)`. Missing keys return the key itself in
-dev mode (with a console warning) and an empty string in prod.
+`useT()` (`core/composables/useT.ts`) calls `/api/translations` which:
+1. Reads `cs_translation` rows tagged `domain='oss'` for the active locale.
+2. Reads rows tagged `domain='tenant:<clientId>'` for the current tenant.
+3. Returns a merged dict (tenant wins on collision).
+
+Caches in a Nuxt `useState` keyed by `(clientId, lang)`. Missing keys return
+the key itself in dev mode (with a console warning) and an empty string in
+prod.
 
 The `domain` column lets multiple consumers coexist:
 - `domain='oss'` — keys seeded from these YAML files (this directory)
+- `domain='tenant:<codename>'` — keys from `clients/<codename>/i18n/*.yaml`
 - `domain='hub'` — Hub admin UI strings (managed via `useHubT()`)
 - `domain='module:<slug>'` — module-specific strings (future)

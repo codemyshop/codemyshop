@@ -1,6 +1,5 @@
 <script setup lang="ts">
-/**
- */
+
 interface CmsArticle {
   id: number
   title: string
@@ -32,7 +31,6 @@ function formatDateShort(raw: string): string {
 const { blogTitle, blogDescription, pillars: pillarMap, pillarKeys, getPillar, getSubcatLabel, siteUrl, blogRootId } = useBlogConfig()
 const { t } = useHubT()
 
-// Convention PS : <body id="cms-category-X" class="cms-category cms-category-X"> — racine "Blog" sous Accueil
 useListingBodyId('cms-category', () => blogRootId.value)
 
 const canonical = `${siteUrl.value}/blog/`
@@ -101,7 +99,7 @@ const piliers = computed(() => {
     if (!grouped[cat][sub]) grouped[cat][sub] = []
     grouped[cat][sub].push(a)
   }
-  // Use pillar order from config, then append any extra categories from data
+  
   const orderedKeys = [...pillarKeys.value]
   for (const k of Object.keys(grouped)) {
     if (!orderedKeys.includes(k)) orderedKeys.push(k)
@@ -132,7 +130,7 @@ const featured = computed(() => articles.value?.[0] ?? null)
 <template>
   <div class="py-12">
 
-    <!-- ═══ HERO ═════════════════════════════════════════════════════════ -->
+    
     <header class="mb-16">
       <nav aria-label="Fil d'Ariane" class="text-sm text-gray-600 dark:text-slate-400 mb-6 flex items-center gap-2">
         <NuxtLink to="/" class="hover:text-primary-600 transition-colors">{{ t('common.home', 'Accueil') }}</NuxtLink>
@@ -158,12 +156,12 @@ const featured = computed(() => articles.value?.[0] ?? null)
         </div>
       </div>
 
-      <!-- Recherche -->
+      
       <div class="mb-10">
         <BlogSearch />
       </div>
 
-      <!-- Navigation piliers -->
+      
       <div class="flex flex-wrap gap-2 mb-10">
         <template v-for="pilier in piliers" :key="pilier.key">
           <a
@@ -178,7 +176,7 @@ const featured = computed(() => articles.value?.[0] ?? null)
         </template>
       </div>
 
-      <!-- Article vedette -->
+      
       <NuxtLink
         v-if="featured"
         :to="featured.nuxtUrl"
@@ -207,7 +205,7 @@ const featured = computed(() => articles.value?.[0] ?? null)
       </NuxtLink>
     </header>
 
-    <!-- ═══ LOADING ══════════════════════════════════════════════════════ -->
+    
     <div v-if="status === 'pending'" class="space-y-12">
       <div v-for="n in 3" :key="n" class="animate-pulse">
         <div class="h-6 bg-gray-200 dark:bg-slate-800 rounded w-48 mb-6" />
@@ -217,11 +215,11 @@ const featured = computed(() => articles.value?.[0] ?? null)
       </div>
     </div>
 
-    <!-- ═══ COCON SÉMANTIQUE ═════════════════════════════════════════════ -->
+    
     <div v-else-if="piliers.length" class="space-y-24">
       <section v-for="pilier in piliers" :key="pilier.key" :id="`pilier-${pilier.key}`" class="scroll-mt-20">
 
-        <!-- En-tête pilier -->
+        
         <div class="flex items-start gap-4 mb-8">
           <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shrink-0" :class="pilier.meta.tagBg">{{ pilier.meta.icon }}</div>
           <div class="flex-1">
@@ -230,7 +228,7 @@ const featured = computed(() => articles.value?.[0] ?? null)
               <span class="text-xs font-bold px-2.5 py-1 rounded-full" :class="pilier.meta.tagBg">{{ pilier.total }} article{{ pilier.total > 1 ? 's' : '' }}</span>
             </div>
             <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">{{ pilier.meta.desc }}</p>
-            <!-- Liens sous-catégories -->
+            
             <div class="flex flex-wrap gap-2 mt-3">
               <NuxtLink
                 v-for="sub in pilier.subcats"
@@ -245,7 +243,7 @@ const featured = computed(() => articles.value?.[0] ?? null)
           </div>
         </div>
 
-        <!-- Article vedette du pilier (full-width) -->
+        
         <NuxtLink
           v-if="pilier.allArticles[0]"
           :to="pilier.allArticles[0].nuxtUrl"
@@ -279,7 +277,7 @@ const featured = computed(() => articles.value?.[0] ?? null)
           </div>
         </NuxtLink>
 
-        <!-- Articles suivants (grille 2 colonnes) -->
+        
         <div v-if="pilier.allArticles.length > 1" class="grid grid-cols-1 md:grid-cols-2 gap-5">
           <NuxtLink
             v-for="article in pilier.allArticles.slice(1)"
@@ -313,7 +311,7 @@ const featured = computed(() => articles.value?.[0] ?? null)
           </NuxtLink>
         </div>
 
-        <!-- Lien "Voir tout" si beaucoup d'articles -->
+        
         <div v-if="pilier.total > 4" class="mt-6 text-center">
           <NuxtLink
             :to="`/blog/${pilier.key}/`"
@@ -326,7 +324,7 @@ const featured = computed(() => articles.value?.[0] ?? null)
       </section>
     </div>
 
-    <!-- ═══ VIDE ═════════════════════════════════════════════════════════ -->
+    
     <div v-else class="text-center py-20 text-gray-500 dark:text-slate-400">
       <p class="text-5xl mb-4">✍️</p>
       <p class="text-lg font-medium">Aucun article pour le moment.</p>

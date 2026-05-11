@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/catalogue/customer/addresses
- * DB direct (doctrine: Zero PrestaShop webservice, 2026-04-22).
- */
+
 import { useClientDb } from '~/server/utils/db'
 import { resolveCustomerIdForRequest } from '~/server/utils/customer-session'
 

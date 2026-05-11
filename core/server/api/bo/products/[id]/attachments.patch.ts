@@ -1,16 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { renameAttachment } from '~/server/utils/attachments-db'
 
-/**
- * PATCH /api/bo/products/:id/attachments?lang=X
- *
- * Body JSON : { id_attachment, name, description? }
- *
- * UPSERT ps_attachment_lang for the current language — Drizzle DB direct.
- * Used to translate feature names FR → EN → DE via
- * HubLangSelector without leaving the product page.
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!id || id <= 0) throw createError({ statusCode: 400, message: 'id produit invalide' })

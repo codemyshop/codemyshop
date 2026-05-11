@@ -1,11 +1,4 @@
-/**
- * POST /api/academy/progress
- * Record a learner's progress (human or AI agent) via the facade
- * ac_academy.
- *
- * { learner_id, module_slug, lesson_index, status?, score?, time_spent? }
- *
- */
+
 
 import { createHash } from 'node:crypto'
 import {

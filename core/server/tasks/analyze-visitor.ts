@@ -1,13 +1,7 @@
-/**
- * Visitor avatar classification task.
- * Input  : { visitorId, clientId, signals }
- * Output: VisitorAvatar written to Nitro Storage (avatars:<clientId>:<visitorId>)
- * + return the avatar so the caller can set the cookie.
- */
+
+
 import type { VisitorAvatar, VisitorSignals, AvatarType } from '~/types/avatar'
 import { callAI } from '~/server/utils/ai'
-
-// ── Prompt système de classification ──────────────────────────────────────
 
 const SYSTEM_PROMPT = `
 Tu es un classificateur de visiteurs web pour un consultant freelance spécialisé PrestaShop / Nuxt.
@@ -29,8 +23,6 @@ Réponds UNIQUEMENT en JSON valide, sans markdown, sans commentaire :
 }
 `.trim()
 
-// ── Analyse ────────────────────────────────────────────────────────────────
-
 export async function analyzeVisitor(
   visitorId: string,
   clientId:  string,
@@ -38,7 +30,7 @@ export async function analyzeVisitor(
 ): Promise<VisitorAvatar> {
   const storage = useStorage('avatars')
 
-  // Construire le prompt utilisateur depuis les signaux
+  
   const parts: string[] = []
 
   if (signals.pagesViewed?.length) {
@@ -58,7 +50,7 @@ export async function analyzeVisitor(
     ? parts.join('\n')
     : 'Aucun signal disponible.'
 
-  // Appel IA (ou stub si ANTHROPIC_API_KEY absent)
+  
   let avatar: VisitorAvatar
 
   try {
@@ -92,7 +84,7 @@ export async function analyzeVisitor(
     }
   }
 
-  // Persistance KV
+  
   const key = `${clientId}:${visitorId}`
   await storage.setItem(key, avatar)
 

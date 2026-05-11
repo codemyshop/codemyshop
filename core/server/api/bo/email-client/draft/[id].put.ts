@@ -1,8 +1,4 @@
-/** @author CodeMyShop | @license   AGPL-3.0-or-later
- *
- * PUT /api/bo/email-client/draft/[id] — auto-save draft. Updates
- * to/subject/body/replyTo + date_upd. Filtre par account_user.
- */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 const PG_SCHEMA = 'cs_main'

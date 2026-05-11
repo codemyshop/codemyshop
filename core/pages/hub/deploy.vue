@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- ── Header ────────────────────────────────────────────────────── -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center gap-3">
         <NuxtLink to="/hub/dashboard" class="text-gray-400 hover:text-primary-600 transition-colors">
@@ -18,7 +18,7 @@
 
     <div class="p-6 max-w-3xl mx-auto">
 
-      <!-- ── Step indicator ────────────────────────────────────────── -->
+      
       <div class="flex items-center mb-8">
         <template v-for="(step, i) in STEPS" :key="step.id">
           <div class="flex items-center gap-2">
@@ -48,9 +48,7 @@
         </template>
       </div>
 
-      <!-- ══════════════════════════════════════════════════════════════════
-           ÉTAPE 1 — Projet
-      ══════════════════════════════════════════════════════════════════ -->
+      
       <div v-if="currentStep === 0" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 space-y-5">
         <div>
           <h2 class="text-base font-semibold text-gray-800 dark:text-slate-100 mb-1">Informations projet</h2>
@@ -136,9 +134,7 @@
         </div>
       </div>
 
-      <!-- ══════════════════════════════════════════════════════════════════
-           ÉTAPE 2 — Source de données
-      ══════════════════════════════════════════════════════════════════ -->
+      
       <div v-else-if="currentStep === 1" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 space-y-5">
         <div>
           <h2 class="text-base font-semibold text-gray-800 dark:text-slate-100 mb-1">Source de données</h2>
@@ -203,7 +199,7 @@
           </div>
         </div>
 
-        <!-- Generated config overview -->
+        
         <div class="bg-gray-900 rounded-lg p-4 font-mono text-xs text-gray-300 leading-relaxed">
           <p class="text-gray-500 mb-2">// config/clients/{{ form.id || 'client-id' }}.ts — aperçu</p>
           <p><span class="text-purple-400">export default</span> <span class="text-yellow-300">config</span> <span class="text-gray-400">= &#123;</span></p>
@@ -232,12 +228,10 @@
         </div>
       </div>
 
-      <!-- ══════════════════════════════════════════════════════════════════
-           ÉTAPE 3 — Déploiement
-      ══════════════════════════════════════════════════════════════════ -->
+      
       <div v-else-if="currentStep === 2" class="space-y-4">
 
-        <!-- Barre de progression globale -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
           <div class="flex items-center justify-between mb-3">
             <span class="text-sm font-semibold text-gray-700 dark:text-slate-200">
@@ -256,9 +250,9 @@
           </div>
         </div>
 
-        <!-- Terminal -->
+        
         <div class="bg-gray-900 rounded-xl border border-gray-700 overflow-hidden shadow-lg">
-          <!-- Barre title bar -->
+          
           <div class="flex items-center gap-1.5 px-4 py-2.5 bg-gray-800 border-b border-gray-700">
             <span class="w-3 h-3 rounded-full bg-red-500" />
             <span class="w-3 h-3 rounded-full bg-amber-400" />
@@ -266,7 +260,7 @@
             <span class="ml-3 text-xs text-gray-400 font-mono">deploy-client.sh {{ form.id }}</span>
           </div>
 
-          <!-- Lignes de sortie -->
+          
           <div class="p-4 font-mono text-xs leading-relaxed space-y-1.5 min-h-[200px]">
             <div
               v-for="(line, i) in termLines"
@@ -279,7 +273,7 @@
               <span v-if="line.loading" class="ml-1 inline-block w-2 h-3.5 bg-gray-400 animate-pulse" />
             </div>
 
-            <!-- Blinking cursor when done -->
+            
             <div v-if="deployDone" class="flex items-center gap-2 text-green-400 mt-2">
               <span class="text-gray-600">$</span>
               <span>Déploiement terminé avec succès ✓</span>
@@ -287,7 +281,7 @@
           </div>
         </div>
 
-        <!-- Results when done -->
+        
         <Transition enter-active-class="transition-all duration-500" enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0">
           <div v-if="deployDone" class="bg-white dark:bg-slate-900 rounded-xl border border-green-100 shadow-sm p-5 space-y-4">
             <div class="flex items-center gap-3">
@@ -345,7 +339,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
-// ── Wizard steps ──────────────────────────────────────────────────────────
 const STEPS = [
   { id: 'project', label: 'Projet' },
   { id: 'datasource', label: 'Source de données' },
@@ -353,7 +346,6 @@ const STEPS = [
 ]
 const currentStep = ref(0)
 
-// ── Formulaire ────────────────────────────────────────────────────────────────
 const form = reactive({
   id:            '',
   name:          '',
@@ -371,7 +363,6 @@ const form = reactive({
 
 function goStep(n: number) { currentStep.value = n }
 
-// ── Deployment sequence (REAL via SSE) ──────────────────────────────────
 interface TermLine { text: string; type: 'info' | 'success' | 'error'; loading: boolean }
 
 const termLines   = ref<TermLine[]>([])
@@ -415,9 +406,9 @@ function streamScript(action: 'deploy' | 'cleanup') {
           termLines.value.push({ text: msg.text, type: msg.type, loading: false })
         }
 
-        // Progress estimation (based on line count, ~30 lines for a complete deploy)
+        
         progressPct.value = Math.min(95, Math.round((lineCount / 30) * 100))
-      } catch { /* ignore parse errors */ }
+      } catch {  }
     }
 
     eventSource.onerror = () => {
@@ -445,7 +436,7 @@ async function registerClient() {
         db_config:    { ...form.db_config },
       },
     })
-  } catch { /* Client peut déjà exister */ }
+  } catch {  }
 }
 
 async function startDeploy() {
@@ -460,7 +451,7 @@ async function startDeploy() {
   if (success) {
     try {
       await $fetch(`/api/clients/${form.id}`, { method: 'PATCH', body: { status: 'active' } })
-    } catch { /* */ }
+    } catch {  }
   }
 }
 

@@ -1,16 +1,5 @@
-/**
- *
- * PUT /api/megamenu/sync
- *
- * Receives the complete menu in builder format (root items with children/megaMenu)
- * and synchronizes it in the DB. DELETE (CASCADE on cs_megamenu_lang via FK)
- * then INSERT non-i18n items via the facade, then INSERT translations
- * par langue active.
- *
- * The builder can send:
- * label: "Accueil"                        (string — applied to all active languages)
- * label: { fr: "Accueil", en: "Home" }    (dict — one value per iso_code, fallback fr)
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 import {
   deleteMegamenuForClient,
@@ -87,7 +76,7 @@ export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
   const { clientId } = db
 
-  // Charger les langues actives du tenant (raw — ps_lang PS native, pas dans Drizzle).
+  
   const langs = await db.query<{ id_lang: number; iso_code: string }>(
     `SELECT id_lang, iso_code FROM ps_lang WHERE active = 1`,
   )
@@ -111,7 +100,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // DELETE all existing items for this client — CASCADE drop _lang via FK
+  
   await deleteMegamenuForClient(clientId, { event })
 
   if (!body.items.length) {
@@ -147,12 +136,12 @@ export default defineEventHandler(async (event) => {
 
   for (const { id: parentId, type: rootType, item } of rootItems) {
     if (rootType === 'megamenu' && item.megaMenu?.length) {
-      // Position GLOBALE monotone — ne pas reset à chaque colonne sinon les
-      // positions [0..N] de chaque colonne se chevauchent et `ORDER BY
-      // parent_id, position` mélange les colonnes au reload (incidents
-      // 2026-05-04 — Alex « la position des colonnes ne persiste pas »).
-      // L'ordre des colonnes est porté par `group_title` côté GET (groupes
-      // créés par ordre d'apparition des children triés par position).
+      
+      
+      
+      
+      
+      
       let childPos = 0
       for (const col of item.megaMenu) {
         for (const link of col.links) {

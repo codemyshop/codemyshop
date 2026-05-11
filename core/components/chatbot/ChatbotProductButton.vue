@@ -1,9 +1,5 @@
 <template>
-  <!-- Petit bouton "Discuter de ce produit" — placé sur la fiche produit
-       et la carte produit en liste. Émet l'event global `chatbot:open`
-       avec scenario='product' + productId pour ouvrir le widget global avec
-       contexte produit. Pas de modal local : 1 seul widget global.
-       Gated par la feature `chatbot` côté marketplace — invisible si OFF. -->
+  
   <button
     v-if="chatbotEnabled"
     type="button"
@@ -19,12 +15,11 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 const props = withDefaults(defineProps<{
   productId: number | string
-  /** Qty pre-filled on the parent component (selector +/-). If > 1, we skip
-   * the qty question from the chatbot and start directly on the frequency. */
+  
+
   qty?:      number | string
   label?:    string
   variant?:  'card' | 'detail' | 'icon'
@@ -45,7 +40,7 @@ const variantClass = computed(() => {
   if (props.variant === 'detail') {
     return base + ' h-11 px-4 rounded-lg bg-white dark:bg-slate-800 border border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300 text-sm font-semibold hover:bg-primary-50 dark:hover:bg-primary-900/30'
   }
-  // 'card' — compact button that aligns with "Add to cart"
+  
   return base + ' h-9 px-3 rounded-lg border border-primary-200 dark:border-primary-700 text-primary-700 dark:text-primary-300 bg-white dark:bg-slate-800 text-xs font-medium hover:bg-primary-50 dark:hover:bg-primary-900/30 whitespace-nowrap'
 })
 

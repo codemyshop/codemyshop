@@ -1,13 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/productextra/ai-queue
- * Remplace ac_productextra/ajaxqueueaigeneration (chantier #38 Phase B2).
- *
- * Body : { product_name, context?, id_product? }
- * INSERT cs_product_ai_queue. Python AI description worker polls this
- * queue to generate AI descriptions (task #43 will migrate the worker to TS).
- */
+
 import { queueAiGeneration } from '~/modules/product-extra/server/utils/productextra'
 
 export default defineEventHandler(async (event) => {

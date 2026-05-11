@@ -1,17 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/chatbot/state?conversationId=X&token=Y — fetches the state of a
- * conversation to resume on the front end (page reload, navigation, etc.).
- *
- * Renvoie : { open, currentNode, messages, products }
- * - open       : status === 'open' (otherwise the front starts a new one)
- * - messages   : full timeline (bot/user) to redisplay the card
- * - products   : list of products already added during negotiation
- * - currentNode: type + options (clickable buttons if bot just asked a question)
- */
 export default defineEventHandler(async (event) => {
   const q = getQuery(event) as Record<string, string>
   const conversationId = Number(q.conversationId)
@@ -37,8 +27,8 @@ export default defineEventHandler(async (event) => {
     [conversationId],
   ) as any[]
 
-  // Mode takeover : on récupère le firstname de l'employé pour signer
-  // les messages côté visiteur ("Marie vous répond").
+  
+  
   let agentFirstname = ''
   if (conv.human_takeover && conv.id_employee) {
     const emp = await db.get<any>(
@@ -55,9 +45,9 @@ export default defineEventHandler(async (event) => {
     [conversationId],
   ) as any[]
 
-  // Pour le node courant : on relit son type + options pour savoir si on
-  // attend une saisie libre ou un clic. L'engine charge l'arbre via cache —
-  // ici on se contente d'un lookup direct (un round-trip de plus, négligeable).
+  
+  
+  
   let currentType: 'buttons' | 'text' = 'text'
   let currentOptions: string[] = []
   if (conv.current_node_key) {

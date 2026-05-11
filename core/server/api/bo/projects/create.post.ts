@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { createSmartProject } from '~/enterprise/base/smartproject/server/utils/smartproject'
 
-/**
- * POST /api/bo/projects/create — Create a new project.
- *
- * DB-First: Direct INSERT to cs_smartproject via ac_smartproject facade.
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event) as Record<string, any>
 

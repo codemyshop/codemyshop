@@ -1,17 +1,4 @@
-<!--
-  Page publique /rdv — RDV souverain (Calendly-like).
-  Layout 3 panneaux dans une carte centrée :
-    1. Owner / meeting info (gauche)
-    2. Calendrier mensuel (centre)
-    3. Timeslots du jour sélectionné (droite, apparaît après clic date)
-  Après clic sur un slot : form prospect en swap. Confirmation finale en swap.
 
-  Marque blanche : primary-600 = couleur tenant (vert Meyva/Example Shop, vert AC, etc.).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 import { getApiErrorMessage } from '~/utils/api-error'
 
@@ -28,14 +15,11 @@ const cfg = useRuntimeConfig()
 const brand = String((cfg.public as any).brandName ?? '')
 const meetingTitle = String((cfg.public as any).appointmentTitle ?? 'Rendez-vous')
 const b2bMode = !!(cfg.public as any).b2bMode
-// Appointment modality (DB-first on tenant side): 'phone' / 'video' / 'both'.
-// Controls icon + sidebar / confirmation / email text. Default 'both'
-// (legacy behavior: video or phone).
+
 type AppointmentMode = 'phone' | 'video' | 'both'
 const appointmentMode = ((cfg.public as any).appointmentMode || 'both') as AppointmentMode
 const appointmentSchedule = String((cfg.public as any).appointmentSchedule ?? '')
 
-// i18n DB-first via ps_translation (consistent with the rest of the tenant Nuxt app).
 const { t } = useHubT()
 
 const appointmentModeLabel = computed(() => {
@@ -79,9 +63,6 @@ const { data, pending, error, refresh } = await useFetch<{ success: boolean; slo
   { default: () => ({ success: true, slots: [] }) },
 )
 
-// Appointment slot owner (left panel) — resolved on the server side from
-// cs_employee_extra (first active employee with photo). Null if nothing
-// configured: we fall back to the existing brand-only display.
 interface Owner {
   id: number
   slug: string
@@ -95,10 +76,9 @@ const { data: ownerData } = await useFetch<{ owner: Owner | null }>('/api/appoin
 })
 const owner = computed(() => ownerData.value?.owner ?? null)
 
-// ── Slots indexed by day (YYYY-MM-DD in Paris time) ────────────────────
 function isoDayParis(iso: string): string {
   const d = new Date(iso)
-  // Retrieve the calendar day in the Europe/Paris timezone (independent of env)
+  
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Europe/Paris',
     year: 'numeric',
@@ -124,13 +104,12 @@ const slotsByDay = computed<Record<string, Slot[]>>(() => {
   return groups
 })
 
-// ── Calendrier mensuel ──────────────────────────────────────────────────────
 const todayISO = isoDayParis(new Date().toISOString())
 const todayY = Number(todayISO.slice(0, 4))
 const todayM = Number(todayISO.slice(5, 7)) - 1
 
 const viewYear = ref(todayY)
-const viewMonth = ref(todayM) // 0..11
+const viewMonth = ref(todayM) 
 
 const monthLabel = computed(() => {
   const d = new Date(viewYear.value, viewMonth.value, 1)
@@ -159,7 +138,7 @@ interface Cell {
 const monthCells = computed<(Cell | null)[]>(() => {
   const y = viewYear.value
   const m = viewMonth.value
-  const firstWeekday = (new Date(y, m, 1).getDay() + 6) % 7 // 0 = lundi
+  const firstWeekday = (new Date(y, m, 1).getDay() + 6) % 7 
   const daysInMonth = new Date(y, m + 1, 0).getDate()
   const cells: (Cell | null)[] = []
   for (let i = 0; i < firstWeekday; i++) cells.push(null)
@@ -200,7 +179,6 @@ function nextMonth() {
   }
 }
 
-// ── Date / slot / form selection ─────────────────────────────────────────────
 const selectedDate = ref<string | null>(null)
 const selectedSlot = ref<Slot | null>(null)
 const confirmed = ref<{ date_start: string; duration_min: number } | null>(null)
@@ -252,7 +230,6 @@ function fmtDateLong(iso: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-// ── Form submit ──────────────────────────────────────────────────────────────
 const form = reactive({
   prospectName: '',
   prospectEmail: '',
@@ -263,16 +240,6 @@ const form = reactive({
 const submitting = ref(false)
 const errorMsg = ref('')
 
-// ── Prefilling from query string ───────────────────────────────────────────
-// Signed format (preferred): `/rdv?quote=<id>&t=<hmac>` — the page fetches
-// /api/rdv/prefill on the server side, which reads cs_quote_request (DB) and
-// returns name/email/phone/siret. Short URL, robust against truncation and
-// email client encoding issues.
-//
-// Legacy format (backward-compat for emails already sent): `/rdv?prospectName=…
-// &prospectEmail=…&prospectPhone=…&prospectSiret=…&quoteRef=Q-N` — fragile
-// (5 open params), kept as long as older emails are still in
-// circulation. Remove after ~30 days of soak time.
 const route = useRoute()
 const q = route.query
 const setIfStr = (key: keyof typeof form, raw: unknown) => {
@@ -281,9 +248,6 @@ const setIfStr = (key: keyof typeof form, raw: unknown) => {
 
 let prefilledQuoteRef = ''
 
-// Signed format: attempt DB fetch and populate the form from the response.
-// Silent error — if the HMAC is invalid or the quote is not found, the
-// visitor simply sees an empty form (degraded but non-blocking UX).
 const quoteId = Number(q.quote)
 const rdvToken = typeof q.t === 'string' ? q.t : ''
 if (Number.isFinite(quoteId) && quoteId > 0 && rdvToken) {
@@ -303,42 +267,31 @@ if (Number.isFinite(quoteId) && quoteId > 0 && rdvToken) {
       setIfStr('prospectSiret', r.prospectSiret)
       prefilledQuoteRef = r.quoteRef || ''
     }
-  } catch { /* lien invalide/expiré — form vide, pas d'erreur visible */ }
+  } catch {  }
 }
 
-// Legacy format (backward-compat): open params. Does not override a signed
-// prefill already applied — we only fill empty fields.
 if (typeof q.prospectName === 'string' && !form.prospectName)  setIfStr('prospectName',  q.prospectName)
 if (typeof q.prospectEmail === 'string' && !form.prospectEmail) setIfStr('prospectEmail', q.prospectEmail)
 if (typeof q.prospectPhone === 'string' && !form.prospectPhone) setIfStr('prospectPhone', q.prospectPhone)
 if (typeof q.prospectSiret === 'string' && !form.prospectSiret) setIfStr('prospectSiret', q.prospectSiret)
 
-// Message: if provided, we respect it. Otherwise, if we have a quoteRef (from
-// signed OR legacy format), we pre-format it ("Following quote Q-10 — …").
 if (typeof q.prospectMessage === 'string' && q.prospectMessage.trim()) {
   form.prospectMessage = q.prospectMessage.trim().slice(0, 1000)
 } else {
-  // NB: do not name this variable `ref` — shadows the Vue composable
-  // auto-imported and breaks all `ref()` calls in the file (TDZ → "ref is not
-  // defined" 500 SSR).
+  
+  
+  
   const quoteRef = prefilledQuoteRef
     || (typeof q.quoteRef === 'string' ? q.quoteRef.trim().slice(0, 32) : '')
   if (quoteRef) {
-    // i18n via ps_translation key 'rdv.rdv_prefilled_quote_msg' with
-    // substitution {quote_ref} on DB template side. Fallback to French if the key
-    // has not been seeded on the tenant.
+    
+    
+    
     const tpl = t('rdv.rdv_prefilled_quote_msg', `Suite au devis {quote_ref} — je souhaite un échange visio avec un commercial pour la présentation de l'offre et l'ajustement du devis.`)
     form.prospectMessage = tpl.replace('{quote_ref}', quoteRef)
   }
 }
-// NB: `if (form.prospectSiret) onSiretInput()` moved AFTER the declaration
-// of siretDebounce/siretLookup — the function is hoisted but the `let
-// siretDebounce` is in TDZ until it is initialized. Scar from
-// 2026-05-06 ("Cannot access 'siretDebounce' before initialization" on
-// /rdv?quote=N&t=…). Each time a prefill is added to the query string, verify
-// that every side-effect call remains after the B2B declarations.
 
-// ── B2B : enrichissement SIRET via API gouv (debounce 500ms) ─────────────────
 interface SiretLookup {
   status: 'idle' | 'pending' | 'ok' | 'error'
   companyName?: string
@@ -388,9 +341,6 @@ function onSiretInput() {
 
 const siretValid = computed(() => siretLookup.status === 'ok')
 
-// If SIRET is already filled (via signed OR legacy prefill) → trigger the
-// INSEE lookup for immediate enrichment. Must remain AFTER the declaration
-// de siretDebounce (TDZ — cf. incidents 2026-05-06).
 if (form.prospectSiret) onSiretInput()
 
 async function onSubmit() {
@@ -433,7 +383,7 @@ async function onSubmit() {
     const code = err?.statusCode || err?.data?.statusCode
     errorMsg.value = getApiErrorMessage(err, t)
     if (code === 409) {
-      // Slot taken during form filling — reload
+      
       selectedSlot.value = null
       selectedDate.value = null
       await refresh()
@@ -444,7 +394,6 @@ async function onSubmit() {
   }
 }
 
-// If the user navigates to a month with no slots → reset selectedDate
 watch([viewYear, viewMonth], () => { selectedDate.value = null })
 </script>
 
@@ -452,7 +401,7 @@ watch([viewYear, viewMonth], () => { selectedDate.value = null })
   <div class="min-h-screen bg-gray-50 dark:bg-slate-950 py-6 sm:py-12 flex items-center">
     <div class="w-full max-w-5xl mx-auto px-3 sm:px-4">
 
-        <!-- ═══ CONFIRMATION ═══ -->
+        
         <div v-if="confirmed" class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-8 sm:p-12 text-center">
           <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
             <svg class="w-7 h-7 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -469,11 +418,11 @@ watch([viewYear, viewMonth], () => { selectedDate.value = null })
           </p>
         </div>
 
-        <!-- ═══ CARTE PRINCIPALE ═══ -->
+        
         <div v-else class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
           <div class="grid grid-cols-1 md:grid-cols-12">
 
-            <!-- ─── Panneau gauche : owner / meeting info ─── -->
+            
             <aside class="md:col-span-4 border-b md:border-b-0 md:border-r border-gray-100 dark:border-slate-700 p-6 sm:p-8">
               <div v-if="owner" class="flex items-center gap-3 mb-5">
                 <img
@@ -506,7 +455,7 @@ watch([viewYear, viewMonth], () => { selectedDate.value = null })
                   <span>{{ appointmentSchedule || t('rdv.rdv_schedule_variable', 'Variable selon le créneau') }}</span>
                 </li>
                 <li class="flex items-start gap-2.5">
-                  <!-- Phone icon if phone-only, otherwise video icon (camera). -->
+                  
                   <svg v-if="appointmentMode === 'phone'" class="w-5 h-5 flex-shrink-0 text-gray-400 dark:text-slate-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.105a1.125 1.125 0 0 0-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97a1.125 1.125 0 0 0 .417-1.173L6.963 3.102A1.125 1.125 0 0 0 5.872 2.25H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
                   </svg>
@@ -517,7 +466,7 @@ watch([viewYear, viewMonth], () => { selectedDate.value = null })
                 </li>
               </ul>
 
-              <!-- Selected slot summary (visible when on the form) -->
+              
               <div v-if="selectedSlot" class="mt-8 pt-6 border-t border-gray-100 dark:border-slate-700">
                 <div class="text-xs uppercase tracking-wider font-semibold text-gray-500 dark:text-slate-400 mb-2">{{ t('rdv.rdv_selected_slot_label', 'Créneau choisi') }}</div>
                 <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ fmtDateLong(selectedSlot.date_start) }}</div>
@@ -532,15 +481,15 @@ watch([viewYear, viewMonth], () => { selectedDate.value = null })
               </div>
             </aside>
 
-            <!-- ─── Panneau droit : calendrier+slots, OU form ─── -->
+            
             <div class="md:col-span-8 p-6 sm:p-8">
 
-              <!-- ── Erreur API au chargement ── -->
+              
               <div v-if="error" class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-4 text-sm text-red-700 dark:text-red-300">
                 {{ t('rdv.rdv_load_slots_error', 'Impossible de charger les créneaux. Réessayez dans quelques minutes.') }}
               </div>
 
-              <!-- ── No slots at all over 60 days ── -->
+              
               <div v-else-if="!pending && !Object.keys(slotsByDay).length && !selectedSlot" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-xl p-6 text-center">
                 <p class="text-amber-800 dark:text-amber-200 font-semibold mb-1">{{ t('rdv.rdv_no_slots_title', 'Aucun créneau disponible pour le moment') }}</p>
                 <p class="text-sm text-amber-700 dark:text-amber-300">
@@ -548,7 +497,7 @@ watch([viewYear, viewMonth], () => { selectedDate.value = null })
                 </p>
               </div>
 
-              <!-- ── FORM (slot selected) ── -->
+              
               <div v-else-if="selectedSlot">
                 <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-1">{{ t('rdv.rdv_form_title', 'Vos coordonnées') }}</h2>
                 <p class="text-sm text-gray-500 dark:text-slate-400 mb-5">
@@ -627,7 +576,7 @@ watch([viewYear, viewMonth], () => { selectedDate.value = null })
                 </form>
               </div>
 
-              <!-- ── CALENDRIER + TIMESLOTS ── -->
+              
               <div v-else>
                 <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-5">{{ t('rdv.rdv_calendar_title', 'Choisir une date & un horaire') }}</h2>
 
@@ -637,7 +586,7 @@ watch([viewYear, viewMonth], () => { selectedDate.value = null })
 
                 <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
 
-                  <!-- Calendrier -->
+                  
                   <div>
                     <div class="flex items-center justify-between mb-3">
                       <button
@@ -696,7 +645,7 @@ watch([viewYear, viewMonth], () => { selectedDate.value = null })
                     </div>
                   </div>
 
-                  <!-- Timeslots of the selected day -->
+                  
                   <div v-if="selectedDate" class="sm:border-l sm:border-gray-100 dark:sm:border-slate-700 sm:pl-6 sm:-ml-px">
                     <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-3">
                       {{ selectedDateLabel }}

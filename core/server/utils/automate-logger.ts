@@ -1,14 +1,4 @@
-/**
- *
- * Logger wrapper for Nitro Tasks (work #43 python-nitro-tasks).
- * TypeScript mirror of the Python class `ac_logger.py::AutomateLog`,
- * writes to the same table `cs_main.cs_automate_logs` —
- * transparent coexistence while the Python → TypeScript migrations chain together.
- *
- * Note: the Python version still hits MariaDB (port 3307, prestashop) which is
- * stopped since 2026-04-30; the TypeScript port writes directly to PostgreSQL, so
- * automation traceability returns as soon as it switches to TypeScript.
- */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 
@@ -89,10 +79,6 @@ export class AutomateLog {
   }
 }
 
-/**
- * Standard helper to wrap a Nitro Task handler: takes an advisory
- * lock + log run + serialize erreurs en step('runtime','error',...).
- */
 export async function runAutomate<T>(
   automateName: string,
   fn: (log: AutomateLog) => Promise<T>,

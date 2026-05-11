@@ -1,9 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 
-/** GET /api/bo/orders/:id — full order details via direct DB (PG). */
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, message: 'id requis' })
@@ -42,7 +41,7 @@ export default defineEventHandler(async (event) => {
 
   if (!order) throw createError({ statusCode: 404, message: 'Commande introuvable' })
 
-  // Client
+  
   const customerRows: any[] = await d.execute(sql`
     SELECT id_customer AS "id", firstname, lastname, email, company, siret,
            date_add AS "dateAdd", note
@@ -50,7 +49,7 @@ export default defineEventHandler(async (event) => {
   `) as any[]
   const customer = customerRows?.[0]
 
-  // Order products
+  
   const items: any[] = await d.execute(sql`
     SELECT
       od.id_order_detail AS "id",
@@ -71,7 +70,7 @@ export default defineEventHandler(async (event) => {
     ORDER BY od.id_order_detail
   `) as any[]
 
-  // Status history
+  
   const history: any[] = await d.execute(sql`
     SELECT
       oh.id_order_history AS "id",
@@ -88,7 +87,7 @@ export default defineEventHandler(async (event) => {
     ORDER BY oh.date_add DESC
   `) as any[]
 
-  // Adresses
+  
   const [addrDeliveryRows, addrInvoiceRows]: [any[], any[]] = await Promise.all([
     d.execute(sql`
       SELECT a.*, cl.name AS "countryName"
@@ -106,7 +105,7 @@ export default defineEventHandler(async (event) => {
   const addrDelivery = addrDeliveryRows?.[0]
   const addrInvoice = addrInvoiceRows?.[0]
 
-  // Related invoice
+  
   const invoiceRows: any[] = await d.execute(sql`
     SELECT id_order_invoice AS "id", number AS "invoiceNumber"
     FROM cs_main.ps_order_invoice WHERE id_order = ${orderId} AND number > 0 LIMIT 1

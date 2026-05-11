@@ -1,14 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * /api/backlog
- * GET    → lists items (filters: status, priority, category, day, view)
- * POST   → creates an item (body JSON)
- * PUT    → updates an item (body: { id_item, ...fields })
- * DELETE → deletes an item (body: { id_item } or query ?id_item=)
- *
- * Single source: cs_backlog (production database) via ac_backlog facade. No caching.
- */
 
 import {
   type BacklogUpdateSet,

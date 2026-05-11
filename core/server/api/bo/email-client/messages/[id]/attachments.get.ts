@@ -1,8 +1,4 @@
-/**
- *
- * GET /api/bo/email-client/messages/[id]/attachments — lists attachments
- * of a message (without content).
- */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 
@@ -16,7 +12,7 @@ export default defineEventHandler(async (event) => {
   if (!account) throw createError({ statusCode: 503, statusMessage: 'SMTP_USER non configuré.' })
 
   const sql = getPgClient()
-  // Vérifie que le message appartient au compte courant (anti cross-account)
+  
   const owns = await sql<Array<{ id_email_message: number }>>`
     SELECT id_email_message FROM ${sql(PG_SCHEMA)}.cs_email_message
     WHERE id_email_message = ${id} AND account_user = ${account} LIMIT 1

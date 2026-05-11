@@ -1,17 +1,7 @@
-/**
- *
- * POST /api/licensing/ai-proxy
- * The central service executes AI tasks for satellite services.
- *
- * The satellite service sends raw VARIABLES.
- * The central service injects the PROMPTS (proprietary IP) + calls Anthropic + watermarks.
- *
- * SECURITY.md R3: variables are anonymized by the satellite service before sending.
- */
+
+
 import { timingSafeEqual } from 'node:crypto'
 import { watermarkResponse } from '~/server/licensing/watermark'
-
-// ── Bibliothèque de prompts système (NOTRE IP — jamais envoyée au client) ─────
 
 const PROMPT_LIBRARY: Record<string, string> = {
   broadcast: `Tu es un expert copywriter email marketing.
@@ -36,7 +26,7 @@ JSON : { "aiClassification": "...", "technicalPrompt": "...", "estimatedComplexi
 }
 
 export default defineEventHandler(async (event) => {
-  // Auth
+  
   const auth = (getHeader(event, 'authorization') ?? '').replace(/^Bearer\s+/i, '')
   const secret = process.env.MASTER_WEBHOOK_SECRET ?? ''
   if (!secret || !auth || !safeCompare(auth, secret)) {
@@ -56,29 +46,29 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'clientId et taskType requis' })
   }
 
-  // Résoudre le prompt système (notre IP)
+  
   const systemPrompt = PROMPT_LIBRARY[taskType]
   if (!systemPrompt) {
     throw createError({ statusCode: 400, message: `taskType inconnu : ${taskType}` })
   }
 
-  // Construire le user prompt depuis les variables du client
+  
   const userPrompt = Object.entries(body.variables)
     .map(([k, v]) => `${k}: ${typeof v === 'string' ? v.slice(0, 500) : JSON.stringify(v).slice(0, 500)}`)
     .join('\n')
 
   try {
-    // Appel IA avec NOTRE clé (pas celle du client)
+    
     const raw = await callAI(systemPrompt, userPrompt)
 
     if (!raw || raw.startsWith('[STUB]')) {
       return { ok: true, result: raw, watermark: null }
     }
 
-    // Watermark
+    
     const { text, watermark } = watermarkResponse(raw, clientId, taskType)
 
-    // Log télémétrie (non bloquant)
+    
     console.log(`[ai-proxy] ${clientId}/${taskType} — watermark:${watermark}`)
 
     return { ok: true, result: text, watermark }

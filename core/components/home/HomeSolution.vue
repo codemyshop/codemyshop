@@ -1,8 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <template>
   <section id="solution" class="py-20 lg:py-24 bg-gray-50 dark:bg-slate-900">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
@@ -15,7 +11,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div v-for="pillar in pillars" :key="pillar.title" class="relative p-8 rounded-2xl bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <!-- Accent top line -->
+          
           <div class="absolute top-0 left-8 right-8 h-[2px] rounded-full" :style="{ background: pillar.color }" />
 
           <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-5" :class="pillar.bgClass">

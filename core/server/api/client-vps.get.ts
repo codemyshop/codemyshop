@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { listActiveClientVps } from '~/internal/hub/server/utils/hub'
 
-/**
- * GET /api/client-vps
- * GET /api/client-vps?client=example-shop
- * Centralized registry of client VPS. Single source: cs_client_vps via the facade.
- */
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const clientFilter = (query.client as string | undefined) || null

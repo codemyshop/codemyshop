@@ -1,8 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <script setup lang="ts">
 withDefaults(defineProps<{
   glow?: boolean
@@ -15,13 +11,13 @@ withDefaults(defineProps<{
 
 <template>
   <div class="relative group">
-    <!-- Animated gradient border -->
+    
     <div
       v-if="glow"
       class="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-primary-500 via-accent-500 to-primary-500 opacity-20 group-hover:opacity-40 blur-sm transition-opacity duration-700"
       style="background-size: 200% 200%; animation: borderGlow 4s ease-in-out infinite;"
     />
-    <!-- Static glow orb behind -->
+    
     <div
       v-if="glow"
       class="absolute -inset-8 bg-primary-500/10 dark:bg-primary-500/5 rounded-3xl blur-2xl pointer-events-none"

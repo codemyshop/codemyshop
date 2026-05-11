@@ -87,7 +87,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
@@ -103,7 +102,7 @@ function setPerPage(n: number) {
 }
 const loading = ref(false)
 const search = ref('')
-const statusFilter = ref(0) // 0 = payées + en prépa, 2 = payées, 3 = en prépa
+const statusFilter = ref(0) 
 const updating = ref<number | null>(null)
 const counts = reactive({ paid: 0, preparing: 0 })
 
@@ -131,13 +130,13 @@ async function changeStatus(order: any, newStatus: number) {
 async function load() {
   loading.value = true
   try {
-    // If no specific filter, fetch both status 2 and 3
+    
     if (statusFilter.value === 0) {
       const [r2, r3] = await Promise.all([
         $fetch<any>('/api/bo/orders', { query: { page: page.value, perPage: perPage.value, search: search.value, status: 2, sort: 'date', dir: 'DESC' } }),
         $fetch<any>('/api/bo/orders', { query: { page: 1, perPage: 100, status: 3, sort: 'date', dir: 'DESC' } }),
       ])
-      // Show preparing first, then paid
+      
       const allOrders = [...(r3.orders || []), ...(r2.orders || [])]
       orders.value = allOrders.slice(0, perPage.value)
       total.value = (r2.total || 0) + (r3.total || 0)

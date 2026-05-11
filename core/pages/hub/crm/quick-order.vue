@@ -10,12 +10,12 @@
 
     <div class="flex-1 overflow-auto p-6 space-y-6">
 
-      <!-- ─── Matrice saisie + paste ──────────────────────────────── -->
+      
       <section class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-5">
         <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">⚡ Saisie matrice / Import</h2>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-          <!-- Zone paste texte libre -->
+          
           <div>
             <label class="text-xs block mb-1 text-gray-500 dark:text-slate-400">Coller texte / email / CSV (SKU + qté par ligne)</label>
             <textarea
@@ -38,7 +38,7 @@
             </p>
           </div>
 
-          <!-- Client + actions -->
+          
           <div>
             <label class="text-xs block mb-1 text-gray-500 dark:text-slate-400">Client (pour résolution prix B2B)</label>
             <input v-model.number="idCustomer" type="number" min="0" placeholder="0 = pas de résolution B2B" class="w-full border border-gray-200 dark:border-slate-700 rounded px-2 py-1.5 text-xs" />
@@ -62,7 +62,7 @@
           </div>
         </div>
 
-        <!-- Editable matrix -->
+        
         <div v-if="matrixItems.length" class="mt-4">
           <div class="flex items-center justify-between mb-2">
             <h3 class="text-xs font-semibold text-gray-600 dark:text-slate-400">Matrice ({{ matrixItems.length }} ligne{{ matrixItems.length > 1 ? 's' : '' }})</h3>
@@ -95,7 +95,7 @@
         </div>
       </section>
 
-      <!-- ─── Resolution result ──────────────────────────────── -->
+      
       <section v-if="resolvedData">
         <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">📦 Résolution panier</h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
@@ -156,7 +156,7 @@
         </table>
       </section>
 
-      <!-- ─── Persisted lists ──────────────────────────────── -->
+      
       <section>
         <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">💾 Listes persistées</h2>
         <div v-if="loadingLists" class="h-20 bg-gray-100 dark:bg-slate-800 rounded-lg animate-pulse" />
@@ -195,7 +195,7 @@
       </section>
     </div>
 
-    <!-- ─── Modal enregistrer liste ──────────────────────────────── -->
+    
     <div v-if="saveModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="saveModalOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-md mx-4">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">

@@ -1,15 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/checkout/bankwire-details
- *
- * Bank account information for the tenant for wire transfer payment.
- * Source: ps_configuration (native keys of the ps_wirepayment module).
- *
- * Response: { owner, details, address } — strings ready to display.
- * If not configured (all empty) → returns the 3 fields as empty string,
- * the UI then displays the fallback "your information will be sent to you".
- */
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 
 const KEYS = ['BANK_WIRE_OWNER', 'BANK_WIRE_DETAILS', 'BANK_WIRE_ADDRESS', 'BANK_WIRE_CUSTOM_TEXT'] as const

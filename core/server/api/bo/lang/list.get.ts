@@ -1,18 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import type { HubLang, HubLangListResponse } from '~/types/hub/lang'
 
-/**
- * GET /api/bo/lang/list — list of active languages for the current tenant.
- *
- * Tenant resolution: automatic via `useClientDb(event)` (host → clientId → DB).
- * - ac-hub        → prestashop (ac_mariadb)
- * - example-shop-v2    → ps_example-shop (VPS distant)
- *
- * The Hub UI (`useHubLang`) calls this endpoint on mount and caches for
- * 5 min. The `<HubLangSelector>` is only displayed if `langs.length > 1`.
- */
 export default defineEventHandler(async (event): Promise<HubLangListResponse> => {
   const db = useClientDb(event)
 

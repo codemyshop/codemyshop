@@ -1,17 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/invoices/monthly — revenue aggregates by month (last 12 months).
- *
- * Two views returned, at user's choice:
- * - `issued`  : amounts based on issue date (invoicing, real accounting - BIC/BNC).
- * - `paid`    : amounts based on collection date (URSSAF micro-entrepreneur accounting).
- *
- * Credit notes (`type='avoir'`) and `cancelled` invoices are excluded from totals.
- * `draft` invoices are counted separately as `draft_*`.
- */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
   const q = getQuery(event) as Record<string, string>

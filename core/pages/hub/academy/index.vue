@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -11,7 +11,7 @@
           </p>
         </div>
         <div class="flex items-center gap-3">
-          <!-- Certified badge -->
+          
           <Transition
             enter-active-class="transition-all duration-300"
             enter-from-class="opacity-0 scale-90"
@@ -27,7 +27,7 @@
               Certifié
             </span>
           </Transition>
-          <!-- Indicateur client -->
+          
           <span class="text-xs text-gray-400 bg-gray-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-full font-medium">
             {{ playbook.clientId }}
           </span>
@@ -37,7 +37,7 @@
 
     <div class="p-6 max-w-4xl mx-auto space-y-6">
 
-      <!-- ── Barre de navigation par onglets ──────────────────────────────── -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-1.5 flex gap-1 overflow-x-auto">
         <button
           v-for="tab in TABS"
@@ -55,24 +55,24 @@
         </button>
       </div>
 
-      <!-- ════════════════════════════════════════════════════════════════════ -->
-      <!-- Tab : Valeurs & Vision ─────────────────────────────────────────── -->
-      <!-- ════════════════════════════════════════════════════════════════════ -->
+      
+      
+      
       <template v-if="activeTab === 'values'">
 
-        <!-- Tagline hero -->
+        
         <div class="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 text-white shadow-lg">
           <p class="text-xs font-semibold text-white/60 uppercase tracking-widest mb-2">Notre raison d’être</p>
           <p class="text-xl font-bold leading-snug">{{ playbook.tagline }}</p>
         </div>
 
-        <!-- Vision -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Vision</p>
           <p class="text-sm text-gray-600 leading-relaxed">{{ playbook.vision }}</p>
         </div>
 
-        <!-- Valeurs -->
+        
         <div>
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Nos valeurs fondamentales</p>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -90,12 +90,12 @@
 
       </template>
 
-      <!-- ════════════════════════════════════════════════════════════════════ -->
-      <!-- Tab : Tone of Voice ────────────────────────────────────────────── -->
-      <!-- ════════════════════════════════════════════════════════════════════ -->
+      
+      
+      
       <template v-else-if="activeTab === 'tone'">
 
-        <!-- Key adjectives -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Notre ton en {{ playbook.tone.adjectives.length }} mots</p>
           <div class="flex flex-wrap gap-2 mb-5">
@@ -119,7 +119,7 @@
           </div>
         </div>
 
-        <!-- Do / Don’t -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Do / Don’t — Exemples concrets</p>
           <div class="space-y-3">
@@ -142,9 +142,9 @@
 
       </template>
 
-      <!-- ════════════════════════════════════════════════════════════════════ -->
-      <!-- Tab: Sales Guide -->
-      <!-- ════════════════════════════════════════════════════════════════════ -->
+      
+      
+      
       <template v-else-if="activeTab === 'closer'">
 
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5 mb-2">
@@ -170,9 +170,9 @@
 
       </template>
 
-      <!-- ════════════════════════════════════════════════════════════════════ -->
-      <!-- Tab : Guide IA ─────────────────────────────────────────────────── -->
-      <!-- ════════════════════════════════════════════════════════════════════ -->
+      
+      
+      
       <template v-else-if="activeTab === 'ai'">
 
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5 mb-2">
@@ -186,7 +186,7 @@
             :key="i"
             class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5"
           >
-            <!-- Example header -->
+            
             <div class="flex items-center justify-between mb-3">
               <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 bg-primary-50 text-primary-700 rounded-full border border-primary-100">
                 <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -205,10 +205,10 @@
               </button>
             </div>
 
-            <!-- Bloc prompt -->
+            
             <pre class="bg-gray-50 dark:bg-slate-950 border border-gray-100 dark:border-slate-800 rounded-xl p-4 text-xs text-gray-700 dark:text-slate-200 whitespace-pre-wrap font-mono leading-relaxed overflow-x-auto">{{ ex.prompt }}</pre>
 
-            <!-- Note d’usage -->
+            
             <div class="flex items-start gap-2 mt-3 bg-amber-50 border border-amber-100 rounded-lg p-3">
               <svg class="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
@@ -220,15 +220,15 @@
 
       </template>
 
-      <!-- ════════════════════════════════════════════════════════════════════ -->
-      <!-- Tab : Newsletter vs Broadcast ──────────────────────────────────── -->
-      <!-- ════════════════════════════════════════════════════════════════════ -->
+      
+      
+      
       <template v-else-if="activeTab === 'broadcast'">
 
-        <!-- Side-by-side definitions -->
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-          <!-- Newsletter -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <div class="flex items-center gap-2.5 mb-3">
               <div class="w-9 h-9 rounded-xl bg-primary-100 flex items-center justify-center">
@@ -242,7 +242,7 @@
             <p class="text-xs text-gray-600 leading-relaxed">{{ playbook.broadcastLesson.newsletter }}</p>
           </div>
 
-          <!-- Broadcast -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <div class="flex items-center gap-2.5 mb-3">
               <div class="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center">
@@ -258,7 +258,7 @@
 
         </div>
 
-        <!-- Golden rule -->
+        
         <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-5 text-white shadow-lg">
           <div class="flex items-start gap-3">
             <span class="text-2xl shrink-0">💡</span>
@@ -269,7 +269,7 @@
           </div>
         </div>
 
-        <!-- Tableau comparatif par canal -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <table class="w-full text-sm">
             <thead>
@@ -304,7 +304,7 @@
           </table>
         </div>
 
-        <!-- Link to the broadcast center -->
+        
         <NuxtLink
           to="/hub/marketing/broadcast"
           class="flex items-center justify-center gap-2 py-3 bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold rounded-xl transition-colors"
@@ -317,24 +317,24 @@
 
       </template>
 
-      <!-- ════════════════════════════════════════════════════════════════════ -->
-      <!-- Tab: Ideal client -->
-      <!-- ════════════════════════════════════════════════════════════════════ -->
+      
+      
+      
       <template v-else-if="activeTab === 'ideal'">
 
-        <!-- Titre + range -->
+        
         <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-6 text-white shadow-lg">
           <p class="text-xs font-semibold text-white/60 uppercase tracking-widest mb-2">{{ playbook.idealClient.title }}</p>
           <p class="text-2xl font-black leading-snug">{{ playbook.idealClient.range }}</p>
         </div>
 
-        <!-- Why -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Pourquoi ce segment ?</p>
           <p class="text-sm text-gray-600 leading-relaxed">{{ playbook.idealClient.why }}</p>
         </div>
 
-        <!-- Pain points -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Pain Points du client cible</p>
           <div class="space-y-2.5">
@@ -349,7 +349,7 @@
           </div>
         </div>
 
-        <!-- Disqualification -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Critères de disqualification</p>
           <p class="text-xs text-gray-400 mb-3">Ne pas investir de temps commercial sur ces profils :</p>
@@ -365,7 +365,7 @@
           </div>
         </div>
 
-        <!-- Link to calculator -->
+        
         <div class="bg-primary-50 border border-primary-100 rounded-xl p-5 flex items-center gap-4">
           <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center shrink-0">
             <span class="text-lg">🧮</span>
@@ -378,18 +378,18 @@
 
       </template>
 
-      <!-- ════════════════════════════════════════════════════════════════════ -->
-      <!-- Tab: Transcreation -->
-      <!-- ════════════════════════════════════════════════════════════════════ -->
+      
+      
+      
       <template v-else-if="activeTab === 'transcreation'">
 
-        <!-- Header -->
+        
         <div class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-6 text-white shadow-lg">
           <p class="text-xs font-semibold text-white/60 uppercase tracking-widest mb-2">{{ playbook.transcreationLesson.title }}</p>
           <p class="text-sm font-semibold leading-relaxed">{{ playbook.transcreationLesson.why }}</p>
         </div>
 
-        <!-- Difference between translation and transcreation -->
+        
         <div class="grid grid-cols-2 gap-4">
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-danger-100 shadow-sm p-5">
             <div class="flex items-center gap-2 mb-3">
@@ -417,7 +417,7 @@
           </div>
         </div>
 
-        <!-- Exemples concrets -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Exemples d'adaptation</p>
           <div class="space-y-3">
@@ -442,7 +442,7 @@
           </div>
         </div>
 
-        <!-- CTA for AI localization -->
+        
         <NuxtLink
           to="/hub/marketing/localization"
           class="flex items-center justify-center gap-2 py-3 bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold rounded-xl transition-colors"
@@ -455,12 +455,12 @@
 
       </template>
 
-      <!-- ════════════════════════════════════════════════════════════════════ -->
-      <!-- Tab : Quiz ─────────────────────────────────────────────────────── -->
-      <!-- ════════════════════════════════════════════════════════════════════ -->
+      
+      
+      
       <template v-else-if="activeTab === 'quiz'">
 
-        <!-- Already certified banner -->
+        
         <Transition
           enter-active-class="transition-all duration-300"
           enter-from-class="opacity-0 -translate-y-2"
@@ -480,13 +480,13 @@
           </div>
         </Transition>
 
-        <!-- Intro quiz -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Valider mes connaissances</p>
           <p class="text-sm text-gray-500">{{ playbook.quiz.length }} questions — Répondez correctement à toutes pour obtenir le badge "Certifié".</p>
         </div>
 
-        <!-- Questions -->
+        
         <div class="space-y-4">
           <div
             v-for="(q, qi) in playbook.quiz"
@@ -513,7 +513,7 @@
           </div>
         </div>
 
-        <!-- Bouton valider -->
+        
         <button
           v-if="!quizSubmitted"
           @click="submitQuiz"
@@ -529,7 +529,7 @@
           </span>
         </button>
 
-        <!-- Result -->
+        
         <Transition
           enter-active-class="transition-all duration-300"
           enter-from-class="opacity-0 scale-95"
@@ -575,16 +575,10 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
-// ── Composable ────────────────────────────────────────────────────────────────
-
 const { playbook, isCertified, checkCertification, storeCertification } = useAcademy()
-
-// ── Tabs ──────────────────────────────────────────────────────────────────────
 
 type TabId = 'values' | 'tone' | 'closer' | 'ai' | 'broadcast' | 'ideal' | 'transcreation' | 'quiz'
 
@@ -600,8 +594,6 @@ const TABS: { id: TabId; label: string; icon: string }[] = [
 ]
 
 const activeTab = ref<TabId>('values')
-
-// ── Quiz ──────────────────────────────────────────────────────────────────────
 
 const answers      = ref<Record<number, number>>({})
 const quizSubmitted = ref(false)
@@ -644,8 +636,6 @@ function resetQuiz() {
   quizSubmitted.value = false
 }
 
-// ── Copy prompt ───────────────────────────────────────────────────────────────
-
 const copiedPromptIdx = ref<number | null>(null)
 
 async function copyPrompt(prompt: string, idx: number) {
@@ -654,18 +644,14 @@ async function copyPrompt(prompt: string, idx: number) {
     copiedPromptIdx.value = idx
     setTimeout(() => { copiedPromptIdx.value = null }, 2500)
   } catch {
-    //
+    
   }
 }
-
-// ── Reset quiz quand le client change ────────────────────────────────────────
 
 watch(() => playbook.value.clientId, () => {
   answers.value      = {}
   quizSubmitted.value = false
 })
-
-// ── Init ─────────────────────────────────────────────────────────────────────
 
 onMounted(checkCertification)
 </script>

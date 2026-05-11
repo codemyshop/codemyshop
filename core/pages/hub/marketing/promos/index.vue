@@ -98,7 +98,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
@@ -119,9 +118,6 @@ const loading = ref(false)
 const search = ref('')
 const filter = ref('')
 
-// Sprint 14 — debounce 300 ms on search: when the user types
-// in the field, the list updates without waiting for Enter. Pattern
-// identical to the product search from Sprint 12.
 let searchTimer: ReturnType<typeof setTimeout> | null = null
 watch(search, () => {
   if (searchTimer) clearTimeout(searchTimer)
@@ -174,7 +170,6 @@ function formatEur(n: number) { return Number(n || 0).toLocaleString('fr-FR', { 
 
 onMounted(() => load())
 
-// Sprint 12 — reload on every language change (localized name).
 watch(currentLangId, (newId, oldId) => {
   if (newId !== oldId && !loading.value) load()
 })

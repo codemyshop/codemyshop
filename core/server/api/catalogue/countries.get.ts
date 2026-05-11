@@ -1,11 +1,5 @@
-/**
- *
- * GET /api/catalogue/countries?clientId=...&lang=fr
- *
- * Returns active countries (used by address/shipping forms).
- * Direct DB (principle 'Zero PrestaShop webservice' 2026-04-22). Refactored
- * depuis connector.getCountries.
- */
+
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 

@@ -1,8 +1,4 @@
-/**
- *
- * cs_newsletter_subscriber facade — GDPR opt-ins from footer (and other
- * sources). Pattern PG-only via usePocPg.
- */
+
 
 import { sql } from 'drizzle-orm'
 import { randomBytes } from 'node:crypto'
@@ -44,9 +40,9 @@ export interface UpsertSubscriberInput {
 export interface UpsertSubscriberResult {
   idSubscriber: number
   status: SubscriberStatus
-  /** true if a fresh row was created, false if an existing row was updated. */
+  
   created: boolean
-  /** true if the row was previously unsubscribed and is now re-opted in. */
+  
   reactivated: boolean
   unsubscribeToken: string
 }
@@ -55,12 +51,6 @@ export function generateToken(): string {
   return randomBytes(24).toString('hex')
 }
 
-/**
- * Inserts an opt-in or reactivates an existing row (re-subscribe after a
- * unsubscribe). Idempotent: if an opt-in `pending` or `confirmed` exists
- * already, does not create a duplicate (UPDATE date_upd only, no leak on the
- * front).
- */
 export async function upsertSubscriber(input: UpsertSubscriberInput): Promise<UpsertSubscriberResult> {
   const email = String(input.email || '').trim().toLowerCase()
   if (!email) throw new Error('email required')
@@ -115,7 +105,7 @@ export async function upsertSubscriber(input: UpsertSubscriberInput): Promise<Up
   `)
   const row = ((result as any) as any[])[0]
   const inserted = row?.inserted === true || row?.inserted === 't' || row?.inserted === 1
-  // reactivated = la ligne existait + on vient de la rebasculer en pending
+  
   const reactivated = !inserted && row?.status === 'pending'
   return {
     idSubscriber: Number(row.id_subscriber),

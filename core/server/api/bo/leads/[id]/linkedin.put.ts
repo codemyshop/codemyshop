@@ -1,24 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { setCustomerLinkedinUrl } from '~/modules/customer-extra/server/utils/customer-extra'
 
-/**
- * PUT /api/bo/leads/{id}/linkedin
- *
- * Saves the verified LinkedIn URL of a lead, across all sources.
- * Body : { url: string, source?: 'lead' | 'customer-noorder' | 'contact' }
- *
- * Routing by source:
- *   - lead             → cs_smartlead.profil_linkedIn
- * - customer-noorder → cs_customer_extra.linkedin_url (UPSERT — the row
- * may not exist as long as no metadata is entered)
- *   - contact          → cs_headlesscontact_message.linkedin_url
- *
- * `source` is optional for backward-compatibility; absent → assume 'lead'.
- *
- * Accepted URL: empty (clear) or starting with https?://….linkedin.com/.
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!Number.isFinite(id) || id <= 0) {
@@ -58,7 +42,7 @@ export default defineEventHandler(async (event) => {
       return { ok: true, id, source, url }
     }
 
-    // source === 'lead'
+    
     const { affectedRows } = await db.run(
       `UPDATE cs_main.cs_smartlead
           SET "profil_linkedIn" = ?, date_upd = CURRENT_TIMESTAMP

@@ -1,18 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * PUT /api/bo/pim/features/:id — upsert feature + values.
- *
- * Master (id_lang=1) writes ps_feature, ps_feature_shop, and all
- * languages of ps_feature_lang. Translations only touch their language.
- *
- * Values (body.values) are upserted: existing value.id => update,
- * value.id=0/absent => insert. Values absent from the body and
- * NOT referenced by a product are deleted (master only).
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -28,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
   const isNew = rawId === 'new' || Number(rawId) === 0
 
-  // ─── Création ────────────────────────────────────────────────────
+  
   if (isNew) {
     if (!isMaster) throw createError({ statusCode: 400, message: 'Création autorisée uniquement en langue master' })
     const name = String(body.name || '').trim()
@@ -55,7 +45,7 @@ export default defineEventHandler(async (event) => {
     return { success: true, id: newId, langId, isMaster, created: true }
   }
 
-  // ─── Édition ─────────────────────────────────────────────────────
+  
   const id = Number(rawId)
   const exists = await db.get<any>(`SELECT id_feature FROM ps_feature WHERE id_feature = ?`, [id])
   if (!exists) throw createError({ statusCode: 404, message: 'Caractéristique introuvable' })
@@ -79,7 +69,7 @@ export default defineEventHandler(async (event) => {
       const langs = await db.query<any>(`SELECT id_lang FROM ps_lang WHERE active = 1`)
       await upsertValues(db, id, body.values, langs)
     } else {
-      // Traduction : upsert uniquement les textes value pour la langue courante
+      
       for (const v of body.values) {
         if (!v.id) continue
         await db.run(`
@@ -93,8 +83,6 @@ export default defineEventHandler(async (event) => {
   return { success: true, id, langId, isMaster, created: false }
 })
 
-/** Upsert master des valeurs : insère/maj en master toutes langues, supprime
- * those not listed and not used by a product. */
 async function upsertValues(db: any, idFeature: number, values: any[], langs: any[]) {
   const incomingIds = new Set<number>()
 
@@ -104,9 +92,9 @@ async function upsertValues(db: any, idFeature: number, values: any[], langs: an
 
     if (v.id && Number(v.id) > 0) {
       incomingIds.add(Number(v.id))
-      // Update value text in all langs only for the lang we're editing — but
-      // since called from master, we update only the master lang. Translations
-      // come via the non-master branch above.
+      
+      
+      
       await db.run(`
         INSERT INTO ps_feature_value_lang (id_feature_value, id_lang, value) VALUES (?, 1, ?)
         ON CONFLICT (id_feature_value, id_lang) DO UPDATE SET value = EXCLUDED.value
@@ -123,7 +111,7 @@ async function upsertValues(db: any, idFeature: number, values: any[], langs: an
     }
   }
 
-  // Deletes values not listed AND not used by a product
+  
   const existing = await db.query<any>(`
     SELECT fv.id_feature_value AS id,
            (SELECT COUNT(*) FROM ps_feature_product fp WHERE fp.id_feature_value = fv.id_feature_value) AS used

@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/** GET /api/bo/finance/treasury — 13-week rolling cashflow forecast (history + projection). */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
 
@@ -69,7 +68,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    /** Build 13 weeks of history (fill gaps with 0) anchored on ISO Monday. */
+    
     const weeks: Array<{
       key: string
       label: string
@@ -136,7 +135,7 @@ export default defineEventHandler(async (event) => {
     const projOutflow = Math.round(median(histOutflows))
     const pendingAmount = Number(pendingOrders?.amount || 0)
 
-    /** 13 weeks of projection — first projected week absorbs the pending orders backlog. */
+    
     for (let i = 1; i <= 13; i++) {
       const w = new Date(today); w.setUTCDate(w.getUTCDate() + i * 7)
       const inflow = projInflow + (i === 1 ? pendingAmount : 0)
@@ -153,13 +152,13 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    /** Anchor: balance at end of last historical week = YTD net. Walk forward and backward from there. */
+    
     const startBalance = Number(ytd?.inflow || 0) - Number(ytd?.outflow || 0)
     const histNetSum = weeks.slice(0, 13).reduce((s, w) => s + w.net, 0)
     let bal = startBalance - histNetSum
     for (const w of weeks) { bal += w.net; w.balance = Math.round(bal) }
 
-    /** Alerts: any projected week whose closing balance dips below 0 or below 1 month of outflow. */
+    
     const alertThreshold = projOutflow * 4
     const alerts = weeks
       .filter(w => !w.isHistory && (w.balance < 0 || (alertThreshold > 0 && w.balance < alertThreshold)))

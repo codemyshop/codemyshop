@@ -21,7 +21,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- KPI cards -->
+      
       <div class="grid grid-cols-4 gap-4">
         <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-4 text-center">
           <p class="text-2xl font-extrabold text-gray-900">{{ tasks.length }}</p>
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <!-- Tableau -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <table class="w-full text-sm">
           <thead>
@@ -98,7 +98,7 @@
       </div>
     </div>
 
-    <!-- ── Modal "Under the hood" ─────────────────────────────────────────── -->
+    
     <Teleport to="body">
       <Transition enter-active-class="transition-opacity duration-200" enter-from-class="opacity-0" leave-active-class="transition-opacity duration-150" leave-to-class="opacity-0">
         <div v-if="inspectTask" class="fixed inset-0 z-50 flex justify-end">
@@ -113,7 +113,7 @@
             </div>
 
             <div class="px-6 py-5 space-y-5">
-              <!-- Metrics -->
+              
               <div class="grid grid-cols-3 gap-3">
                 <div class="bg-gray-50 dark:bg-slate-950 rounded-lg p-3 text-center">
                   <p class="text-lg font-extrabold text-gray-900">{{ inspectTask.latencyMs ?? '\u2014' }}<span class="text-xs font-normal text-gray-400">ms</span></p>
@@ -129,32 +129,32 @@
                 </div>
               </div>
 
-              <!-- Token details -->
+              
               <div v-if="inspectTask.actualTokens" class="bg-gray-50 dark:bg-slate-950 rounded-lg p-3 grid grid-cols-3 gap-2 text-center text-xs">
                 <div><p class="font-bold text-gray-700 dark:text-slate-200">{{ inspectTask.actualTokens.prompt?.toLocaleString('fr-FR') }}</p><p class="text-gray-400">Input</p></div>
                 <div><p class="font-bold text-gray-700 dark:text-slate-200">{{ inspectTask.actualTokens.completion?.toLocaleString('fr-FR') }}</p><p class="text-gray-400">Output</p></div>
                 <div><p class="font-bold text-success-600">{{ formatUsd(inspectTask.actualCost ?? 0) }}</p><p class="text-gray-400">Co&ucirc;t</p></div>
               </div>
 
-              <!-- System Prompt -->
+              
               <div>
                 <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">System Prompt</p>
                 <pre class="text-xs text-gray-600 bg-gray-50 dark:bg-slate-950 rounded-lg border border-gray-100 dark:border-slate-800 p-3 whitespace-pre-wrap max-h-40 overflow-y-auto font-mono">{{ inspectTask.systemPrompt }}</pre>
               </div>
 
-              <!-- User Prompt -->
+              
               <div>
                 <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">User Prompt</p>
                 <pre class="text-xs text-gray-600 bg-gray-50 dark:bg-slate-950 rounded-lg border border-gray-100 dark:border-slate-800 p-3 whitespace-pre-wrap max-h-40 overflow-y-auto font-mono">{{ inspectTask.userPrompt }}</pre>
               </div>
 
-              <!-- Response -->
+              
               <div v-if="inspectTask.response">
                 <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">R&eacute;ponse API</p>
                 <pre class="text-xs text-gray-600 bg-success-50 rounded-lg border border-success-100 p-3 whitespace-pre-wrap max-h-60 overflow-y-auto font-mono">{{ inspectTask.response }}</pre>
               </div>
 
-              <!-- Erreur -->
+              
               <div v-if="inspectTask.errorMessage">
                 <p class="text-[10px] font-semibold text-danger-500 uppercase tracking-wider mb-1">Erreur</p>
                 <pre class="text-xs text-danger-700 bg-danger-50 rounded-lg border border-danger-100 p-3 whitespace-pre-wrap font-mono">{{ inspectTask.errorMessage }}</pre>
@@ -165,7 +165,7 @@
       </Transition>
     </Teleport>
 
-    <!-- ── Modale Cr&eacute;ation ────────────────────────────────────────────── -->
+    
     <Teleport to="body">
       <Transition name="fade">
         <div v-if="showCreate" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" @click.self="showCreate = false">
@@ -243,7 +243,7 @@ async function executeTask(id: string) {
     const res = await $fetch<{ ok: boolean; task: AiTask }>('/api/hub/ai-queue', {
       method: 'PUT', query: { action: 'exec', id },
     })
-    // Save telemetry
+    
     if (res.task) {
       await $fetch('/api/hub/save-telemetry', {
         method: 'POST',

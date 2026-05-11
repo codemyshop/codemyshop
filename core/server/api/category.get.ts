@@ -1,21 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/category?pilier=grossiste&path=olive/lucque&lang=fr
- *
- * Resolves a native PS category path under a root category and returns metadata
- * SEO, direct children, breadcrumb trail, and product aggregates.
- *
- * Tenant-agnostic: the root category is resolved dynamically by link_rewrite
- * (id_lang=1) among active categories of level ≤ 2. Each tenant
- * declares its root categories via runtimeConfig.public.piliers[].
- *
- * Mapping SEO :
- *   - intro_html (hero)            ← ps_category_lang.description (3§ SEO)
- *   - long_description_html (bas)  ← ps_category_lang.additional_description
- *   - meta_title / meta_description ← ps_category_lang.* (natif PS)
- * - image_url                    ← /img/c/{id}.jpg if the file exists (best-effort)
- */
+
 import { useClientDb } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 import { listFaqsByParent } from '~/modules/faq/server/utils/faq'
@@ -25,9 +9,8 @@ interface CategoryChild {
   slug: string
   path: string
   label: string
-  /** Présent uniquement pour les cross-categories : pilier slug d'origine
-   * (may differ from the host root category). If absent → native child, the root category
-   * is the current page's one. */
+  
+
   pilier?: string
 }
 
@@ -58,11 +41,11 @@ export interface CategoryResponse {
   meta_description: string
   intro_html: string | null
   long_description_html: string | null
-  /** URL JPG legacy 800×800 — fallback universel. */
+  
   image_url: string | null
-  /** WebP responsive srcset (400/600/800/1200 square 1:1). Empty if category has no image. */
+  
   image_webp_srcset: string | null
-  /** sizes hint for the browser. Hero col-4 desktop / full width mobile. */
+  
   image_sizes: string | null
   breadcrumb: Array<{ label: string; path: string }>
   children: CategoryChild[]
@@ -80,8 +63,8 @@ function slugifyForFilename(s: string): string {
 }
 
 async function getMasterSlug(db: any, idCategory: number): Promise<string> {
-  // The WebP filename always uses the id_lang=1 (master) slug to remain
-  // stable: FR/EN/DE translations may diverge, the file does not move.
+  
+  
   const row = await db.get<{ link_rewrite: string }>(
     'SELECT link_rewrite FROM ps_category_lang WHERE id_category = ? AND id_lang = 1 AND id_shop = 1 LIMIT 1',
     [idCategory],
@@ -94,18 +77,11 @@ function buildImageUrls(id: number, masterSlug: string): { url: string; srcset: 
   return {
     url: `/img/c/${id}.jpg`,
     srcset,
-    // Hero CategoryHero : md:col-span-4 (≈33vw ≥768px) sinon 100vw mobile
+    
     sizes: '(min-width: 768px) 33vw, 100vw',
   }
 }
 
-/**
- * Resolves the id_category of a root category by its link_rewrite. Searches among the
- * active categories, preference level ≤ 2 (usual root categories: children of the
- * shop root or "Home"). Returns null if no match.
- *
- * A memory cache per (slug, db-pool) avoids the lookup on each request.
- */
 const pilierCache = new Map<string, { id: number; level_depth: number; id_parent: number } | null>()
 
 async function resolvePilier(db: any, slug: string): Promise<{ id: number; level_depth: number; id_parent: number } | null> {
@@ -137,12 +113,6 @@ interface CategoryRow {
   meta_description: string | null
 }
 
-/**
- * Walk segments from the root category: each segment must match the link_rewrite
- * of a direct child category (fallback id_lang=1 if the requested language does not
- * contain the row). Returns the leaf category or null if a segment
- * does not resolve.
- */
 async function walkSegments(
   db: any,
   segments: string[],
@@ -176,11 +146,6 @@ async function walkSegments(
   return lastRow
 }
 
-/**
- * H1 custom depuis cs_category_extra_lang (module ac_categoryextra).
- * Delegated to the Drizzle facade. Null if absent → fallback to
- * ps_category_lang.name on the caller side.
- */
 async function getCustomH1(_db: any, idCategory: number, idLang: number, event?: any): Promise<string | null> {
   try {
     const { getCategoryH1 } = await import('~/modules/category-extra/server/utils/category-extra')
@@ -191,11 +156,6 @@ async function getCustomH1(_db: any, idCategory: number, idLang: number, event?:
   }
 }
 
-/**
- * Loads the ancestor tree from the root category to the current category (excludes the root category
- * itself, includes the current category) to build the breadcrumb and
- * reconstruct the path in localized slugs.
- */
 async function loadAncestors(
   db: any,
   idCategory: number,
@@ -252,15 +212,15 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
     }
   }
 
-  // pilierLabel sera le name natif de la catégorie (localisé via ps_category_lang)
-  // résolu après fetch pilierMeta.
+  
+  
 
-  // ── Cas 1 : root pilier (/grossiste/ ou /marque/) ─────────────────────────
+  
   if (segments.length === 0) {
-    // Filtre sous-catégories stériles : on exclut celles dont le sous-arbre
-    // ne contient aucun produit actif (via nleft/nright PS natif).
-    // Exception : cats virtuelles 390/391/392 (Nouveautés/Promotions/Meilleures
-    // ventes) qui projettent dynamiquement et doivent rester visibles.
+    
+    
+    
+    
     const rows = await db.query<CategoryRow>(
       `SELECT c.id_category, c.id_parent, c.level_depth,
               COALESCE(cl.name, clf.name, '')             AS name,
@@ -286,7 +246,7 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
       [idLang, pilier.id],
     )
 
-    // Meta pilier depuis ps_category_lang (cat 260 / 321)
+    
     const pilierMeta = await db.get<CategoryRow>(
       `SELECT c.id_category, c.id_parent, c.level_depth,
               COALESCE(cl.name, clf.name, '')             AS name,
@@ -306,9 +266,9 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
     const pilierImages = buildImageUrls(pilier.id, await getMasterSlug(db, pilier.id))
     const pilierLabel = pilierMeta?.name || pilierKey
 
-    // Agrégat produits descendants — même CTE récursive que Cas 2 (sous-cat).
-    // Sans ça, hasProducts=false côté <CategoryPage> ⇒ grille jamais montée +
-    // SEO numberOfItems=0. Le pilier est un nœud d'arbre comme un autre.
+    
+    
+    
     let pilierAgg: CategoryAggregate = { total: 0, price_min: null, price_max: null }
     try {
       const aggRows = await db.query<{ total: number; price_min: number | null; price_max: number | null }>(
@@ -337,9 +297,9 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
       console.error('[category] pilier aggregate error:', e?.message)
     }
 
-    // FAQ pilier — façade ac_faq (parent_type='category'). Pareil que Cas 2.
-    // Sans ça, hasFaq=false côté <CategoryPage> ⇒ section FAQ + JSON-LD
-    // FAQPage manquants. ER_NO_SUCH_TABLE swallow si ac_faq pas installé.
+    
+    
+    
     let pilierFaq: CategoryFaqItem[] = []
     try {
       const items = await listFaqsByParent('category', pilier.id, idLang, { event })
@@ -382,7 +342,7 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
     }
   }
 
-  // ── Cas 2 : catégorie sous pilier (1-4 segments) ──────────────────────────
+  
   const leaf = await walkSegments(db, segments, pilier.id, idLang)
   if (!leaf) {
     return {
@@ -410,11 +370,11 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
     }
   }
 
-  // Breadcrumb + path reconstruit en slugs localisés via la chaîne ancestor
+  
   const chain = await loadAncestors(db, leaf.id_category, pilier.id, idLang)
   const localizedPath = chain.map(c => c.link_rewrite).join('/')
-  // Label pilier : name natif (localisé via ps_category_lang) pour l'entrée
-  // de tête du breadcrumb. Fallback au slug si la ligne n'existe pas.
+  
+  
   const pilierRoot = await db.get<{ name: string }>(
     `SELECT COALESCE(cl.name, clf.name, '') AS name
        FROM ps_category c
@@ -434,9 +394,9 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
     })
   }
 
-  // Enfants directs (actifs, triés PS natifs).
-  // Filtre identique au pilier root : on cache les sous-cats stériles
-  // (sous-arbre sans produit actif) sauf les 3 virtuelles whitelist.
+  
+  
+  
   const childRows = await db.query<CategoryRow>(
     `SELECT c.id_category, c.id_parent, c.level_depth,
             COALESCE(cl.name, clf.name, '')             AS name,
@@ -462,10 +422,10 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
     [idLang, leaf.id_category],
   )
 
-  // Cross-categories : liens externes affichés en queue des enfants natifs.
-  // cs_category_cross (host=leaf.id_category) → array d'id_cross_category
-  // résolus en row catégorie + chain (pour reconstruire un path absolu, vu que
-  // le pilier de la cross peut différer de celui de l'hôte).
+  
+  
+  
+  
   const crossRows = await db.query<CategoryRow & { id_cross_category: number; cross_pos: number }>(
     `SELECT cc.id_cross_category, cc.position AS cross_pos,
             c.id_category, c.id_parent, c.level_depth,
@@ -484,9 +444,9 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
     [idLang, leaf.id_category],
   ).catch(() => [])
 
-  // Pour chaque cross, calcule son path canonique en remontant jusqu'au Home
-  // PS (id=2). Le 1er slug de la chain est le pilier (ex: 'grossiste'), le
-  // reste est le path interne (ex: 'olive/tapenades').
+  
+  
+  
   interface CrossChild {
     id: number
     slug: string
@@ -496,7 +456,7 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
   }
   const crossChildren: CrossChild[] = []
   for (const cr of crossRows) {
-    const chain = await loadAncestors(db, cr.id_category, /* pilierId = Home */ 2, idLang)
+    const chain = await loadAncestors(db, cr.id_category,  2, idLang)
     if (chain.length < 1) continue
     const pilierSlug = chain[0].link_rewrite
     const innerPath = chain.slice(1).map((c) => c.link_rewrite).join('/')
@@ -509,11 +469,11 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
     })
   }
 
-  // Product aggregate. For the 3 virtual categories (390/391/392), the
-  // products are projected dynamically by /api/catalogue/by-category (not
-  // wired in ps_category_product) → ad-hoc aggregate on dynamic scopes.
-  // Otherwise: descendants via recursive CTE id_parent (nleft/nright may be
-  // out of sync, id_parent remains the source of truth).
+  
+  
+  
+  
+  
   const VIRTUAL = new Map<number, 'nouveautes' | 'promotions' | 'meilleures-ventes'>([
     [390, 'nouveautes'], [391, 'promotions'], [392, 'meilleures-ventes'],
   ])
@@ -596,7 +556,7 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
     console.error('[category] aggregate error:', e?.message)
   }
 
-  // FAQ via ac_faq facade (parent_type='category')
+  
   let faq: CategoryFaqItem[] = []
   try {
     const items = await listFaqsByParent('category', leaf.id_category, idLang, { event })
@@ -638,9 +598,9 @@ export default defineEventHandler(async (event): Promise<CategoryResponse> => {
         path: `${localizedPath}/${r.link_rewrite}`,
         label: r.name,
       })),
-      // Cross-categories at the end. Field `pilier` present only for
-      // cross — the storefront uses it to build the canonical URL
-      // (may differ from the host root category).
+      
+      
+      
       ...crossChildren.map(c => ({
         id: c.id,
         slug: c.slug,

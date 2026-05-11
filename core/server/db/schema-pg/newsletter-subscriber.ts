@@ -1,14 +1,4 @@
-/**
- *
- * Drizzle PG schema for newsletter subscriber.
- *
- * Stores newsletter opt-ins from footer (and other sources). GDPR compliant:
- * snapshot of consent_text at opt-in time + ip + user_agent + timestamp
- * trace informed consent collection. unsubscribe_token enables
- * one-click withdrawal (GDPR article 7.3).
- *
- * Multi-tenant row-level via `client_id`.
- */
+
 
 import {
   index,

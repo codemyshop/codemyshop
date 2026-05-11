@@ -1,20 +1,4 @@
-/**
- *
- * App-level UPSERT helper for ps_configuration.
- *
- * The MariaDB → PG migration (task #44) did not restore the native unique index
- * PrestaShop on (name, id_shop_group, id_shop). Without this index, the syntax
- * `ON CONFLICT (name, id_shop_group, id_shop) DO UPDATE` fails. We emulate
- * the upsert in two steps: UPDATE first, INSERT if 0 rows affected.
- *
- * Not strictly atomic (race condition possible between UPDATE and INSERT) but
- * sufficient for single-user admin endpoints. Simplify to
- * `ON CONFLICT` native when the unique index is restored in a dedicated task
- * (postgres support + tenant propagation).
- *
- * Exclusive target: the global row (id_shop_group IS NULL, id_shop IS NULL),
- * which corresponds to the default single-shop configuration of PrestaShop.
- */
+
 
 import type { PgAdapterClient } from './db-pg-adapter'
 

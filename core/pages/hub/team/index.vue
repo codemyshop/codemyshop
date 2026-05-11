@@ -78,7 +78,7 @@
               </span>
             </td>
             <td class="px-4 py-2.5 text-center" @click.stop>
-              <!-- Toggle inline async — click.stop to prevent triggering openEmployee -->
+              
               <button
                 type="button"
                 :disabled="togglingId === e.id"
@@ -102,13 +102,9 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
-// Sprint 17 — governance page: reserved for owners (root +
-// founder) on the UI side. Fine-grained SuperAdmin SaaS filtering is applied
-// on the server side (cf. /api/bo/team/index.get.ts).
 const { canAccess } = useRoles()
 if (!canAccess('founder_admin')) {
   navigateTo('/hub/dashboard')
@@ -166,7 +162,7 @@ async function load() {
 async function toggleActive(e: any) {
   togglingId.value = e.id
   const previous = e.active
-  // Optimistic — we revert if the PUT fails.
+  
   e.active = e.active ? 0 : 1
   try {
     await $fetch(`/api/bo/team/${e.id}`, {

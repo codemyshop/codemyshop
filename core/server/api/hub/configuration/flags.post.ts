@@ -1,20 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/hub/configuration/flags
- *
- * Body : { name: 'PS_B2B_ENABLE', value: '0' | '1' }
- *
- * Updates a native PS flag in ps_configuration. Strict whitelist — a call
- * with a `name` outside the list is rejected with 400.
- *
- * PS convention: ps_configuration has 1 row per key (no deduplication
- * lang/shop for boolean flags). Upsert via helper `upsertConfiguration`
- * (UPDATE-then-INSERT app-level — no unique index on `name` on the PG side
- * post-port chantier #44).
- *
- * Security: protected by hub-auth middleware (authenticated employee only).
- */
 
 import { useClientDb } from '~/server/utils/db'
 import { upsertConfiguration } from '~/server/utils/ps-configuration'

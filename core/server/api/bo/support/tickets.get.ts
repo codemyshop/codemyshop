@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/** GET /api/bo/support/tickets — support tickets (`ps_customer_thread` with status + SLA). */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
   try {

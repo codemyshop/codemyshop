@@ -1,18 +1,5 @@
-/**
- *
- * PDF generation for B2B quote request acknowledgment.
- * Uses PDFKit (native Node.js, not Puppeteer).
- *
- * Data source: cs_quote_request + cs_quote_request_item.
- * No pricing on the PDF — the priced quote will come in a second stage
- * (pricing proposal) after the salesperson approves.
- *
- * Usage :
- *   const buf = await generateQuoteRequestPdf(idQuoteRequest)
- * Send buf as application/pdf, or stream from the dedicated endpoint.
- */
 
-// @ts-expect-error - pas de @types/pdfkit installé (cf. contract-pdf.ts qui ignore aussi)
+
 import PDFDocument from 'pdfkit'
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -29,7 +16,7 @@ interface QuoteRow {
   message:          string | null
   total_items:      number
   date_add:         Date
-  // Enrichissement INSEE
+  
   legal_name:       string | null
   naf_code:         string | null
   naf_label:        string | null
@@ -43,7 +30,7 @@ interface QuoteItemRow {
   name:       string
   reference:  string | null
   quantity:   number
-  price?:     number   // joint depuis ps_product
+  price?:     number   
 }
 
 const fmtPrice = (n: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
@@ -88,12 +75,12 @@ export async function generateQuoteRequestPdf(idQuoteRequest: number): Promise<B
     doc.on('end', () => resolve(Buffer.concat(chunks)))
     doc.on('error', reject)
 
-    const green = '#65a30d'   // Example Shop/Meyva green
+    const green = '#65a30d'   
     const dark  = '#1e293b'
     const gray  = '#64748b'
     const light = '#e2e8f0'
 
-    // ── Header ────────────────────────────────────────────────────────
+    
     doc.rect(0, 0, doc.page.width, 70).fill(green)
     doc.fillColor('#ffffff').fontSize(20).font('Helvetica-Bold')
       .text(shopName, 50, 24)
@@ -106,11 +93,11 @@ export async function generateQuoteRequestPdf(idQuoteRequest: number): Promise<B
 
     let y = 100
 
-    // ── Parties ───────────────────────────────────────────────────────
+    
     doc.fillColor(green).fontSize(11).font('Helvetica-Bold')
       .text('CLIENT', 50, y)
     y += 18
-    // Raison sociale INSEE prioritaire si dispo, sinon company saisi par user
+    
     const displayCompany = quote.legal_name || quote.company
     doc.fillColor(dark).fontSize(10).font('Helvetica-Bold')
       .text(`${quote.firstname} ${quote.lastname}`, 50, y)
@@ -122,14 +109,14 @@ export async function generateQuoteRequestPdf(idQuoteRequest: number): Promise<B
       doc.text(`SIRET : ${quote.siret}`, 50, y)
       y += 12
     }
-    // Adresse INSEE (si enrichie)
+    
     if (quote.address_insee || quote.postal_code || quote.city_insee) {
       const addr = [quote.address_insee, [quote.postal_code, quote.city_insee].filter(Boolean).join(' ')]
         .filter(Boolean).join(', ')
       doc.text(`Adresse : ${addr}`, 50, y)
       y += 12
     }
-    // Activité : code APE INSEE prioritaire (officiel) sinon activite user
+    
     if (quote.naf_code || quote.naf_label) {
       const napLine = [quote.naf_code, quote.naf_label].filter(Boolean).join(' — ')
       doc.text(`Activité INSEE : ${napLine}`, 50, y)
@@ -153,12 +140,12 @@ export async function generateQuoteRequestPdf(idQuoteRequest: number): Promise<B
     doc.moveTo(50, y).lineTo(doc.page.width - 50, y).strokeColor(light).lineWidth(0.5).stroke()
     y += 20
 
-    // ── Items ────────────────────────────────────────────────────────
+    
     doc.fillColor(green).fontSize(11).font('Helvetica-Bold')
       .text(`PRODUITS DEMANDÉS (${quote.total_items} unité${quote.total_items > 1 ? 's' : ''})`, 50, y)
     y += 18
 
-    // Table header — colonnes Produit / Réf / Qté / PU HT / Sous-total HT
+    
     const colProd = 50, colRef = 270, colQty = 360, colPu = 410, colSub = 480
     doc.fillColor(gray).fontSize(8).font('Helvetica-Bold')
       .text('PRODUIT', colProd, y)
@@ -191,7 +178,7 @@ export async function generateQuoteRequestPdf(idQuoteRequest: number): Promise<B
     doc.moveTo(50, y).lineTo(doc.page.width - 50, y).strokeColor(light).lineWidth(0.5).stroke()
     y += 14
 
-    // Total HT
+    
     doc.fillColor(dark).fontSize(11).font('Helvetica-Bold')
       .text('TOTAL HT', colPu - 60, y, { width: 110, align: 'right' })
       .fillColor(green)
@@ -205,7 +192,7 @@ export async function generateQuoteRequestPdf(idQuoteRequest: number): Promise<B
       )
     y += 24
 
-    // ── Note proposition ─────────────────────────────────────────────
+    
     doc.fillColor(green).fontSize(11).font('Helvetica-Bold')
       .text('PROPOSITION TARIFAIRE PERSONNALISÉE', 50, y)
     y += 18
@@ -224,7 +211,7 @@ export async function generateQuoteRequestPdf(idQuoteRequest: number): Promise<B
         .text(quote.message, 50, y, { width: doc.page.width - 100, align: 'left' })
     }
 
-    // Footer
+    
     const footerY = doc.page.height - 40
     doc.fontSize(7).fillColor(gray).font('Helvetica')
       .text(

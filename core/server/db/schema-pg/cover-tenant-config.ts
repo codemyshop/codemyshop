@@ -1,11 +1,4 @@
-/**
- *
- * Drizzle PG schema — cover tenant config domain.
- * Database-only port of TENANT_CONFIG hard-coded in the cover generation module
- * (initiative #43 Wave 3 #3 Phase A — preparation for Pillow → sharp migration).
- *
- * 1 row par tenant : config visuelle (couleurs, masque) + URL site.
- */
+
 
 import {
   pgSchema,

@@ -1,13 +1,5 @@
-/**
- *
- * PUT /api/account/profile
- * Updates `firstname`/`lastname`/`email` of the connected user (employee or customer).
- * Session: `hub_session` cookie (HMAC-signed). If the email changes, the cookie is
- * re-issued with the new payload.
- *
- * Replaces the old PHP endpoint `/module/ac_base/ajaxupdateprofile` (removal
- * PHP phase 1, travail php-eviction-phase1).
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 import { getSession } from '~/server/utils/session'
 import { signToken } from '~/server/utils/session-crypto'

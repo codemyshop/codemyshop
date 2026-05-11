@@ -1,18 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { saveEmailConfig } from '~/server/utils/email-config'
 
-/**
- * PUT /api/bo/email-config/smtp — upsert cs_email_config (singleton).
- *
- * Body : { host?, port?, user?, from?, secure?, from_email?, reply_to? }
- *
- * All fields are optional — a PUT may update only a
- * subset. The others retain their current value (DB if
- * existing, env otherwise — the INSERT...ON CONFLICT clause handles this).
- *
- * loadEmailConfig cache invalidated automatically after save.
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event) as {
     host?:       string
@@ -24,14 +13,14 @@ export default defineEventHandler(async (event) => {
     reply_to?:   string
   }
 
-  // Validation port (acceptable range 1-65535)
+  
   if (body.port != null) {
     const p = Number(body.port)
     if (!Number.isFinite(p) || p < 1 || p > 65535) {
       throw createError({ statusCode: 400, statusMessage: 'port invalide (1-65535)' })
     }
   }
-  // Validation email format si renseigné
+  
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i
   if (body.from && !EMAIL_RE.test(body.from)) {
     throw createError({ statusCode: 400, statusMessage: 'from: email invalide' })
@@ -56,7 +45,6 @@ export default defineEventHandler(async (event) => {
   return { ok: true }
 })
 
-/** Extrait l'adresse email d'un format `Name <email@domain.tld>` ou brut. */
 function extractEmail(raw: string): string {
   const m = raw.match(/<([^>]+)>/)
   return m ? m[1] : raw.trim()

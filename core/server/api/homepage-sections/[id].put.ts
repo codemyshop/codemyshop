@@ -1,15 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/homepage-sections/:id
- *
- * Updates title/subtitle (in _lang) and payload. If a payload is provided
- * with a known shape (hero-slider, features, categories, narrative-blocks,
- * banners, faq, blog), it is DECOMPOSED into blocks + _lang (DB-Only strict) :
- * DELETE existing blocks then INSERT the new ones from items/slides/groups.
- * Non-i18n top-level fields (interval_ms, cols, height, limit, cta_to,
- * handle, url) land in typed columns on cs_homepage_section.
- */
 
 import {
   getSectionType,
@@ -76,7 +65,7 @@ async function decomposePayload(
   payload: any,
   langs: ActiveLang[],
 ): Promise<void> {
-  // Non-i18n top-level → colonnes typées (pattern DB-Only strict, cf backlog #156/#157)
+  
   await updateSectionConfig(idSection, {
     limit_items:       payload.limit             !== undefined ? Number(payload.limit)         : null,
     interval_ms:       payload.interval_ms       !== undefined ? Number(payload.interval_ms)   : null,
@@ -88,11 +77,11 @@ async function decomposePayload(
     featured_position: payload.featuredPosition === 'left' || payload.featuredPosition === 'right' ? payload.featuredPosition : null,
   }, { event })
 
-  // Cicatrice 2026-04-22 : ac_builder envoyait parfois un payload partiel
-  // (ex: { cols: 2 } sans items) → DELETE puis rien réinséré → blocks perdus.
-  // On ne DELETE que si le payload contient EXPLICITEMENT la collection qui
-  // remplace les blocks. Un update de colonne typée pure (cols/height/limit/
-  // cta_to...) n'entraîne plus de wipe.
+  
+  
+  
+  
+  
   const hasReplacementItems =
     (type === 'features'        && Array.isArray(payload.items) && payload.items.length > 0) ||
     (type === 'categories'      && Array.isArray(payload.items) && payload.items.length > 0) ||
@@ -174,8 +163,8 @@ async function decomposePayload(
           { cta_label: payload.cta_label }, langs)
       }
       break
-    // promotions, new-products, bestsellers, instagram : pas de blocks i18n,
-    // config dans les colonnes typées (limit_items, social_handle, social_url)
+    
+    
   }
 }
 

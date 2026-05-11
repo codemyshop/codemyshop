@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/orders/:id/invoice — Downloads the PDF invoice of an order.
- * Direct PostgreSQL DB (Zero PrestaShop webservice policy 2026-04-22).
- */
+
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 import { resolveClientId } from '~/server/utils/db'

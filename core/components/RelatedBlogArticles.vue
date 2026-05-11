@@ -6,7 +6,7 @@
   >
     <div class="max-w-5xl mx-auto px-6">
 
-      <!-- Section header -->
+      
       <div class="flex items-center justify-between mb-8 gap-4">
         <div>
           <span class="inline-block text-xs font-semibold text-primary-600 uppercase tracking-widest mb-2">
@@ -33,7 +33,7 @@
         </NuxtLink>
       </div>
 
-      <!-- Loading skeletons -->
+      
       <div v-if="status === 'pending'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div v-for="n in limit" :key="n" class="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-pulse">
           <div class="h-48 bg-gray-200" />
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <!-- Grille d'articles -->
+      
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <NuxtLink
           v-for="article in articles"
@@ -56,7 +56,7 @@
           :aria-label="`Lire l'article : ${article.title}`"
           class="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col"
         >
-          <!-- Image de couverture -->
+          
           <div class="relative h-48 overflow-hidden bg-gray-100 shrink-0">
             <img
               v-if="article.coverImage"
@@ -72,7 +72,7 @@
               </svg>
             </div>
 
-            <!-- Category badge -->
+            
             <span
               v-if="article.category"
               class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-primary-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-primary-100"
@@ -81,7 +81,7 @@
             </span>
           </div>
 
-          <!-- Card content -->
+          
           <div class="flex flex-col flex-1 p-5">
             <h3 class="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-primary-600 transition-colors leading-snug">
               {{ article.title }}
@@ -100,7 +100,7 @@
         </NuxtLink>
       </div>
 
-      <!-- Mobile link to category -->
+      
       <div v-if="categorySlug" class="mt-8 text-center sm:hidden">
         <NuxtLink
           :to="`/blog/${categorySlug}`"
@@ -138,13 +138,13 @@ function formatDate(raw: string): string {
 }
 
 const props = withDefaults(defineProps<{
-  /** PS category slug (e.g., "prestashop", "seo") — filters articles */
+  
   categorySlug:  string
-  /** Label displayed in h2 title (e.g., "PrestaShop", "SEO") */
+  
   categoryLabel?: string
-  /** Number of articles to display — 3 or 6 */
+  
   limit?:         number
-  /** Article ID to exclude (to avoid self-reference on the article page) */
+  
   excludeId?:     number
 }>(), {
   categoryLabel: undefined,
@@ -159,7 +159,7 @@ const displayLabel = computed(() =>
 const { activeLang } = useRouteLang()
 const { data: raw, status } = await useFetch<CmsArticle[]>('/api/cms', {
   query: {
-    // We fetch more than necessary to absorb the potential exclusion
+    
     limit:    props.excludeId ? props.limit + 1 : props.limit,
     category: props.categorySlug,
     lang:     activeLang,
@@ -175,6 +175,5 @@ const articles = computed(() => {
   return filtered.slice(0, props.limit)
 })
 
-// Re-exported for the <h2>
 const categoryLabel = computed(() => displayLabel.value)
 </script>

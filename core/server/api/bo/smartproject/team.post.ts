@@ -1,17 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/smartproject/team
- * Remplace ac_smartproject/ajaxaddteammember (chantier #38 Phase B1.4).
- *
- * Body : { firstname, lastname, email, role? }
- *
- * id_owner is resolved server-side from the Hub session (employeeId), aligned
- * with the PHP pattern that used $this->context->customer->id.
- *
- * Bugfix in passing: the `role` field is now persisted (the column exists
- * in cs_smartteam but PHP ignored it).
- */
+
 import { addTeamMember } from '~/enterprise/base/smartproject/server/utils/smartproject'
 import { getSession } from '~/server/utils/session'
 

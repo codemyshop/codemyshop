@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import {
   createFreightRule,
@@ -8,7 +8,6 @@ import {
   type FreightThresholdType,
 } from '~/modules/freight-rule/server/utils/freight-rule'
 
-/** POST /api/bo/freight — Creates a shipping rule. */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     label: string

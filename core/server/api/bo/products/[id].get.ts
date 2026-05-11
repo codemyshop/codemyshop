@@ -1,13 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/** GET /api/bo/products/:id — full product details via direct DB.
- *
- * Sprint 12 — multilang: `?lang=X` selects the row.
- * `ps_product_lang` (localized fields). Non-localized tables
- * (ps_product, ps_stock_available, ps_image, etc.) are unchanged.
- */
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, message: 'id requis' })
@@ -45,7 +39,7 @@ export default defineEventHandler(async (event) => {
 
   if (!product) throw createError({ statusCode: 404, message: 'Produit introuvable' })
 
-  // Features
+  
   const features = await db.query<any>(`
     SELECT fl.name AS featureName, fvl.value AS featureValue
     FROM ps_feature_product fp
@@ -55,13 +49,13 @@ export default defineEventHandler(async (event) => {
     ORDER BY fl.name
   `, [langId, langId, Number(id)])
 
-  // Images
+  
   const images = await db.query<any>(`
     SELECT id_image AS id, cover, position
     FROM ps_image WHERE id_product = ? ORDER BY position
   `, [Number(id)])
 
-  // Catégories associées
+  
   const categories = await db.query<any>(`
     SELECT cp.id_category AS id, cl.name
     FROM ps_category_product cp
@@ -70,7 +64,7 @@ export default defineEventHandler(async (event) => {
     ORDER BY cl.name
   `, [langId, Number(id)])
 
-  // Specific prices
+  
   const specificPrices = await db.query<any>(`
     SELECT id_specific_price AS id, id_customer AS customerId, id_group AS groupId,
            ROUND(reduction, 4) AS reduction, reduction_type AS reductionType,
@@ -79,7 +73,7 @@ export default defineEventHandler(async (event) => {
     ORDER BY from_quantity
   `, [Number(id)])
 
-  // Déclinaisons (combinaisons) — ps_product_attribute + stock + attributs liés
+  
   const combinations = await db.query<any>(`
     SELECT
       pa.id_product_attribute AS id,
@@ -126,10 +120,10 @@ export default defineEventHandler(async (event) => {
     for (const c of combinations) c.attributes = []
   }
 
-  // Règles de taxe (toutes celles actives — multi-tenant).
-  // Strict PG : toutes les colonnes non-agrégées du SELECT/ORDER BY doivent
-  // figurer dans le GROUP BY. On agrège t.rate via MAX (1 rate par groupe
-  // au plus côté FR/UE — sinon on prend la plus haute, robuste).
+  
+  
+  
+  
   const taxRules = await db.query<any>(`
     SELECT trg.id_tax_rules_group AS id, trg.name AS label, ROUND(MAX(t.rate), 2) AS rate
     FROM ps_tax_rules_group trg
@@ -140,7 +134,7 @@ export default defineEventHandler(async (event) => {
     ORDER BY MAX(t.rate) DESC
   `)
 
-  // Transporteurs associés (id_carrier_reference — stable across versions)
+  
   const carrierRows = await db.query<any>(`
     SELECT id_carrier_reference AS ref
     FROM ps_product_carrier

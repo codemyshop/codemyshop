@@ -1,12 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Helpers referrals MGM — Phase 9b.4c chantier headless-modules-ts.
- * Drizzle PG direct on `cs_referral_invite` (project #44 MariaDB → PostgreSQL cutover).
- *
- * Workflow: invited → audit → deployed. If deployed, RevShare 15% (management
- * in ac_subscription via id_referrer + lookup).
- */
 
 import { eq, sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'

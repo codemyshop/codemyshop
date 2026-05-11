@@ -1,12 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * DELETE /api/bo/smartproject/documents/:id
- * Remplace ac_smartproject/ajaxdeletedocument (chantier #38 Phase B1.3).
- *
- * Note: file deletion on disk not covered here (cleanup orphans
- * managed in Phase E PrestaShop cutover with re-mount of uploads folder).
- */
+
 import { deleteProjectDocument } from '~/enterprise/base/smartproject/server/utils/smartproject'
 
 export default defineEventHandler(async (event) => {

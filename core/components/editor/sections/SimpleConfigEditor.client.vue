@@ -1,15 +1,8 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Éditeur simple — pour les sections avec peu de config (promotions, bestsellers,
-  new-products, instagram). Affiche les champs appropriés selon le type.
--->
 <template>
   <div class="space-y-3">
 
-    <!-- Limite produits (promotions, bestsellers, new-products) -->
+    
     <fieldset v-if="hasLimit" class="border border-gray-200 rounded-xl p-3 space-y-2">
       <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Affichage</legend>
       <div>
@@ -47,7 +40,7 @@
       </div>
     </fieldset>
 
-    <!-- Instagram -->
+    
     <fieldset v-if="sectionType === 'instagram'" class="border border-gray-200 rounded-xl p-3 space-y-2">
       <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Instagram</legend>
       <div>
@@ -66,7 +59,7 @@
       </div>
     </fieldset>
 
-    <!-- Section with no specific configuration -->
+    
     <div v-if="!hasLimit && sectionType !== 'instagram'" class="py-6 text-center">
       <p class="text-xs text-gray-400">Cette section n'a pas de configuration avancée.</p>
       <p class="text-[10px] text-gray-300 mt-1">Vous pouvez modifier son titre et sous-titre ci-dessus.</p>
@@ -90,9 +83,6 @@ const hasLimit = computed(() =>
   ['promotions', 'bestsellers', 'new-products'].includes(props.sectionType),
 )
 
-// Widget defaults (aligned with pre-builder rendering to avoid breaking
-// existing sections' display that don't yet have featuredPosition
-// in their payload).
 const DEFAULT_FEATURED_POSITION: Record<string, 'left' | 'right'> = {
   promotions:    'right',
   'new-products':'right',

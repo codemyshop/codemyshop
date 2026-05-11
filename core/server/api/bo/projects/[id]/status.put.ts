@@ -1,13 +1,6 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { updateSmartProjectStatus } from '~/enterprise/base/smartproject/server/utils/smartproject'
-
-/**
- * PUT /api/bo/projects/:id/status — Update project status.
- *
- * DB-First: Direct UPDATE to cs_smartproject.project_status via facade.
- * Remplace l'appel PS ajaxupdateprojectstatus (proxy).
- */
 
 const VALID_STATUSES = new Set([
   'perdu_standby',

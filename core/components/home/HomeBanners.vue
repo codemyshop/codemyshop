@@ -1,27 +1,4 @@
-<!--
-  Home Banners — Row 3 colonnes (image background + overlay texte centré + CTA).
-  Équivalent interne du module st_banner utilisé sur la prod Example Shop.
-  Payload DB attendu (type='banners') :
-  {
-    "items": [
-      {
-        "image": "/img/banners/meyva.jpg",
-        "header": "Meyva Example Shop",
-        "title": "Partenaire Premium",
-        "footer": "Une offre complète au meilleur prix",
-        "cta_label": "J'achète",
-        "cta_href": "/279-chr",
-        "target": "_self"
-      }
-    ],
-    "height": 512,
-    "cols": 3
-  }
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 import { NuxtLink } from '#components'
 import type { I18nString } from '~/composables/useI18nField'

@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -16,7 +16,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-8">
 
-      <!-- ── Section Inputs ──────────────────────────────────────────────── -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="bg-gradient-to-r from-gray-900 to-gray-800 px-6 py-4">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest">Param&egrave;tres de croissance</p>
@@ -24,7 +24,7 @@
         </div>
         <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          <!-- Objectif CA -->
+          
           <div>
             <div class="flex items-center justify-between mb-2">
               <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Objectif CA mensuel</label>
@@ -36,7 +36,7 @@
             </div>
           </div>
 
-          <!-- Panier Moyen -->
+          
           <div>
             <div class="flex items-center justify-between mb-2">
               <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Panier moyen</label>
@@ -48,7 +48,7 @@
             </div>
           </div>
 
-          <!-- Taux de conversion -->
+          
           <div>
             <div class="flex items-center justify-between mb-2">
               <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Taux de conversion</label>
@@ -60,7 +60,7 @@
             </div>
           </div>
 
-          <!-- CAC -->
+          
           <div>
             <div class="flex items-center justify-between mb-2">
               <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider">CAC (Co&ucirc;t Acquisition Client)</label>
@@ -75,10 +75,10 @@
         </div>
       </div>
 
-      <!-- ── KPIs calcul&eacute;s ──────────────────────────────────────────────── -->
+      
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-        <!-- Clients requis -->
+        
         <div class="relative bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 overflow-hidden">
           <div class="absolute top-0 right-0 w-24 h-24 bg-primary-600/5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div class="relative">
@@ -92,7 +92,7 @@
             </div>
             <p class="text-3xl font-extrabold text-gray-900">{{ kpi.requiredClients }}</p>
             <p class="text-xs text-gray-400 mt-1">{{ formatEur(inputs.targetRevenue) }} &divide; {{ formatEur(inputs.avgBasket) }} panier</p>
-            <!-- Jauge -->
+            
             <div class="mt-4">
               <div class="flex items-center justify-between text-[10px] text-gray-400 mb-1">
                 <span>Progression vers objectif</span>
@@ -105,7 +105,7 @@
           </div>
         </div>
 
-        <!-- Trafic requis -->
+        
         <div class="relative bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 overflow-hidden">
           <div class="absolute top-0 right-0 w-24 h-24 bg-success-600/5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div class="relative">
@@ -132,7 +132,7 @@
           </div>
         </div>
 
-        <!-- Budget Marketing -->
+        
         <div class="relative bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 overflow-hidden">
           <div class="absolute top-0 right-0 w-24 h-24 bg-warning-600/5 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div class="relative">
@@ -165,7 +165,7 @@
         </div>
       </div>
 
-      <!-- ── R&eacute;capitulatif ────────────────────────────────────────────────── -->
+      
       <div class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-6 lg:p-8 text-white shadow-xl">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div class="text-center">
@@ -189,7 +189,7 @@
         </div>
       </div>
 
-      <!-- ── Conseil Strat&eacute;gique IA ────────────────────────────────────────── -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-5 border-b border-gray-100 dark:border-slate-800">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Plan d'action IA</h2>
@@ -207,14 +207,14 @@
           />
         </div>
 
-        <!-- R&eacute;sultats IA -->
+        
         <div v-else class="p-6 space-y-5">
-          <!-- Summary -->
+          
           <div class="bg-primary-50 border border-primary-100 rounded-xl p-4">
             <p class="text-sm text-primary-800 font-medium leading-relaxed">{{ advice.summary }}</p>
           </div>
 
-          <!-- Actions -->
+          
           <div class="space-y-4">
             <div
               v-for="(action, i) in advice.actions"
@@ -241,7 +241,7 @@
             </div>
           </div>
 
-          <!-- Reg&eacute;n&eacute;rer -->
+          
           <button
             @click="advice = null"
             class="text-xs text-gray-400 hover:text-primary-600 font-medium transition-colors"
@@ -256,15 +256,12 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
+
 import type { GrowthAdvice } from '~/server/api/ai/growth-advice.post'
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
 const { resolvedClientId } = useClientDetection()
-
-// ── Inputs ────────────────────────────────────────────────────────────────────
 
 const inputs = reactive({
   targetRevenue:  100_000,
@@ -272,8 +269,6 @@ const inputs = reactive({
   conversionRate: 2.5,
   cac:            15,
 })
-
-// ── KPIs calcul&eacute;s (r&eacute;activit&eacute; temps r&eacute;el) ────────────────────────────────────
 
 const kpi = computed(() => {
   const requiredClients  = Math.ceil(inputs.targetRevenue / Math.max(1, inputs.avgBasket))
@@ -284,8 +279,6 @@ const kpi = computed(() => {
 
   return { requiredClients, requiredTraffic, marketingBudget, budgetRatio, roi }
 })
-
-// ── Conseil IA ────────────────────────────────────────────────────────────────
 
 const generating = ref(false)
 const advice     = ref<GrowthAdvice | null>(null)
@@ -317,8 +310,6 @@ async function generateAdvice() {
     generating.value = false
   }
 }
-
-// ── Utils ─────────────────────────────────────────────────────────────────────
 
 function formatEur(n: number) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)

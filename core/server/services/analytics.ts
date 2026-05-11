@@ -1,16 +1,4 @@
-/**
- *
- * Server-side analytics service — centralized Matomo.
- *
- * Architecture: one Matomo instance on the master VPS,
- * one isolated project per tenant (data siloed).
- *
- * This service resolves the tenant's Matomo configuration from cs_client_vps (DB)
- * and exposes methods to capture server-side events
- * (orders, conversions) and retrieve insights.
- *
- * Non-blocking: if Matomo is down, calls are ignored.
- */
+
 
 interface AnalyticsConfig {
   provider: string
@@ -32,10 +20,6 @@ async function getClientAnalytics(clientId: string): Promise<AnalyticsConfig | n
   }
 }
 
-/**
- * Captures a server-side event via the Matomo API.
- * Used for conversions, orders, etc.
- */
 export async function captureServerEvent(
   clientId: string,
   event: string,
@@ -61,13 +45,10 @@ export async function captureServerEvent(
       timeout: 5000,
     })
   } catch {
-    // Matomo down = on continue silencieusement
+    
   }
 }
 
-/**
- * Retrieves insights from the Matomo API.
- */
 export async function getInsights(
   clientId: string,
   dateRange?: { from: string; to: string }

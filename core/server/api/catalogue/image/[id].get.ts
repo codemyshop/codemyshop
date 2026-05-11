@@ -1,10 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/image/:id?clientId=example-shop-v2&size=home_default
- * Proxies product images from PrestaShop's /img/p/ directory.
- * Avoids CORS issues and hides PS infrastructure from the browser.
- */
+
 import http from 'node:http'
 import https from 'node:https'
 
@@ -12,16 +7,16 @@ function resolveBaseUrl(clientId: string): string {
   const env = process.env
   const upper = clientId.toUpperCase().replace(/-/g, '_')
 
-  // 1. Front URL spécifique client (PS_FRONT_URL_EXAMPLE_V2…) — prime sur l'URL API
-  // qui pointe souvent vers un backend interne sans fichiers statiques.
+  
+  
   const specificFront = env[`PS_FRONT_URL_${upper}`]
   if (specificFront) return specificFront.replace(/\/+$/, '')
 
-  // 2. URL API spécifique client (PS_URL_EXAMPLE_V2, PS_URL_AC_HUB…)
-  // On privilégie ça SI elle pointe vers un host public. Si interne
-  // (127.0.0.1 / localhost), on retombe sur NUXT_PUBLIC_PS_FRONT_URL qui
-  // a les images physiques (cas Example Shop v2 : snapshot migré, images encore
-  // sur example-shop.com).
+  
+  
+  
+  
+  
   const specificUrl = env[`PS_URL_${upper}`]
   if (specificUrl) {
     const stripped = specificUrl.replace(/\/api\/?$/, '')
@@ -33,7 +28,7 @@ function resolveBaseUrl(clientId: string): string {
     return stripped
   }
 
-  // 3. Fallback default (AC Hub)
+  
   const raw = (env.NUXT_PUBLIC_API_BASE || 'http://localhost:8080/api').replace(/\/api\/?$/, '')
   if (raw.includes('localhost') || raw.includes('127.0.0.1')) {
     const publicHost = env.NUXT_PUBLIC_PS_FRONT_URL || env.PS_HOST
@@ -52,7 +47,7 @@ export default defineEventHandler(async (event) => {
 
   const baseUrl = resolveBaseUrl(resolvedClient)
 
-  // Construire le chemin PS : /img/p/1/2/3/123-home_default.jpg
+  
   const digits = imageId.toString().split('')
   const imgPath = `/img/p/${digits.join('/')}/${imageId}-${imgSize}.jpg`
   const fullUrl = `${baseUrl}${imgPath}`
@@ -60,7 +55,7 @@ export default defineEventHandler(async (event) => {
   const parsedUrl = new URL(fullUrl)
   const transport = parsedUrl.protocol === 'https:' ? https : http
 
-  // Host header obligatoire pour PS derrière Docker (sinon 302)
+  
   const env = process.env
   const hostHeader = (parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1')
     ? (env.PS_HOST || env.NUXT_PS_HOST || 'localhost')

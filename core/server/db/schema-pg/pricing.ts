@@ -1,20 +1,4 @@
-/**
- *
- * Drizzle PG schemas for pricing — task #44 port-drizzle-mariadb-pg.
- *
- * 4 tables (cs_main) — pricing B2B :
- *   - cs_price_group           : groupes B2B
- * - cs_customer_price_group  : customer ↔ group associations (with validity)
- *   - cs_price_tier            : paliers (price tiers) par produit/groupe
- *   - cs_price_contract        : contrats individuels client/produit
- *
- * Mapping types MariaDB -> PG :
- *   - INT AUTO_INCREMENT  -> serial
- *   - TINYINT(1)          -> integer
- *   - DECIMAL(p,s)        -> numeric(p, s)
- *   - DATE                -> date (mode 'string')
- *   - DATETIME            -> timestamp(0) without time zone
- */
+
 
 import {
   date,

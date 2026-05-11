@@ -1,19 +1,4 @@
-/**
- *
- * Centaure POC pgvector — chantier #38 phase E.5 (criterion #2).
- *
- * Deterministic 384-dimensional pseudo-embedding (bag-of-trigrams hashed). It's a
- * placeholder that demonstrates the pgvector pipeline end-to-end (insert
- * vector, HNSW cosine index, similarity SQL). To be replaced with a
- * real semantic embedder (voyage-3, mistral-embed, gte-large) in a
- * dedicated effort — the interface will remain identical.
- *
- * Why deterministic: with the same input data the seed always produces the
- * same vectors, so the live test is reproducible. Why
- * trigrams: preserves lexical similarity (two texts sharing
- * vocabulary produce vectors close in cosine), sufficient
- * to validate the pipeline.
- */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'

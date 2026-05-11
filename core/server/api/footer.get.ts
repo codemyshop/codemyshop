@@ -1,13 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/footer
- * Columns + footer links from cs_footer JOIN cs_footer_lang
- * (_lang pattern). No more JSON i18n. Fallback id_lang=1 if the language
- * requested has no _lang row.
- *
- * Task #44 (2026-04-30): migrated MariaDB → PostgreSQL via `usePocPg()`.
- */
+
 import { resolveClientId } from '~/server/utils/db'
 import { loadSiloSlugMapForLang, localizeSiloHref } from '~/server/utils/localize-silo-href'
 import { listLinksWithLang } from '~/modules/footer/server/utils/footer'

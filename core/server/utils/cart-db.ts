@@ -1,16 +1,5 @@
-/**
- *
- * CRUD helpers for `ps_cart` and `ps_cart_product` with direct DB access (principle: 'Zero PrestaShop webservice'
- * 2026-04-22). Used by all endpoints
- * `/api/cart/*` to avoid duplication.
- *
- * Scope: cart read and write, without complex tax calculation
- * (`PS Cart::getOrderTotal` is ~1000 lines of VAT/promo/carrier rules).
- * Returns raw ex-tax total directly from `ps_product_shop.price`, tax is
- * left to the frontend (`useB2bVisibility`), which applies +20% in B2C.
- *
- * Targets PostgreSQL `cs_main` (effort #44 MariaDB removal).
- */
+
+
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
 import { buildProductImage } from '~/server/utils/ps-image'
@@ -43,34 +32,33 @@ export interface CartItemRow {
   priceHT: number
   priceTTC: number
   image?: string
-  /** Pills produit (parité ProductCard.vue) — drawer + /panier doivent montrer
-   * the same business information as the catalog card (3kg / bucket / W320). */
+  
+
   format?: string
   packaging?: string
   caliber?: string
-  /** Price per kg, ex-tax (raw + FR-formatted) — displayed prominently in the cart.
-   * Derived from `Net weight` (× `Units per parcel` if > 1) or fall back to p.weight. */
+  
+
   pricePerKgHT?: number
   pricePerKgFormatted?: string
-  /** Effective VAT rate (e.g., 5.5, 20). Used to build "VAT at X%, that is for
-   * N parcels: Y € before tax" without hardcoding the tax rate on the front-end. */
+  
+
   taxRate?: number
-  /** Package ex-tax price before discount (= base price). Only present if a
-   * when active, `ps_specific_price` reduces the price. */
+  
+
   priceHTBeforeDiscount?: number
-  /** Price per kg before discount, FR-formatted. */
+  
   pricePerKgFormattedBeforeDiscount?: string
-  /** Label badge promo ("-20%" / "-2,50 €"). */
+  
   reductionLabel?: string
-  /** Short suffix to display after unit price (per kg, per L, per unit).
-   * DB-first derived (cf. unity-label.deriveUnitPricing). */
+  
+
   unitLabel?: string
 }
 
 const fmtEurFr = (n: number) =>
   new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
 
-/** Parse '3kg' / '500g' / '1.5 KG' → kilograms. Aligned with `by-category.get.ts`. */
 function parseWeightToKg(s: string | null | undefined): number | null {
   if (!s) return null
   const m = String(s).trim().toLowerCase().replace(',', '.').match(/^([\d.]+)\s*(kg|g)$/)
@@ -84,13 +72,13 @@ export interface CartDataRow {
   id: number
   customerId: number
   items: CartItemRow[]
-  /** Subtotal before discount (ex-tax). Always = sum of line items `priceHT` × `qty`. */
+  
   subtotalHT: number
-  /** Subtotal before discount (inc-tax). */
+  
   subtotalTTC: number
-  /** Total after discount (ex-tax). `subtotalHT` - `discountHT`. */
+  
   totalHT: number
-  /** Total after discount (inc-tax). `subtotalTTC` - `discountTTC`. */
+  
   totalTTC: number
   totalTax: number
   shippingCost: number
@@ -100,15 +88,6 @@ export interface CartDataRow {
   discountTTC?: number
 }
 
-/**
- * Resolves effective VAT rates for a list of products in a country
- * given (defaults to France `id_country=8`). Returns `Map(id_product → rate%)`.
- * If `ps_tax_rule` has no entry for the country → rate 0 (B2B ex-tax fallback).
- *
- * If `postcode` is provided and matches a Corsican postal range defined in
- * `cs_corsetva`, the target rate (e.g., 2.1%) is applied instead of the
- * default rate of the related `tax_rules_group`. See `tax-corsetva.ts`.
- */
 export async function getTaxRatesForProducts(
   productIds: number[],
   countryId = 8,
@@ -136,7 +115,6 @@ export async function getTaxRatesForProducts(
   return applyCorseOverride(out, taxGroups, postcode, countryId)
 }
 
-/** Lit un cart complet depuis la DB (cart header + items + discounts + TVA). */
 export async function getCartFromDb(cartId: number, ctx: CartContext = {}): Promise<CartDataRow | null> {
   const d = usePocPg()
   const cart = firstOf<any>(await d.execute(sql`
@@ -144,9 +122,9 @@ export async function getCartFromDb(cartId: number, ctx: CartContext = {}): Prom
   `))
   if (!cart) return null
 
-  // Sub-select product features (Packaging / Size / Units per package /
-  // Net weight) — populates the pills and per-kg price calculation. Same approach
-  // as `core/server/api/catalogue/by-category.get.ts` (same as the product card).
+  
+  
+  
   const items = asArray<any>(await d.execute(sql`
     SELECT cp.id_product, cp.id_product_attribute, cp.quantity,
            COALESCE(pl.name, plf.name, '')                 AS name,
@@ -183,11 +161,11 @@ export async function getCartFromDb(cartId: number, ctx: CartContext = {}): Prom
      ORDER BY cp.id_product
   `))
 
-  // VAT resolution via `ps_tax_rules_group` → `ps_tax_rule` → `ps_tax` (cart country).
-  // For MVP: country = France (`id_country=8`) or the shipping address country
-  // of the cart if set. For B2B: tax often 0 (export/B2B) → `priceTTC` = `priceHT`.
-  // Postcode also retrieved: used to apply the Corsican VAT override (see
-  // `tax-corsetva.ts`) — postal code 20xxx (Corsica) + protected `tax_rules_group` → 2.1%.
+  
+  
+  
+  
+  
   const deliveryAddr = await d.execute(sql`
     SELECT a.id_country, a.postcode FROM cs_main.ps_cart c
       LEFT JOIN cs_main.ps_address a ON a.id_address = c.id_address_delivery
@@ -199,7 +177,7 @@ export async function getCartFromDb(cartId: number, ctx: CartContext = {}): Prom
   const taxRates = await getTaxRatesForProducts(productIds, countryId, ctx, postcode)
   const specificPrices = await getActiveSpecificPrices(productIds, ctx)
 
-  // Applied discount (only 1 supported for MVP, the most recent)
+  
   const discountRow = await d.execute(sql`
     SELECT cr.id_cart_rule, cr.code, cr.reduction_percent, cr.reduction_amount, cr.reduction_tax,
            crl.name
@@ -216,16 +194,16 @@ export async function getCartFromDb(cartId: number, ctx: CartContext = {}): Prom
   const mapped: CartItemRow[] = items.map((r: any) => {
     const productId = Number(r.id_product)
     const basePriceHT = Number(r.priceHT || 0)
-    // Product discount (`ps_specific_price`) — applied before VAT and before
-    // global `cart_rule` discount. Ensures the `cart_rule` total remains consistent.
+    
+    
     const sp = specificPrices.get(productId)
     const priceHT = applySpecificPrice(basePriceHT, sp)
     const hasPromo = sp !== undefined && priceHT < basePriceHT
     const rate = taxRates.get(productId) ?? 0
     const priceTTC = priceHT * (1 + rate / 100)
 
-    // `Format` / `pricePerKg` — same derivation as `by-category.get.ts` so that
-    // the cart display exactly matches the catalog product card.
+    
+    
     const unitsRaw = r.unitsPerPack ? Number(r.unitsPerPack) : NaN
     const unitsPerPack = Number.isFinite(unitsRaw) && unitsRaw > 1 ? unitsRaw : undefined
     const weightKg = Number(r.weightKg || 0)
@@ -238,9 +216,9 @@ export async function getCartFromDb(cartId: number, ctx: CartContext = {}): Prom
         : `${weightKg.toString().replace('.', ',')}kg`
     }
     const netWeightKg = parseWeightToKg(r.netWeight)
-    // Source unique DB-First (cf. unity-label.ts) — multipack → HT/U,
-    // else `unit_price_ratio` + `unity`, else fallback to weight. The divisor is
-    // reused to calculate the unit price before discount.
+    
+    
+    
     const totalNetKg = unitsPerPack && netWeightKg ? unitsPerPack * netWeightKg : netWeightKg
     const pricing = deriveUnitPricing({
       priceHT,
@@ -292,9 +270,9 @@ export async function getCartFromDb(cartId: number, ctx: CartContext = {}): Prom
   const discountTTC = discountHT * taxRatio
   const totalTax = totalTTC - totalHT
 
-  // Corsican VAT detection applied: FR shipping address (`id_country=8`)
-  // + postcode starting with '20' (South Corsica + Upper Corsica). Used for
-  // banner "TVA Corse appliquée — 2.1%" displayed on `/panier` and `/commander`.
+  
+  
+  
   const appliedCorseTva = countryId === 8 && /^20\d{3}$/.test(postcode.trim())
 
   return {
@@ -316,7 +294,6 @@ export async function getCartFromDb(cartId: number, ctx: CartContext = {}): Prom
   }
 }
 
-/** Last non-empty cart of a customer that hasn't yet been converted to an order. */
 export async function getLastActiveCartFromDb(customerId: number, ctx: CartContext = {}): Promise<CartDataRow | null> {
   const row = await usePocPg().execute(sql`
     SELECT c.id_cart
@@ -330,7 +307,6 @@ export async function getLastActiveCartFromDb(customerId: number, ctx: CartConte
   return row ? getCartFromDb(Number(row.id_cart), ctx) : null
 }
 
-/** Create a new cart. */
 export async function createCartInDb(customerId: number, _ctx: CartContext = {}): Promise<number> {
   const result: any = await usePocPg().execute(sql`
     INSERT INTO cs_main.ps_cart
@@ -343,7 +319,6 @@ export async function createCartInDb(customerId: number, _ctx: CartContext = {})
   return Number((result as any[])?.[0]?.id_cart ?? 0)
 }
 
-/** UPSERT an item in the cart (add or increment). */
 export async function addToCartInDb(
   cartId: number,
   productId: number,
@@ -352,7 +327,7 @@ export async function addToCartInDb(
   _ctx: CartContext = {},
 ): Promise<void> {
   const d = usePocPg()
-  // PrestaShop unique key on `ps_cart_product`: (`id_cart`, `id_product`, `id_product_attribute`, `id_customization`, `id_address_delivery`)
+  
   await d.execute(sql`
     INSERT INTO cs_main.ps_cart_product
         (id_cart, id_product, id_product_attribute, id_customization, id_address_delivery,
@@ -364,7 +339,6 @@ export async function addToCartInDb(
   await d.execute(sql`UPDATE cs_main.ps_cart SET date_upd = NOW() WHERE id_cart = ${cartId}`)
 }
 
-/** Set the exact quantity of an item. */
 export async function updateCartItemInDb(
   cartId: number,
   productId: number,
@@ -384,7 +358,6 @@ export async function updateCartItemInDb(
   await d.execute(sql`UPDATE cs_main.ps_cart SET date_upd = NOW() WHERE id_cart = ${cartId}`)
 }
 
-/** Remove an item from the cart. */
 export async function removeFromCartInDb(
   cartId: number,
   productId: number,
@@ -399,12 +372,6 @@ export async function removeFromCartInDb(
   await d.execute(sql`UPDATE cs_main.ps_cart SET date_upd = NOW() WHERE id_cart = ${cartId}`)
 }
 
-/** Apply a promo code (`cart_rule`) to the cart. Returns true if accepted.
- * Also validates:
- * - time window (`date_from`/`date_to`)
- *   - group restrictions (ps_cart_rule_group ∩ ps_customer_group)
- *   - country restrictions (ps_cart_rule_country ∩ address delivery country)
- */
 export async function applyCouponToCart(
   cartId: number,
   code: string,
@@ -431,9 +398,9 @@ export async function applyCouponToCart(
 
   const ruleId = Number(rule.id_cart_rule)
 
-  // Garde-fou quantity_per_user : on compte combien de fois le customer a
-  // déjà utilisé ce cart_rule via `ps_order_cart_rule`. Cicatrice 2026-05-07
-  // la 1ère commande pouvait être ré-appliqué sur N commandes suivantes.
+  
+  
+  
   const perUserLimit = Number(rule.quantity_per_user || 0)
   if (perUserLimit > 0) {
     const cartCust = await d.execute(sql`
@@ -491,7 +458,6 @@ export async function applyCouponToCart(
   return { ok: true }
 }
 
-/** Retire le code promo du cart. */
 export async function removeCouponFromCart(cartId: number, _ctx: CartContext = {}): Promise<void> {
   await usePocPg().execute(sql`DELETE FROM cs_main.ps_cart_cart_rule WHERE id_cart = ${cartId}`)
 }

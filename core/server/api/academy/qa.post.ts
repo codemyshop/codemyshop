@@ -1,11 +1,4 @@
-/**
- * POST /api/academy/qa
- * Ask a question on a lesson — email auto-enroll + persist DB + AI queue
- * via the ac_academy facade.
- *
- * Body : { module_slug, lesson_index, question, email }
- *
- */
+
 
 import { getLesson, getModuleBySlug } from '~/server/utils/academy-content'
 import { createAiTask } from '~/server/utils/ai-queue'
@@ -58,7 +51,7 @@ export default defineEventHandler(async (event) => {
       question,
     }, { event })
 
-    // Queue IA pour réponse async
+    
     const lesson = getLesson(moduleSlug, lessonIndex)
     const mod = getModuleBySlug(moduleSlug)
     const lessonContext = lesson
@@ -73,7 +66,7 @@ export default defineEventHandler(async (event) => {
         systemPrompt: `Tu es un assistant pédagogique expert en e-commerce PrestaShop et Nuxt 3. Tu fais partie de l'Academy CodeMyShop d'CodeMyShop. Réponds en français, de manière claire, pratique et directe. Pas de blabla. Des exemples concrets.\n\nContexte de la leçon :\n${lessonContext}`,
         userPrompt: question,
       }, event)
-    } catch { /* AI queue may not be available, question is still saved */ }
+    } catch {  }
 
     const sessionData = { learnerId, email, pseudo: learnerPseudo, role: 'student', clientId: 'ac-hub' }
     const token = signToken(sessionData)

@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -22,9 +22,9 @@
 
     <div class="p-6 max-w-5xl mx-auto space-y-6">
 
-      <!-- ═══════════════════════════════════════════════════════════════════ -->
-      <!-- SECTION 1 : API Keys                                              -->
-      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      
+      
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 bg-gray-50 flex items-center justify-between">
           <div>
@@ -38,7 +38,7 @@
 
         <form @submit.prevent="saveKeys" class="px-6 py-5 space-y-6">
 
-          <!-- PrestaShop API -->
+          
           <fieldset class="space-y-4">
             <legend class="text-xs font-semibold text-gray-500 uppercase tracking-widest flex items-center gap-2">
               <svg class="w-4 h-4 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -100,7 +100,7 @@
 
           <div class="border-t border-gray-100 dark:border-slate-800" />
 
-          <!-- IA API -->
+          
           <fieldset class="space-y-4">
             <legend class="text-xs font-semibold text-gray-500 uppercase tracking-widest flex items-center gap-2">
               <svg class="w-4 h-4 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -191,7 +191,7 @@
             </div>
           </fieldset>
 
-          <!-- Google Search Console -->
+          
           <fieldset class="space-y-4">
             <legend class="text-xs font-semibold text-gray-500 uppercase tracking-widest flex items-center gap-2">
               <svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -200,7 +200,7 @@
               Google Search Console
             </legend>
 
-            <!-- GSC site URL (per tenant) — visible to all tenant admins -->
+            
             <div>
               <label class="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">
                 URL du site dans GSC
@@ -219,7 +219,7 @@
               </p>
             </div>
 
-            <!-- JSON Service Account (global) — reserved for SaaS super admins -->
+            
             <div v-if="isSuperAdmin" class="border-t border-gray-100 dark:border-slate-800 pt-4">
               <label class="block text-xs font-medium text-gray-600 dark:text-slate-400 mb-1">
                 JSON Service Account (global AC)
@@ -242,7 +242,7 @@
                 Ajoutez l'email de service comme utilisateur de chaque property GSC tenant.
               </p>
 
-              <!-- Propagation result after save -->
+              
               <div v-if="gscPropagation" class="mt-3 p-3 rounded-lg bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-700 space-y-1">
                 <p class="text-[10px] font-semibold text-gray-600 dark:text-slate-300">Propagation cross-DB :</p>
                 <ul class="text-[10px] font-mono space-y-0.5">
@@ -253,7 +253,7 @@
             </div>
           </fieldset>
 
-          <!-- Actions -->
+          
           <div class="flex items-center justify-between pt-2">
             <p v-if="keySaveStatus === 'ok'" class="text-xs text-success-600 font-semibold flex items-center gap-1">
               <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" /></svg>
@@ -276,9 +276,9 @@
         </form>
       </div>
 
-      <!-- ═══════════════════════════════════════════════════════════════════ -->
-      <!-- SECTION 2 : Module status (existing)                           -->
-      <!-- ═══════════════════════════════════════════════════════════════════ -->
+      
+      
+      
       <div v-if="loading" class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div v-for="n in 3" :key="n" class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5 animate-pulse">
           <div class="h-8 w-8 rounded-lg bg-gray-100 dark:bg-slate-800 mb-3" />
@@ -291,7 +291,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-          <!-- Module IA -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border shadow-sm p-5"
                :class="status.ai.hasApiKey ? 'border-violet-200' : 'border-amber-200'">
             <div class="flex items-start justify-between mb-3">
@@ -322,7 +322,7 @@
             </dl>
           </div>
 
-          <!-- Module Avatars -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-blue-200 shadow-sm p-5">
             <div class="flex items-start justify-between mb-3">
               <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
@@ -349,7 +349,7 @@
             </div>
           </div>
 
-          <!-- Module Broadcast -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-green-200 shadow-sm p-5">
             <div class="flex items-start justify-between mb-3">
               <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
@@ -396,8 +396,6 @@ definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
 const { resolvedClientId } = useClientDetection()
 
-// ── System status ─────────────────────────────────────────────────────────────
-
 interface SystemStatus {
   ai: { mode: string; hasApiKey: boolean; sourceType: string; clientId: string; model: string }
   avatars: { total: number; distribution: Record<string, number>; storageDriver: string; storagePath: string }
@@ -423,13 +421,11 @@ async function load() {
 
 async function reload() { await load(); await loadKeys() }
 
-// ── API Keys ──────────────────────────────────────────────────────────────────
-
 interface ApiKeysResponse {
   prestashopUrl: string
-  prestashopKey: string   // masqué (sk-a••••8f3a)
+  prestashopKey: string   
   aiProvider:    string
-  aiApiKey:      string   // masqué
+  aiApiKey:      string   
   aiModel:       string
   updatedAt:     string | null
   hasPsKey:      boolean
@@ -446,21 +442,20 @@ const apiKeys = ref<ApiKeysResponse>({
 
 const keyForm = reactive({
   prestashopUrl: '',
-  prestashopKey: '',   // vide = ne pas toucher la clé existante
+  prestashopKey: '',   
   aiProvider:    'anthropic',
-  aiApiKey:      '',   // vide = ne pas toucher
+  aiApiKey:      '',   
   aiModel:       'claude-sonnet-4-6',
-  gscSiteUrl:    '',   // tenant-scope, cs_client_config.gscSiteUrl
-  gscServiceAccountJson: '',  // global AC, _global.secrets.gscServiceAccount (admin SaaS only)
+  gscSiteUrl:    '',   
+  gscServiceAccountJson: '',  
 })
 
-// Existing keys are NEVER pre-filled in the form — only indicators
 const psKeyExists  = ref(false)
 const aiKeyExists  = ref(false)
-const gscSiteUrl   = ref('')           // siteUrl tenant courant (affichage)
-const gscSaExists  = ref(false)        // SA global présent ?
+const gscSiteUrl   = ref('')           
+const gscSaExists  = ref(false)        
 const gscSaEmail   = ref<string | null>(null)
-const isSuperAdmin = ref(false)        // accès SA global (root@/founder@/contact@)
+const isSuperAdmin = ref(false)        
 const gscPropagation = ref<{ written: string[]; failed: { db: string; error: string }[] } | null>(null)
 
 const showPsKey    = ref(false)
@@ -475,17 +470,17 @@ async function loadKeys() {
     })
     apiKeys.value = data
     keyForm.prestashopUrl = data.prestashopUrl
-    keyForm.prestashopKey = ''   // JAMAIS pré-rempli — le masque reste côté serveur
+    keyForm.prestashopKey = ''   
     keyForm.aiProvider    = data.aiProvider
-    keyForm.aiApiKey      = ''   // JAMAIS pré-rempli
+    keyForm.aiApiKey      = ''   
     keyForm.aiModel       = data.aiModel
     psKeyExists.value     = data.hasPsKey
     aiKeyExists.value     = data.hasAiKey
   } catch {
-    //
+    
   }
 
-  // siteUrl GSC tenant
+  
   try {
     const seo = await $fetch<{ gscSiteUrl: string }>('/api/hub/seo-config', {
       query: { clientId: resolvedClientId.value },
@@ -494,7 +489,7 @@ async function loadKeys() {
     keyForm.gscSiteUrl    = gscSiteUrl.value
   } catch {}
 
-  // Global Service Account (silently skipped if not SaaS super admin — 403)
+  
   try {
     const sa = await $fetch<{ gscServiceAccount: { exists: boolean; email: string | null } }>(
       '/api/hub/global-secrets',
@@ -511,7 +506,7 @@ async function saveKeys() {
   keySaving.value    = true
   keySaveStatus.value = 'idle'
   try {
-    // 1. API Keys (PS + AI) — legacy endpoint
+    
     await $fetch('/api/hub/api-keys', {
       method: 'POST',
       body: {
@@ -524,7 +519,7 @@ async function saveKeys() {
       },
     })
 
-    // 2. siteUrl GSC tenant (DB cs_client_config)
+    
     if (keyForm.gscSiteUrl !== gscSiteUrl.value) {
       await $fetch('/api/hub/seo-config', {
         method: 'POST',
@@ -535,7 +530,7 @@ async function saveKeys() {
       })
     }
 
-    // 3. Global JSON Service Account (SaaS super admin only) — only if not empty
+    
     if (isSuperAdmin.value && keyForm.gscServiceAccountJson.trim()) {
       const result = await $fetch<{
         propagation?: { written: string[]; failed: { db: string; error: string }[] }
@@ -548,7 +543,7 @@ async function saveKeys() {
       }
     }
 
-    keyForm.gscServiceAccountJson = ''  // ne pas garder en mémoire
+    keyForm.gscServiceAccountJson = ''  
     keySaveStatus.value = 'ok'
     await loadKeys()
     setTimeout(() => { keySaveStatus.value = 'idle' }, 3000)
@@ -558,8 +553,6 @@ async function saveKeys() {
     keySaving.value = false
   }
 }
-
-// ── Init ──────────────────────────────────────────────────────────────────────
 
 onMounted(() => {
   load()

@@ -14,7 +14,7 @@
 
     <div class="flex-1 flex overflow-hidden">
 
-      <!-- Left column: routes list -->
+      
       <aside class="w-[380px] shrink-0 border-r border-gray-100 dark:border-slate-800 overflow-y-auto">
         <div v-if="loading" class="p-6">
           <div class="h-20 bg-gray-100 dark:bg-slate-800 rounded-lg animate-pulse mb-2" />
@@ -50,7 +50,7 @@
         </ul>
       </aside>
 
-      <!-- Right column: detail + stops -->
+      
       <main class="flex-1 overflow-y-auto">
         <div v-if="!selected" class="h-full flex items-center justify-center text-xs text-gray-400">
           <div class="text-center">
@@ -60,7 +60,7 @@
         </div>
 
         <div v-else class="p-6 space-y-4">
-          <!-- Detail header -->
+          
           <section class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 p-4">
             <div class="flex items-center justify-between mb-3">
               <div>
@@ -112,7 +112,7 @@
             </p>
           </section>
 
-          <!-- Liste stops -->
+          
           <section>
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500">📍 Feuille de route</h3>
@@ -156,7 +156,7 @@
       </main>
     </div>
 
-    <!-- Modal create route -->
+    
     <div v-if="createOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="createOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-md mx-4">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
@@ -197,7 +197,7 @@
       </div>
     </div>
 
-    <!-- Modal ajout stop -->
+    
     <div v-if="stopOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="stopOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-lg mx-4">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">

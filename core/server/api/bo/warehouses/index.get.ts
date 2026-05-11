@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/warehouses — lists warehouses (ps_warehouse) with
- * complete address and stock counters aggregated from ps_stock.
- * Single query: LEFT JOIN ps_address + aggregated stock subquery.
- */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
 

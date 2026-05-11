@@ -19,12 +19,12 @@
       <span>{{ a.nickname }}</span>
     </button>
 
-    <!-- Modal fiche agent -->
+    
     <Teleport to="body">
       <div v-if="selectedAgent" class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="selectedAgent = null">
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="selectedAgent = null" />
         <div class="relative bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-lg w-full max-h-[85vh] overflow-auto border border-gray-200 dark:border-slate-700">
-          <!-- Header with portrait -->
+          
           <div class="relative overflow-hidden rounded-t-2xl">
             <div class="absolute inset-0 bg-gradient-to-b from-primary-600/20 to-transparent" />
             <div class="relative p-6 pb-4 flex items-start gap-5">
@@ -46,12 +46,12 @@
             </div>
           </div>
 
-          <!-- Citation -->
+          
           <div v-if="selectedAgent.quote" class="px-6 py-3 border-t border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50">
             <blockquote class="text-xs italic text-gray-600 dark:text-slate-300 leading-relaxed">"{{ selectedAgent.quote }}"</blockquote>
           </div>
 
-          <!-- Body -->
+          
           <div class="p-6 space-y-5 text-xs text-gray-600 dark:text-slate-300">
             <div v-if="selectedAgent.description">
               <h4 class="font-bold text-gray-800 dark:text-slate-100 mb-1.5 text-sm">Description</h4>

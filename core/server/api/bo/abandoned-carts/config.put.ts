@@ -1,15 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { upsertConfiguration } from '~/server/utils/ps-configuration'
 
-/**
- * PUT /api/bo/abandoned-carts/config
- * Body : { auto?: bool, ageMinH?: int, ageMaxH?: int, valueMin?: int, cooldownDays?: int }
- *
- * UPSERT on ps_configuration. The Python cron reads AC_CART_RECOVERY_AUTO=1
- * to enable automatic sending.
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     auto?: boolean

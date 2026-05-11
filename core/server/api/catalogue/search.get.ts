@@ -1,28 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/search?q=dattes&clientId=example-shop&limit=50&lang=en&mode=hybrid
- *
- * Search for multilingual products in direct DB (doctrine "Zero webservice"):
- * PrestaShop » 2026-04-22).
- *
- * Modes (search-boost L2) :
- * - `lex`: ILIKE on name + reference + description_short, ranked
- * by trigram similarity. Backward compat with historical usage.
- * - `sem`: pgvector cosine on cs_product_embedding (Mistral 1024d).
- * For debug / qualitative comparison in the backoffice.
- * - `hybrid`: Reciprocal Rank Fusion lex+sem (k=60). If the embedding query
- * fails (key missing, API down), automatic fallback to lex.
- *
- * Resolution mode:
- * 1. `?mode=…` explicit query param (for debug / A/B test).
- * 2. Otherwise `ps_configuration.AC_SEARCH_MODE` (adjustable from the hub
- * `/hub/products/search-boost` → Semantic tab).
- * 3. Otherwise `'lex'` (zero behavior change compat if the key
- * has never been seeded).
- *
- * `ps_alias` mapping preserved in pre-processing for common typos.
- */
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 import type { PgAdapterClient } from '~/server/utils/db-pg-adapter'
 import { resolveIdLang } from '~/server/utils/lang'
@@ -41,14 +18,10 @@ interface SearchRow {
 
 const fmtEur = (n: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
 
-const RRF_K = 60          // constante standard RRF
-const TOPN_PER_SOURCE = 50 // top-N que chaque source (lex / sem) contribue à la fusion
+const RRF_K = 60          
+const TOPN_PER_SOURCE = 50 
 const VALID_MODES = ['lex', 'sem', 'hybrid'] as const
 
-/**
- * Resolves the active mode: explicit query param > ps_configuration.AC_SEARCH_MODE > 'lex'.
- * One SELECT per query (index on native PS ps_configuration.name, ~µs).
- */
 async function resolveSearchMode(db: PgAdapterClient, queryMode: unknown): Promise<string> {
   const fromQuery = String(queryMode || '').toLowerCase()
   if (VALID_MODES.includes(fromQuery as any)) return fromQuery
@@ -58,7 +31,7 @@ async function resolveSearchMode(db: PgAdapterClient, queryMode: unknown): Promi
     )
     const fromDb = String(row?.value || '').toLowerCase()
     if (VALID_MODES.includes(fromDb as any)) return fromDb
-  } catch { /* table absente / DB down → lex */ }
+  } catch {  }
   return 'lex'
 }
 
@@ -71,7 +44,7 @@ export default defineEventHandler(async (event) => {
   const db = clientId ? useClientDbById(String(clientId)) : useClientDb(event)
   const requestedMode = await resolveSearchMode(db, mode)
 
-  // ── ps_alias mapping (token-by-token, typos courantes) ──────────────
+  
   const rawTerms = String(q).trim().split(/\s+/).filter(Boolean)
   let mappedTerms = rawTerms
   if (rawTerms.length) {
@@ -85,12 +58,12 @@ export default defineEventHandler(async (event) => {
         const aliasMap = new Map(aliasRows.map(r => [r.alias.toLowerCase(), r.search]))
         mappedTerms = rawTerms.map(t => aliasMap.get(t.toLowerCase()) || t)
       }
-    } catch { /* ps_alias absent : on garde rawTerms */ }
+    } catch {  }
   }
   const finalQuery = mappedTerms.join(' ')
   const like = `%${finalQuery.replace(/[%_]/g, '\\$&')}%`
 
-  // ── Resolved mode (can downgrade to lex if embed fails) ─────────
+  
   let resolvedMode: 'lex' | 'sem' | 'hybrid' = 'lex'
   let queryVector: string | null = null
 
@@ -100,7 +73,7 @@ export default defineEventHandler(async (event) => {
       queryVector = toPgVector(v)
       resolvedMode = requestedMode as 'sem' | 'hybrid'
     } else {
-      // Graceful fallback: embed unavailable → pure lex (never a 500 error)
+      
       resolvedMode = 'lex'
     }
   }
@@ -136,10 +109,6 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-// ──────────────────────────────────────────────────────────────────────
-// Lexical (backward compat, ILIKE + trigram similarity ranking)
-// ──────────────────────────────────────────────────────────────────────
-
 async function runLexicalSearch(db: PgAdapterClient, idLang: number, like: string, lim: number): Promise<SearchRow[]> {
   return db.query<SearchRow>(
     `SELECT id_product, reference, price, name, link_rewrite, id_image FROM (
@@ -161,10 +130,6 @@ async function runLexicalSearch(db: PgAdapterClient, idLang: number, like: strin
   )
 }
 
-// ──────────────────────────────────────────────────────────────────────
-// Semantic (pgvector cosine pur)
-// ──────────────────────────────────────────────────────────────────────
-
 async function runSemanticSearch(db: PgAdapterClient, idLang: number, queryVector: string, lim: number): Promise<SearchRow[]> {
   return db.query<SearchRow>(
     `SELECT p.id_product, p.reference, ps.price,
@@ -183,15 +148,6 @@ async function runSemanticSearch(db: PgAdapterClient, idLang: number, queryVecto
     [queryVector, idLang, idLang, queryVector, lim],
   )
 }
-
-// ──────────────────────────────────────────────────────────────────────
-// Hybrid (RRF lex + sem)
-//
-// Reciprocal Rank Fusion: for each product present in one (or both
-// two) sources, score = Σ 1/(K + rank_in_source). Robust because insensitive
-// to different scales (cosine 0-1 vs trigram 0-1) and favors
-// products that appear high in BOTH sources.
-// ──────────────────────────────────────────────────────────────────────
 
 async function runHybridSearch(
   db: PgAdapterClient,
@@ -241,10 +197,10 @@ async function runHybridSearch(
       ORDER BY f.score DESC
       LIMIT ?`,
     [
-      idLang, like, like, like, like, like, TOPN_PER_SOURCE,    // CTE lex
-      queryVector, idLang, queryVector, TOPN_PER_SOURCE,         // CTE sem
-      RRF_K, RRF_K,                                              // CTE fused
-      idLang, lim,                                               // SELECT final
+      idLang, like, like, like, like, like, TOPN_PER_SOURCE,    
+      queryVector, idLang, queryVector, TOPN_PER_SOURCE,         
+      RRF_K, RRF_K,                                              
+      idLang, lim,                                               
     ],
   )
 }

@@ -1,18 +1,15 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import PDFDocument from 'pdfkit'
 import { PassThrough } from 'stream'
 
-/**
- * GET /api/bo/invoices/pdf?id=1809 — generates an invoice PDF from the DB.
- */
 export default defineEventHandler(async (event) => {
   const { id } = getQuery(event) as { id?: string }
   if (!id) throw createError({ statusCode: 400, message: 'id requis' })
   const db = useClientDb(event)
 
-  // Données facture
+  
   const inv = await db.get<any>(`
     SELECT oi.*, o.reference, o.payment, o.date_add AS order_date,
            o.id_customer, o.id_address_delivery, o.id_address_invoice
@@ -39,13 +36,13 @@ export default defineEventHandler(async (event) => {
     WHERE a.id_address = ?
   `, [inv.id_address_invoice])
 
-  // Shop info
+  
   const shop = await db.get<any>(`SELECT value FROM ps_configuration WHERE name = 'PS_SHOP_NAME'`) ?? { value: 'Boutique' }
   const shopAddr = await db.get<any>(`SELECT value FROM ps_configuration WHERE name = 'PS_SHOP_ADDR1'`) ?? { value: '' }
   const shopCity = await db.get<any>(`SELECT value FROM ps_configuration WHERE name = 'PS_SHOP_CITY'`) ?? { value: '' }
   const shopZip = await db.get<any>(`SELECT value FROM ps_configuration WHERE name = 'PS_SHOP_CODE'`) ?? { value: '' }
 
-  // Génération PDF
+  
   const doc = new PDFDocument({ size: 'A4', margin: 50, info: { Title: `Facture ${inv.number || inv.id_order_invoice}`, Author: shop.value } })
   const stream = new PassThrough()
   doc.pipe(stream)
@@ -53,12 +50,12 @@ export default defineEventHandler(async (event) => {
   const eur = (n: any) => Number(n || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
   const fmtDate = (d: any) => d ? new Date(d).toLocaleDateString('fr-FR') : ''
 
-  // En-tête
+  
   doc.fontSize(18).font('Helvetica-Bold').text(shop.value, 50, 50)
   doc.fontSize(8).font('Helvetica').fillColor('#666')
   doc.text([shopAddr.value, `${shopZip.value} ${shopCity.value}`].filter(Boolean).join(' — '), 50, 72)
 
-  // Titre facture
+  
   doc.moveDown(2)
   doc.fontSize(14).font('Helvetica-Bold').fillColor('#000').text(`FACTURE N° ${inv.number || inv.id_order_invoice}`, { align: 'left' })
   doc.fontSize(9).font('Helvetica').fillColor('#444')
@@ -66,7 +63,7 @@ export default defineEventHandler(async (event) => {
   doc.text(`Date facture : ${fmtDate(inv.date_add)}`)
   doc.text(`Paiement : ${inv.payment}`)
 
-  // Client
+  
   doc.moveDown(1)
   doc.fontSize(10).font('Helvetica-Bold').fillColor('#000').text('Facturer à :')
   doc.fontSize(9).font('Helvetica').fillColor('#333')
@@ -82,11 +79,11 @@ export default defineEventHandler(async (event) => {
   if (customer?.email) doc.text(`Email : ${customer.email}`)
   if (customer?.siret) doc.text(`SIRET : ${customer.siret}`)
 
-  // Tableau produits
+  
   const tableTop = doc.y + 20
   const col = { name: 50, ref: 280, qty: 350, price: 390, total: 470 }
 
-  // Header
+  
   doc.rect(50, tableTop, 510, 18).fill('#f3f4f6')
   doc.fontSize(8).font('Helvetica-Bold').fillColor('#374151')
   doc.text('Produit', col.name + 4, tableTop + 5)
@@ -107,7 +104,7 @@ export default defineEventHandler(async (event) => {
     doc.text(eur(item.priceHT), col.price, y)
     doc.text(eur(item.totalTTC), col.total, y)
     y += 11
-    // Promo : prix avant remise (barré) + label "-X%" en rouge sous la ligne.
+    
     const before = Number(item.priceHTBeforeDiscount || 0)
     const after = Number(item.priceHT || 0)
     if (before > 0 && before > after + 0.001) {
@@ -125,7 +122,7 @@ export default defineEventHandler(async (event) => {
     y += 4
   }
 
-  // Totaux
+  
   y += 10
   doc.rect(370, y, 190, 1).fill('#d1d5db')
   y += 8

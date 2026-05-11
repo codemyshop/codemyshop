@@ -1,14 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/product-url-by-id?id=2381
- *
- * Reverse lookup id_product → URL canonique `/{pilier}/{category_path}/{link_rewrite}`.
- * Used by the legacy /product/[id] route that 301s to the SEO URL.
- *
- * Source ps_category + id_category_default (PS natif). Retourne
- * { found: true, path, name } ou { found: false }.
- */
 
 import { resolveIdLang } from '~/server/utils/lang'
 import { buildCategoryPathMap, buildProductUrlFromCategory } from '~/server/utils/category-path'

@@ -42,7 +42,7 @@
     <div v-else-if="loaded" class="px-6 py-6">
       <div class="max-w-3xl mx-auto space-y-6">
 
-        <!-- Bloc 1 — Informations ────────────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-5">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Informations</h2>
@@ -97,7 +97,7 @@
           </div>
         </section>
 
-        <!-- Bloc 2 — Conditions ─────────────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-5">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Conditions</h2>
@@ -165,7 +165,7 @@
           </div>
         </section>
 
-        <!-- Bloc 3 — Action ─────────────────────────────────── -->
+        
         <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
           <header class="mb-5">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Action</h2>
@@ -266,14 +266,12 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
 const route = useRoute()
 const router = useRouter()
 
-// Sprint 12 — multilang: PIM editing language.
 const { currentLangId, currentLang, isDefault } = useHubLang()
 const isMaster = computed(() => isDefault.value)
 
@@ -302,10 +300,6 @@ const form = reactive({
   freeShipping: false,
 })
 
-// Sprint 14 — infer the discount type from DB values.
-// PrestaShop allows percent AND amount simultaneously in the database, but
-// on the UI side we enforce an exclusive choice to avoid promotions
-// that are inconsistent. 'none' = free_shipping only.
 function deriveReductionType(p: number, a: number): ReductionType {
   if (Number(p) > 0) return 'percent'
   if (Number(a) > 0) return 'amount'
@@ -314,7 +308,7 @@ function deriveReductionType(p: number, a: number): ReductionType {
 
 function setReductionType(t: ReductionType) {
   reductionType.value = t
-  // Zero out the unchosen branch so the PUT is consistent.
+  
   if (t !== 'percent') form.reductionPercent = 0
   if (t !== 'amount') form.reductionAmount = 0
 }
@@ -355,8 +349,8 @@ async function save() {
   saved.value = false
   saveError.value = null
   try {
-    // In translation mode, we only send the name — the backend ignores
-    // everything else anyway but we avoid unnecessary network round-trips.
+    
+    
     const payload: Record<string, any> = isMaster.value
       ? {
           name: form.name,
@@ -382,8 +376,8 @@ async function save() {
     saved.value = true
     setTimeout(() => { saved.value = false }, 3000)
 
-    // Creation: redirect to the canonical URL to allow
-    // chaining edits (and prevent ?lang= from reusing 'new').
+    
+    
     if (res?.created && res?.id) {
       router.replace(`/hub/marketing/promos/${res.id}`)
     }
@@ -398,9 +392,6 @@ async function save() {
 
 onMounted(load)
 
-// Sprint 12 — reload on every language change (to fetch
-// the translated name). On creation (id='new'), we ignore: we keep the
-// name entered by the user until it's saved.
 watch(currentLangId, (newId, oldId) => {
   if (newId !== oldId && !loading.value && route.params.id !== 'new') load()
 })

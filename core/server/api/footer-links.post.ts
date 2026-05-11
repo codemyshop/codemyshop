@@ -1,10 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/footer-links
- * Creates a footer link: INSERT master cs_footer, then UPSERT cs_footer_lang
- * for all active languages. Accepts plain i18n strings OR { fr, en, … }.
- */
+
 import { resolveClientId } from '~/server/utils/db'
 import { insertLink, upsertLinkLang, getActiveLangs } from '~/modules/footer/server/utils/footer'
 

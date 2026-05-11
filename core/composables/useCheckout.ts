@@ -1,9 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Composable for the checkout flow.
- * Orchestrates 4 steps: Auth → Address → Shipping → Payment → Confirmation
- */
 
 import type { AddressData, CarrierData, OrderData } from '~/server/connectors/base'
 
@@ -14,7 +9,7 @@ export function useCheckout(clientId?: string) {
   const loading = useState<boolean>('checkout-loading', () => false)
   const error = useState<string>('checkout-error', () => '')
 
-  // Data collected during checkout
+  
   const addresses = useState<AddressData[]>('checkout-addresses', () => [])
   const selectedAddressId = useState<number | null>('checkout-address-id', () => null)
   const carriers = useState<CarrierData[]>('checkout-carriers', () => [])
@@ -22,7 +17,7 @@ export function useCheckout(clientId?: string) {
   const paymentMethod = useState<string>('checkout-payment', () => 'bankwire')
   const createdOrder = useState<OrderData | null>('checkout-order', () => null)
 
-  // Fetch customer addresses
+  
   async function loadAddresses(customerId: number) {
     loading.value = true
     try {
@@ -38,7 +33,7 @@ export function useCheckout(clientId?: string) {
     }
   }
 
-  // Create new address
+  
   async function createAddress(data: Omit<AddressData, 'id'>) {
     loading.value = true
     error.value = ''
@@ -58,7 +53,7 @@ export function useCheckout(clientId?: string) {
     }
   }
 
-  // Update existing address
+  
   async function updateAddress(addressId: number, data: Partial<Omit<AddressData, 'id'>>) {
     loading.value = true
     error.value = ''
@@ -78,7 +73,7 @@ export function useCheckout(clientId?: string) {
     }
   }
 
-  // Delete (soft) address
+  
   async function deleteAddress(addressId: number) {
     loading.value = true
     error.value = ''
@@ -95,8 +90,8 @@ export function useCheckout(clientId?: string) {
     }
   }
 
-  // Fetch available carriers — prix résolu serveur depuis ps_delivery × range
-  // (zone via addressId, range via totalHT/poids panier).
+  
+  
   async function loadCarriers(ctx: { addressId?: number; totalHT?: number; weight?: number } = {}) {
     loading.value = true
     try {
@@ -117,7 +112,7 @@ export function useCheckout(clientId?: string) {
     }
   }
 
-  // Create order
+  
   async function placeOrder(cartId: number, customerId: number, customerEmail?: string) {
     if (!selectedAddressId.value || !selectedCarrierId.value) {
       error.value = 'Adresse et transporteur requis'
@@ -130,7 +125,7 @@ export function useCheckout(clientId?: string) {
       const paymentModuleMap: Record<string, string> = {
         bankwire: 'ps_wirepayment',
         stripe: 'stripe',
-        systempay: 'ps_wirepayment', // module systempay non installé dans PS, on utilise wirepayment + paiement CB via redirect
+        systempay: 'ps_wirepayment', 
       }
 
       const paymentLabelMap: Record<string, string> = {

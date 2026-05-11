@@ -1,8 +1,4 @@
-/**
- *
- * Cultural profiles for AI transcreation.
- * Each locale defines tone rules, buyer psychology, and phrasing conventions.
- */
+
 
 export interface CulturalProfile {
   locale:       string

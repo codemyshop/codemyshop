@@ -1,18 +1,4 @@
-<!--
-  CmsPage — render unifié d'une page CMS PrestaShop (tenant-neutre).
 
-  Contrat : reçoit les données CMS chargées + footer contact via props.
-  Pas de useFetch interne — les consumers (ex: [...path].vue catch-all)
-  chargent déjà la donnée pour arbitrer cat vs CMS.
-
-  Layout landing premium : breadcrumb + hero (h1 + lede) + contenu nettoyé
-  via cleanLegacyCmsHtml + CTA contact (email/tel/contact) issu de
-  cs_footer_config. JSON-LD WebPage.
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 interface CmsPageData {
   id?: number
@@ -41,7 +27,6 @@ const { localePath } = useLocalePath()
 const cleanContent = computed(() => cleanLegacyCmsHtml(props.page?.content ?? ''))
 const lede = computed(() => props.page?.meta_description?.trim() || '')
 
-// Convention PS : <body id="cms" class="cms cms-id-{X}">
 useListingBodyId('cms', () => props.page?.id ?? null)
 
 useHead({
@@ -75,7 +60,7 @@ useHead({
 <template>
   <article class="bg-white">
 
-    <!-- Hero : breadcrumb + titre + lede -->
+    
     <header class="border-b border-gray-100">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-8 pb-12 sm:pt-12 sm:pb-16">
         <nav class="text-xs text-gray-400 mb-6" :aria-label="t('silo.breadcrumb_aria')">
@@ -95,7 +80,7 @@ useHead({
       </div>
     </header>
 
-    <!-- Cleaned content -->
+    
     <section class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <div
         class="prose prose-lg max-w-none
@@ -110,7 +95,7 @@ useHead({
       />
     </section>
 
-    <!-- CTA Contact -->
+    
     <section v-if="contact?.email || contact?.phone" class="border-t border-gray-100 bg-gray-50">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
         <div class="text-center">

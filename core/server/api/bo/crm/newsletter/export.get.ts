@@ -1,20 +1,11 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/bo/crm/newsletter/export.csv — CSV export of the tenant's opt-ins.
- * Filterable via ?status=… (default: confirmed + pending).
- *
- * Output: CSV UTF-8 BOM (Excel-compatible). Contains the columns
- * GDPR audit (consent_at, ip, user_agent, source) as proof of
- * consent collection.
- */
 
 import { resolveClientId } from '~/server/utils/db'
 import { listSubscribers, type SubscriberStatus } from '~/server/utils/newsletter-subscriber'
 
 function csvCell(v: unknown): string {
   const s = v == null ? '' : String(v)
-  // Échappe " et entoure si besoin (quote si , ; " \n)
+  
   if (/[",;\n\r]/.test(s)) {
     return `"${s.replace(/"/g, '""')}"`
   }

@@ -1,12 +1,4 @@
-/**
- *
- * Auth client storefront B2B (PrestaShop customers).
- * Multi-tenant: no clientId to pass — the endpoints
- * resolve them server-side via resolveTenantClientId.
- *
- * Not to be confused with useAuth() which handles employee/admin auth
- * in the admin panel.
- */
+
 
 export interface CustomerSession {
   customerId: number
@@ -22,17 +14,17 @@ export interface CustomerSession {
 }
 
 export function useCustomerAuth() {
-  // Source de vérité unique : useState SSR-hydraté à partir de /api/catalogue/customer/me.
-  // L'ancien cookie public `ac_logged_in` (lisible par JS, donc XSS-faussable) a
-  // été retiré le 2026-05-05 — la layout white-label appelle checkSession() au
-  // setup serveur, et le payload Nuxt sérialise customer.value pour le client.
+  
+  
+  
+  
   const customer = useState<CustomerSession | null>('customer-auth', () => null)
   const loggedIn = computed(() => !!customer.value)
   const loading = useState<boolean>('customer-auth-loading', () => false)
 
   async function checkSession() {
     try {
-      // Forward cookies during SSR (sinon le cookie ac_session n'est pas envoyé)
+      
       const headers: Record<string, string> = {}
       if (import.meta.server) {
         const reqHeaders = useRequestHeaders(['cookie'])

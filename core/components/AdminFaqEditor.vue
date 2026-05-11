@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4">
 
-    <!-- Header -->
+    
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
         <svg class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -25,12 +25,12 @@
       </button>
     </div>
 
-    <!-- Chargement -->
+    
     <div v-if="loading" class="space-y-2">
       <div v-for="i in 2" :key="i" class="h-14 bg-gray-100 rounded-xl animate-pulse" />
     </div>
 
-    <!-- Liste FAQ -->
+    
     <div v-else-if="faqs.length" class="space-y-2">
       <div
         v-for="(faq, index) in faqs"
@@ -71,7 +71,7 @@
       </div>
     </div>
 
-    <!-- Empty state -->
+    
     <div v-else-if="!showForm && !loading" class="flex flex-col items-center py-6 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200">
       <svg class="w-8 h-8 mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
@@ -79,7 +79,7 @@
       <p class="text-xs">Aucune FAQ — boostez votre SEO en ajoutant des questions fréquentes.</p>
     </div>
 
-    <!-- Add/edit form -->
+    
     <div v-if="showForm" class="bg-primary-50 border border-primary-100 rounded-xl p-4 space-y-3">
       <p class="text-xs font-semibold text-primary-700 uppercase tracking-widest">
         {{ editingId ? 'Modifier la question' : 'Nouvelle question' }}
@@ -161,7 +161,6 @@ const formQ     = ref('')
 const formA     = ref('')
 const formError = ref('')
 
-// ── Chargement ──────────────────────────────────────────────────────────────
 const loadFaqs = async () => {
   if (!props.parentType || props.parentId === undefined) return
   loading.value = true
@@ -171,13 +170,12 @@ const loadFaqs = async () => {
     )
     faqs.value = res.faqs ?? []
   } catch {
-    // silencieux
+    
   } finally {
     loading.value = false
   }
 }
 
-// ── Formulaire ──────────────────────────────────────────────────────────────
 const openAdd = () => {
   editingId.value = 0
   formQ.value     = ''
@@ -237,11 +235,10 @@ const deleteFaq = async (idFaq: number) => {
     await $fetch(`/api/admin/faq/items/${idFaq}`, { method: 'DELETE' })
     faqs.value = faqs.value.filter(f => f.id !== idFaq)
   } catch {
-    // silencieux
+    
   }
 }
 
-// ── Watchers ────────────────────────────────────────────────────────────────
 watch(() => [props.parentType, props.parentId], () => {
   if (props.parentId > 0 || props.parentType === 'home') loadFaqs()
 }, { immediate: true })

@@ -1,13 +1,4 @@
-/**
- *
- * Drizzle PG schemas for ac_header — task #38 Phase 1 step 5.
- *
- * 4 tables (cs_main, multi-tenant row-level via client_id) :
- *   - cs_header             : 1 row par tenant (client_id unique)
- *   - cs_header_lang        : i18n (logo_alt, logo_text, topbar_message)
- * - cs_header_locale      : languages of the topbar switcher
- * - cs_header_locale_lang : i18n label of the switcher
- */
+
 
 import {
   index,

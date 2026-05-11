@@ -1,8 +1,4 @@
-/**
- * GET /api/academy/qa?module_slug=X&lesson_index=Y
- * List published Q&A (public endpoint, SSR + SEO) — direct Drizzle DB.
- *
- */
+
 
 import { getQaForModule } from '~/server/utils/academy-db'
 

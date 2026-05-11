@@ -1,16 +1,4 @@
-/**
- *
- * Drizzle PG schema for `cs_aiqueue` — project #44 port-drizzle-mariadb-pg.
- *
- * LLM request queue (track usage tokens/cost/latency per task_id).
- * Owned by the ac_aiqueue module. Lives in the `cs_main` schema.
- *
- * Mapping types MariaDB -> PG :
- *   - INT AUTO_INCREMENT      -> serial
- *   - DECIMAL(p,s)            -> numeric(p, s)
- *   - ENUM('pending'…'failed')-> varchar(10) + $type<AiQueueStatus>
- *   - DATETIME                -> timestamp(0) without time zone
- */
+
 
 import { index, integer, numeric, pgSchema, serial, text, timestamp, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
 

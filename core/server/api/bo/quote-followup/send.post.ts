@@ -1,19 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb, resolveClientId } from '~/server/utils/db'
 import { sendQuoteFollowupEmail } from '~/server/utils/order-emails'
 import { signQuoteRdvToken } from '~/server/utils/quote-rdv-token'
-
-/**
- * POST /api/bo/quote-followup/send
- * Body : { id_quotes: number[], test_email?: string }
- *
- * Pushes follow-ups to queue (DB template `quote_followup`). During
- * the B2B lead side of POST /api/bo/abandoned-carts/send ecommerce.
- *
- * Test mode: `test_email` overrides the recipient, subject prefixed
- * [TEST Q-{id}], no DB logging.
- */
 
 interface QuoteRow {
   id_quote_request: number
@@ -130,7 +119,7 @@ export default defineEventHandler(async (event) => {
             [quote.id_quote_request],
           )
         } catch (err: any) {
-          // Table absente sur tenant non migré — ne casse pas l'enqueue.
+          
           console.warn('[quote-followup] log INSERT skipped:', err?.message)
         }
       }
@@ -144,7 +133,7 @@ export default defineEventHandler(async (event) => {
                   VALUES (?, NOW(), 'error', ?)`,
             [quote.id_quote_request, String(err?.message || err).slice(0, 500)],
           )
-        } catch { /* table absente */ }
+        } catch {  }
       }
     }
   }
@@ -152,7 +141,7 @@ export default defineEventHandler(async (event) => {
   return {
     ok: true,
     queued,
-    sent: queued,           // alias compat UI
+    sent: queued,           
     errors,
     total: quotes.length,
     test_mode: isTest,

@@ -1,11 +1,5 @@
-/**
- * Reactive store for Edit Mode (based on useState — SSR-safe, not Pinia).
- *
- * Cycle de vie :
- *   1. layouts/white-label.vue appelle initFromConfig(fullConfig) au montage
- * BuilderSidebar modifies slices directly → live preview
- *   3. saveConfig() → POST /api/save-config → server/data/client-overrides/[id].json
- */
+
+
 import type {
   HeaderConfig, HomepageConfig, HomepageFeature, HomepageCategory,
   HomepageTestimonial, HomepageAbout, HomepageBlog, HomepageFaq,
@@ -15,13 +9,10 @@ import type { HomepageFeatureIcon } from '~/types/theme'
 import type { SectionVisibilityRule } from '~/types/avatar'
 import { DEFAULT_VISIBILITY_RULE } from '~/utils/avatar'
 
-// ── Types publics ────────────────────────────────────────────────────────────
-
-// Types AC Hub
 export type AcHubSectionType = 'hero' | 'probleme' | 'solution' | 'why' | 'features' | 'categories' | 'events' | 'testimonials' | 'about' | 'blog' | 'faq' | 'malt' | 'personas' | 'workflow' | 'gsc-showcase' | 'ambassador' | 'investissement' | 'hub-showcase' | 'nav-pages' | 'cta-final'
-// Types e-commerce (DB-driven depuis cs_homepage_section)
+
 export type ExampleSectionType = 'hero-slider' | 'features' | 'categories' | 'promotions' | 'new-products' | 'narrative-blocks' | 'banners' | 'bestsellers' | 'instagram' | 'blog'
-// Union — le builder accepte tous les types
+
 export type SectionType = AcHubSectionType | ExampleSectionType
 
 export interface SectionConfig {
@@ -51,10 +42,8 @@ export type GlobalPanelId =
   | 'silo:hero'
   | 'silo:sections'
 
-// ── Constantes UI ────────────────────────────────────────────────────────────
-
 export const SECTION_META: Record<string, { label: string; icon: string }> = {
-  // ── AC Hub ──────────────────────────────────────────────────────────────────
+  
   hero:         { label: 'Hero',          icon: '🦸' },
   why:            { label: 'Manifeste',      icon: '💡' },
   probleme:         { label: 'Problème',       icon: '⚠️' },
@@ -75,7 +64,7 @@ export const SECTION_META: Record<string, { label: string; icon: string }> = {
   'hub-showcase':   { label: 'Hub Showcase',    icon: '🖥️' },
   'nav-pages':      { label: 'Navigation',     icon: '🧭' },
   'cta-final':      { label: 'CTA Final',      icon: '🚀' },
-  // ── Example Shop (DB-driven) ────────────────────────────────────────────────────
+  
   'hero-slider':      { label: 'Hero Slider',       icon: '🎠' },
   'promotions':       { label: 'Promotions',         icon: '🏷️' },
   'new-products':     { label: 'Nouveaux produits',  icon: '🆕' },
@@ -83,7 +72,7 @@ export const SECTION_META: Record<string, { label: string; icon: string }> = {
   'banners':          { label: 'Bannières',          icon: '🖼️' },
   'bestsellers':      { label: 'Meilleures ventes',  icon: '🏆' },
   'instagram':        { label: 'Instagram',          icon: '📸' },
-  // ── Pré-footer (DB-driven) ─────────────────────────────────────────────
+  
   'customer-reviews':  { label: 'Avis vérifiés',      icon: '⭐' },
   'newsletter':        { label: 'Newsletter',          icon: '📬' },
   'trust-badges':      { label: 'Certifications',      icon: '🏅' },
@@ -100,17 +89,15 @@ export const FEATURE_ICONS: { value: HomepageFeatureIcon; label: string }[] = [
   { value: 'check',  label: '✅ Certifié' },
 ]
 
-// ── State partagé pour sections DB (Example Shop et futurs tenants DB-driven) ─────
-// Le sidebar écrit dedans, la page index le lit en temps réel (live preview).
 export interface DbHomepageSection {
   id: number
   position: number
   type: string
   title: string | Record<string, string> | null
   subtitle: string | Record<string, string> | null
-  /** Config typée prefooter (customer-reviews). Remplace payload.limit */
+  
   limitItems?: number
-  /** Legacy homepage payload — to migrate later */
+  
   payload?: any
   active: boolean
 }
@@ -125,7 +112,6 @@ export const useDbPrefooterSections = () => {
   return sections
 }
 
-// ── Footer columns (DB-driven, cs_footer) ────────────────────────────────
 export interface DbFooterLink {
   id: number
   label: string
@@ -146,7 +132,6 @@ export const useDbFooterColumns = () => {
   return useState<DbFooterColumn[]>('ed_db_footer_columns', () => [])
 }
 
-// ── Silo editor state (Example Shop grossiste pages) ─────────────────────────────
 export interface EditorSiloData {
   h1?: string | null
   intro_html?: string | null
@@ -166,10 +151,8 @@ export const useEditorSiloSections = () => {
   return useState<Record<string, boolean> | null>('ed_silo_sections', () => null)
 }
 
-// ── Composable ───────────────────────────────────────────────────────────────
-
 export const useEditorState = () => {
-  // Slices de config
+  
   const homepage          = useState<HomepageConfig>('ed_hp',    () => ({}))
   const sections          = useState<SectionConfig[]>('ed_sections', () => [
     { type: 'hero',       visibility: { ...DEFAULT_VISIBILITY_RULE } },
@@ -186,7 +169,7 @@ export const useEditorState = () => {
   const header            = useState<Partial<HeaderConfig>>('ed_header', () => ({}))
   const footer            = useState<FooterConfig>('ed_footer',  () => ({}))
 
-  // Sidebar UI state
+  
   const activePanel  = useState<GlobalPanelId | null>('ed_panel',  () => null)
   const isDirty      = useState('ed_dirty',  () => false)
   const isSaving     = useState('ed_saving', () => false)
@@ -195,24 +178,15 @@ export const useEditorState = () => {
 
   const { resolvedClientId } = useClientDetection()
 
-  // ── Init ───────────────────────────────────────────────────────────────────
+  
 
-  /**
-   * Initializes the store from the tenant config document.
-   *
-   * Expected schema (NEW — client config module) : FLAT.
-   *   { topBar, logo, menu, features, contactEmail, blog,
-   *     theme, footer, homepage, sections, ... }
-   *
-   * Temporary compatibility shim: if the document uses the OLD DB-First schema
-   *   { theme, footer, homepage, header: {topBar, logo, menu, ...}, ... }
-   * we flatten `header.*` to the top-level before splitting. Will be removed later.
-   */
+  
+
   function initFromConfig(base: HeaderConfig, force = false) {
     if (initialized.value && !force) return
     const raw = JSON.parse(JSON.stringify(base)) as any
 
-    // ── Compat shim : aplatir b.header.* au top-level si présent ─────────
+    
     let b: any
     if (raw && typeof raw.header === 'object' && raw.header !== null && !Array.isArray(raw.header)) {
       const { header: nestedHeader, ...rest } = raw
@@ -225,9 +199,9 @@ export const useEditorState = () => {
     theme.value     = b.theme    ?? { colors: { primary: '#2563eb' } }
     footer.value    = b.footer   ?? {}
 
-    // Restaurer les sections avec visibilité sauvegardée
+    
     if (b.sections?.length) {
-      // Rétro-compat : si les items sont des strings (ancien format SectionType[])
+      
       sections.value = (b.sections as (SectionConfig | string)[]).map(s =>
         typeof s === 'string'
           ? { type: s as SectionType, visibility: { ...DEFAULT_VISIBILITY_RULE } }
@@ -235,26 +209,26 @@ export const useEditorState = () => {
       )
     }
 
-    // header slice = document FLAT sans les sous-objets homepage/theme/footer/sections
+    
     const { homepage: _hp, theme: _t, footer: _f, sections: _s, ...headerSlice } = b
     header.value    = headerSlice
     initialized.value = true
   }
 
-  // ── Dirty tracking ─────────────────────────────────────────────────────────
+  
 
   function markDirty() {
     isDirty.value    = true
     saveStatus.value = 'idle'
   }
 
-  // ── Navigation panels ──────────────────────────────────────────────────────
+  
 
   function openGlobalPanel(id: GlobalPanelId) {
     activePanel.value = id
   }
 
-  // ── Section ordering ───────────────────────────────────────────────────────
+  
 
   function moveSection(from: number, to: number) {
     const arr = [...sections.value]
@@ -271,7 +245,7 @@ export const useEditorState = () => {
     markDirty()
   }
 
-  // ── Homepage — Hero ────────────────────────────────────────────────────────
+  
 
   function updateHero(patch: Partial<HomepageConfig['hero'] & object>) {
     homepage.value = {
@@ -281,7 +255,7 @@ export const useEditorState = () => {
     markDirty()
   }
 
-  // ── Homepage — Features ────────────────────────────────────────────────────
+  
 
   function addFeature() {
     homepage.value.features ??= []
@@ -300,7 +274,7 @@ export const useEditorState = () => {
     markDirty()
   }
 
-  // ── Homepage — Categories ──────────────────────────────────────────────────
+  
 
   function addCategory() {
     homepage.value.categories ??= []
@@ -319,7 +293,7 @@ export const useEditorState = () => {
     markDirty()
   }
 
-  // ── Homepage — Testimonials ────────────────────────────────────────────────
+  
 
   function addTestimonial() {
     homepage.value.testimonials ??= []
@@ -338,7 +312,7 @@ export const useEditorState = () => {
     markDirty()
   }
 
-  // ── Homepage — About ─────────────────────────────────────────────────────
+  
 
   function updateAbout(patch: Partial<HomepageAbout>) {
     homepage.value = {
@@ -348,7 +322,7 @@ export const useEditorState = () => {
     markDirty()
   }
 
-  // ── Homepage — Blog ──────────────────────────────────────────────────────
+  
 
   function updateBlog(patch: Partial<HomepageBlog>) {
     homepage.value = {
@@ -358,7 +332,7 @@ export const useEditorState = () => {
     markDirty()
   }
 
-  // ── Homepage — FAQ ───────────────────────────────────────────────────────
+  
 
   function updateFaq(patch: Partial<HomepageFaq>) {
     homepage.value = {
@@ -368,7 +342,7 @@ export const useEditorState = () => {
     markDirty()
   }
 
-  // ── Theme mutations ────────────────────────────────────────────────────────
+  
 
   function updateThemeColor(patch: Partial<ThemeConfig['colors']>) {
     theme.value = { ...theme.value, colors: { ...theme.value.colors, ...patch } }
@@ -385,14 +359,14 @@ export const useEditorState = () => {
     markDirty()
   }
 
-  // ── Header mutations ───────────────────────────────────────────────────────
+  
 
   function updateHeader(patch: Partial<HeaderConfig>) {
     header.value = { ...header.value, ...patch }
     markDirty()
   }
 
-  // ── Footer mutations ───────────────────────────────────────────────────────
+  
 
   function updateFooter(patch: Partial<FooterConfig>) {
     footer.value = { ...footer.value, ...patch }
@@ -414,21 +388,21 @@ export const useEditorState = () => {
     markDirty()
   }
 
-  // ── Save ───────────────────────────────────────────────────────────────────
+  
 
   async function saveConfig() {
     isSaving.value   = true
     saveStatus.value = 'idle'
     try {
-      // Document FLAT envoyé au module PS ac_clientconfig via /api/save-config.
-      // header.value est lui-même flat (topBar, logo, menu, features, contactEmail,
-      // blog, ...) — on le spread au top-level, jamais imbriqué sous une clé `header`.
-      //
-      // Le slice `theme` n'est PLUS écrit ici : la persistance passe par
-      // useThemeDb() → /api/theme/sync → cs_theme (DB-First structuré).
-      // Laisser theme.value ici écraserait cs_client_config avec un document
-      // editor state potentiellement non seed (incidents 2026-04-11 example-shop-v2
-      // theme primary forcé à #2563eb).
+      
+      
+      
+      
+      
+      
+      
+      
+      
       const config: Record<string, unknown> = {
         ...header.value,
         footer:            footer.value,
@@ -444,8 +418,8 @@ export const useEditorState = () => {
         },
       })
 
-      // Mettre à jour la config DB partagée pour que les composants
-      // hors edit mode (TheHeader, TheFooter) reflètent immédiatement les changements
+      
+      
       const dbConfig = useState<Record<string, unknown> | null>('client_db_config')
       dbConfig.value = config
 
@@ -460,10 +434,10 @@ export const useEditorState = () => {
   }
 
   return {
-    // State
+    
     homepage, sections, theme, header, footer,
     activePanel, isDirty, isSaving, saveStatus, initialized,
-    // Actions
+    
     initFromConfig, markDirty, openGlobalPanel,
     moveSection, updateSectionVisibility,
     updateHero,

@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { startConversation } from '~/server/utils/chatbot-engine'
 
-/**
- * POST /api/chatbot/start — starts a new chatbot conversation.
- * Body { scenario: 'global'|'product'|'order'|'human', productId?: number }.
- * Renvoie { conversationId, conversationToken, message: { content, type, options?, terminal } }.
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event) as { scenario?: string; productId?: number; qty?: number }
   const ipAddress = getRequestHeader(event, 'cf-connecting-ip')

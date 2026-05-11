@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/customer/addresses?customerId=...
- *
- * Lists addresses for a customer. Direct DB (principle 'Zero PrestaShop webservice'
- * PrestaShop » 2026-04-22).
- */
+
 import { useClientDb } from '~/server/utils/db'
 import { resolveCustomerIdForRequest } from '~/server/utils/customer-session'
 

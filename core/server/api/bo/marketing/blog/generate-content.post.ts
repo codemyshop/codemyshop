@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { resolveClientId } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
@@ -7,14 +7,6 @@ import {
   enqueueRedactionJob,
 } from '~/enterprise/ai/cms-queue/server/utils/cms-queue'
 
-/**
- * POST /api/bo/marketing/blog/generate-content
- *
- * Inserts an AI writing request into cs_cms_queue.
- * The ac_redaction_cron.py / /api/cron/process-redaction cron processes the queue.
- *
- * Body : { id_cms, title, slug, metaDescription?, instructions?, model? }
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 

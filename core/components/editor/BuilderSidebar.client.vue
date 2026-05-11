@@ -11,7 +11,7 @@
     }"
   >
 
-    <!-- ── Header barre ───────────────────────────────────────────────────── -->
+    
     <div class="px-4 py-3 border-b border-gray-100 bg-gray-50 shrink-0">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2 builder-header-text">
@@ -21,7 +21,7 @@
             {{ resolvedClientId }}
           </span>
         </div>
-        <!-- Collapsed: only the toggle icon is shown, the rest is hidden -->
+        
         <span v-if="builderCollapsed" class="text-base mx-auto">🔧</span>
         <div class="flex items-center gap-1.5 builder-header-actions">
           <span v-if="globalDirty && !builderCollapsed" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse" :title="`${globalDirtyCount} domaine${globalDirtyCount > 1 ? 's' : ''} non sauvegardé${globalDirtyCount > 1 ? 's' : ''}`" />
@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <!-- ── Drag-resize handle (right edge, hidden in collapsed mode) ──────── -->
+    
     <div
       v-if="!builderCollapsed"
       class="builder-resize-handle"
@@ -53,8 +53,7 @@
       title="Glisser pour redimensionner (320–560px)"
     />
 
-
-    <!-- ── Back from a panel ───────────────────────────────────────── -->
+    
     <div v-if="activePanel" class="px-4 py-2 border-b border-gray-100 shrink-0">
       <button
         @click="activePanel = null"
@@ -67,12 +66,12 @@
       </button>
     </div>
 
-    <!-- ════════════════════════════════════════════════════════════════════ -->
-    <!-- VUE LISTE — aucun panneau ouvert                                    -->
-    <!-- ════════════════════════════════════════════════════════════════════ -->
+    
+    
+    
     <div v-if="!activePanel" class="flex-1 overflow-auto">
 
-      <!-- ── Groupe GLOBAL SETTINGS ──────────────────────────────────────── -->
+      
       <div class="border-b border-gray-100">
         <button
           @click="toggleGroup('apparence')"
@@ -89,7 +88,7 @@
         </button>
 
         <div v-show="openGroup === 'apparence'" class="px-3 pb-3 space-y-1.5">
-          <!-- Theme -->
+          
           <button
             @click="activePanel = 'theme'"
             class="w-full flex items-center gap-3 p-2.5 rounded-xl border-2 border-slate-200 hover:border-primary-400 hover:bg-primary-50/60 hover:shadow-sm transition-all group"
@@ -106,7 +105,7 @@
         </div>
       </div>
 
-      <!-- ── Groupe HAUT DE PAGE ──────────────────────────────────────────── -->
+      
       <div class="border-b border-gray-100">
         <button
           @click="toggleGroup('top')"
@@ -123,7 +122,7 @@
         </button>
 
         <div v-show="openGroup === 'top'" class="px-3 pb-3 space-y-1.5">
-          <!-- Header -->
+          
           <button
             @click="activePanel = 'header'"
             class="w-full flex items-center gap-3 p-2.5 rounded-xl border-2 border-slate-200 hover:border-primary-400 hover:bg-primary-50/60 hover:shadow-sm transition-all group"
@@ -138,7 +137,7 @@
             </svg>
           </button>
 
-          <!-- Menu (navigation + megamenu) -->
+          
           <button
             @click="activePanel = 'menu'"
             class="w-full flex items-center gap-3 p-2.5 rounded-xl border-2 border-slate-200 hover:border-primary-400 hover:bg-primary-50/60 hover:shadow-sm transition-all group"
@@ -155,7 +154,7 @@
         </div>
       </div>
 
-      <!-- ── Groupe PAGE SETTINGS (contexte dynamique) ──────────────────── -->
+      
       <div v-if="contextPageId" class="border-b border-gray-100">
         <button
           @click="toggleGroup('page')"
@@ -172,7 +171,7 @@
         </button>
 
         <div v-show="openGroup === 'page'" class="px-3 pb-3 space-y-1.5">
-          <!-- Silo (grossiste) -->
+          
           <template v-if="contextPageId === 'silo'">
             <button
               @click="activePanel = 'silo:hero'"
@@ -192,7 +191,7 @@
         </div>
       </div>
 
-      <!-- ── Groupe HOMEPAGE SECTIONS (drag-and-drop) ────────────────────── -->
+      
       <div v-if="!contextPageId" class="border-b border-gray-100">
         <div class="flex items-center">
           <button
@@ -208,7 +207,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
           </button>
-          <!-- Component library button (DB sections only) -->
+          
           <button
             v-if="isDbSections"
             @click="activePanel = 'section-library'"
@@ -223,7 +222,7 @@
 
         <div v-show="openGroup === 'homepage'" class="px-3 pb-3">
 
-          <!-- ── DB mode (example deployments and future DB-driven tenants) ─────────── -->
+          
           <template v-if="isDbSections">
             <div v-if="dbSectionsLoading" class="py-4 text-center">
               <span class="text-[10px] text-gray-400">Chargement des sections...</span>
@@ -244,11 +243,11 @@
                   section.active ? 'border-gray-200 hover:border-primary-300 hover:bg-primary-50/40' : 'border-dashed border-gray-300 opacity-50',
                 ]"
               >
-                <!-- Grip -->
+                
                 <svg class="w-4 h-4 text-gray-300 group-hover:text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM7 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM13 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM13 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM13 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
                 </svg>
-                <!-- Icon + label -->
+                
                 <span class="text-sm select-none">{{ sectionMeta(section.type).icon }}</span>
                 <div class="flex-1 min-w-0">
                   <span class="text-xs font-semibold" :class="section.active ? 'text-gray-700' : 'text-gray-400'">
@@ -256,7 +255,7 @@
                   </span>
                   <span v-if="section.title" class="ml-1 text-[10px] text-gray-400 truncate">{{ section.title }}</span>
                 </div>
-                <!-- Up/Down -->
+                
                 <div class="flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button v-if="index > 0" @click.stop="moveDbSection(index, index - 1)"
                     class="w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-primary-600 hover:bg-primary-100 transition-colors">
@@ -271,7 +270,7 @@
                     </svg>
                   </button>
                 </div>
-                <!-- Toggle active/inactive -->
+                
                 <button
                   @click.stop="toggleDbSection(index)"
                   class="w-7 h-7 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-all"
@@ -286,7 +285,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
                   </svg>
                 </button>
-                <!-- Edit section content -->
+                
                 <button
                   @click.stop="openSectionEditor(section.id)"
                   class="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-100 opacity-0 group-hover:opacity-100 transition-all"
@@ -304,7 +303,7 @@
             </template>
           </template>
 
-          <!-- ── Mode AC Hub (editor store, legacy) ───────────────────── -->
+          
           <template v-else>
             <div
               v-for="(section, index) in sections"
@@ -318,21 +317,21 @@
                      hover:border-primary-300 hover:bg-primary-50/40 group transition-all duration-150 cursor-grab"
               :class="dragOver === index ? 'border-primary-400 bg-primary-50 scale-[1.01]' : ''"
             >
-              <!-- Grip -->
+              
               <svg class="w-4 h-4 text-gray-300 group-hover:text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM7 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM13 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM13 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM13 14a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
               </svg>
               <span class="text-sm select-none">{{ sectionMeta(section.type).icon }}</span>
               <div class="flex-1 min-w-0">
                 <span class="text-xs font-semibold text-gray-700">{{ sectionMeta(section.type).label }}</span>
-                <!-- Purple badge if visibility rule is active -->
+                
                 <span
                   v-if="section.visibility.avatars.length > 0"
                   class="ml-1.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-violet-100 text-violet-700"
                   :title="formatVisibilityLabel(section.visibility)"
                 >👁️ {{ section.visibility.avatars.length }}</span>
               </div>
-              <!-- Up/Down -->
+              
               <div class="flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button v-if="index > 0" @click.stop="moveSection(index, index - 1)"
                   class="w-5 h-5 flex items-center justify-center rounded text-gray-400 hover:text-primary-600 hover:bg-primary-100 transition-colors">
@@ -347,7 +346,7 @@
                   </svg>
                 </button>
               </div>
-              <!-- Visibility -->
+              
               <button
                 @click.stop="openVisibilityPanel(section.type)"
                 class="w-7 h-7 flex items-center justify-center rounded-lg opacity-0 group-hover:opacity-100 transition-all"
@@ -359,7 +358,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
               </button>
-              <!-- Edit -->
+              
               <button
                 @click.stop="activePanel = ('homepage:' + section.type) as any"
                 class="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-100 opacity-0 group-hover:opacity-100 transition-all"
@@ -375,7 +374,7 @@
         </div>
       </div>
 
-      <!-- ── Groupe PIED DE PAGE ─────────────────────────────────────────── -->
+      
       <div class="border-b border-gray-100">
         <div class="flex items-center">
           <button
@@ -391,7 +390,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
             </svg>
           </button>
-          <!-- Pre-footer library button -->
+          
           <button
             v-if="isDbSections"
             @click="activePanel = 'prefooter-library'"
@@ -406,7 +405,7 @@
 
         <div v-show="openGroup === 'footer'" class="px-3 pb-3 space-y-1.5">
 
-          <!-- Pre-footer sections (DB-driven) -->
+          
           <template v-if="isDbSections && pfSectionsList.length">
             <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Avant le footer</p>
             <div
@@ -448,10 +447,10 @@
             <p v-if="pfSectionsDirty" class="text-[10px] font-medium text-amber-600 italic mt-1 text-center">Modifié — Enregistrer en bas ↓</p>
           </template>
 
-          <!-- Separator if pre-footer sections exist -->
+          
           <div v-if="isDbSections && pfSectionsList.length" class="border-t border-gray-100 my-1.5" />
 
-          <!-- Footer config button -->
+          
           <button
             @click="activePanel = 'footer'"
             class="w-full flex items-center gap-3 p-2.5 rounded-xl border-2 border-slate-200 hover:border-primary-400 hover:bg-primary-50/60 hover:shadow-sm transition-all group"
@@ -470,11 +469,11 @@
 
     </div>
 
-    <!-- ════════════════════════════════════════════════════════════════════ -->
-    <!-- PANNEAUX DE FORMULAIRE                                              -->
-    <!-- ════════════════════════════════════════════════════════════════════ -->
+    
+    
+    
 
-    <!-- ── Component library (DB sections) ──────────────────────── -->
+    
     <div v-else-if="activePanel === 'section-library'" class="flex-1 overflow-auto p-4 space-y-3">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -495,7 +494,7 @@
             ? 'border-primary-200 bg-primary-50/40'
             : 'border-gray-200 bg-white opacity-60'"
         >
-          <!-- Icon + info -->
+          
           <span class="text-lg">{{ sectionMeta(section.type).icon }}</span>
           <div class="flex-1 min-w-0">
             <p class="text-xs font-semibold" :class="section.active ? 'text-gray-800' : 'text-gray-500'">
@@ -503,7 +502,7 @@
             </p>
             <p class="text-[10px] text-gray-400 truncate">{{ sectionTypeDescription(section.type) }}</p>
           </div>
-          <!-- Configure button -->
+          
           <button
             @click="openSectionEditor(section.id)"
             class="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-primary-600 hover:bg-primary-100 transition-colors"
@@ -514,7 +513,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
           </button>
-          <!-- Toggle switch -->
+          
           <button
             @click="toggleDbSectionFromLibrary(section.id)"
             class="relative w-10 h-5 rounded-full transition-colors duration-200"
@@ -531,14 +530,14 @@
       <p v-if="dbSectionsDirty" class="pt-2 text-xs text-amber-600 italic text-center">Modifié — Enregistrer en bas ↓</p>
     </div>
 
-    <!-- ── Individual section editor (DB) ──────────────────────────── -->
+    
     <div v-else-if="activePanel === 'section-edit' && editingSection" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">
         <span class="text-base">{{ sectionMeta(editingSection.type).icon }}</span>
         {{ sectionMeta(editingSection.type).label }}
       </h3>
 
-      <!-- Section title (multilang) -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Titrage</legend>
         <div>
@@ -562,7 +561,7 @@
         </div>
       </fieldset>
 
-      <!-- Type-specific editor -->
+      
       <EditorSectionsHeroSliderEditor
         v-if="editingSection.type === 'hero-slider'"
         :payload="editingSection.payload"
@@ -607,7 +606,7 @@
       <p v-if="sectionPayloadDirty" class="text-xs text-amber-600 italic text-center pt-2">Modifié — Enregistrer en bas ↓</p>
     </div>
 
-    <!-- ── Pre-footer component library ─────────────────────────── -->
+    
     <div v-else-if="activePanel === 'prefooter-library'" class="flex-1 overflow-auto p-4 space-y-3">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -659,7 +658,7 @@
       <p v-if="pfSectionsDirty" class="pt-2 text-xs text-amber-600 italic text-center">Modifié — Enregistrer en bas ↓</p>
     </div>
 
-    <!-- ── Pre-footer section editor ──────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'prefooter-edit' && editingPfSection" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">
         <span class="text-base">{{ sectionMeta(editingPfSection.type).icon }}</span>
@@ -704,11 +703,11 @@
       <p v-if="pfPayloadDirty" class="text-xs text-amber-600 italic text-center pt-2">Modifié — Enregistrer en bas ↓</p>
     </div>
 
-    <!-- ── Header Settings ────────────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'header'" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">🏷️ Header</h3>
 
-      <!-- Logo -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Logo</legend>
         <div>
@@ -782,7 +781,7 @@
         </div>
       </fieldset>
 
-      <!-- Top Bar -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Top Bar</legend>
         <div>
@@ -837,7 +836,7 @@
         </div>
       </fieldset>
 
-      <!-- Contact -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Contact</legend>
         <div>
@@ -849,7 +848,7 @@
         </div>
       </fieldset>
 
-      <!-- Features -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Fonctionnalités</legend>
         <label v-for="feat in headerFeaturesList" :key="feat.key" class="flex items-center gap-2 cursor-pointer select-none">
@@ -863,11 +862,11 @@
         </label>
       </fieldset>
 
-      <!-- Layout & Comportement -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-3">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Layout & Comportement</legend>
 
-        <!-- Header Layout -->
+        
         <div>
           <label class="field-label">Layout du header</label>
           <div class="flex gap-2 mt-1">
@@ -886,7 +885,7 @@
           <p class="text-[10px] text-gray-400 mt-1">Inline = logo + menu sur 1 ligne. Stacked = 2 lignes.</p>
         </div>
 
-        <!-- Sticky Header -->
+        
         <label class="flex items-center gap-2 cursor-pointer select-none">
           <input
             type="checkbox"
@@ -899,7 +898,7 @@
       </fieldset>
     </div>
 
-    <!-- ── Settings Menu (navigation + dropdowns + megamenu) ──────────────── -->
+    
     <div v-else-if="activePanel === 'menu'" class="flex-1 overflow-auto p-4 space-y-3">
       <div class="flex items-center justify-between">
         <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">🧭 Menu</h3>
@@ -913,9 +912,9 @@
         Cliquez sur un item pour l'éditer.
       </p>
 
-      <!-- Level 1 items list -->
+      
       <div v-for="(item, i) in menuItems" :key="i" class="border border-gray-200 rounded-xl bg-white overflow-hidden">
-        <!-- Header item (collapse toggle + actions) -->
+        
         <div class="flex items-center gap-1 px-2.5 py-2 bg-gray-50/70 border-b border-gray-100">
           <button @click="moveMenuItem(i, i - 1)" :disabled="i === 0" class="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-primary-600 disabled:opacity-20 disabled:cursor-not-allowed">
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75 12 8.25l7.5 7.5" /></svg>
@@ -941,9 +940,9 @@
           </svg>
         </div>
 
-        <!-- Body item (edit) -->
+        
         <div v-if="expandedMenuItem === i" class="p-3 space-y-3">
-          <!-- Label -->
+          
           <div>
             <label class="field-label">Libellé affiché</label>
             <EditorI18nField
@@ -954,7 +953,7 @@
             />
           </div>
 
-          <!-- Bubble (text badge above the label, e.g., a highlighted brand name) -->
+          
           <div class="rounded-lg border border-gray-200 p-2 bg-amber-50/40">
             <label class="field-label flex items-center gap-1">
               <span>🔖 Bulle au-dessus</span>
@@ -988,7 +987,7 @@
             </div>
           </div>
 
-          <!-- Selector type -->
+          
           <div>
             <label class="field-label">Type</label>
             <div class="grid grid-cols-3 gap-1">
@@ -1005,7 +1004,7 @@
             </div>
           </div>
 
-          <!-- Cas LIEN SIMPLE -->
+          
           <div v-if="menuItemTypeOf(item) === 'link'">
             <label class="field-label">URL</label>
             <input
@@ -1014,7 +1013,7 @@
               type="text" class="field" placeholder="/blog ou https://..." />
           </div>
 
-          <!-- Flat dropdown case (1 column without title) -->
+          
           <div v-else-if="menuItemTypeOf(item) === 'dropdown'" class="space-y-2">
             <div class="flex items-center justify-between">
               <label class="field-label !mb-0">Liens du dropdown</label>
@@ -1037,7 +1036,7 @@
                 :value="link.href"
                 @input="updateDropdownLink(i, li, { href: ($event.target as HTMLInputElement).value })"
                 type="text" class="field w-full !text-[10px] text-gray-400" placeholder="/url" />
-              <!-- PS subcategories (one compact line) -->
+              
               <div class="flex items-center gap-1.5 flex-wrap">
                 <label class="flex items-center gap-1 cursor-pointer" title="Afficher les sous-catégories PrestaShop sous ce lien">
                   <input
@@ -1058,7 +1057,7 @@
             <p v-if="!item.megaMenu?.[0]?.links?.length" class="text-[10px] text-gray-400 text-center py-2">Aucun lien — cliquez sur + Lien</p>
           </div>
 
-          <!-- Megamenu columns case -->
+          
           <div v-else-if="menuItemTypeOf(item) === 'megamenu'" class="space-y-3">
             <div class="flex items-center justify-between">
               <label class="field-label !mb-0">Colonnes ({{ item.megaMenu?.length ?? 0 }})</label>
@@ -1076,7 +1075,7 @@
                 </button>
               </div>
               <div class="flex gap-1.5 items-stretch">
-                <!-- Picto : miniature cliquable (path) ou input emoji compact -->
+                
                 <div class="shrink-0">
                   <button
                     type="button"
@@ -1156,7 +1155,7 @@
                     :value="link.href"
                     @input="updateMegaLink(i, ci, li, { href: ($event.target as HTMLInputElement).value })"
                     type="text" class="field w-full !text-[10px] text-gray-400" placeholder="/url" />
-                  <!-- Short i18n description (subtitle displayed in the rendered megamenu) -->
+                  
                   <EditorI18nField
                     :model-value="link.description"
                     :langs="tenantLangs"
@@ -1164,7 +1163,7 @@
                     class="!text-[10px]"
                     @update:model-value="updateMegaLink(i, ci, li, { description: $event })"
                   />
-                  <!-- PS subcategories (one compact line) -->
+                  
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <label class="flex items-center gap-1 cursor-pointer" title="Afficher les sous-catégories PrestaShop sous ce lien">
                       <input
@@ -1193,11 +1192,11 @@
       <p v-if="!menuItems.length" class="text-xs text-gray-400 text-center py-6">Aucun item — cliquez sur + Item</p>
     </div>
 
-    <!-- ── Footer Settings ─────────────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'footer'" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">🦶 Footer</h3>
 
-      <!-- Identity -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Identité</legend>
         <div>
@@ -1233,7 +1232,7 @@
         </div>
       </fieldset>
 
-      <!-- Contact -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Contact</legend>
         <div>
@@ -1259,7 +1258,7 @@
         </div>
       </fieldset>
 
-      <!-- Bottom bar -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Barre basse</legend>
         <div>
@@ -1273,7 +1272,7 @@
         </div>
       </fieldset>
 
-      <!-- Social media -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Réseaux sociaux</legend>
         <div
@@ -1307,7 +1306,7 @@
         </button>
       </fieldset>
 
-      <!-- Newsletter -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Newsletter</legend>
         <label class="flex items-center justify-between gap-2 cursor-pointer">
@@ -1373,7 +1372,7 @@
         </template>
       </fieldset>
 
-      <!-- Colonnes de liens (DB) -->
+      
       <fieldset v-if="isDbSections" class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Colonnes de liens</legend>
         <p v-if="footerColumnsLoading" class="text-[10px] text-gray-400 text-center py-2">Chargement…</p>
@@ -1434,11 +1433,11 @@
       </fieldset>
     </div>
 
-    <!-- ── Theme Settings ──────────────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'theme'" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">🎨 Thème</h3>
 
-      <!-- Couleurs -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-3">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Couleurs</legend>
         <div v-for="col in themeColorsList" :key="col.key" class="flex items-center gap-3">
@@ -1460,7 +1459,7 @@
         </div>
       </fieldset>
 
-      <!-- Typographie -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Typographie</legend>
         <div>
@@ -1479,7 +1478,7 @@
         </div>
       </fieldset>
 
-      <!-- UI -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-3">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Interface</legend>
         <div>
@@ -1530,11 +1529,11 @@
       </fieldset>
     </div>
 
-    <!-- ── Homepage : Hero ─────────────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'homepage:hero'" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">🦸 Hero</h3>
 
-      <!-- Layout -->
+      
       <div>
         <label class="field-label">Layout</label>
         <select :value="hpDb.hero?.layout ?? 'banner'" @change="onHpHeroChange({ layout: ($event.target as HTMLSelectElement).value as any })" class="field">
@@ -1554,14 +1553,14 @@
           @update:model-value="onHpHeroChange({ subtitle: $event })" />
       </div>
 
-      <!-- Badge (portfolio) -->
+      
       <div v-if="hpDb.hero?.layout === 'portfolio'">
         <label class="field-label">Badge de statut</label>
         <EditorI18nField :model-value="hpDb.hero?.badge" :langs="tenantLangs" placeholder="Disponible pour nouveaux projets"
           @update:model-value="onHpHeroChange({ badge: $event })" />
       </div>
 
-      <!-- Tags (portfolio) -->
+      
       <div v-if="hpDb.hero?.layout === 'portfolio'">
         <label class="field-label">Tags / Compétences (séparés par des virgules)</label>
         <input
@@ -1593,7 +1592,7 @@
         </div>
       </div>
 
-      <!-- Link on banner click -->
+      
       <div v-if="hpDb.hero?.layout !== 'portfolio'">
         <label class="field-label">Lien au clic sur la bannière (optionnel)</label>
         <input :value="hpDb.hero?.imageHref ?? ''" @input="onHpHeroChange({ imageHref: ($event.target as HTMLInputElement).value })"
@@ -1619,7 +1618,7 @@
         </div>
       </fieldset>
 
-      <!-- CTA 2 (portfolio) -->
+      
       <fieldset v-if="hpDb.hero?.layout === 'portfolio'" class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">CTA Secondaire</legend>
         <div class="grid grid-cols-2 gap-2">
@@ -1639,7 +1638,7 @@
       </fieldset>
     </div>
 
-    <!-- ── Homepage : Atouts ───────────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'homepage:features'" class="flex-1 overflow-auto p-4 space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-bold text-gray-800">✨ Atouts</h3>
@@ -1664,7 +1663,7 @@
       <p v-if="!hpDb.features?.length" class="text-xs text-gray-400 text-center py-4">Aucun atout — cliquez sur Ajouter</p>
     </div>
 
-    <!-- ── Homepage: Categories ───────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'homepage:categories'" class="flex-1 overflow-auto p-4 space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-bold text-gray-800">🗂️ Catégories</h3>
@@ -1690,7 +1689,7 @@
       <p v-if="!hpDb.categories?.length" class="text-xs text-gray-400 text-center py-4">Aucune catégorie — cliquez sur Ajouter</p>
     </div>
 
-    <!-- ── Homepage: Testimonials ────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'homepage:testimonials'" class="flex-1 overflow-auto p-4 space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-bold text-gray-800">⭐ Témoignages</h3>
@@ -1717,7 +1716,7 @@
       <p v-if="!hpDb.testimonials?.length" class="text-xs text-gray-400 text-center py-4">Aucun témoignage — cliquez sur Ajouter</p>
     </div>
 
-    <!-- ── Homepage: About ───────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'homepage:about'" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">👤 À propos</h3>
       <div>
@@ -1765,7 +1764,7 @@
       </div>
     </div>
 
-    <!-- ── Homepage : Blog ───────────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'homepage:blog'" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">📝 Blog</h3>
       <div>
@@ -1784,7 +1783,7 @@
       </div>
     </div>
 
-    <!-- ── Homepage : FAQ ────────────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'homepage:faq'" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">❓ FAQ</h3>
       <div>
@@ -1800,7 +1799,7 @@
       <p class="text-[10px] text-gray-400">Les questions sont chargées depuis <code class="bg-gray-100 px-1 rounded">data/faq.json</code></p>
     </div>
 
-    <!-- ── Homepage : Malt ───────────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'homepage:malt'" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">🟠 Carte Malt</h3>
       <p class="text-xs text-gray-500">Affiche la carte profil Malt avec les avis et statistiques.</p>
@@ -1815,13 +1814,13 @@
       </label>
     </div>
 
-    <!-- ── Category: Cover & SEO ────────────────────────────────────────── -->
-    <!-- ── Category sections ──────────────────────────────────── -->
+    
+    
     <div v-else-if="activePanel === 'silo:hero'" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">🗂️ Sections catégories</h3>
       <p class="text-[10px] text-gray-400 -mt-2 truncate">{{ contextPayload.label }} — /grossiste/{{ contextPayload.path }}/</p>
 
-      <!-- Hero -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Hero</legend>
         <div>
@@ -1857,7 +1856,7 @@
         </div>
       </fieldset>
 
-      <!-- Liaison PrestaShop -->
+      
       <fieldset class="border border-blue-200 rounded-xl p-3 space-y-2 bg-blue-50/30">
         <legend class="text-[10px] font-bold text-blue-500 uppercase tracking-wider px-1">Liaison PS</legend>
         <div>
@@ -1880,7 +1879,7 @@
           </div>
           <p class="text-[9px] text-gray-400 mt-0.5">Les produits affichés viennent de ps_category_product (PS natif).</p>
         </div>
-        <!-- Bouton sync produits -->
+        
         <div v-if="editorSiloState.id_category">
           <button
             @click="syncSiloProducts"
@@ -1899,7 +1898,7 @@
         </div>
       </fieldset>
 
-      <!-- SEO -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">SEO</legend>
         <div>
@@ -1918,7 +1917,7 @@
         </div>
       </fieldset>
 
-      <!-- Page sections -->
+      
       <fieldset class="border border-gray-200 rounded-xl p-3 space-y-1.5">
         <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Composants</legend>
         <p class="text-[9px] text-gray-400 leading-relaxed mb-1">
@@ -1962,7 +1961,7 @@
       <p v-if="siloFieldsDirty" class="text-[10px] font-medium text-amber-600 italic text-center">Modifié — Enregistrer en bas ↓</p>
     </div>
 
-    <!-- ── Homepage: Visibility ──────────────────────────────────────────── -->
+    
     <div v-else-if="activePanel === 'homepage:visibility'" class="flex-1 overflow-auto p-4 space-y-4">
       <h3 class="flex items-center gap-2 text-sm font-bold text-slate-800 pb-3 mb-3 border-b border-slate-200">
         👁️ Affichage conditionnel
@@ -1973,7 +1972,7 @@
         Contrôlez quels types de visiteurs voient cette section. L'IA classe chaque visiteur automatiquement.
       </p>
 
-      <!-- Mode show/hide -->
+      
       <fieldset class="border border-violet-200 rounded-xl p-3 space-y-2 bg-violet-50/30">
         <legend class="text-[10px] font-bold text-violet-500 uppercase tracking-wider px-1">Mode</legend>
         <div class="flex gap-2">
@@ -1994,7 +1993,7 @@
         </div>
       </fieldset>
 
-      <!-- Avatar selection -->
+      
       <fieldset class="border border-violet-200 rounded-xl p-3 space-y-2">
         <legend class="text-[10px] font-bold text-violet-500 uppercase tracking-wider px-1">Avatars</legend>
         <p class="text-[10px] text-gray-400">Vide = tout le monde voit la section</p>
@@ -2014,7 +2013,7 @@
         </label>
       </fieldset>
 
-      <!-- Rule preview -->
+      
       <div v-if="visibilityRule.avatars.length > 0" class="text-[10px] text-violet-700 bg-violet-50 border border-violet-200 rounded-lg px-3 py-2">
         {{ formatVisibilityLabel(visibilityRule) }}
       </div>
@@ -2022,7 +2021,7 @@
         Tout le monde voit cette section
       </div>
 
-      <!-- Actions -->
+      
       <div class="flex gap-2">
         <button
           @click="saveVisibilityRule"
@@ -2039,7 +2038,7 @@
       </div>
     </div>
 
-    <!-- ── Save footer (unified — Phase 2 UX 2026-05-08) ───────────────────── -->
+    
     <div class="p-4 border-t border-gray-100 shrink-0 bg-gray-50">
       <Transition enter-active-class="transition-all duration-200" enter-from-class="opacity-0 -translate-y-1" enter-to-class="opacity-100 translate-y-0">
         <p v-if="saveStatus === 'ok'" class="text-xs text-green-600 font-medium mb-2 text-center">✓ Sauvegardé !</p>
@@ -2095,10 +2094,6 @@ const { resolvedClientId } = useClientDetection()
 const { t: i18nt } = useI18nField()
 const route = useRoute()
 
-// ── Sidebar geometry (drag-resize + rail collapsed) ────────────────────
-// Shared state via useBuilderGeometry — the white-label.vue layout uses
-// the same composable to sync the margin-left of the main content.
-// localStorage persistence per device (personal UI preference, not tenant-scoped).
 import {
   useBuilderGeometry,
   BUILDER_WIDTH_KEY, BUILDER_COLLAPSED_KEY,
@@ -2121,16 +2116,16 @@ function loadBuilderGeometry() {
     const w = Number(localStorage.getItem(BUILDER_WIDTH_KEY))
     if (w >= BUILDER_WIDTH_MIN && w <= BUILDER_WIDTH_MAX) builderWidth.value = w
     builderCollapsed.value = localStorage.getItem(BUILDER_COLLAPSED_KEY) === '1'
-  } catch { /* ignore */ }
+  } catch {  }
 }
 function saveBuilderWidth() {
   if (!import.meta.client) return
-  try { localStorage.setItem(BUILDER_WIDTH_KEY, String(builderWidth.value)) } catch { /* ignore */ }
+  try { localStorage.setItem(BUILDER_WIDTH_KEY, String(builderWidth.value)) } catch {  }
 }
 function toggleBuilderCollapsed() {
   builderCollapsed.value = !builderCollapsed.value
   if (import.meta.client) {
-    try { localStorage.setItem(BUILDER_COLLAPSED_KEY, builderCollapsed.value ? '1' : '0') } catch { /* ignore */ }
+    try { localStorage.setItem(BUILDER_COLLAPSED_KEY, builderCollapsed.value ? '1' : '0') } catch {  }
   }
 }
 
@@ -2167,10 +2162,8 @@ if (import.meta.client) {
   loadBuilderGeometry()
 }
 
-// ── Megamenu DB-first ────────────────────────────────────────────────────
 const { loadIntoBuilder: loadMegamenu, setBuilderItems: setMegamenuItems, syncToDb: syncMegamenuToDb, builderOverride: megamenuBuilderItems } = useMegamenu()
 
-// ── Theme DB-first ──────────────────────────────────────────────────────
 const {
   loadIntoBuilder: loadThemeDb,
   updateColor: updateThemeColorDb,
@@ -2181,7 +2174,6 @@ const {
 } = useThemeDb()
 const themeDbLoaded = ref(false)
 
-// ── Footer DB-first ─────────────────────────────────────────────────────
 const {
   loadIntoBuilder: loadFooterDb,
   updateFooterField: updateFooterFieldDb,
@@ -2194,7 +2186,6 @@ const {
 } = useFooterDb()
 const footerDbLoaded = ref(false)
 
-// ── Header DB-first ─────────────────────────────────────────────────────
 const {
   loadIntoBuilder: loadHeaderDb,
   updateLogo: updateLogoDb,
@@ -2206,7 +2197,6 @@ const {
 } = useHeaderDb()
 const headerDbLoaded = ref(false)
 
-// ── Homepage DB-first ───────────────────────────────────────────────────
 const {
   loadIntoBuilder: loadHomepageDb,
   updateHero: updateHeroDb,
@@ -2223,7 +2213,6 @@ const {
 } = useHomepageDb()
 const homepageDbLoaded = ref(false)
 
-// ── Tenant languages (for I18nField tabs) ─────────────────────────────────
 const tenantLangs = ref<ClientLang[]>([{ id_lang: 1, iso_code: 'fr', name: 'Français', is_default: true }])
 
 onMounted(async () => {
@@ -2231,31 +2220,30 @@ onMounted(async () => {
     const res = await $fetch<{ langs: ClientLang[] }>('/api/client-langs')
     if (res?.langs?.length) tenantLangs.value = res.langs
   } catch {
-    // Fallback: single-language French (builder functional even without PS module)
+    
   }
-  // Load the DB megamenu into the builder state for live editing
+  
   loadMegamenu()
   megamenuLoaded.value = true
-  // Load the DB theme into the builder state
+  
   loadThemeDb()
   themeDbLoaded.value = true
-  // Load the DB header into the builder state
+  
   loadHeaderDb()
   headerDbLoaded.value = true
-  // Load the DB footer into the builder state
+  
   loadFooterDb()
   footerDbLoaded.value = true
-  // Load the DB homepage
+  
   loadHomepageDb()
   homepageDbLoaded.value = true
 })
 
-// ── Save all (config + megamenu DB) ─────────────────────────────────────────
 async function saveAll() {
-  // All domains DB-first sync in parallel. Each specific save is
-  // tracked conditionally by its own dirty flag — we only write what
-  // has actually changed. Phase 2 UX (2026-05-08): a single "Save" button
-  // sticky bottom replaces the ~10 intra-panel saves scattered across.
+  
+  
+  
+  
   await Promise.all([
     saveConfig(),
     megamenuLoaded.value ? syncMegamenuToDb() : Promise.resolve(),
@@ -2272,8 +2260,6 @@ async function saveAll() {
   ])
 }
 
-// Multi-domain dirty aggregation: the sticky bottom button activates as soon as
-// any domain is dirty (not just the standard editor store).
 const globalDirty = computed(() =>
   isDirty.value
   || dbSectionsDirty.value
@@ -2304,18 +2290,13 @@ const globalSaving = computed(() =>
   || footerColumnsSaving.value,
 )
 
-// ── Tenant-aware section resolution ─────────────────────────────────────────
-// DB-driven deployments (homepage sections in DB, not in the editor store)
 const DB_SECTION_TENANTS = ['example-shop']
 const isDbSections = computed(() => DB_SECTION_TENANTS.includes(resolvedClientId.value))
 
-// Helper for SECTION_META lookup with graceful fallback (unknown type)
 function sectionMeta(type: string): { label: string; icon: string } {
   return SECTION_META[type] ?? { label: type, icon: '📦' }
 }
 
-// ── DB sections state (example deployments and future DB-driven tenants) ──────────────
-// useState shared with the index page for real-time live preview
 const dbSectionsList = useDbHomepageSections()
 const dbSectionsLoading = ref(false)
 const dbSectionsDirty = ref(false)
@@ -2345,7 +2326,7 @@ function moveDbSection(from: number, to: number) {
   const arr = [...dbSectionsList.value]
   const [item] = arr.splice(from, 1)
   arr.splice(to, 0, item)
-  // Position recalculation (multiples of 10)
+  
   arr.forEach((s, i) => { s.position = (i + 1) * 10 })
   dbSectionsList.value = arr
   markDbDirty()
@@ -2392,7 +2373,6 @@ onMounted(() => {
   if (isDbSections.value) loadDbSections()
 })
 
-// ── Section editor state (individual payload editor) ──────────────────────
 const editingSectionId = ref<number | null>(null)
 const sectionPayloadDirty = ref(false)
 const sectionPayloadSaving = ref(false)
@@ -2426,26 +2406,21 @@ function markSectionPayloadDirty() {
   sectionPayloadDirty.value = current !== sectionPayloadOriginal.value
 }
 
-/**
- * Parse a title/subtitle stored in DB: can be a raw string, JSON dict, or already an object.
- * The GET API always returns a string (VARCHAR). But in live preview, the shared state
- * can contain a raw I18n object (not yet saved). We handle both cases.
- */
 function parseSectionI18n(value: string | Record<string, string> | null | undefined): any {
   if (!value) return null
-  if (typeof value === 'object') return value  // Déjà un dict I18n (live preview)
-  // String : tente de parser comme JSON dict
+  if (typeof value === 'object') return value  
+  
   try {
     const parsed = JSON.parse(value)
     if (typeof parsed === 'object' && parsed !== null) return parsed
-  } catch { /* string nue legacy */ }
+  } catch {  }
   return value
 }
 
 function updateEditingSectionTitle(value: any) {
   if (!editingSection.value) return
-  // We keep the raw I18n dict in the shared state for live preview.
-  // JSON serialization happens only in saveSectionPayload → API PUT.
+  
+  
   editingSection.value.title = value
   markSectionPayloadDirty()
 }
@@ -2467,8 +2442,8 @@ async function saveSectionPayload() {
   sectionPayloadSaving.value = true
   try {
     const section = editingSection.value
-    // The PUT API expects strings for title/subtitle (VARCHAR in DB).
-    // If it's an I18n dict, we serialize it to JSON for storage.
+    
+    
     await $fetch(`/api/homepage-sections/${section.id}`, {
       method: 'PUT',
       body: {
@@ -2495,7 +2470,6 @@ function toggleDbSectionFromLibrary(sectionId: number) {
   if (index >= 0) toggleDbSection(index)
 }
 
-/** Description courte par type de section */
 function sectionTypeDescription(type: string): string {
   const descriptions: Record<string, string> = {
     'hero-slider':      'Carousel d\'images avec texte et boutons',
@@ -2510,7 +2484,6 @@ function sectionTypeDescription(type: string): string {
   return descriptions[type] ?? 'Composant personnalisable'
 }
 
-// ── Pre-footer sections (same pattern as DB homepage sections) ────────────
 import { useDbPrefooterSections } from '~/composables/useEditorState'
 
 const pfSectionsList = useDbPrefooterSections()
@@ -2658,12 +2631,10 @@ function prefooterTypeDescription(type: string): string {
   return descriptions[type] ?? 'Composant pré-footer'
 }
 
-// Load pre-footer sections on mount (in addition to homepage)
 onMounted(() => {
   if (isDbSections.value) loadPfSections()
 })
 
-// ── Silo editor (grossiste category pages) ─────────────────────────────────
 const editorSiloState = useEditorSilo()
 const editorSiloSections = useEditorSiloSections()
 const siloFieldsDirty = ref(false)
@@ -2672,10 +2643,9 @@ const siloFieldsOriginal = ref<string>('')
 const siloSyncBusy = ref(false)
 const siloSyncResult = ref<{ added: number; after: number } | null>(null)
 
-// Initialize the original when the context is detected
 watch(() => contextPageId.value, (id) => {
   if (id === 'silo') {
-    // Small delay to let the state fill from the page
+    
     setTimeout(() => {
       siloFieldsOriginal.value = JSON.stringify(editorSiloState.value)
       siloFieldsDirty.value = false
@@ -2752,7 +2722,6 @@ const SILO_COMPONENTS = [
   { id: 'contact', icon: '✉️', label: 'Devis / Contact', desc: 'CTA demande de devis', conditional: false },
 ] as const
 
-// ── Footer columns (DB-driven, cs_footer) ──────────────────────────────
 const footerColumnsList = useDbFooterColumns()
 const footerColumnsLoading = ref(false)
 const footerColumnsDirty = ref(false)
@@ -2764,7 +2733,7 @@ async function loadFooterColumns() {
   footerColumnsLoading.value = true
   try {
     const res = await $fetch<{ columns: any[] }>('/api/footer?ids=1')
-    // Map API response → local state
+    
     footerColumnsList.value = (res.columns ?? []).map((col: any, ci: number) => ({
       title: col.title ?? '',
       column_position: col.links?.[0]?.column_position ?? (ci + 1),
@@ -2795,7 +2764,7 @@ function updateColumnTitle(ci: number, title: string) {
   const cols = [...footerColumnsList.value]
   if (!cols[ci]) return
   cols[ci] = { ...cols[ci], title }
-  // Update title on all links in this column
+  
   cols[ci].links = cols[ci].links.map(l => ({ ...l }))
   footerColumnsList.value = cols
   markFooterColumnsDirty()
@@ -2817,7 +2786,7 @@ function addFooterLink(ci: number) {
   cols[ci] = {
     ...cols[ci],
     links: [...cols[ci].links, {
-      id: -Date.now(), // Temporary negative ID for new items
+      id: -Date.now(), 
       label: 'Nouveau lien',
       href: '/',
       external: false,
@@ -2855,7 +2824,7 @@ function removeColumn(ci: number) {
 async function saveFooterColumns() {
   footerColumnsSaving.value = true
   try {
-    // Collect all existing link IDs to know what to delete
+    
     const originalCols: DbFooterColumn[] = JSON.parse(footerColumnsOriginal.value || '[]')
     const originalIds = new Set<number>()
     for (const col of originalCols) {
@@ -2871,7 +2840,7 @@ async function saveFooterColumns() {
       for (let li = 0; li < col.links.length; li++) {
         const link = col.links[li]
         if (link.id > 0) {
-          // Existing link → update
+          
           currentIds.add(link.id)
           updates.push($fetch(`/api/footer-links/${link.id}`, {
             method: 'PUT',
@@ -2886,7 +2855,7 @@ async function saveFooterColumns() {
             },
           }))
         } else {
-          // New link → create
+          
           updates.push($fetch('/api/footer-links', {
             method: 'POST',
             body: {
@@ -2903,7 +2872,7 @@ async function saveFooterColumns() {
       }
     }
 
-    // Delete removed links
+    
     for (const id of originalIds) {
       if (!currentIds.has(id)) {
         updates.push($fetch(`/api/footer-links/${id}`, { method: 'DELETE' }))
@@ -2912,7 +2881,7 @@ async function saveFooterColumns() {
 
     await Promise.all(updates)
 
-    // Reload to get fresh IDs
+    
     await loadFooterColumns()
   } catch (err) {
     console.error('[builder] Erreur sauvegarde footer columns :', err)
@@ -2925,7 +2894,6 @@ onMounted(() => {
   if (isDbSections.value) loadFooterColumns()
 })
 
-// ── Footer social links (config-based, saved via saveConfig) ────────────────
 type SocialPlatform = 'linkedin' | 'facebook' | 'instagram' | 'twitter' | 'x' | 'youtube' | 'tiktok' | 'github'
 
 const SOCIAL_PLATFORMS: { value: SocialPlatform; label: string }[] = [
@@ -2962,7 +2930,6 @@ function updateSocialItem(i: number, patch: Partial<{ platform: SocialPlatform; 
   markDirty()
 }
 
-// ── Group accordions ────────────────────────────────────────────────────
 type GroupId = 'apparence' | 'top' | 'page' | 'homepage' | 'footer'
 const openGroup = ref<GroupId>('top')
 
@@ -2970,12 +2937,10 @@ function toggleGroup(group: GroupId) {
   openGroup.value = openGroup.value === group ? 'apparence' : group
 }
 
-// Auto-open the page group when a context is saved
 watch(contextPageId, (ctx) => {
   if (ctx) openGroup.value = 'page'
 })
 
-// Auto-switch panel on context change
 const DEFAULT_PANEL_FOR_CONTEXT: Record<string, any> = {
   silo:     'silo:hero',
 }
@@ -2985,14 +2950,12 @@ watch(contextPageId, (ctx) => {
   }
 })
 
-// ── Exit URL ────────────────────────────────────────────────────────────────
 const exitUrl = computed(() => {
   const { edit_mode: _, ...rest } = route.query
   const qs = new URLSearchParams(rest as Record<string, string>).toString()
   return route.path + (qs ? `?${qs}` : '')
 })
 
-// ── DnD natif ───────────────────────────────────────────────────────────────
 const dragFrom = ref<number | null>(null)
 const dragOver = ref<number | null>(null)
 
@@ -3006,9 +2969,6 @@ function onDrop(toIndex: number) {
   dragOver.value = null
 }
 
-// ── Helpers panels ──────────────────────────────────────────────────────────
-
-// ── Header Logo — Upload image → WebP ────────────────────────────────────────
 const logoUploading = ref(false)
 const logoUploadError = ref('')
 async function handleLogoUpload(e: Event) {
@@ -3031,12 +2991,11 @@ async function handleLogoUpload(e: Event) {
     logoUploadError.value = err?.data?.message || err?.message || 'Erreur upload'
   } finally {
     logoUploading.value = false
-    // Reset input to allow re-upload of the same file
+    
     ;(e.target as HTMLInputElement).value = ''
   }
 }
 
-// ── Header DB-first wrappers ────────────────────────────────────────────────
 function onHeaderLogoChange(patch: Record<string, any>) {
   updateLogoDb(patch)
   markDirty()
@@ -3054,10 +3013,9 @@ function onHeaderFeatureChange(key: string, value: any) {
   markDirty()
 }
 
-// ── Header Top Bar — Languages (DB-first) ──────────────────────────────────
 function addLanguage() {
   const langs = [...(headerBuilderState.value?.topBar?.languages ?? [])]
-  // DB-first: label is a string (resolved on the API side via cs_header_locale_lang).
+  
   langs.push({ code: 'fr', label: 'Français', href: '/' })
   updateTopBarDb({ languages: langs })
   markDirty()
@@ -3076,7 +3034,6 @@ function updateLanguage(i: number, patch: Partial<{ code: string; label: string;
   markDirty()
 }
 
-// ── Menu (navigation + dropdowns + megamenu) — DB-first via ac_megamenu ──
 type MenuLink = { label: string; href: string; psId?: number; badge?: string; description?: string | Record<string, string>; psCategoryId?: number; showPsChildren?: boolean; psChildren?: any[] }
 type MegaColumn = { title?: string; icon?: string; links: MenuLink[] }
 type MenuItem = { label: string; href?: string; isMegaMenu?: boolean; megaMenu?: MegaColumn[]; children?: MenuLink[]; bgColor?: string; textColor?: string; style?: Record<string, string>; rightAlign?: boolean; align?: string; cssClass?: string; highlight?: boolean; external?: boolean; badge?: any; badgeBg?: string; badgeColor?: string }
@@ -3159,7 +3116,6 @@ function setMenuItemType(i: number, kind: MenuItemKind) {
   commitMenuItems(items)
 }
 
-// Dropdown helpers (1 column without title)
 function addDropdownLink(i: number) {
   const items = [...menuItems.value]
   if (!items[i]) return
@@ -3185,7 +3141,6 @@ function updateDropdownLink(i: number, li: number, patch: Partial<MenuLink>) {
   commitMenuItems(items)
 }
 
-// Megamenu columns helpers
 function addMegaColumn(i: number) {
   const items = [...menuItems.value]
   if (!items[i]) return
@@ -3221,7 +3176,6 @@ function updateMegaColumn(i: number, ci: number, patch: Partial<MegaColumn>) {
   commitMenuItems(items)
 }
 
-// ── Megamenu column icon upload (WebP path via /api/admin/upload-image) ────
 const megaIconFileInputs = ref<Record<string, HTMLInputElement>>({})
 const megaIconUploading  = ref<Record<string, boolean>>({})
 const megaIconError      = ref<Record<string, string>>({})
@@ -3282,7 +3236,6 @@ function updateMegaLink(i: number, ci: number, li: number, patch: Partial<MenuLi
   commitMenuItems(items)
 }
 
-// Header features list
 const headerFeaturesList = [
   { key: 'showSearch',      label: 'Barre de recherche' },
   { key: 'showWishlist',    label: 'Favoris / Wishlist' },
@@ -3299,7 +3252,6 @@ const headerLayoutOptions = [
   { value: 'inline',  label: '1 ligne' },
 ]
 
-// Theme colors list
 const themeColorsList = [
   { key: 'primary',    label: 'Couleur primaire' },
   { key: 'secondary',  label: 'Couleur secondaire' },
@@ -3310,7 +3262,6 @@ const themeColorsList = [
   { key: 'background', label: 'Fond général' },
 ]
 
-// Border radius options
 const radiusOptions = [
   { value: 'none', label: 'Carré' },
   { value: 'sm',   label: 'Léger' },
@@ -3319,7 +3270,6 @@ const radiusOptions = [
   { value: 'full', label: 'Pilule' },
 ]
 
-// Content width options
 const contentWidthOptions = [
   { value: '6xl',  label: '6xl (1152px)' },
   { value: '7xl',  label: '7xl (1280px)' },
@@ -3327,7 +3277,6 @@ const contentWidthOptions = [
   { value: 'full', label: 'Pleine largeur' },
 ]
 
-// ── Theme DB-first wrappers (edit local + markDirty) ─────────────────────
 function onThemeColorChange(key: string, value: string) {
   updateThemeColorDb(key, value)
   markDirty()
@@ -3341,13 +3290,10 @@ function onThemeUiChange(key: string, value: string | boolean) {
   markDirty()
 }
 
-// ── Homepage DB-first proxy (hp → hpBuilderState) ──────────────────────
-// Reactive proxy that allows the template to continue reading hpDb.hero, hpDb.features etc.
 const hpDb = computed(() => hpBuilderState.value || {})
 
 function onHpHeroChange(patch: Record<string, any>) { updateHeroDb(patch); markDirty() }
 
-// Upload image hero (file picker → /api/admin/upload-image → URL)
 const hpHeroUploadInput = ref<HTMLInputElement | null>(null)
 const hpHeroUploading = ref(false)
 const hpHeroUploadError = ref<string | null>(null)
@@ -3433,7 +3379,6 @@ function onHpUpdateTestimonial(i: number, patch: Record<string, any>) {
   setTestimonialsDb(t); markDirty()
 }
 
-// ── Footer DB-first wrappers ─────────────────────────────────────────────
 function onFooterFieldChange(patch: Record<string, any>) {
   updateFooterFieldDb(patch)
   markDirty()
@@ -3450,8 +3395,6 @@ function onFooterNewsletterChange(patch: Record<string, any>) {
   updateNewsletterDb(patch)
   markDirty()
 }
-
-// ── Visibility panel ────────────────────────────────────────────────────────
 
 const visibilityEditType = ref<SectionType | null>(null)
 const visibilityRule = ref<SectionVisibilityRule>({ ...DEFAULT_VISIBILITY_RULE })
@@ -3517,7 +3460,7 @@ textarea.field {
   @apply ml-auto text-[10px] font-mono text-slate-400 normal-case tracking-normal;
 }
 
-/* ── Resize handle (right edge of the sidebar, 4px width, cursor col-resize)
+/* ── Resize handle (bord droit de la sidebar, 4px largeur, cursor col-resize)
    Visible au hover + état actif (drag en cours). */
 .builder-resize-handle {
   position: absolute;
@@ -3535,7 +3478,7 @@ textarea.field {
   background: rgba(99, 102, 241, 0.45); /* primary-400/50 */
 }
 
-/* ── Collapsed mode (56px rail) — hides non-essential content.
+/* ── Mode collapsed (rail 56px) — masque le contenu non-essentiel.
    Pattern : font-size:0 sur les labels (les nœuds texte deviennent
    invisibles, les SVG/icônes restent intrinsèquement dimensionnés). */
 .builder-sidebar.is-collapsed .builder-header-text,

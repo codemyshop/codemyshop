@@ -1,10 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/blog/search?q=term
- * Search CMS articles by title, description, and content.
- * Lecture directe DB (ps_cms + ps_cms_lang).
- */
+
 import { buildNuxtUrl, stripHtml } from '~/server/utils/ps'
 import { useClientDb } from '~/server/utils/db'
 

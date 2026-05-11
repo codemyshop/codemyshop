@@ -1,18 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/instagram/posts?limit=24&offset=0&type=IMAGE
- *
- * Reads Instagram posts from cs_instagram_post (+ _lang FR).
- * Zero Graph API calls at runtime — offline paginated sync (Nitro Task,
- * pending work item #43, old Python scripts archived 2026-05-03).
- * → no rate-limiting, no token expiration, no expiring CDN URLs
- * (image_url field may be stale, will be progressively served via
- * local_path when download is enabled).
- *
- * Pagination classique : limit ≤ 100, offset ≥ 0. Tri anti-chrono par
- * posted_at. Filtre optionnel par media_type.
- */
 
 import {
   countInstagramPosts,
@@ -46,7 +32,7 @@ export default defineEventHandler(async (event): Promise<{ items: Post[]; total:
       igId:      r.ig_id,
       caption:   r.caption || '',
       mediaType: r.media_type,
-      // Priorité : local_path (quand le sync download sera activé) > image/thumb CDN
+      
       imageUrl:  r.local_path || (r.media_type === 'VIDEO' ? (r.thumbnail_url || '') : (r.image_url || '')),
       permalink: r.permalink,
       postedAt:  typeof r.posted_at === 'string' ? r.posted_at : new Date(r.posted_at).toISOString(),

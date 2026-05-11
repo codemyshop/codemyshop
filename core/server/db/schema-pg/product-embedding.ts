@@ -1,19 +1,4 @@
-/**
- *
- * Drizzle PG schema — product embedding domain (search-boost L1).
- *
- * `cs_product_embedding` — a semantic vector (mistral-embed 1024d) per
- * (id_product, id_lang). Fed by `synedre/ac_embedder.py` from
- * de name + reference + categories + description_short + description.
- *
- * `content_hash` (md5 of normalized text) allows the embedder to skip
- * the Mistral call if the product hasn't changed since the last run.
- *
- * `model` identifies the embedder used: a model change forces
- * re-indexing on the next run (mismatch detected on embedder side).
- *
- * HNSW cosine index for top-k search in O(log N).
- */
+
 
 import {
   index,

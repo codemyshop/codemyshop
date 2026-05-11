@@ -1,13 +1,4 @@
-/**
- *
- * PostgreSQL advisory lock for multi-instance singleton — equivalent of the pattern
- * Python `ac_logger.AutomateLog` on the distributed side: guarantees that only one
- * instance of a Nitro automation runs at any given time T, even if Nitro
- * starts 2+ workers or if the scheduler triggers a concurrent ticker.
- *
- * Implemented via pg_try_advisory_lock(bigint) — the bigint is derived from
- * key_name de l'automate (hash 63 bits stable).
- */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 

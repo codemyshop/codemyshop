@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -17,10 +17,10 @@
     <div class="p-6 max-w-6xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
-        <!-- ── Panneau gauche : Configuration (2 cols) ──────────────── -->
+        
         <div class="lg:col-span-2 space-y-5">
 
-          <!-- Objectif -->
+          
           <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm p-5">
             <h2 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-4">Configuration</h2>
 
@@ -100,7 +100,7 @@
             </div>
           </div>
 
-          <!-- Bouton IA Magic Glow -->
+          
           <AIActionButton
             label="G&eacute;n&eacute;rer la s&eacute;quence IA"
             loading-label="G&eacute;n&eacute;ration en cours…"
@@ -112,10 +112,10 @@
           />
         </div>
 
-        <!-- ── Panneau droit : Timeline (3 cols) ─────────────────────── -->
+        
         <div class="lg:col-span-3">
 
-          <!-- Placeholder -->
+          
           <div v-if="!sequence" class="flex flex-col items-center justify-center py-24 text-gray-300">
             <svg class="w-16 h-16 mb-4 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="0.75">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
@@ -124,9 +124,9 @@
             <p class="text-xs text-gray-300 mt-1">Configurez et g&eacute;n&eacute;rez votre s&eacute;quence</p>
           </div>
 
-          <!-- Timeline -->
+          
           <div v-else class="space-y-0">
-            <!-- Header -->
+            
             <div class="bg-white dark:bg-slate-900 rounded-t-xl border border-gray-100 dark:border-slate-800 shadow-sm px-5 py-4 flex items-center justify-between">
               <div>
                 <p class="text-sm font-bold text-gray-800 dark:text-slate-100">{{ sequence.objective }}</p>
@@ -143,9 +143,9 @@
               </button>
             </div>
 
-            <!-- Steps -->
+            
             <div class="relative">
-              <!-- Ligne verticale -->
+              
               <div class="absolute left-[29px] top-0 bottom-0 w-px bg-gray-200" />
 
               <div
@@ -154,7 +154,7 @@
                 class="relative flex gap-4 px-5 py-4 bg-white dark:bg-slate-900 border-x border-b border-gray-100 dark:border-slate-800"
                 :class="i === sequence.steps.length - 1 ? 'rounded-b-xl shadow-sm' : ''"
               >
-                <!-- Node timeline -->
+                
                 <div class="relative z-10 flex flex-col items-center shrink-0">
                   <div
                     class="w-[18px] h-[18px] rounded-full border-2 flex items-center justify-center"
@@ -164,15 +164,15 @@
                   >
                     <div class="w-2 h-2 rounded-full" :class="step.channel === 'whatsapp' ? 'bg-green-500' : 'bg-primary-500'" />
                   </div>
-                  <!-- D&eacute;lai -->
+                  
                   <span class="text-[9px] font-bold text-gray-400 mt-1 whitespace-nowrap">
                     {{ step.dayOffset === 0 ? 'J+0' : `J+${step.dayOffset}` }}
                   </span>
                 </div>
 
-                <!-- Carte message -->
+                
                 <div class="flex-1 min-w-0">
-                  <!-- En-t&ecirc;te -->
+                  
                   <div class="flex items-center gap-2 mb-2">
                     <span
                       class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full"
@@ -187,15 +187,15 @@
                     </span>
                   </div>
 
-                  <!-- Sujet (email) -->
+                  
                   <p v-if="step.channel === 'email' && step.subject" class="text-xs font-bold text-gray-800 dark:text-slate-100 mb-1">
                     {{ step.subject }}
                   </p>
 
-                  <!-- Corps -->
+                  
                   <p class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{{ step.body }}</p>
 
-                  <!-- Objectif -->
+                  
                   <div class="mt-2 flex items-center gap-1.5">
                     <svg class="w-3 h-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
@@ -214,16 +214,13 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
+
 import type { NurturingSequence } from '~/server/api/ai/generate-nurturing.post'
 interface AvatarDefinition { id: number; name: string; slug: string; icon: string; colorClass: string; keywords: string[] }
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
 const { resolvedClientId } = useClientDetection()
-
-// ── Constantes ────────────────────────────────────────────────────────────────
 
 const OBJECTIVES = [
   { value: 'Onboarding nouveau client',            label: 'Onboarding nouveau client' },
@@ -240,8 +237,6 @@ const DURATIONS = [
   { value: 'long',   label: 'Longue',  steps: 7 },
 ]
 
-// ── État ──────────────────────────────────────────────────────────────────────
-
 const form = reactive({
   objective:       '',
   customObjective: '',
@@ -253,8 +248,6 @@ const form = reactive({
 const generating  = ref(false)
 const sequence    = ref<NurturingSequence | null>(null)
 const exported    = ref(false)
-
-// ── Avatars dynamiques ────────────────────────────────────────────────────────
 
 const avatarDefs     = ref<AvatarDefinition[]>([])
 const avatarsLoading = ref(true)
@@ -269,8 +262,6 @@ async function loadAvatars() {
   finally { avatarsLoading.value = false }
 }
 
-// ── Computed ──────────────────────────────────────────────────────────────────
-
 const selectedAvatar = computed(() =>
   form.avatarIdx >= 0 ? avatarDefs.value[form.avatarIdx] : null
 )
@@ -280,8 +271,6 @@ const effectiveObjective = computed(() =>
 )
 
 const canGenerate = computed(() => !!effectiveObjective.value?.trim())
-
-// ── G&eacute;n&eacute;ration ──────────────────────────────────────────────────────────────
 
 async function generate() {
   if (!canGenerate.value || generating.value) return
@@ -308,8 +297,6 @@ async function generate() {
   }
 }
 
-// ── Export ─────────────────────────────────────────────────────────────────────
-
 async function exportSequence() {
   if (!sequence.value) return
   const json = JSON.stringify(sequence.value, null, 2)
@@ -317,10 +304,8 @@ async function exportSequence() {
     await navigator.clipboard.writeText(json)
     exported.value = true
     setTimeout(() => { exported.value = false }, 2500)
-  } catch { /* */ }
+  } catch {  }
 }
-
-// ── Init ──────────────────────────────────────────────────────────────────────
 
 onMounted(loadAvatars)
 </script>

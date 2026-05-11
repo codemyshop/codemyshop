@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * POST /api/bo/procurement/suppliers — supplier creation.
- * Body: { name, active?, description?, phone?, phoneMobile?, address1?, postcode?, city?, idCountry? }
- * Creates ps_supplier + ps_supplier_lang (all active languages) + ps_supplier_shop + ps_address (if contact provided).
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<Record<string, any>>(event)
   const name = String(body?.name || '').trim()
@@ -20,16 +15,16 @@ export default defineEventHandler(async (event) => {
   const address1 = String(body?.address1 || '').trim().slice(0, 128)
   const postcode = String(body?.postcode || '').trim().slice(0, 12)
   const city = String(body?.city || '').trim().slice(0, 64)
-  const idCountry = Number(body?.idCountry || 8) // 8 = France en PS natif
+  const idCountry = Number(body?.idCountry || 8) 
 
   const db = useClientDb(event)
 
   try {
-    // Unicité du nom (évite les doublons silencieux)
+    
     const existing = await db.get<any>(`SELECT id_supplier FROM ps_supplier WHERE name = ? LIMIT 1`, [name])
     if (existing) throw createError({ statusCode: 409, statusMessage: 'Un fournisseur avec ce nom existe déjà' })
 
-    // 1. ps_supplier
+    
     const ins = await db.run(
       `INSERT INTO ps_supplier (name, active, date_add, date_upd) VALUES (?, ?, NOW(), NOW())`,
       [name, active],
@@ -37,7 +32,7 @@ export default defineEventHandler(async (event) => {
     const newId = ins.insertId
     if (!newId) throw createError({ statusCode: 500, statusMessage: 'Échec création' })
 
-    // 2. ps_supplier_lang (toutes les langues actives)
+    
     const langs = await db.query<any>(`SELECT id_lang FROM ps_lang WHERE active = 1`)
     for (const l of langs) {
       await db.run(
@@ -47,10 +42,10 @@ export default defineEventHandler(async (event) => {
       )
     }
 
-    // 3. ps_supplier_shop (shop 1 par défaut)
+    
     await db.run(`INSERT IGNORE INTO ps_supplier_shop (id_supplier, id_shop) VALUES (?, 1)`, [newId])
 
-    // 4. ps_address — contact (si au moins un champ renseigné)
+    
     if (phone || phoneMobile || address1 || city) {
       await db.run(
         `INSERT INTO ps_address

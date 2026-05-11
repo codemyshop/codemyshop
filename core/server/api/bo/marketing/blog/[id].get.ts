@@ -1,20 +1,10 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 import { listFaqsByParent } from '~/modules/faq/server/utils/faq'
 import { getCmsExtraForBlogEdit } from '~/modules/cms-extra/server/utils/cms-extra'
 
-/**
- * GET /api/bo/marketing/blog/:id — blog article details
- * (Sprint 18.1).
- *
- * Isolation: returns 404 if the requested id is linked to the
- * root category (1) — it would be a landing page, not an article.
- *
- * `id=new` returns a skeleton with categoryId = 0 (the UI forces
- * the user to choose a category other than root).
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -63,13 +53,13 @@ export default defineEventHandler(async (event) => {
 
   if (!page) throw createError({ statusCode: 404, message: 'Article introuvable' })
 
-  // Sprint 18.1 — guard d'isolation : seuls les articles (cat ≠ 1)
-  // sont servis par cet endpoint.
+  
+  
   if (Number(page.categoryId) === 1) {
     throw createError({ statusCode: 404, message: 'Article introuvable (landing page)' })
   }
 
-  // ── CMS Extra (cs_cms_extra) via façade ac_cmsextra ──────────
+  
   let pageType: string | null = null
   try {
     const extra = await getCmsExtraForBlogEdit(Number(id), { event })
@@ -89,14 +79,14 @@ export default defineEventHandler(async (event) => {
       page.reelScript = extra.reel_script || ''
       page.reelEnabled = !!extra.reel_enabled
     }
-  } catch { /* table may differ between tenants */ }
+  } catch {  }
   page.pageType = pageType
   if (!page.targetAvatarIds) page.targetAvatarIds = []
   if (!page.editorialBrief) page.editorialBrief = ''
   if (!page.authorEmployeeId) page.authorEmployeeId = null
 
-  // ── FAQ via ac_faq facade (parent_type='cms') ───────────────────
-  // BO admin: includes inactive ones as well (toggle in UI).
+  
+  
   let faqs: any[] = []
   try {
     const items = await listFaqsByParent('cms', Number(id), langId, { event }, { onlyActive: false })
@@ -113,7 +103,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // ── Related product categories (cs_category_cms) ────────
+  
   let linkedCategories: any[] = []
   try {
     linkedCategories = await db.query<any>(`

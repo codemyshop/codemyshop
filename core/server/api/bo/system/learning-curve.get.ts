@@ -1,24 +1,9 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { execSync } from 'node:child_process'
 import { requireRoleOrSaas } from '~/server/utils/session'
 import { aggregateAgentsByWeeks, aggregateWeekly } from '~/internal/incidents/server/utils/incidents'
 
-/**
- * GET /api/bo/system/learning-curve
- *
- * Incident loop learning curve. Per ISO week over the requested window
- * (default 12 weeks), aggregates:
- * - total     : incidents created in the week
- * - qualified : incidents with root_cause + check_added populated
- * - commits   : git commits (all branches) over the same window
- *
- * Two derived actionable ratios:
- *   - qualityRatio = qualified / total      → on formalise bien ?
- * - scarRate     = total / commits (‰)    → are we repeating less?
- *
- * If scarRate decreases while qualityRatio increases, the loop works.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder'])
 
@@ -31,7 +16,7 @@ export default defineEventHandler(async (event) => {
     aggregateWeekly(weeks, agent, { event }),
   ])
 
-  // --- Commits par semaine (git log) ---
+  
   const commitsByWeek = new Map<string, number>()
   try {
     const out = execSync(
@@ -47,10 +32,10 @@ export default defineEventHandler(async (event) => {
       commitsByWeek.set(week, (commitsByWeek.get(week) || 0) + 1)
     }
   } catch {
-    // Silencieux : sans git, on sort just les incidents.
+    
   }
 
-  // --- Merge + ratios ---
+  
   const rows = dbRows.map((r) => {
     const total = r.total
     const qualified = r.qualified
@@ -62,11 +47,11 @@ export default defineEventHandler(async (event) => {
       qualified,
       commits,
       qualityRatio: total > 0 ? qualified / total : 0,
-      scarRate: commits > 0 ? (total / commits) * 1000 : 0, // incidents / 1000 commits
+      scarRate: commits > 0 ? (total / commits) * 1000 : 0, 
     }
   })
 
-  // Complète les semaines sans incidents mais avec commits
+  
   const knownWeeks = new Set(rows.map((r) => r.week))
   for (const [week, commits] of commitsByWeek) {
     if (!knownWeeks.has(week)) {
@@ -83,7 +68,7 @@ export default defineEventHandler(async (event) => {
   }
   rows.sort((a, b) => String(a.weekStart).localeCompare(String(b.weekStart)))
 
-  // --- Totaux ---
+  
   const totals = rows.reduce((acc, r) => ({
     total: acc.total + r.total,
     qualified: acc.qualified + r.qualified,
@@ -103,7 +88,6 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-// ISO week key "YYYY-Www", matches MySQL '%x-W%v'
 function isoWeekKey(d: Date): string {
   const date = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()))
   const dayNum = date.getUTCDay() || 7

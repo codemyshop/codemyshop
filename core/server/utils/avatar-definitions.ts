@@ -1,9 +1,4 @@
-/**
- *
- * CRUD for configurable avatar definitions from the admin panel.
- * Stockage : Nitro useStorage('avatars') → volume persistant server/data/avatars/
- * Complies with SECURITY.md Rule 2: persistence on Docker volume.
- */
+
 
 export interface AvatarDefinition {
   id:           string
@@ -38,7 +33,6 @@ export async function getAvatarDefinition(clientId: string, id: string): Promise
   return all.find(d => d.id === id) ?? null
 }
 
-/** Définitions par défaut (seed initial si rien n'existe) */
 function getDefaultDefinitions(clientId: string): AvatarDefinition[] {
   const now = new Date().toISOString()
   return [

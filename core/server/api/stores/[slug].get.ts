@@ -1,8 +1,4 @@
-/**
- *
- * GET /api/stores/{slug}?lang=fr
- * Retourne 1 magasin actif par slug + description i18n + JSON-LD ready.
- */
+
 
 import { useClientDb } from '../../utils/db'
 

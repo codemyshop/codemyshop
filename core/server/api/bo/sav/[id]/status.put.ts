@@ -1,18 +1,9 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
 const ALLOWED_STATUSES = ['open', 'closed', 'pending1', 'pending2'] as const
 
-/**
- * PUT /api/bo/sav/:id/status — changes the status of a support ticket.
- *
- * Sprint 16 — direct DB write (no client notification or
- * Mail::Send, it's only an internal state change on the
- * support team side). Email sending is reserved for reply.post.ts.
- *
- * Body : { status: 'open' | 'closed' | 'pending1' | 'pending2' }
- */
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, message: 'id requis' })

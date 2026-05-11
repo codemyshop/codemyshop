@@ -34,9 +34,9 @@
     <div v-else-if="thread" class="flex-1 overflow-auto px-6 py-6">
       <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- ═══ Main column: timeline + response area ═══ -->
+        
         <div class="lg:col-span-2 space-y-6">
-          <!-- Timeline chat -->
+          
           <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
             <header class="flex items-center justify-between mb-5">
               <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Conversation</h2>
@@ -75,7 +75,7 @@
             </div>
           </section>
 
-          <!-- Response area -->
+          
           <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
             <header class="mb-4">
               <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Répondre au client</h2>
@@ -126,9 +126,9 @@
           </section>
         </div>
 
-        <!-- ═══ Colonne contexte B2B ═══ -->
+        
         <aside class="space-y-6">
-          <!-- Statut ticket -->
+          
           <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-4">Statut du ticket</h2>
             <div class="space-y-2">
@@ -152,7 +152,7 @@
             </div>
           </section>
 
-          <!-- Client -->
+          
           <section class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-4">Client</h2>
             <div v-if="customer" class="space-y-2 text-xs">
@@ -192,7 +192,7 @@
             </div>
           </section>
 
-          <!-- Commande -->
+          
           <section v-if="order" class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm p-6">
             <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-4">Commande liée</h2>
             <div class="space-y-2 text-xs">
@@ -227,7 +227,6 @@
 </template>
 
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
 
@@ -287,7 +286,7 @@ async function sendReply() {
     })
     replySuccess.value = { to: res?.to, mail_sent: res?.mail_sent }
     reply.value = ''
-    // Reload to display the new message + updated status.
+    
     await load()
     setTimeout(() => { replySuccess.value = null }, 5000)
   } catch (err: any) {

@@ -1,11 +1,4 @@
-/**
- *
- * Drizzle PG schemas for prefooter section — task #38 Phase 1 step 5.
- *
- * 2 tables (cs_main, AC-only) :
- * - cs_prefooter_section       : typed prefooter sections
- *   - cs_prefooter_section_lang  : i18n (title, subtitle)
- */
+
 
 import {
   index,

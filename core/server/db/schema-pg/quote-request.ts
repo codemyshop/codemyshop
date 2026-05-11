@@ -1,8 +1,4 @@
-/**
- *
- * Drizzle PG schema — quote request domain.
- * Generated 2026-05-01 (php-eviction-phase2) from live PG information_schema.
- */
+
 
 import {
   integer,
@@ -33,7 +29,7 @@ export const quoteRequest = vaisseauMereAcSchema.table(
     noteInterne: text('note_interne'),
     leadId: integer('lead_id'),
     projectId: integer('project_id'),
-    // Enrichissement INSEE (recherche-entreprises.api.gouv.fr) — depuis SIRET.
+    
     legalName:    varchar('legal_name',    { length: 255 }).notNull().default(''),
     nafCode:      varchar('naf_code',      { length: 8 }).notNull().default(''),
     nafLabel:     varchar('naf_label',     { length: 255 }).notNull().default(''),

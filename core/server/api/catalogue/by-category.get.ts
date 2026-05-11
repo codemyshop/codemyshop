@@ -1,19 +1,5 @@
-/**
- *
- * GET /api/catalogue/by-category?id_category=209&offset=0&limit=24
- *
- * Returns products of a native PS category (and its descendants via
- * recursive CTE on id_parent) with pagination + sorting + MDM filters + JOIN
- * features (packaging/caliber/net weight/units per carton).
- *
- * Primary key: id_category (numeric, stable, language-agnostic — backlog
- * #155 merge 2026-04-19).
- *
- * Virtual categories:
- * - 390 new items         → date_add DESC on all active products
- *   - 391 promotions         → JOIN ps_specific_price reduction > 0 actif
- * - 392 best sellers  → JOIN order_detail aggregation 90-day rolling
- */
+
+
 import { useClientDb, resolveClientId } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 import { buildImageUrl, buildImageSrcset } from '~/server/utils/product-urls'
@@ -37,8 +23,6 @@ const VIRTUAL_CATEGORIES = {
   392: 'meilleures-ventes',
 } as const
 
-// Les IDs de piliers sont tenant-dépendants → résolus dynamiquement par slug
-// (link_rewrite) au lieu du hardcode. Cache en mémoire par slug.
 const pilierIdCache = new Map<string, number | null>()
 
 async function resolvePilierId(db: any, slug: string): Promise<number | null> {
@@ -75,8 +59,8 @@ interface ProductCard {
   totalWeightKg?: number
   pricePerKg?: number
   pricePerKgFormatted?: string
-  /** Suffixe court à afficher après le prix unitaire (HT/K, HT/L, HT/U).
-   * DB-first derived from `p.unity` + features (cf. unity-label.ts). */
+  
+
   unitLabel?: string
   pricePromo?: string
   pricePromoRaw?: number
@@ -116,13 +100,6 @@ function parseWeightToKg(s: string | null | undefined): number | null {
   return m[2] === 'kg' ? n : n / 1000
 }
 
-/**
- * Wrapper on the shared version: returns the short path (truncate based on
- * pillar config) WITH the detected pillar from the default category. mapRowToCard
- * uses this pillar to generate a direct canonical URL (avoids a superfluous 301
- * redirect when a product displayed in /grossiste/X/ has its default category
- * under /marque/).
- */
 async function buildCategoryPathMap(
   db: any,
   ids: number[],
@@ -147,19 +124,19 @@ export default defineEventHandler(async (event): Promise<ByCategoryResponse> => 
   const db = useClientDb(event)
   const idLang = await resolveIdLang(event)
 
-  // B2B = HT, B2C = TTC. SMOKE v2 (PS_B2B_ENABLE absent/0) → TTC ;
-  // Example Shop / AC grossiste (PS_B2B_ENABLE=1) → HT.
+  
+  
   const b2b = await isTenantB2b(db)
   const taxJoin = buildTaxJoinForPrice(b2b)
   const priceExpr = buildPriceExpr(b2b, 'p.price')
 
-  // Pilier : prefix URL = slug du pilier tel quel (lowercase). Résolution id via
-  // link_rewrite. Fallback sur 'grossiste' pour compat Example Shop si absent.
+  
+  
   const pilierParam = String(q.pilier ?? 'grossiste').toLowerCase().replace(/[^a-z0-9-]/g, '')
   const pilierId = (await resolvePilierId(db, pilierParam)) ?? 0
   const prefixFr = pilierParam || 'grossiste'
 
-  // Liste des piliers tenant — résolue une fois et passée aux pathMap callers.
+  
   const tenantPiliers = await resolveTenantPiliers(event, db, idLang)
   const unitPricingEnabled = tenantHasUnitPricing(event)
 
@@ -171,19 +148,19 @@ export default defineEventHandler(async (event): Promise<ByCategoryResponse> => 
   const langPrefix = iso && iso !== 'fr' ? `/${iso}` : ''
   const prefix = localizeRootSegment(prefixFr, iso)
 
-  // Filtres MDM
+  
   const originFilter = parseOriginFilter(q.origin as string | undefined)
   const allergenFilter = parseAllergensFilter(q.allergens as string | undefined)
   const hasMdmFilter = originFilter.size > 0 || allergenFilter.size > 0
 
   const virtualKind = (VIRTUAL_CATEGORIES as Record<number, string>)[idCategory] ?? null
 
-  // ── SQL ORDER BY commun ────────────────────────────────────────────────
-  // Relevance : priorité à la position dans la cat EXACTE demandée (le user
-  // peut la réordonner via /hub/products/merchandising). Fallback MIN(position)
-  // sur le subtree pour les produits qui ne sont que dans des sous-cats.
-  // MariaDB sort NULL en premier avec ASC → IS NULL en discriminant pour
-  // pousser les sub-cat-only en fin de liste.
+  
+  
+  
+  
+  
+  
   const SQL_ORDER: Record<SortKey, string | null> = {
     'relevance':     `MIN(CASE WHEN cp.id_category = ${idCategory} THEN cp.position END) IS NULL, MIN(CASE WHEN cp.id_category = ${idCategory} THEN cp.position END) ASC, MIN(cp.position) ASC, p.id_product ASC`,
     'price-asc':     'p.price ASC, p.id_product ASC',
@@ -202,7 +179,7 @@ export default defineEventHandler(async (event): Promise<ByCategoryResponse> => 
   const sort: SortKey = (rawSort in SQL_ORDER) ? rawSort : 'relevance'
   const useSqlPagination = SQL_ORDER[sort] !== null
 
-  // ── Virtual categories (nouveautes / promotions / meilleures-ventes) ──
+  
   if (virtualKind) {
     return handleVirtualCategory(
       db, idLang, virtualKind, offset, limit, sort,
@@ -210,9 +187,9 @@ export default defineEventHandler(async (event): Promise<ByCategoryResponse> => 
     )
   }
 
-  // ── Catégorie réelle : descendants via CTE récursive ─────────────────
+  
   try {
-    // 1. Total (distinct products sur tout l'arbre)
+    
     const totalRows = await db.query<{ total: number }>(
       `WITH RECURSIVE cat_tree AS (
          SELECT id_category FROM ps_category WHERE id_category = ? AND active = 1
@@ -230,7 +207,7 @@ export default defineEventHandler(async (event): Promise<ByCategoryResponse> => 
     const total = Number(totalRows[0]?.total ?? 0)
     if (total === 0) return { products: [], total: 0, offset, limit, hasMore: false }
 
-    // 2. Filtre MDM pré-calculé si actif (fetch specs sur IDs autorisés)
+    
     let filteredIds: number[] | null = null
     let filteredTotal = total
     if (hasMdmFilter) {
@@ -271,7 +248,7 @@ export default defineEventHandler(async (event): Promise<ByCategoryResponse> => 
       if (!filteredTotal) return { products: [], total: 0, offset, limit, hasMore: false }
     }
 
-    // 3. Slice paginé (JOIN features par nom, portable multi-tenant)
+    
     const mdmPh = filteredIds?.length ? filteredIds.map(() => '?').join(',') : ''
     const mdmClause = mdmPh ? ` AND p.id_product IN (${mdmPh})` : ''
     const mdmParams = filteredIds ?? []
@@ -329,18 +306,18 @@ export default defineEventHandler(async (event): Promise<ByCategoryResponse> => 
       [idCategory, idLang, idLang, idLang, ...mdmParams, sqlLimit, sqlOffset],
     )
 
-    // Path map pour URLs produit (primary category de chaque produit)
-    // + résolution du path de la cat parcourue (contextCatPath) pour fallback URL
+    
+    
     const idCategoriesToResolve = [
       ...new Set([idCategory, ...rows.map(r => Number(r.id_category_default))].filter(Boolean)),
     ]
     const pathMap = await buildCategoryPathMap(db, idCategoriesToResolve, idLang, tenantPiliers)
     const contextCatPath = pathMap.get(idCategory)?.path || ''
 
-    // priceMode='promo' systématique sur tous les listings (pas seulement
-    // /promotions/) — les rows incluent désormais reduction/reduction_type
-    // via LEFT JOIN ps_specific_price actif. Si reduction = 0 / NULL,
-    // mapRowToCard ne génère pas de pricePromo (sera filtré côté condition).
+    
+    
+    
+    
     const products = rows.map(r => mapRowToCard(r, {
       langPrefix, prefix, tenant, pathMap, pilierId,
       priceMode: Number(r.reduction || 0) > 0 ? 'promo' : 'standard',
@@ -383,14 +360,14 @@ async function handleVirtualCategory(
   const isPromo = kind === 'promotions'
   const isBestSellers = kind === 'meilleures-ventes'
 
-  // B2B → HT, B2C → TTC. Cf. core/server/utils/ps-tax.ts.
+  
   const b2b = await isTenantB2b(db)
   const taxJoin = buildTaxJoinForPrice(b2b)
   const priceExpr = buildPriceExpr(b2b, 'p.price')
 
-  // Sentinel MariaDB `'0000-00-00 00:00:00'` invalide en PG : la migration
-  // MariaDB→PG (chantier #44) a converti ces valeurs en NULL. `IS NULL`
-  // fonctionne sur les deux SGBD.
+  
+  
+  
   const promoJoin = isPromo
     ? `JOIN ps_specific_price sp ON sp.id_product = p.id_product
        AND sp.reduction > 0
@@ -527,17 +504,17 @@ function mapRowToCard(
     pathMap: Map<number, CategoryPathInfo>
     pilierId: number
     priceMode: 'standard' | 'promo'
-    contextCatPath?: string  // path de la cat actuellement parcourue (fallback URL si default cassée)
-    /** Active calcul prix/kg + label HT/K. False sur tenants non-food
-     * (example shop skate, general ecommerce) — cf. tenant-vertical.ts. */
+    contextCatPath?: string  
+    
+
     unitPricingEnabled: boolean
   },
 ): ProductCard {
   const price = Number(r.priceRaw || 0)
   const imgId = Number(r.id_image || 0)
   const slug = r.link_rewrite || `produit-${r.id}`
-  // Slug suffixed by id_product to guarantee uniqueness (cf. buildProductUrlFromCategory).
-  // Aligns with the tenant convention (commit example-shop-url-flat).
+  
+  
   const slugWithId = `${slug}-${r.id}`
   const catDefault = Number(r.id_category_default || 0)
   const info = ctx.pathMap.get(catDefault)
@@ -555,9 +532,9 @@ function mapRowToCard(
   const unitsRaw = r.unitsPerPack ? Number(r.unitsPerPack) : NaN
   const unitsPerPack = Number.isFinite(unitsRaw) && unitsRaw > 1 ? unitsRaw : undefined
 
-  // Weight format makes sense only on food tenants (e.g.: 500g, 12×200g…).
-  // On skate/fashion/general, product weight has no commercial interest
-  // → we don't calculate format and the 500g pill doesn't appear.
+  
+  
+  
   let format: string | undefined
   if (ctx.unitPricingEnabled) {
     if (unitsPerPack && r.netWeight) format = `${unitsPerPack} × ${r.netWeight}`
@@ -572,13 +549,13 @@ function mapRowToCard(
   }
 
   const netWeightKg = parseWeightToKg(r.netWeight)
-  // Source of truth DB-first (cf. core/server/utils/unity-label.ts):
-  // multi-pack → price per unit (exc. tax/U); else `unit_price_ratio` × `unity`;
-  // else fallback to weight. `pricePerKg` keeps its name for frontend compat,
-  // but semantically represents «price per unit of sale» (kg / L / piece).
+  
+  
+  
+  
   const totalNetKg = unitsPerPack && netWeightKg ? unitsPerPack * netWeightKg : netWeightKg
-  // Non-food tenants (skate, general ecommerce): no price/kg calculation.
-  // ProductCard then falls back to simple price rendering (template v-else).
+  
+  
   const { pricePerUnit: pricePerKg, unitLabel, divisor: unitDivisor } = ctx.unitPricingEnabled
     ? deriveUnitPricing({
         priceHT: price,
@@ -589,8 +566,8 @@ function mapRowToCard(
         productWeightKg: weightKg,
       })
     : { pricePerUnit: undefined, unitLabel: 'HT', divisor: undefined }
-  // Legacy `totalWeightKg` is preserved in the card for backwards compat
-  // (note: semantic = price divisor, regardless of unit).
+  
+  
   const totalWeightKg = unitDivisor
 
   const card: ProductCard = {

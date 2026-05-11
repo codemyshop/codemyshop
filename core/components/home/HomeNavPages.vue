@@ -1,8 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
+
 <template>
   <section class="py-20 lg:py-24 bg-gray-50 dark:bg-slate-900">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
@@ -32,7 +28,7 @@
 
 <script setup lang="ts">
 const { t } = useT()
-// pages[i].emoji + href mapped to page${i+1}_(title|desc|cta) in the YAML
+
 const pages = [
   { emoji: '📜',  href: '/manifeste' },
   { emoji: '👦',  href: '/a-propos' },

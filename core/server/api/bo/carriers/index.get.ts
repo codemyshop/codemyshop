@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/** GET /api/bo/carriers — lists active carriers (not deleted). */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
   const q = getQuery(event) as Record<string, string>
@@ -25,7 +24,7 @@ export default defineEventHandler(async (event) => {
     ORDER BY c.position, c.name
   `)
 
-  // Fetch delivery ranges for each carrier
+  
   for (const carrier of carriers) {
     const ranges = await db.query<any>(`
       SELECT d.id_range_weight, d.id_range_price,

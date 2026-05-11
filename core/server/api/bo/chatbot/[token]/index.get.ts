@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/chatbot/[token] — conversation details for the right panel
- * from the hub console: conversation + chronological messages + answers
- * structured (business summary) + negotiated products + owner employee.
- */
 export default defineEventHandler(async (event) => {
   const token = String(getRouterParam(event, 'token') || '').trim()
   if (!token) {
@@ -58,9 +53,9 @@ export default defineEventHandler(async (event) => {
     [idConversation],
   ) as any[]
 
-  // Item pipeline déjà associé (cas où la conv a déjà été convertie ou
-  // finalisée par le FSM). Sert à afficher "→ Item pipeline #X" plutôt
-  // que "+ Créer" côté hub.
+  
+  
+  
   let linkedProject: any = null
   if (conv.id_smartlead) {
     const proj = await db.get<any>(

@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/catalogue/cms/by-slug/:slug?clientId=...
- *
- * Resolves a native PS CMS page by its link_rewrite (slug). Direct DB
- * (principle 'Zero PrestaShop webservice' 2026-04-22).
- */
+
 import { useClientDb, useClientDbById } from '~/server/utils/db'
 import { resolveIdLang } from '~/server/utils/lang'
 

@@ -1,16 +1,6 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
-
-/**
- * POST /api/bo/products/search-boost/embeddings
- *
- * Body: { mode: 'lex' | 'sem' | 'hybrid' }
- *
- * Persists the active mode in `ps_configuration.AC_SEARCH_MODE` (PS native,
- * key-value, multi-shop nullable). Read by /api/catalogue/search when the
- * front caller does not specify `?mode=…`.
- */
 
 const VALID_MODES = ['lex', 'sem', 'hybrid'] as const
 type SearchMode = (typeof VALID_MODES)[number]

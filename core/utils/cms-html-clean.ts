@@ -1,9 +1,4 @@
-/**
- *
- * Sanitize legacy PrestaShop HTML from CMS pages: strip inline styles,
- * obsolete Bootstrap/PS classes, duplicate h1, empty paragraphs.
- * Auto-linkifies emails (mailto:) and French phone numbers (tel:).
- */
+
 
 const LEGACY_CLASSES = /\b(col-(?:xs|sm|md|lg)-\d+|col-\d+|row|page-heading|page-subheading|bottom-indent|category-description|category-view|category-cms|cms-block|std|dark|page-content|cms-content)\b/g
 

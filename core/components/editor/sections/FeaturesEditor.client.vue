@@ -1,10 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Éditeur Atouts/Features — icône, titre, texte par item, multilang.
--->
 <template>
   <div class="space-y-3">
     <div class="flex items-center justify-between">

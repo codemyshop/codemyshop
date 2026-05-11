@@ -1,14 +1,9 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { sendAgentMessage } from '~/server/utils/chatbot-engine'
 import { requireEmployeeSession } from '~/server/utils/session'
 
-/**
- * POST /api/bo/chatbot/[token]/reply — sends a message from the sales agent.
- * Body { message: string }. Fails if the conversation is not in
- * takeover mode (the sales agent must click "Take control" first).
- */
 export default defineEventHandler(async (event) => {
   const session = requireEmployeeSession(event)
   const token = String(getRouterParam(event, 'token') || '').trim()

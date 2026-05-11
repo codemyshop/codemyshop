@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { upsertExperiment } from '~/enterprise/misc/ab-testing/server/utils/ab-testing'
 
-/**
- * POST /api/bo/products/ab-testing — upsert an experiment.
- * Body: { id?, name, slug?, status?, productId?, trafficSplit?, variantA, variantB, notes?, dateStart?, dateEnd? }
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<any>(event)
   const id = Number(body?.id || 0)

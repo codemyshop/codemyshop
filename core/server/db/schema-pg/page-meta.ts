@@ -1,9 +1,4 @@
-/**
- * Drizzle PG schema — cs_page_meta.
- *
- * SEO/hero hub overrides (~4 rows). OSS-safe (generic).
- * Extracted from core/server/db/schema-pg/step7-readonly.ts (oss-phase2 initiative).
- */
+
 
 import {
   integer,

@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white dark:bg-slate-900 dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
 
-    <!-- Header -->
+    
     <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 dark:border-slate-800 flex items-center justify-between shrink-0">
       <div>
         <h2 class="text-sm font-semibold text-gray-800 dark:text-slate-100 dark:text-slate-100">Derniers leads</h2>
@@ -23,14 +23,14 @@
       </div>
     </div>
 
-    <!-- Liste -->
+    
     <div class="divide-y divide-gray-50 flex-1">
       <div
         v-for="lead in leads"
         :key="lead.id"
         class="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors group"
       >
-        <!-- Avatar -->
+        
         <div
           class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 text-white"
           :style="`background-color: var(--color-primary-${lead.avatarShade})`"
@@ -38,30 +38,30 @@
           {{ initials(lead.name) }}
         </div>
 
-        <!-- Infos -->
+        
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-gray-800 dark:text-slate-100 dark:text-slate-100 truncate">{{ lead.name }}</p>
           <p class="text-xs text-gray-400 truncate">{{ lead.email }}</p>
         </div>
 
-        <!-- Source -->
+        
         <span :class="sourceBadge(lead.source)" class="text-xs font-medium px-2 py-0.5 rounded-full shrink-0 hidden md:inline-block">
           {{ lead.source }}
         </span>
 
-        <!-- Statut -->
+        
         <span :class="leadStatusBadge(lead.status)" class="text-xs font-semibold px-2.5 py-0.5 rounded-full shrink-0">
           {{ lead.status }}
         </span>
 
-        <!-- Date -->
+        
         <span class="text-xs text-gray-400 shrink-0 hidden lg:block w-20 text-right">{{ lead.date }}</span>
       </div>
     </div>
 
   </div>
 
-  <!-- ── Modal Nouveau Devis ─────────────────────────────────────────────────── -->
+  
   <Teleport to="body">
     <Transition
       enter-active-class="transition-all duration-200"
@@ -77,7 +77,7 @@
         @click.self="showQuoteModal = false"
       >
         <div class="bg-white dark:bg-slate-900 dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md">
-          <!-- Modal header -->
+          
           <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-slate-800 dark:border-slate-800">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center">
@@ -94,7 +94,7 @@
             </button>
           </div>
 
-          <!-- Modal body -->
+          
           <div class="px-6 py-5 space-y-4">
             <div>
               <label class="block text-xs font-medium text-gray-600 mb-1">Titre du devis</label>
@@ -123,7 +123,7 @@
             </div>
           </div>
 
-          <!-- Modal footer -->
+          
           <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 dark:border-slate-800 dark:border-slate-800">
             <button @click="showQuoteModal = false" class="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 dark:text-slate-200 transition-colors">
               Annuler
@@ -156,7 +156,6 @@ export interface Lead {
 defineProps<{ leads: Lead[] }>()
 const emit = defineEmits<{ quoteCreated: [quote: object] }>()
 
-// ── Modal devis ───────────────────────────────────────────────────────────────
 const showQuoteModal = ref(false)
 const quote = reactive({ title: '', clientId: '', amount: 0, deadline: '', notes: '' })
 
@@ -166,7 +165,6 @@ function submitQuote() {
   showQuoteModal.value = false
 }
 
-// ── Utilitaires ───────────────────────────────────────────────────────────────
 function initials(name: string) {
   return name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
 }

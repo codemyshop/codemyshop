@@ -1,16 +1,7 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Bouton d'aide contextuelle : détecte la feature liée à la route courante
-  (via cs_marketplace_feature.route) et ouvre un modal avec le playbook
-  associé. Le bouton est injecté dans le DOM juste après le premier <h1>
-  du header de page (pas flottant).
--->
 <template>
   <teleport to="body">
-    <!-- Modal — the button itself is injected via JS next to the h1 -->
+    
     <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @click.self="open = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-2xl mx-4 max-h-[85vh] flex flex-col border border-gray-200 dark:border-slate-700">
         <header class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-start justify-between gap-3">
@@ -112,7 +103,7 @@ function removeInjectedButton() {
 function injectButton() {
   if (typeof document === 'undefined' || !playbook.value) return
   removeInjectedButton()
-  // Target the first h1 (each hub view has one in its <header>)
+  
   const h1 = document.querySelector('main h1, .flex-1 > header h1, header h1') as HTMLElement | null
   if (!h1) return
   const btn = document.createElement('button')
@@ -122,7 +113,7 @@ function injectButton() {
   btn.title = `Aide : ${playbook.value.title}`
   btn.innerHTML = ICON_SVG
   btn.addEventListener('click', () => { open.value = true })
-  // appendChild: the button becomes the last child of the <h1> → same line as the title
+  
   h1.appendChild(btn)
 }
 
@@ -132,14 +123,14 @@ async function resolvePlaybook() {
   removeInjectedButton()
   try {
     const query: Record<string, string> = { path: route.path }
-    // FOUNDER/ROOT see all playbooks — no role-based filtering
+    
     if (!isOwner.value && role.value) query.role = role.value
     const res = await $fetch<{ playbook: any }>('/api/bo/playbooks/by-route', { query })
     playbook.value = res.playbook || null
   } catch {
     playbook.value = null
   }
-  // Allow Vue to render the page header before injecting
+  
   await nextTick()
   setTimeout(injectButton, 50)
 }

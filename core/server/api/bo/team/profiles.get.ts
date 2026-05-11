@@ -1,16 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession, isSuperAdminSaaS } from '~/server/utils/session'
 
-/**
- * GET /api/bo/team/profiles — list of available profiles for the
- * employee editor dropdown (Sprint 17).
- *
- * Visibility: same rule as /api/bo/team — a tenant admin should not
- * be able to ASSIGN the native PS SuperAdmin profile (id 1)
- * to one of their employees, otherwise they would self-escalate privilege.
- */
 export default defineEventHandler(async (event) => {
   const session = requireEmployeeSession(event)
   const isSaas = isSuperAdminSaaS(session)

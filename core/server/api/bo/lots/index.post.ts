@@ -1,11 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { createLot } from '~/enterprise/vertical-food/lot/server/utils/lot'
 
-/**
- * POST /api/bo/lots — creates a traceability batch upon supplier receipt.
- * The received quantity initializes quantity_remaining (FIFO starts from there).
- */
 export default defineEventHandler(async (event) => {
   const body = await readBody<{
     lotNumber: string

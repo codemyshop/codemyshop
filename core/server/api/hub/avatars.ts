@@ -1,13 +1,5 @@
-/**
- *
- * GET    /api/hub/avatars              — list of active definitions
- * GET    /api/hub/avatars?id=XX        — a definition
- * POST   /api/hub/avatars              — create
- * PUT    /api/hub/avatars              — modifier
- * DELETE /api/hub/avatars?id=XX        — supprimer (soft delete)
- *
- * Drizzle DB direct (cs_avatar_definition).
- */
+
+
 import {
   createAvatar,
   getAvatarById,

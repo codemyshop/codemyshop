@@ -1,11 +1,5 @@
-/**
- *
- * GET /api/impersonate/sessions?idCustomer=&idEmployee=&status=&limit=
- * Paginated list of impersonation sessions for GDPR audit.
- *
- * ACL: `sales` sees its own sessions; `founder`/`root`/SaaS sees all.
- * The idCustomer / idEmployee / status filters are optional.
- */
+
+
 import {
   listSessions,
   type ImpersonationStatus,
@@ -30,7 +24,7 @@ export default defineEventHandler(async (event) => {
     : undefined
   const limit = q.limit ? Number(q.limit) : undefined
 
-  // Un commercial non privilégié ne peut consulter que ses propres sessions.
+  
   const idEmployee = isPriv ? idEmployeeQ : session.employeeId
 
   const rows = await listSessions(

@@ -1,17 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * PUT /api/bo/categories/:id/cross-categories
- *
- * Body: { ids: number[] } — exhaustive list of id_cross_category values, in
- * the desired order (position = index). Wipe + re-insert (atomic).
- *
- * Garde-fous :
- * - No self-link (id ∈ ids is rejected by CHECK + filter).
- * - Deduplicated silently.
- * - We verify that each id exists in ps_category — silent for
- * unknown ids (ignored).
- */
 
 import { useClientDb } from '~/server/utils/db'
 import { requireEmployeeSession } from '~/server/utils/session'
@@ -33,7 +20,7 @@ export default defineEventHandler(async (event) => {
 
   const db = useClientDb(event)
 
-  // Whitelist : ne garde que les ids qui existent réellement dans ps_category.
+  
   let validIds: number[] = []
   if (ids.length) {
     const placeholders = ids.map(() => '?').join(',')
@@ -45,7 +32,7 @@ export default defineEventHandler(async (event) => {
     validIds = ids.filter((n) => existing.has(n))
   }
 
-  // Wipe + insert (façade simple, transaction implicite côté driver).
+  
   await db.run(
     `DELETE FROM cs_category_cross WHERE id_category = ?`,
     [hostId],

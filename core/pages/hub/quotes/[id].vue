@@ -19,7 +19,7 @@
     <div v-else-if="quote" class="px-6 py-6 space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-        <!-- Statut -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-3">Statut</h2>
           <select v-model="newStatus" class="w-full text-sm border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-2 mb-2">
@@ -36,7 +36,7 @@
           </button>
         </div>
 
-        <!-- Contact -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-3">Contact</h2>
           <dl class="space-y-1.5 text-sm">
@@ -46,7 +46,7 @@
           </dl>
         </div>
 
-        <!-- Entreprise -->
+        
         <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl p-5">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-3">Entreprise</h2>
           <dl class="space-y-1.5 text-sm">
@@ -58,7 +58,7 @@
         </div>
       </div>
 
-      <!-- Requested products -->
+      
       <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl overflow-hidden">
         <div class="px-5 py-3 border-b border-gray-100 dark:border-slate-800">
           <h2 class="text-sm font-bold text-gray-800 dark:text-slate-100">Produits demandés ({{ items.length }})</h2>

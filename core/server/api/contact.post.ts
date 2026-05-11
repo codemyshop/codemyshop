@@ -1,13 +1,6 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { insertContactMessage } from '~/modules/headlesscontact/server/utils/headlesscontact'
-
-/**
- * POST /api/contact — Formulaire de contact (DB-direct).
- *
- * Inserts into the cs_headlesscontact_message table of the current instance.
- * Each single-tenant VPS has its own database — no tenant filtering needed.
- */
 
 import { verifySiret } from '~/server/utils/siret-verify'
 import { verifyEmailViaSmtp } from '~/server/utils/smtp-verify'

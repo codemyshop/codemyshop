@@ -1,18 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/team/extra/:id/upload-photo
- *
- * Upload of an employee's profile photo (author page, team page,
- * blog articles, /rdv). Encode the source image in AVIF **and** WebP via
- * sharp then keep the format with the smallest file size. The row
- * `cs_employee_extra` is created if it doesn't exist (slug auto derived
- * from the name), otherwise only the `photo_url` column is updated — the
- * autres champs (bio, expertise, slug existant, etc.) restent intacts.
- *
- * Body : multipart/form-data { file: File }
- * Retour : { success, url, format: 'avif' | 'webp', sizeKb, filename }
- */
 
 import { existsSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -23,10 +9,10 @@ import {
   setEmployeePhotoUrl,
 } from '~/internal/employeeextra/server/utils/employeeextra'
 
-const MAX_FILE_SIZE = 8 * 1024 * 1024 // 8 Mo source
-const TARGET_SIZE = 800              // côté max (carré crop intelligent)
+const MAX_FILE_SIZE = 8 * 1024 * 1024 
+const TARGET_SIZE = 800              
 const WEBP_QUALITY = 82
-const AVIF_QUALITY = 60               // AVIF q60 ≈ WebP q82 visuellement
+const AVIF_QUALITY = 60               
 
 function slugifyName(firstname: string | null, lastname: string | null, id: number): string {
   const raw = `${firstname || ''}-${lastname || ''}`
@@ -51,7 +37,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Employé introuvable' })
   }
 
-  // ── Parse multipart ────────────────────────────────────────────────────
+  
   const parts = await readMultipartFormData(event)
   const filePart = parts?.find(p => p.name === 'file')
   if (!filePart?.data || !filePart.filename) {
@@ -66,7 +52,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'Fichier trop volumineux (max 8 Mo)' })
   }
 
-  // ── Encodage AVIF + WebP en parallèle, on garde le plus petit ──────────
+  
   const sharp = (await import('sharp')).default
   const base = sharp(filePart.data)
     .rotate()
@@ -86,7 +72,7 @@ export default defineEventHandler(async (event) => {
   const outBuf = useAvif ? avifBuf : webpBuf
   const ext = useAvif ? 'avif' : 'webp'
 
-  // ── Écriture sur disque (Nginx /static/uploads/team-photos/…) ──────────
+  
   const runtime = useRuntimeConfig(event)
   const envDir = runtime.uploadStaticDir as string
   const uploadsBase = envDir
@@ -105,7 +91,7 @@ export default defineEventHandler(async (event) => {
 
   const url = `/static/uploads/team-photos/${filename}`
 
-  // ── Persistance DB (UPSERT photo_url uniquement) ───────────────────────
+  
   const fallbackSlug = slugifyName(emp.firstname, emp.lastname, id)
   try {
     await setEmployeePhotoUrl(id, url, fallbackSlug, { event })

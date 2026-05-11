@@ -1,12 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { setAvatarGeographicZones } from '~/server/utils/hub-avatars-db'
 
-/**
- * PUT /api/hub/avatars/{id}/zones
- * Body : { items: [{ zoneType, zoneCode, zoneLabel, position, weight?, reason? }] }
- * Replace-all: the received list replaces the old one (DELETE then INSERT).
- */
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   if (!Number.isFinite(id) || id <= 0) {

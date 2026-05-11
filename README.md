@@ -200,6 +200,27 @@ cd clients/acme && npm install && npm run build && PORT=3001 npm run preview
 
 The multi-tenant capability is **the** differentiator vs every other OSS e-commerce (PrestaShop, EverShop, Medusa, Saleor are all single-instance by design). If you operate an agency, this is what makes CodeMyShop economically interesting at 10+ clients.
 
+## Beyond agency hosting: the sovereign triptych
+
+Multi-tenant doesn't have to mean "agency selling shops to clients." The same architecture also enables a pattern we call the **sovereign triptych** — one founder running their own brand stack from a single codebase. The git clone gives you the mothership; the mothership ships the modules that deploy the boutique; the boutique ships the modules that deploy the media brand.
+
+```
+mothership ──[deploys]──▶ boutique ──[deploys]──▶ media
+(founder brand)          (commerce)              (content / channel)
+```
+
+Three layers, three roles, one repo:
+
+| Layer | Brand example | Purpose | Modules at this layer |
+|---|---|---|---|
+| **mothership** | personal site of the founder | identity, manifesto, lead capture, dashboard for all downstream tenants | hub, agents, dispatch, init-tenant, theme registry, … |
+| **boutique** | the e-commerce destination | products, payment, fulfilment | quote, payment, smart-orders, marketplace, … |
+| **media** | YouTube channel, blog, newsletter | audience-building content that feeds the boutique | autosocial-post, content-queue, covergen, branddna, … |
+
+Each layer feeds the next: the founder's audience trusts the boutique, the boutique's customers fuel the media, the media compounds the founder's reach. All three brands share the same Postgres clusters, the same auth, the same theme system — no third tool to integrate. The whole stack is **yours**: no platform tax (Shopify), no algorithmic gatekeeper (Substack / YouTube monetization rules), no vendor lock-in.
+
+> We eat our own dog food: the codebase you're reading lives at the second layer of our own triptych — founder brand → CodeMyShop boutique → media channel.
+
 ## Architecture
 
 A single Node.js process (Nuxt 4 Nitro) handles:

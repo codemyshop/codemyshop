@@ -1,17 +1,4 @@
-<!--
-  /hub/crm/email/template/:slug — édition d'un template email.
 
-  3 sections par lang (FR / EN) :
-    - Sujet (line input)
-    - Corps HTML (textarea, monospace, preview live à droite)
-    - Corps plain text (textarea, optionnel, fallback non-HTML)
-
-  Persiste via PUT /api/bo/email-templates/:slug (1 PUT par lang).
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: 'hub' })
 
@@ -38,8 +25,6 @@ interface TemplateData {
   langs: Lang[]
 }
 
-// 4 standard levels visible in the admin panel. The numeric 0-100 remains
-// in DB to allow fine-grained levels (e.g., 30=priority quote).
 const PRIORITY_LEVELS = [
   { value: 10, label: 'Critique',   hint: 'UX bloquant si retard (welcome, confirmation commande, reset mdp)' },
   { value: 20, label: 'Important',  hint: 'Délai gênant (devis, expédition, RIB virement)' },
@@ -49,9 +34,6 @@ const PRIORITY_LEVELS = [
 
 const { data: tplData, refresh } = await useFetch<TemplateData>(`/api/bo/email-templates/${slug}`)
 
-// Form state for admin recipients (audience='admin' only)
-// + send priority (all audiences).
-// Edited inline then persisted via PUT (without id_lang) on Save click.
 const recipientForm = reactive({
   recipient_to:  '',
   recipient_cc:  '',
@@ -97,13 +79,12 @@ async function saveRecipients() {
 
 const LANG_LABELS: Record<number, string> = { 1: 'Français', 2: 'English' }
 
-// Form state per lang (reactive map keyed by id_lang)
 const formByLang = reactive<Record<number, Lang>>({})
 function syncForm() {
   for (const l of tplData.value?.langs ?? []) {
     formByLang[l.id_lang] = { ...l }
   }
-  // At least lang 1 and 2 even if DB doesn't yet have the rows
+  
   for (const id of [1, 2]) {
     if (!formByLang[id]) formByLang[id] = { id_lang: id, subject: '', html_body: '', plain_body: null }
   }
@@ -142,7 +123,6 @@ async function save(idLang: number) {
 
 const previewSrcDoc = computed(() => formByLang[activeLang.value]?.html_body || '<p style="color:#999;font-family:sans-serif;padding:1rem">(corps HTML vide — saisir à gauche pour prévisualiser)</p>')
 
-// ─── Test send ────────────────────────────────────────────────────────────
 const testTo = ref('')
 const testing = ref(false)
 const testMessage = ref('')
@@ -190,7 +170,7 @@ async function sendTest() {
       </div>
     </div>
 
-    <!-- Lang switcher -->
+    
     <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl shadow-sm mb-6">
       <nav class="flex items-center gap-1 px-4 border-b border-gray-100 dark:border-slate-800" role="tablist">
         <button
@@ -214,9 +194,7 @@ async function sendTest() {
     <div v-if="message" class="mb-4 px-4 py-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">{{ message }}</div>
     <div v-if="errorMsg" class="mb-4 px-4 py-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm">{{ errorMsg }}</div>
 
-    <!-- Priorité d'envoi — toutes audiences. Le worker email:queue-process
-         dépile en ORDER BY priority ASC : un welcome (10) passe devant
-         une relance panier (80). -->
+    
     <section class="mb-6 rounded-xl bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-700/40 p-5 space-y-3">
       <div>
         <h2 class="text-sm font-semibold text-indigo-900 dark:text-indigo-200 mb-1">
@@ -255,9 +233,7 @@ async function sendTest() {
       </button>
     </section>
 
-    <!-- Destinataires admin (audience='admin' uniquement) — CSV éditables.
-         Le caller sender lit ces colonnes via resolveAdminRecipients() ;
-         si vide, fallback env ADMIN_NOTIF_EMAIL/BLOG_CONTACT_EMAIL. -->
+    
     <section
       v-if="isAdminTemplate"
       class="mb-6 rounded-xl border p-5 space-y-3"
@@ -334,7 +310,7 @@ async function sendTest() {
     </section>
 
     <div v-if="formByLang[activeLang]" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- Editing -->
+      
       <section class="rounded-xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-5 space-y-4">
         <div>
           <label class="block text-xs uppercase tracking-wide text-gray-500 mb-1">Sujet</label>
@@ -375,7 +351,7 @@ async function sendTest() {
         </button>
       </section>
 
-      <!-- Preview HTML -->
+      
       <section class="rounded-xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-5">
         <h2 class="text-xs uppercase tracking-wide text-gray-500 mb-3">Prévisualisation</h2>
         <iframe
@@ -386,7 +362,7 @@ async function sendTest() {
       </section>
     </div>
 
-    <!-- Test send: send a test render to a custom address with sample vars -->
+    
     <section class="mt-6 rounded-xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-5">
       <div class="flex items-start justify-between gap-4 flex-wrap">
         <div class="min-w-0 flex-1">

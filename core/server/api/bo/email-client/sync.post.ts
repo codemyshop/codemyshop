@@ -1,13 +1,4 @@
-/**
- *
- * POST /api/bo/email-client/sync — fetch IMAP from the SMTP_USER account + UPSERT
- * into cs_email_message (+ attachments as BYTEA via cs_email_attachment).
- *
- * Skip already persisted messages (UNIQUE (account_user, message_id)).
- *
- * Body :
- * - sinceDays : 1..90 (default 14)
- */
+
 
 import { fetchRecentMessages } from '~/server/utils/imap'
 import { getPgClient } from '~/server/utils/db-pg-adapter'

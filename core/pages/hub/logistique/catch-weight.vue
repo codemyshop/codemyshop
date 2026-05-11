@@ -14,7 +14,7 @@
 
     <div class="flex-1 overflow-auto p-6 space-y-6">
 
-      <!-- Weighing queue -->
+      
       <section>
         <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">⚖️ En attente de pesée</h2>
         <div v-if="loading" class="h-24 bg-gray-100 dark:bg-slate-800 rounded-lg animate-pulse" />
@@ -55,7 +55,7 @@
         </table>
       </section>
 
-      <!-- Historique -->
+      
       <section v-if="weighed.length">
         <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">📊 Pesées récentes (50)</h2>
         <table class="w-full text-sm bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 overflow-hidden">
@@ -92,7 +92,7 @@
         </table>
       </section>
 
-      <!-- Flagged products -->
+      
       <section>
         <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">🏷️ Produits au poids variable</h2>
         <div v-if="!products.length" class="py-10 text-center text-xs text-gray-400 bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800">
@@ -120,7 +120,7 @@
       </section>
     </div>
 
-    <!-- Modal flag produit -->
+    
     <div v-if="flagModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="flagModalOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-md mx-4">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
@@ -163,7 +163,7 @@
       </div>
     </div>
 
-    <!-- Demo seed modal -->
+    
     <div v-if="seedModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40" @click.self="seedModalOpen = false">
       <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-700 shadow-2xl w-full max-w-md mx-4">
         <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">

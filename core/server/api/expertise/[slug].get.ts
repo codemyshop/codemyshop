@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/expertise/:slug
- * Complete expertise article with HTML content — direct Drizzle DB.
- */
+
 import { getExpertiseBySlug } from '~/server/utils/expertise-db'
 
 export default defineEventHandler(async (event) => {

@@ -1,20 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 
-/**
- * GET /api/bo/inbox/list — Lists the emails captured by inbox:sync.
- *
- * Query params (all optional):
- * - from: LIKE filter on from_email/from_name/client_name (case-insensitive)
- * - subject: LIKE filter on subject (case-insensitive)
- *   - status : 'new'|'spam'|'treated'|'archived'
- * - days: last N days (default 7)
- * - limit: max rows (default 20, max 100)
- * - body: '1' to include the truncated body (notes), otherwise metadata only
- *
- * Replaces the `python3 ac_inbox.py --search-from <name>` Python script.
- */
 const PG_SCHEMA = 'cs_main'
 
 export default defineEventHandler(async (event) => {

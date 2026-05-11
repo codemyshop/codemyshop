@@ -1,26 +1,10 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 import { replaceFaqsForParent, upsertFaqTranslations } from '~/modules/faq/server/utils/faq'
 import { upsertCmsExtra as upsertCmsExtraFacade } from '~/modules/cms-extra/server/utils/cms-extra'
 
-/**
- * PUT /api/bo/marketing/blog/:id — upsert article de blog
- * (Sprint 18.1).
- *
- * Blog requirement: category is mandatory and different from 1.
- * - Creation: body.categoryId required, returns 422 if absent or = 1.
- * - Editing: accepts category mutation but returns 422 if
- * attempting to change it back to 1 (reclassification forbidden).
- *
- * Isolation: returns 404 if the existing id is attached to the
- * root category (it is a landing, not an article).
- *
- * Multilang semantics Sprint 12 unchanged: master writes ps_cms +
- * ps_cms_lang master; translation writes only ps_cms_lang from
- * sa langue via UPSERT.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -44,7 +28,7 @@ export default defineEventHandler(async (event) => {
     content: body.content !== undefined ? String(body.content || '') : undefined,
   }
 
-  // ─── Création ────────────────────────────────────────────────────
+  
   if (isNew) {
     if (!isMaster) {
       throw createError({ statusCode: 400, message: 'Création autorisée uniquement en langue master (id_lang=1)' })
@@ -54,7 +38,7 @@ export default defineEventHandler(async (event) => {
     if (!title) throw createError({ statusCode: 422, message: 'Titre obligatoire' })
     if (!linkRewrite) throw createError({ statusCode: 422, message: 'URL obligatoire' })
 
-    // Garde-fou doublon slug
+    
     const dupCheck = await db.get<any>(
       `SELECT c.id_cms FROM ps_cms c JOIN ps_cms_lang cl ON c.id_cms = cl.id_cms AND cl.id_lang = 1
        WHERE c.active = 1 AND cl.link_rewrite = ?`, [linkRewrite])
@@ -70,7 +54,7 @@ export default defineEventHandler(async (event) => {
     const active = body.active ? 1 : 0
     const indexation = body.indexation === false ? 0 : 1
 
-    // Sprint 18.2 — ps_cms PS ancien n'a pas date_add/date_upd (Example Shop)
+    
     const insert = await db.run(`
       INSERT INTO ps_cms
         (id_cms_category, position, active, indexation)
@@ -97,20 +81,20 @@ export default defineEventHandler(async (event) => {
       ])
     }
 
-    // cms_extra — upsert tous les champs éditoriaux via façade
+    
     try {
       await upsertCmsExtraFacade(newId, body, { event })
-    } catch { /* table may not exist on all tenants */ }
+    } catch {  }
 
     return { success: true, id: newId, langId, isMaster, created: true }
   }
 
-  // --- Editing ---
+  
   const id = Number(rawId)
   const exists = await db.get<any>(`SELECT id_cms, id_cms_category FROM ps_cms WHERE id_cms = ?`, [id])
   if (!exists) throw createError({ statusCode: 404, message: 'Article introuvable' })
 
-  // Guard isolation: this endpoint only serves blog articles.
+  
   if (Number(exists.id_cms_category) === 1) {
     throw createError({ statusCode: 404, message: 'Article introuvable (landing page)' })
   }
@@ -128,7 +112,7 @@ export default defineEventHandler(async (event) => {
     if (body.active !== undefined) { cf.push('active = ?'); cp.push(body.active ? 1 : 0) }
     if (body.indexation !== undefined) { cf.push('indexation = ?'); cp.push(body.indexation ? 1 : 0) }
     if (cf.length) {
-      // Sprint 18.2 — legacy ps_cms doesn't have date_upd (reference case)
+      
       await db.run(`UPDATE ps_cms SET ${cf.join(', ')} WHERE id_cms = ?`, [...cp, id])
     }
   }
@@ -140,7 +124,7 @@ export default defineEventHandler(async (event) => {
         FROM ps_cms_lang WHERE id_cms = ? AND id_lang = ? AND id_shop = 1
     `, [id, langId])
 
-    // Safeguard against duplicate slugs in editing.
+    
     const newSlug = langFields.link_rewrite ?? existingLang?.link_rewrite
     if (newSlug && langFields.link_rewrite && langFields.link_rewrite !== existingLang?.link_rewrite) {
       const dupCheck = await db.get<any>(
@@ -176,8 +160,8 @@ export default defineEventHandler(async (event) => {
     ])
   }
 
-  // -- FAQ via service (parent_type='cms') --
-  // Master : delete-then-insert atomique. Traduction : upsert lang.
+  
+  
   if (isMaster && Array.isArray(body.faqs)) {
     try {
       await replaceFaqsForParent('cms', id, langId, body.faqs.map((f: any, i: number) => ({
@@ -198,10 +182,10 @@ export default defineEventHandler(async (event) => {
         question: String(f.question || ''),
         answer: String(f.answer || ''),
       })), { event })
-    } catch { /* table may not exist */ }
+    } catch {  }
   }
 
-  // -- Related product categories (master only) --
+  
   if (isMaster && Array.isArray(body.linkedCategoryIds)) {
     try {
       const { replaceCategoryLinksFromCms } = await import('~/modules/category-cms/server/utils/category-cms')
@@ -211,7 +195,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // -- cms_extra — editorial upsert via service --
+  
   if (isMaster) {
     try {
       await upsertCmsExtraFacade(id, body, { event })
@@ -226,8 +210,8 @@ export default defineEventHandler(async (event) => {
 })
 
 function slugify(input: string): string {
-  // Preserves the -- (3-segment blog separators: pillar--subcategory--slug)
-  // Strategy: slugify each segment independently.
+  
+  
   const raw = String(input || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
   return raw
     .split('--')

@@ -1,9 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Snake game scores — Drizzle PG direct on cs_snake_score (v1.1.0).
- * Phase 9b.4d headless-modules-ts — cleanup after MariaDB removal (#44).
- */
 
 import { desc } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -16,7 +11,6 @@ export interface SnakeScore {
   createdAt: string
 }
 
-/** Top N scores triés par score desc — défaut 10 (leaderboard front). */
 export async function readSnakeScores(_event?: any, limit = 10): Promise<SnakeScore[]> {
   const cap = Math.max(1, Math.min(100, limit))
   const rows = await usePocPg()
@@ -32,7 +26,6 @@ export async function readSnakeScores(_event?: any, limit = 10): Promise<SnakeSc
   }))
 }
 
-/** Inserts a score. Returns the inserted row. */
 export async function insertSnakeScore(
   pseudo: string,
   score: number,

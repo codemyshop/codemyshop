@@ -1,7 +1,5 @@
-/**
- *
- * PUT /api/bo/chatbot/option/:id — Update option + UPSERT translations.
- */
+
+
 import { useClientDb } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {

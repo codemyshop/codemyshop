@@ -1,12 +1,5 @@
-/**
- *
- * GET /api/catalogue/product-images?id=123
- *
- * Returns the ordered list of id_image for a given product (cover
- * first, then position ASC). Lightweight endpoint for the gallery
- * category list view — avoids fetching the entire product just to open
- * the lightbox.
- */
+
+
 import { useClientDb, resolveClientId } from '~/server/utils/db'
 
 interface ImageRow { id_image: number; cover: number | null; position: number }

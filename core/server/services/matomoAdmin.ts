@@ -1,27 +1,11 @@
-/**
- *
- * Matomo Admin service — Management of client projects.
- *
- * Use the centralized Matomo API
- * to create an isolated project per client during onboarding.
- *
- * Variables d'environnement requises :
- * MATOMO_PERSONAL_API_KEY — Matomo admin API key (not the project key)
- * MATOMO_HOST — URL of the centralized Matomo instance
- */
+
 
 interface MatomoProject {
   projectId: string
-  apiToken: string     // NUXT_PUBLIC_MATOMO_KEY du client
+  apiToken: string     
   projectName: string
 }
 
-/**
- * Create a new isolated Matomo project for a client.
- *
- * @param clientName - Identifiant unique du client (ex: "example-shop")
- * @returns projectId + apiToken (clé publique du projet)
- */
 export async function createProject(clientName: string): Promise<MatomoProject> {
   const host   = process.env.MATOMO_HOST ?? 'https://analytics.codemyshop.fr'
   const apiKey = process.env.MATOMO_PERSONAL_API_KEY
@@ -31,7 +15,7 @@ export async function createProject(clientName: string): Promise<MatomoProject> 
   }
 
   try {
-    // Créer le projet via l'API Matomo
+    
     const response = await $fetch<any>(`${host}/api/projects/`, {
       method: 'POST',
       headers: {

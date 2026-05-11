@@ -58,7 +58,7 @@
       @done="onImportDone"
     />
 
-    <!-- Barre d'action bulk -->
+    
     <Transition enter-active-class="transition duration-150" enter-from-class="-translate-y-2 opacity-0" leave-active-class="transition duration-100" leave-to-class="-translate-y-2 opacity-0">
       <div v-if="selected.size > 0" class="bg-violet-50 dark:bg-violet-950/30 border-b border-violet-200 dark:border-violet-800 px-6 py-2.5 flex items-center gap-4 shrink-0">
         <span class="text-xs font-medium text-violet-700 dark:text-violet-300">
@@ -187,10 +187,6 @@ definePageMeta({ layout: 'hub', ssr: false, middleware: ['hub-auth'] })
 const { t } = useHubT()
 const { isFood } = useTenantProfile()
 
-// Calcul prix unitaire DB-First (cf. memory/feedback_unit_pricing_db_first.md) :
-// 1) unit_price_ratio + unity (native PS form) → price / ratio + derived label
-// 2) fallback weight > 0 → price / weight, label HT/K
-// 3) otherwise: null (no unit price displayed)
 function unitPriceLabel(unity: string | null): string {
   const u = String(unity || '').toLowerCase().trim()
   if (!u) return 'HT/U'
@@ -245,7 +241,6 @@ const importFieldAliases: Record<string, string[]> = {
   categoryName: ['categorie', 'catégorie', 'category', 'categorie defaut'],
 }
 
-// Filter category via ?category=ID (coming from /hub/categories/:id)
 const route = useRoute()
 const router = useRouter()
 const categoryId = ref<number>(Number(route.query.category) || 0)
@@ -268,7 +263,6 @@ watch(() => route.query.category, (val) => {
   }
 })
 
-// ── Selection & Bulk ────────────────────────────────────────────
 const selected = reactive(new Set<number>())
 const selectedProducts = reactive(new Map<number, { name: string; slug: string }>())
 const bulkLoading = ref(false)
@@ -316,7 +310,6 @@ async function bulkRedaction() {
   setTimeout(() => { bulkStatus.value = null }, 5000)
 }
 
-// Inline editing state
 const editingPrice = ref<number | null>(null)
 const editPriceValue = ref(0)
 const priceInputRef = ref<HTMLInputElement | null>(null)
@@ -325,7 +318,6 @@ const editStockValue = ref(0)
 const stockInputRef = ref<HTMLInputElement | null>(null)
 const savingActive = ref<number | null>(null)
 
-// Image modal state
 const imageModalOpen = ref(false)
 const imageModalImages = ref<number[]>([])
 const imageModalClientId = ref('')
@@ -334,12 +326,12 @@ const imageModalName = ref('')
 function openImageModal(p: any) {
   const ids: number[] = p.imageIds ?? []
   if (!ids.length && p.imageUrl) {
-    // Extraire l'id_image depuis l'URL /api/catalogue/image/4620?clientId=...
+    
     const match = p.imageUrl.match(/\/api\/catalogue\/image\/(\d+)/)
     if (match) ids.push(Number(match[1]))
   }
   if (!ids.length) return
-  // Extraire clientId depuis l'URL
+  
   const clientMatch = p.imageUrl?.match(/clientId=([^&]+)/)
   imageModalClientId.value = clientMatch ? clientMatch[1] : 'ac-hub'
   imageModalImages.value = ids
@@ -375,7 +367,6 @@ async function load() {
 
 function formatEur(n: number) { return Number(n || 0).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }) }
 
-// — Inline price editing
 function startEditPrice(p: any) {
   editingPrice.value = p.id
   editPriceValue.value = Number(p.priceHT) || 0
@@ -395,7 +386,6 @@ async function savePrice(p: any) {
   }
 }
 
-// — Inline stock editing
 function startEditStock(p: any) {
   editingStock.value = p.id
   editStockValue.value = Number(p.stock) || 0
@@ -415,7 +405,6 @@ async function saveStock(p: any) {
   }
 }
 
-// — Toggle active
 async function toggleActive(p: any) {
   if (savingActive.value === p.id) return
   savingActive.value = p.id

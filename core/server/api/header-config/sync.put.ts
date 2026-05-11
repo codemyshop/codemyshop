@@ -1,9 +1,5 @@
-/**
- *
- * PUT /api/header-config/sync — UPSERT header (master + _lang + languages list).
- * Accepts i18n values as plain string (duplicated across all langs) OR in
- * object { fr, en, … }. List of switcher languages: DELETE + INSERT.
- */
+
+
 import { resolveClientId } from '~/server/utils/db'
 import {
   upsertHeader,
@@ -28,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const clientId = resolveClientId(event)
   const langs = await getActiveLangs({ event })
 
-  // 1. Master header
+  
   await upsertHeader({
     clientId,
     logoSrc: h.logo?.src || null,
@@ -53,7 +49,7 @@ export default defineEventHandler(async (event) => {
   const idHeader = await getHeaderIdByClient(clientId, { event })
   if (!idHeader) throw createError({ statusCode: 500, message: 'Impossible de résoudre id_header' })
 
-  // 2. _lang (une ligne par langue active)
+  
   for (const l of langs) {
     await upsertHeaderLang(idHeader, l.id_lang, {
       logoAlt: pickLang(h.logo?.alt, l.iso_code),
@@ -62,7 +58,7 @@ export default defineEventHandler(async (event) => {
     }, { event })
   }
 
-  // 3. topbar languages — DELETE + INSERT
+  
   const langItems = Array.isArray(h.topBar?.languages) ? h.topBar.languages : []
   const locales = []
   let pos = 0

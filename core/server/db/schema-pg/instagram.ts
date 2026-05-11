@@ -1,10 +1,4 @@
-/**
- *
- * Drizzle PG schema — Instagram domain.
- * Pattern PS _lang strict : translatable caption in paired table
- * (PK composite id_post, id_lang). Backlogs #235 (pluriel) + #236 (i18n)
- * Closed 2026-05-03.
- */
+
 
 import {
   serial,

@@ -1,7 +1,5 @@
-/**
- *
- * DELETE /api/shelves?id=42 — Delete a shelf — Direct Drizzle DB.
- */
+
+
 import { deleteShelf } from '~/server/utils/shelves-db'
 
 export default defineEventHandler(async (event) => {

@@ -1,14 +1,7 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  Éditeur Hero Slider — gestion des slides (image, titre, sous-titre, CTA)
-  avec support multilang via EditorI18nField.
--->
 <template>
   <div class="space-y-3">
-    <!-- Intervalle -->
+    
     <fieldset class="border border-gray-200 rounded-xl p-3 space-y-2">
       <legend class="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-1">Défilement</legend>
       <div>
@@ -20,7 +13,7 @@
       </div>
     </fieldset>
 
-    <!-- Slides -->
+    
     <div class="flex items-center justify-between">
       <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
         Slides ({{ slides.length }})
@@ -34,7 +27,7 @@
     </div>
 
     <div v-for="(slide, i) in slides" :key="i" class="border border-gray-200 rounded-xl bg-white overflow-hidden">
-      <!-- Header slide -->
+      
       <div class="flex items-center gap-1 px-2.5 py-2 bg-gray-50/70 border-b border-gray-100">
         <button @click="moveSlide(i, i - 1)" :disabled="i === 0"
           class="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-primary-600 disabled:opacity-20 disabled:cursor-not-allowed">
@@ -66,7 +59,7 @@
         </svg>
       </div>
 
-      <!-- Body slide -->
+      
       <div v-if="expandedSlide === i" class="p-3 space-y-3">
         <div>
           <label class="field-label">Image</label>
@@ -137,7 +130,7 @@
 
     <p v-if="!slides.length" class="text-xs text-gray-400 text-center py-4">Aucun slide — cliquez sur + Slide</p>
 
-    <!-- Side blocks (colonne droite) -->
+    
     <div class="flex items-center justify-between mt-4">
       <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
         Blocs latéraux ({{ sideBlocks.length }}/2)

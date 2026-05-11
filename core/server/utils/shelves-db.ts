@@ -1,19 +1,4 @@
-/**
- *
- * Direct DB helpers for /api/shelves — "Zero webservice
- * PrestaShop » 2026-04-22. Table : cs_shelf (sections homepage par
- * client," doctrine inherited from the builder hub).
- *
- * Single-tenant: cs_shelf lives on ac_postgres (column client_id serves
- * as a logical discriminant, no tenant database) → usePocPg() default.
- *
- * PostgreSQL cutover project #44 (2026-04-30): migration from MariaDB runtime
- * → PostgreSQL (`cs_main.cs_shelf`).
- *
- * Technical debt note: the `content` and `config` columns are TEXT JSON →
- * violation of §NAMING.11 (no content JSON). Preexisting, out of scope
- * Phase 9b.5; normalized rename backlog to be addressed in builder refactoring.
- */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'
@@ -67,7 +52,6 @@ export interface ListShelvesFilter {
   active?: number | boolean | null
 }
 
-/** Liste filtrée triée par position ASC. Défaut : active=1. */
 export async function listShelves(filter: ListShelvesFilter = {}): Promise<ShelfRow[]> {
   const conds: any[] = []
   if (filter.clientId) conds.push(sql`client_id = ${filter.clientId}`)
@@ -85,7 +69,6 @@ export async function listShelves(filter: ListShelvesFilter = {}): Promise<Shelf
   return result.map(mapRow)
 }
 
-/** Read a shelf by id, null if absent. */
 export async function getShelfById(id: number): Promise<ShelfRow | null> {
   if (!id || id <= 0) return null
   const row = await usePocPg().execute(sql`
@@ -120,7 +103,6 @@ function toJsonText(v: any): string {
   try { return JSON.stringify(v) } catch { return '' }
 }
 
-/** Create or update a shelf. If id present, UPDATE; otherwise INSERT. */
 export async function upsertShelf(input: UpsertShelfInput): Promise<UpsertShelfResult> {
   const clientId = String(input.clientId || '').trim()
   const sectionType = String(input.sectionType || '').trim()
@@ -175,7 +157,6 @@ export interface DeleteShelfResult {
   status?: number
 }
 
-/** Delete a shelf by id. */
 export async function deleteShelf(id: number): Promise<DeleteShelfResult> {
   if (!id || id <= 0) return { ok: false, status: 400, error: 'Paramètre requis : id' }
   const d = usePocPg()

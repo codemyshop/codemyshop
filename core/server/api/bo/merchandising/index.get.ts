@@ -1,18 +1,13 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/merchandising — lists categories with product count
- * and merchandising indicators (top sellers in 30 days, stockouts).
- * Single query: LEFT JOIN ps_category_lang + product aggregates + sales.
- */
 export default defineEventHandler(async (event) => {
   const db = useClientDb(event)
 
-  // Alias internes en snake_case (cf. fix cross-sell même session) — PG
-  // lowercase les identifiants non-quotés. Le re-aliasing camelCase ne se
-  // fait qu'au SELECT final, où l'adapter PG auto-quote (db-pg-adapter §2d).
+  
+  
+  
   const rows = await db.query<any>(`
     SELECT
       c.id_category                  AS id,

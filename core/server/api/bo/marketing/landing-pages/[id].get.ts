@@ -1,18 +1,8 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
 
-/**
- * GET /api/bo/marketing/landing-pages/:id — landing page details
- * CMS (Sprint 18.1).
- *
- * Isolation: returns 404 if the requested id is attached to a
- * category other than root (1). Prevents a URL /hub/marketing/
- * landing-pages/:idArticleBlog from opening an article incorrectly.
- *
- * `id=new` returns a skeleton with categoryId=1 forced.
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 
@@ -61,8 +51,8 @@ export default defineEventHandler(async (event) => {
 
   if (!page) throw createError({ statusCode: 404, message: 'Page introuvable' })
 
-  // Sprint 18.1 — guard d'isolation : seules les pages de la
-  // catégorie racine sont servies par cet endpoint.
+  
+  
   if (Number(page.categoryId) !== 1) {
     throw createError({ statusCode: 404, message: 'Page introuvable (hors landing)' })
   }

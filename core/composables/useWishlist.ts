@@ -1,9 +1,4 @@
-/**
- *
- * Composable front — multi-listes de favoris + envoi par email.
- * Source = endpoints Nuxt Drizzle DB direct via /api/wishlist/*.
- * Security: the customerId is resolved server-side from the session.
- */
+
 
 export interface WishlistSummary {
   id_wishlist: number
@@ -131,10 +126,8 @@ export function useWishlist() {
     return !!res?.mail_sent
   }
 
-  /**
-   * Intelligent add-to-list: if the user has no list, we create
-   * "Ma liste" automatiquement puis on ajoute l'item dessus.
-   */
+  
+
   async function quickAdd(idProduct: number, idAttr = 0, quantity = 1): Promise<number | null> {
     if (!loaded.value) await loadLists()
     let target = defaultList.value

@@ -1,13 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/hub/configuration/business-profile
- *
- * Body : { name: 'PS_AC_TENANT_VERTICAL' | 'PS_AC_TENANT_CHANNEL', value: string }
- *
- * Strict whitelist on key AND value (enum). Upsert in
- * ps_configuration (pattern PS natif).
- */
 
 import { useClientDb } from '~/server/utils/db'
 import { upsertConfiguration } from '~/server/utils/ps-configuration'

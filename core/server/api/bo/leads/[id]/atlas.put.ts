@@ -1,21 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * PUT /api/bo/leads/{id}/atlas — edit strategic qualification for a contact record.
- *
- * Updates the strategic qualification columns on
- * cs_smartlead_rungis : vertical_target, tier, atlas_status,
- * relational_risk, notes_atlas, signal_score.
- *
- * Contact fields (firstname/email/phone/etc.) are NOT editable here
- * — they come from the source contact directory, to be modified via /api/bo/leads/{id} if
- * really needed (another endpoint to be created).
- *
- * Reserved for records where the atlas extension exists on the tenant. Otherwise
- * renvoie 404.
- */
 const ALLOWED_VERTICAL = new Set([
   'bacchus', 'ceres', 'poseidon', 'hephaistos', 'hermes',
   'hors-cible', 'a-classer',

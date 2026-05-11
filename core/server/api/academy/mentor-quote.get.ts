@@ -1,8 +1,5 @@
-/**
- * GET /api/academy/mentor-quote?module_slug=xxx&lesson_index=0
- * Return the mentor's contextual insight for a given lesson — direct Drizzle DB.
- *
- */
+
+
 import { getMentorQuote } from '~/server/utils/academy-db'
 
 export default defineEventHandler(async (event) => {

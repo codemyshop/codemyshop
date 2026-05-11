@@ -1,22 +1,10 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 import { clearEmailTemplateCache } from '~/server/utils/email-template-loader'
 
 const PG_SCHEMA = 'cs_main'
 
-/**
- * PUT /api/bo/email-templates/:slug — sauvegarde sujet + html_body + plain_body
- * for a language, AND (optionally) recipient_to/cc/bcc on the parent.
- *
- * Body :
- *   { id_lang, subject, html_body, plain_body? }                     ← maj _lang seul
- *   { recipient_to?, recipient_cc?, recipient_bcc? }                  ← maj parent seul
- * or both combined.
- *
- * Update-or-insert into cs_email_template_lang to allow adding
- * a missing language. Updates cs_email_template.date_upd in the process.
- */
 export default defineEventHandler(async (event) => {
   const slug = String(getRouterParam(event, 'slug') || '')
   if (!slug) throw createError({ statusCode: 400, statusMessage: 'slug requis' })
@@ -28,18 +16,18 @@ export default defineEventHandler(async (event) => {
     recipient_to?:  string
     recipient_cc?:  string
     recipient_bcc?: string
-    /** 0=critique, 50=standard, 100=marketing. Clamp 0..100. */
+    
     priority?:      number
   }
 
   const sql = getPgClient()
-  // Checks that the parent template exists
+  
   const parent = await sql<any[]>`
     SELECT slug FROM ${sql(PG_SCHEMA)}.cs_email_template WHERE slug = ${slug}
   `
   if (parent.length === 0) throw createError({ statusCode: 404, statusMessage: 'Template introuvable' })
 
-  // ── Update _lang content (if id_lang provided) ──────────────────────────
+  
   if (body?.id_lang) {
     const idLang   = Number(body.id_lang)
     const subject  = String(body.subject   || '').slice(0, 255)
@@ -61,9 +49,9 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // ── Update recipients + priority on parent (if provided) ───────────
-  // Raw CSV on the recipients side (validation on code side at send time). Priority
-  // clamped 0..100 defensively.
+  
+  
+  
   const recipientsTouched = body?.recipient_to !== undefined
                          || body?.recipient_cc !== undefined
                          || body?.recipient_bcc !== undefined
@@ -89,7 +77,7 @@ export default defineEventHandler(async (event) => {
       UPDATE ${sql(PG_SCHEMA)}.cs_email_template SET date_upd = NOW() WHERE slug = ${slug}
     `
   }
-  // Invalidates the loader cache → next send reads the fresh version.
+  
   clearEmailTemplateCache(slug)
   return { ok: true }
 })

@@ -1,12 +1,4 @@
-/**
- *
- * Nitro Task — email:queue-process
- *
- * Drain cs_email_queue 1 email per run (cron 60s) to stay under
- * the radar of MTA reputation filters (Resend, OVH…). Pattern aligned with
- * cover:queue-process : claim FOR UPDATE SKIP LOCKED → sendEmail() → UPDATE
- * status='sent'|'failed' with backoff retry.
- */
+
 
 import { defineTask } from 'nitropack/runtime'
 import { withAutomateLock } from '~/server/utils/automate-lock'

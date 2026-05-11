@@ -1,19 +1,8 @@
-<!--
-  Hub Merchandising V1 — vue 3 colonnes pour ranger les produits par catégorie.
-  Col 1 : produits sans aucune association ps_category_product (truly orphan)
-  Col 2 : tree catégories (parent + sous-cats), idem /hub/categories
-  Col 3 : produits liés à la cat sélectionnée, paginés visuellement (Page N)
-  Bouton AI-suggest (LLM) sur chaque orphan → top-3 cats à valider en un clic.
-  Bouton X par produit col 3 → DELETE de la cat sélectionnée uniquement.
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <template>
   <div class="fixed inset-0 z-40 bg-gray-50 dark:bg-slate-950 flex flex-col">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-3 flex items-center justify-between shrink-0">
       <div class="flex items-center gap-3">
         <div>
@@ -35,10 +24,10 @@
       </NuxtLink>
     </header>
 
-    <!-- 3-col layout -->
+    
     <div class="flex-1 flex min-h-0 overflow-hidden">
 
-      <!-- ── Col 1 : Orphans ─────────────────────────────────────────────── -->
+      
       <aside
         class="w-72 shrink-0 border-r border-gray-200 dark:border-slate-800 flex flex-col bg-white dark:bg-slate-900 transition-colors"
         :class="dropTargetOrphan ? 'bg-red-50 dark:bg-red-900/20 ring-2 ring-red-300 ring-inset' : ''"
@@ -93,7 +82,7 @@
                   {{ suggestingId === p.id ? '…' : '🤖' }}
                 </button>
               </div>
-              <!-- Suggestions inline -->
+              
               <div v-if="suggestions[p.id]?.length" class="mt-1.5 space-y-1">
                 <button
                   v-for="s in suggestions[p.id]" :key="s.id_category"
@@ -110,7 +99,7 @@
         </div>
       </aside>
 
-      <!-- ── Col 2: Category tree ─────────────────────────────────────── -->
+      
       <aside class="w-80 shrink-0 border-r border-gray-200 dark:border-slate-800 flex flex-col bg-white dark:bg-slate-900">
         <div class="px-4 py-2.5 border-b border-gray-100 dark:border-slate-800 shrink-0">
           <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-slate-400">
@@ -147,7 +136,7 @@
         </div>
       </aside>
 
-      <!-- ── Col 3: Products from the selected category ─────────────────────── -->
+      
       <main class="flex-1 flex flex-col overflow-hidden bg-gray-50 dark:bg-slate-950">
         <div v-if="!selectedCat" class="flex-1 flex flex-col items-center justify-center text-center p-8">
           <div class="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-3xl mb-4">👈</div>
@@ -162,7 +151,7 @@
               <p class="text-[10px] text-gray-400 font-mono">#{{ selectedCat.id }} · /grossiste/{{ selectedCat.slug }}</p>
             </div>
 
-            <!-- Search bar to add by ref/id -->
+            
             <div class="relative w-72 shrink-0">
               <input
                 v-model="searchQuery"
@@ -284,7 +273,6 @@ interface Prod {
 
 const PAGE_SIZE = 24
 
-// State
 const orphans = ref<Prod[]>([])
 const cats = ref<Cat[]>([])
 const catProducts = ref<Prod[]>([])
@@ -299,7 +287,6 @@ const suggestingId = ref<number | null>(null)
 const orphanFilter = ref('')
 const catFilter = ref('')
 
-// Computed
 const leafCount = computed(() => cats.value.filter(c => !cats.value.some(c2 => c2.idParent === c.id && c2.active)).length)
 
 const filteredOrphans = computed(() => {
@@ -308,9 +295,6 @@ const filteredOrphans = computed(() => {
   return orphans.value.filter(p => p.name.toLowerCase().includes(q) || p.reference?.toLowerCase().includes(q))
 })
 
-// Tree ordering: walk depth-first from Home (id=2) to emit all
-// level-2 roots (Wholesale, Brands) and their descendants — like
-// /hub/categories. Each category preserves its levelDepth for indentation.
 const treeOrdered = computed(() => {
   const active = cats.value.filter(c => c.active === 1)
   const childrenMap = new Map<number, Cat[]>()
@@ -328,14 +312,14 @@ const treeOrdered = computed(() => {
       walk(k.id)
     }
   }
-  walk(2) // racine = Accueil → émet Grossiste, Marques + tout leur tree
+  walk(2) 
   return out
 })
 
 const filteredCats = computed(() => {
   const q = catFilter.value.trim().toLowerCase()
   if (!q) return treeOrdered.value
-  // In search mode: flat alpha, no hierarchy
+  
   return treeOrdered.value.filter(c => (c.name || '').toLowerCase().includes(q))
 })
 
@@ -347,7 +331,6 @@ const pagedProducts = computed(() => {
   return out
 })
 
-// Loading
 async function loadOrphans() {
   loadingOrphans.value = true
   try {
@@ -408,11 +391,11 @@ async function suggestCats(p: Prod) {
 async function assignCat(p: Prod, idCat: number, siloPath: string) {
   try {
     await $fetch('/api/bo/merchandising/assign', { method: 'POST', body: { id_product: p.id, id_category: idCat } })
-    // Removes orphans from the list (becomes categorized)
+    
     orphans.value = orphans.value.filter(o => o.id !== p.id)
-    // Reload current cat if it's the assigned one
+    
     if (selectedCat.value?.id === idCat) await loadProducts(idCat)
-    // Bump cat counter
+    
     const c = cats.value.find(c => c.id === idCat)
     if (c) c.nbProducts = Number(c.nbProducts || 0) + 1
   } catch (e) {
@@ -421,16 +404,12 @@ async function assignCat(p: Prod, idCat: number, siloPath: string) {
   }
 }
 
-// ── Multi-selection ──────────────────────────────────────────────────────
-// Simple click = single selection. Cmd/Ctrl+click = toggle. Shift+click = range.
-// Selection limited to one source only (orphan OR a category) — change source
-// reset. Drag an unselected card = reset to just that one then drag.
 const selectedIds = ref<Set<number>>(new Set())
 const selectedFrom = ref<number | 'orphan' | null>(null)
 const lastClickedId = ref<number | null>(null)
 
 function onCardClick(p: Prod, from: number | 'orphan', e: MouseEvent) {
-  // Changer de source = reset
+  
   if (selectedFrom.value !== null && selectedFrom.value !== from) {
     selectedIds.value = new Set()
   }
@@ -463,7 +442,6 @@ function clearSelection() {
   lastClickedId.value = null
 }
 
-// Dedicated toggle for the visual checkbox (equivalent to Cmd+click without keyboard)
 function toggleSelect(p: Prod, from: number | 'orphan') {
   if (selectedFrom.value !== null && selectedFrom.value !== from) {
     selectedIds.value = new Set()
@@ -476,21 +454,16 @@ function toggleSelect(p: Prod, from: number | 'orphan') {
   if (selectedIds.value.size === 0) selectedFrom.value = null
 }
 
-// Esc resets the selection
 const onEscKey = (e: KeyboardEvent) => { if (e.key === 'Escape') clearSelection() }
 onMounted(() => window.addEventListener('keydown', onEscKey))
 onUnmounted(() => window.removeEventListener('keydown', onEscKey))
 
-// ── Drag-and-drop natif HTML5 ────────────────────────────────────────────
-// dragPayload = liste de produits en cours de drag (single ou multi via
-// selection) + source category. Drop on category (col 2) = bulk INSERT.
-// Drop on orphans column (col 1) = DELETE from the source category.
 const dragPayload = ref<{ ids: number[]; from: number | 'orphan' } | null>(null)
 const dropTargetCatId = ref<number | null>(null)
 const dropTargetOrphan = ref(false)
 
 function onDragStart(p: Prod, from: number | 'orphan', e: DragEvent) {
-  // If the dragged card is not in the current selection, reset to just that one.
+  
   if (!selectedIds.value.has(p.id) || selectedFrom.value !== from) {
     selectedIds.value = new Set([p.id])
     selectedFrom.value = from
@@ -520,8 +493,8 @@ function onDropOnCat(catId: number, e: DragEvent) {
   dropTargetCatId.value = null
   dragPayload.value = null
   if (!payload) return
-  if (payload.from === catId) return // déjà dans cette cat
-  // bulk INSERT into target category (idempotent on the assign endpoint side)
+  if (payload.from === catId) return 
+  
   Promise.all(payload.ids.map(id =>
     $fetch('/api/bo/merchandising/assign', { method: 'POST', body: { id_product: id, id_category: catId } }),
   ))
@@ -537,9 +510,7 @@ function onDropOnCat(catId: number, e: DragEvent) {
     })
     .catch(e => { console.error('drop assign failed', e); alert('Erreur drag & drop') })
 }
-// Drop on a CARD of grid col 3: reorder (if same category) OR assign+position
-// (if coming from orphan or other category). dropTargetCardId = product id on which
-// on hover, to display the visual indicator.
+
 const dropTargetCardId = ref<number | null>(null)
 function onDragOverCard(target: Prod, e: DragEvent) {
   if (!dragPayload.value || !selectedCat.value) return
@@ -559,13 +530,13 @@ async function onDropOnCard(target: Prod, e: DragEvent) {
   if (!payload || !selectedCat.value) return
   if (payload.ids.includes(target.id)) return
 
-  // 1. Recomposes the list: removes the dragged items then inserts the block before target.
-  // Order of dragged items = order in selectedIds (Set insertion order).
+  
+  
   const draggedSet = new Set(payload.ids)
   const draggedProds: Prod[] = []
-  // Preserves current display order for dragged items present in the list
+  
   for (const x of catProducts.value) if (draggedSet.has(x.id)) draggedProds.push(x)
-  // If the drag comes from orphan/other category, adds missing ids (without name — fetched on reload)
+  
   for (const id of payload.ids) {
     if (!draggedProds.find(d => d.id === id)) {
       const o = orphans.value.find(o => o.id === id)
@@ -588,7 +559,7 @@ async function onDropOnCard(target: Prod, e: DragEvent) {
   }
 
   try {
-    // If cross-source, assigns the new ones first then reorder
+    
     if (payload.from !== selectedCat.value.id) {
       await Promise.all(payload.ids.map(id =>
         $fetch('/api/bo/merchandising/assign', { method: 'POST', body: { id_product: id, id_category: selectedCat.value!.id } }),
@@ -619,7 +590,7 @@ function onDropOnOrphan(e: DragEvent) {
   dragPayload.value = null
   if (!payload || payload.from === 'orphan' || typeof payload.from !== 'number') return
   const fromCat = payload.from
-  // bulk DELETE from the source category only
+  
   Promise.all(payload.ids.map(id =>
     $fetch('/api/bo/merchandising/unassign', { method: 'DELETE', query: { id_product: id, id_category: fromCat } }),
   ))
@@ -638,7 +609,7 @@ function onDropOnOrphan(e: DragEvent) {
 
 async function unassignProduct(p: Prod) {
   if (!selectedCat.value) return
-  // No confirm() — silent + reload orphans (can become global orphan).
+  
   try {
     await $fetch('/api/bo/merchandising/unassign', { method: 'DELETE', query: { id_product: p.id, id_category: selectedCat.value.id } })
     catProducts.value = catProducts.value.filter(x => x.id !== p.id)
@@ -650,7 +621,6 @@ async function unassignProduct(p: Prod) {
   }
 }
 
-// ── Product search for direct addition to the category ──────────────────────
 const searchQuery = ref('')
 const searchResults = ref<Prod[]>([])
 const searching = ref(false)
@@ -676,16 +646,16 @@ async function addFromSearch(p: Prod) {
   if (!selectedCat.value) return
   try {
     await $fetch('/api/bo/merchandising/assign', { method: 'POST', body: { id_product: p.id, id_category: selectedCat.value.id } })
-    // Immediately adds to the displayed list
+    
     if (!catProducts.value.find(x => x.id === p.id)) {
       catProducts.value.unshift(p)
     }
-    // Bump compteur
+    
     const c = cats.value.find(c => c.id === selectedCat.value!.id)
     if (c) c.nbProducts = Number(c.nbProducts || 0) + 1
-    // If it was an orphan, removes from col 1
+    
     orphans.value = orphans.value.filter(o => o.id !== p.id)
-    // Reset search
+    
     searchQuery.value = ''
     searchResults.value = []
   } catch (e) {
@@ -693,9 +663,6 @@ async function addFromSearch(p: Prod) {
   }
 }
 
-// Image URL: relative URL served by nginx from the tenant (SEO WebPs from the product cover generator
-// are on the same VPS as this hub, not on the old production). psFrontUrl points to the
-// legacy frontend (example-shop.com) which doesn't have the new WebPs → 404.
 function imgUrl(p: Prod) {
   if (!p.image_id) return ''
   const digits = String(p.image_id).split('').join('/')
@@ -705,13 +672,13 @@ function imgUrl(p: Prod) {
     .slice(0, 60) || 'product'
   return `/img/p/${digits}/${p.image_id}-${slug}-400.webp`
 }
-// Fallback legacy `home_default.jpg` (always present on migrated tenants)
+
 function imgFallback(p: Prod) {
   if (!p.image_id) return ''
   const digits = String(p.image_id).split('').join('/')
   return `/img/p/${digits}/${p.image_id}-home_default.jpg`
 }
-// 1st fail = switch to fallback, 2nd fail = 📦 icon
+
 const imgErrors = ref(new Set<number>())
 function onImgError(e: Event, p: Prod) {
   const img = e.target as HTMLImageElement

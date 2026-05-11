@@ -1,9 +1,5 @@
-/**
- *
- * GET /api/header-config
- * Config header depuis cs_header JOIN cs_header_lang + cs_header_locale.
- * Strict _lang pattern, no more JSON i18n.
- */
+
+
 import { resolveClientId } from '~/server/utils/db'
 import { getHeaderWithLang, getHeaderLocales } from '~/modules/header/server/utils/header'
 

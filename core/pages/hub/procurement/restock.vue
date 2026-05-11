@@ -1,12 +1,4 @@
-<!--
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
 
-  PRM — Réassort IA.
-  Tab 1 : Produits sous seuil stock (vue brute).
-  Tab 2 : Suggestions IA — grouped by fournisseur, EOQ simplifié, bouton Créer BC en un clic.
--->
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
@@ -33,7 +25,7 @@
 
     <div class="p-6 max-w-6xl mx-auto space-y-6">
 
-      <!-- ═══ TAB: Seuil brut ═══════════════════════════════════════ -->
+      
       <template v-if="activeTab === 'threshold'">
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm flex items-center justify-between">
           <div>
@@ -78,7 +70,7 @@
         </div>
       </template>
 
-      <!-- ═══ TAB: AI Suggestions grouped by supplier ══════════ -->
+      
       <template v-if="activeTab === 'ai'">
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-5 shadow-sm">
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -157,7 +149,7 @@
           </div>
         </div>
 
-        <!-- Success toast -->
+        
         <div v-if="successMsg" class="fixed bottom-6 right-6 bg-success-600 text-white rounded-lg shadow-xl px-4 py-3 text-xs font-semibold flex items-center gap-2 z-50">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
           {{ successMsg }}
@@ -173,7 +165,6 @@ definePageMeta({ layout: 'hub', middleware: 'hub-auth', ssr: false })
 
 const activeTab = ref<'threshold' | 'ai'>('threshold')
 
-// ── Tab 1 : seuil brut ──
 const thresholdStock = ref(5)
 const thresholdData = ref<any>(null)
 const loadingThreshold = ref(true)
@@ -186,7 +177,6 @@ async function loadThreshold() {
   finally { loadingThreshold.value = false }
 }
 
-// ── Tab 2 : IA ──
 const aiThreshold = ref(15)
 const aiCover = ref(60)
 const aiData = ref<any>(null)

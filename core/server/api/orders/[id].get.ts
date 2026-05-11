@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/orders/:id?clientId=...
- * DB direct (doctrine: Zero PrestaShop webservice, 2026-04-22).
- */
+
 import { getOrderFromDb } from '~/server/utils/orders-db'
 
 export default defineEventHandler(async (event) => {

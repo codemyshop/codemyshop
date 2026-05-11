@@ -1,23 +1,4 @@
-<!--
-  Home FAQ (DB-driven) — Accordion multi-groupes avec JSON-LD FAQPage.
 
-  Payload DB attendu (type='faq') :
-  {
-    "groups": [
-      {
-        "id": "wholesale",
-        "title": { "fr": "Grossiste & commandes", "en": "Wholesale & orders" },
-        "items": [
-          { "q": { "fr": "...", "en": "..." }, "a": { "fr": "...", "en": "..." } }
-        ]
-      }
-    ]
-  }
-
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 import type { I18nString } from '~/composables/useI18nField'
 

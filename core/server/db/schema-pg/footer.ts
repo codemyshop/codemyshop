@@ -1,15 +1,4 @@
-/**
- *
- * Drizzle PG schemas for ac_footer — task #38 Phase 1 step 5.
- *
- * 6 tables (cs_main, multi-tenant row-level via client_id) :
- * - cs_footer              : 1 row = 1 link in 1 column
- *   - cs_footer_lang         : i18n (column_title, link_label, link_badge)
- *   - cs_footer_config       : master config tenant
- *   - cs_footer_config_lang  : i18n (description, hours, copyright…)
- * - cs_footer_social       : social icons linked to the config
- * - cs_footer_social_lang  : i18n label
- */
+
 
 import {
   index,

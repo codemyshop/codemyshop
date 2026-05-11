@@ -1,7 +1,5 @@
-/**
- * GET /api/blog/comments/:articleId — Drizzle DB direct (cs_blog_comments).
- *
- */
+
+
 import { listCommentsForArticle } from '~/enterprise/base/blog-comments/server/utils/blog-comments'
 
 export default defineEventHandler(async (event) => {

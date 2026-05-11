@@ -1,15 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/merchandising/products?id_category=N
- *
- * Returns ALL active products linked to `id_category` (exact category, not the
- * subtree — we want precise control of the selected category).
- * No API-side pagination: frontend displays all with 'Page 1 / Page 2'
- * as a visual separator (see UI spec).
- */
 export default defineEventHandler(async (event) => {
   const { id_category } = getQuery(event)
   const idCat = Number(id_category)

@@ -8,7 +8,7 @@
       <button @click="load" :disabled="loading" class="text-xs px-3 py-1.5 border border-gray-200 dark:border-slate-700 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-40 transition-colors">Rafraîchir</button>
     </header>
 
-    <!-- Total encours -->
+    
     <div v-if="totalOutstanding > 0" class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-2.5 flex items-center gap-6 shrink-0">
       <div class="flex items-center gap-2">
         <span class="text-xs text-gray-500">Encours total autorisé</span>

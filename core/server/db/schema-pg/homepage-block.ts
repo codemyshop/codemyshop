@@ -1,13 +1,4 @@
-/**
- *
- * Drizzle PG schemas for ac_homepageblock — task #38 Phase 1 step 5.
- *
- * 2 tables (cs_main, AC-only) :
- * - cs_homepage_block       : typed sub-items (slide/feature/category/banner/...)
- *   - cs_homepage_block_lang  : i18n (label, title, subtitle, description, answer_html…)
- *
- * Note: MEDIUMTEXT MariaDB → text PG (unbounded — no size distinction in PG).
- */
+
 
 import {
   index,

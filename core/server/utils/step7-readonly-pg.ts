@@ -1,24 +1,4 @@
-/**
- *
- * Read-only PG facades for step 7 of workstream #38.
- *
- * 20 tables from the legacy system were migrated to PG (bucket A, no writer code detected).
- * This module exposes PG facades for the 3 Nuxt hot paths currently
- * wired via flag PG_ENABLED_DOMAINS:
- *   - crosslinks                (flag : crosslinks)
- *   - page_meta                 (flag : page_meta)
- *   - moduleslist               (flag : moduleslist, via api/moduleslist.get.ts)
- *
- * marketplace_feature remains on MariaDB for now: its Nuxt facade is
- * tenant-aware (useClientDrizzle) and the PG cs_main contains only
- * the legacy system version. Wiring deferred to phase 2 (tenant tables in PG).
- *
- * The 16 other tables (academy_*, tools, reunions, routing_*, corbie,
- * telemetry, lot_order_detail, price_contract, dictionary, bot_hits,
- * marketplace_design_system, translate_profile) are ready on the PG side
- * (DDL + snapshot) but not yet wired — their Nuxt cutover will be
- * done case-by-case when their consumer is touched.
- */
+
 
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '../db/drizzle-pg'

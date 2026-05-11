@@ -15,7 +15,7 @@
           : 'bg-white/95 border-gray-200/50'"
       >
 
-        <!-- Edit / Preview (site public uniquement) -->
+        
         <template v-if="showEditMode">
           <div class="flex items-center gap-2">
             <span class="text-[10px] font-semibold uppercase tracking-wider"
@@ -49,7 +49,7 @@
           </div>
         </template>
 
-        <!-- Client ID (no dark toggle here — moved to the Hub header) -->
+        
         <div v-if="showEditMode" class="w-px h-6 rounded-full" :class="isDark ? 'bg-slate-700' : 'bg-gray-200'" />
         <span class="text-[10px] font-mono" :class="isDark ? 'text-slate-600' : 'text-gray-400'">
           {{ resolvedClientId }}
@@ -67,24 +67,21 @@ const auth = useAuth()
 const user = (auth as any).user as Ref<{ is_admin?: boolean; user_type?: string; firstname?: string; lastname?: string } | null> | undefined
 const route = useRoute()
 
-// ── Contexte : Hub ou site public ? ───────────────────────────────────────────
 const isHubPage = computed(() => route.path.startsWith('/hub'))
 const isPublicPage = computed(() => !isHubPage.value)
 
-// Public site → edit mode (builder). Hub → toolbar hidden.
 const showEditMode = computed(() => isPublicPage.value)
 
-// ── Global visibility ────────────────────────────────────────────────────────
 const visible = computed(() => {
-  // Iframe builder preview: toolbar always hidden (clean preview)
+  
   if (route.query['builder-preview'] === '1') return false
-  // Hub → dark toggle is in the header, no need for the toolbar
+  
   if (isHubPage.value) return false
-  // Entire team (admin + employee) logged in → visible on public site.
-  // See incident 2026-04-25: employee example shop blocked without builder toolbar.
+  
+  
   const u = user?.value
   if (u && (u.is_admin || u.user_type === 'employee')) return true
-  // Preview mode (?preview=xxx) → visible on the public site
+  
   if (route.query.preview) return true
   return false
 })

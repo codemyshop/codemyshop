@@ -1,21 +1,5 @@
-/**
- *
- * POST /api/admin/run-task/:name
- *
- * Manual trigger for a Nitro scheduledTask (whitelist `audit:*` Wave 1).
- *
- * Issue #43 python-nitro-tasks: operations utility for validating ports
- * of Vigies (cron Python → Nitro Task) without waiting for the cron tick.
- *
- * Auth duale :
- * 1. Cookie hub_session (HMAC) with isAdmin=true (future UI)
- *   2. Header `Authorization: Bearer <AC_ADMIN_TASK_TOKEN>` (curl/scripts)
- *
- * Whitelist: only `audit:*` names are allowed (extensible Wave 2+).
- *
- * 200 response:
- *   { ok: true, name, durationMs, result: <TaskResult> }
- */
+
+
 import { runTask } from 'nitropack/runtime'
 import { verifyToken } from '~/server/utils/session-crypto'
 import { timingSafeEqual } from 'node:crypto'
@@ -29,14 +13,14 @@ function safeEqual(a: string, b: string): boolean {
 }
 
 function isAuthorized(event: any): { ok: true; via: 'cookie' | 'token' } | { ok: false; reason: string } {
-  // Voie 1 — cookie hub_session admin
+  
   const cookie = getCookie(event, 'hub_session')
   if (cookie) {
     const session = verifyToken<any>(cookie)
     if (session?.isAdmin) return { ok: true, via: 'cookie' }
   }
 
-  // Voie 2 — Bearer token vs env AC_ADMIN_TASK_TOKEN
+  
   const auth = getRequestHeader(event, 'authorization') || ''
   const match = auth.match(/^Bearer\s+(.+)$/i)
   if (match) {

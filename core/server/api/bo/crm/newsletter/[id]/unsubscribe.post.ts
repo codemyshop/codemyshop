@@ -1,9 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * POST /api/bo/crm/newsletter/[id]/unsubscribe — manual back-office unsubscribe.
- * Body optionnel : { reason } (motif court, ex: "demande client par email").
- */
 
 import { resolveClientId } from '~/server/utils/db'
 import { unsubscribeById } from '~/server/utils/newsletter-subscriber'

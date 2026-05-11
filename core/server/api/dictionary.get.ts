@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/dictionary
- * GET /api/dictionary?slug=synedre
- * Technical dictionary from DB (real-time). Single source: cs_dictionary.
- * Read via Drizzle facade `core/modules/dictionary`.
- */
+
 import {
   getDictionaryEntryBySlug,
   listDictionaryEntries,

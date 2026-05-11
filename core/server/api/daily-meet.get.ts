@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/daily-meet — Drizzle DB direct (cs_main.cs_daily_meet, PG).
- * Open sort: severity P0/critical/warning/info then date_add DESC. Resolved: 10 most recent.
- */
+
 import { sql } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 

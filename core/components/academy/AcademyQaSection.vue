@@ -1,11 +1,4 @@
-<!--
-  Academy Q&A — UGC simplifié
-  Question pré-remplie + email = zéro friction
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <template>
   <div class="mt-8 border-t border-gray-200 dark:border-white/[0.06] pt-6">
     <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-widest flex items-center gap-2">
@@ -15,7 +8,7 @@
       {{ t('academy.academy_qa_section_title') }} <span v-if="qaList.length" class="text-gray-400 dark:text-slate-600 font-normal">({{ qaList.length }})</span>
     </h4>
 
-    <!-- Q&A existantes -->
+    
     <div v-for="qa in qaList" :key="qa.id_qa" :id="`qa-${qa.id_qa}`" class="mb-4 bg-gray-50 dark:bg-white/[0.03] rounded-xl border border-gray-200/60 dark:border-white/[0.06] p-4">
       <div class="flex items-center gap-2 mb-2">
         <span class="text-xs font-semibold text-primary-600 dark:text-primary-400">{{ qa.pseudo }}</span>
@@ -32,10 +25,10 @@
       </button>
     </div>
 
-    <!-- ═══ SIMPLIFIED FORM ═══ -->
+    
     <div class="mt-4 p-5 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-200/60 dark:border-white/[0.06]">
 
-      <!-- Step 1: Pre-filled question + email -->
+      
       <div v-if="step === 'ask'">
         <p class="text-xs font-semibold text-gray-500 dark:text-slate-400 mb-3">{{ t('academy.academy_qa_hint_text') }}</p>
         <textarea
@@ -64,7 +57,7 @@
         <p class="text-[10px] text-gray-400 dark:text-slate-600 mt-2" v-html="t('academy.academy_qa_privacy_notice')" />
       </div>
 
-      <!-- Step 2: Password (existing email) -->
+      
       <div v-if="step === 'password'">
         <p class="text-xs text-gray-500 dark:text-slate-400 mb-3">{{ t('academy.academy_qa_password_hint') }}</p>
         <form @submit.prevent="submitPassword" class="flex gap-2">
@@ -88,14 +81,14 @@
         <button @click="step = 'ask'" class="text-[10px] text-gray-400 hover:text-gray-600 mt-2">{{ t('academy.academy_qa_back_to_email') }}</button>
       </div>
 
-      <!-- Step 3: Success -->
+      
       <div v-if="step === 'done'" class="text-center py-2">
         <p class="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-1">{{ t('academy.academy_qa_success_title') }}</p>
         <p class="text-xs text-gray-400 dark:text-slate-600">{{ t('academy.academy_qa_success_message') }}</p>
         <button @click="resetForm" class="text-xs text-primary-600 dark:text-primary-400 hover:underline mt-2">{{ t('academy.academy_qa_ask_another') }}</button>
       </div>
 
-      <!-- Erreur -->
+      
       <p v-if="submitError" class="text-xs text-red-500 mt-2">{{ submitError }}</p>
     </div>
   </div>
@@ -128,7 +121,6 @@ const password = ref('')
 const submitting = ref(false)
 const submitError = ref('')
 
-// Load the suggested question from the DB
 async function loadSuggestion() {
   try {
     const result = await $fetch<{ success: boolean; question: string | null }>('/api/academy/suggestion', {
@@ -144,20 +136,18 @@ async function loadSuggestion() {
   }
 }
 
-// Load the Q&A
 async function loadQa() {
   try {
     const result = await $fetch<{ success: boolean; qa: QaEntry[] }>('/api/academy/qa', {
       params: { module_slug: props.moduleSlug, lesson_index: props.lessonIndex },
     })
     if (result.success) qaList.value = result.qa
-  } catch { /* silently fail */ }
+  } catch {  }
 }
 
 onMounted(() => { loadQa(); loadSuggestion() })
 watch(() => props.lessonIndex, () => { loadQa(); loadSuggestion(); resetForm() })
 
-// Step 1: submit the email
 async function submitEmail() {
   submitError.value = ''
   submitting.value = true
@@ -188,7 +178,6 @@ async function submitEmail() {
   }
 }
 
-// Step 2: submit with password
 async function submitPassword() {
   submitError.value = ''
   submitting.value = true
@@ -230,7 +219,7 @@ async function upvote(qa: QaEntry) {
   try {
     const result = await $fetch<{ success: boolean; upvotes: number }>(`/api/academy/qa/${qa.id_qa}/upvote`, { method: 'POST' })
     if (result.success) { qa.upvotes = result.upvotes; qa.voted = true }
-  } catch { /* ignore */ }
+  } catch {  }
 }
 
 function formatDate(dateStr: string): string {

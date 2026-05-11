@@ -1,14 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { useClientDb } from '~/server/utils/db'
 
-/**
- * GET /api/bo/leads/capa-config — Capa configuration of the current tenant.
- *
- * Returns the row WHERE id_shop=1 if present, otherwise the default
- * values (no INSERT — the PUT will handle it). The client always has
- * a usable configuration, even on a freshly initialized tenant.
- */
 const DEFAULTS = {
   ticketAnnuelEur: 10000,
   caConfortableMin: 5_000_000,

@@ -1,8 +1,4 @@
-/**
- *
- * PrestaShop connector — implements BaseConnector.
- * All PrestaShop Webservice API-specific logic is isolated here.
- */
+
 
 import type {
   BaseConnector, CatalogProduct, ProductDetail, ProductCombination,
@@ -14,24 +10,22 @@ import type {
   ProductListResult, OrderHistoryEntry, RevenueStats, TopProduct,
 } from './base'
 
-// ── Credentials ───────────────────────────────────────────────────────────────
-
 interface PsCredentials { apiUrl: string; apiKey: string }
 
 function resolveCredentials(clientId: string): PsCredentials {
   const env = process.env
 
-  // Clés spécifiques par client
+  
   const upper = clientId.toUpperCase().replace(/-/g, '_')
   const specificKey = env[`PS_API_KEY_${upper}`]
   const specificUrl = env[`PS_URL_${upper}`]
   if (specificKey && specificUrl) return { apiKey: specificKey, apiUrl: specificUrl }
 
-  // Clés depuis le store chiffré
+  
   const stored = resolveClientPsCredentials(clientId)
   if (stored) return stored
 
-  // Fallback par défaut
+  
   const config = useRuntimeConfig()
   return {
     apiKey: config.prestashopApiKey as string || '',
@@ -39,20 +33,18 @@ function resolveCredentials(clientId: string): PsCredentials {
   }
 }
 
-// ── HTTP helper ───────────────────────────────────────────────────────────────
-
 async function psFetch<T>(creds: PsCredentials, resource: string, query: Record<string, any> = {}): Promise<T> {
   const auth = Buffer.from(`${creds.apiKey}:`).toString('base64')
-  // PS exige le Host header pour ne pas rediriger (Docker interne)
+  
   const hostHeader = new URL(creds.apiUrl).hostname === 'localhost' || new URL(creds.apiUrl).hostname === '127.0.0.1'
     ? (process.env.PS_HOST || process.env.NUXT_PS_HOST || 'localhost')
     : new URL(creds.apiUrl).host
 
-  // Utilise webservice/dispatcher.php directement (bypass rewrite issues)
+  
   const baseUrl = creds.apiUrl.replace(/\/api\/?$/, '')
   const url = `${baseUrl}/webservice/dispatcher.php`
 
-  // Use native http to avoid $fetch following redirects to Nuxt
+  
   const http = await import('node:http')
   const queryStr = new URLSearchParams({ output_format: 'JSON', url: resource, ...query } as Record<string, string>).toString()
 
@@ -79,7 +71,7 @@ async function psFetch<T>(creds: PsCredentials, resource: string, query: Record<
 
 function psBaseUrl(creds: PsCredentials): string {
   const raw = creds.apiUrl.replace(/\/api\/?$/, '')
-  // Si l'URL API est localhost, les images doivent être servies via le domaine public
+  
   if (raw.includes('localhost') || raw.includes('127.0.0.1')) {
     const publicHost = process.env.NUXT_PUBLIC_PS_FRONT_URL || process.env.PS_HOST
     if (publicHost) return publicHost.startsWith('http') ? publicHost : `https://${publicHost}`
@@ -97,27 +89,22 @@ function extractImageId(field: any): number {
   return Number(field || 0)
 }
 
-// ── Response normalization ────────────────────────────────────────────────────
-// dispatcher.php renvoie { "carts": [{…}] } (pluriel+array) au lieu de { "cart": {…} } (singulier).
-// Ce helper extrait le premier objet peu importe le format retourné.
 function psExtract(data: any, singular: string): any {
   if (!data) return null
-  // Format singulier classique (POST response)
+  
   if (data[singular]) return data[singular]
-  // Format pluriel dispatcher.php (GET response) — "cart" → "carts"
+  
   const plural = singular + 's'
   if (Array.isArray(data[plural])) return data[plural][0] ?? null
-  // Format pluriel irrégulier (ex: "address" → "addresses")
+  
   const pluralEs = singular + 'es'
   if (Array.isArray(data[pluralEs])) return data[pluralEs][0] ?? null
-  // Dernier recours : prendre la première clé qui est un array
+  
   for (const key of Object.keys(data)) {
     if (Array.isArray(data[key]) && data[key].length > 0) return data[key][0]
   }
   return null
 }
-
-// ── XML helpers ──────────────────────────────────────────────────────────────
 
 function esc(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -135,7 +122,7 @@ function psDispatcherUrl(creds: PsCredentials): string {
 }
 
 async function psPost<T>(creds: PsCredentials, resource: string, xml: string): Promise<T> {
-  // Utilise dispatcher.php comme psFetch (les rewrites /api/* ne marchent pas partout en POST)
+  
   const baseUrl = creds.apiUrl.replace(/\/api\/?$/, '')
   const dispatcherUrl = `${baseUrl}/webservice/dispatcher.php`
   const qs = new URLSearchParams({ output_format: 'JSON', url: resource }).toString()
@@ -181,7 +168,7 @@ async function psPost<T>(creds: PsCredentials, resource: string, xml: string): P
 }
 
 async function psPut<T>(creds: PsCredentials, resource: string, xml: string): Promise<T> {
-  // Utilise dispatcher.php comme psFetch
+  
   const baseUrl = creds.apiUrl.replace(/\/api\/?$/, '')
   const dispatcherUrl = `${baseUrl}/webservice/dispatcher.php`
   const qs = new URLSearchParams({ output_format: 'JSON', url: resource }).toString()
@@ -242,16 +229,14 @@ function formatPrice(n: number): string {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
 }
 
-// ── Connecteur ────────────────────────────────────────────────────────────────
-
 export class PrestashopConnector implements BaseConnector {
   readonly platform = 'prestashop'
   readonly clientId: string
   private creds: PsCredentials
 
-  /** Cache mémo des définitions de features (chargé une fois par instance/process) */
+  
   private featureDefsCache: Map<number, string> | null = null
-  /** Memoized cache of feature values (id_feature_value → text) */
+  
   private featureValuesCache: Map<number, string> | null = null
 
   constructor(clientId: string) {
@@ -259,11 +244,8 @@ export class PrestashopConnector implements BaseConnector {
     this.creds = resolveCredentials(clientId)
   }
 
-  /**
-   * Loads and memoizes feature definitions (features and their values).
-   * For Example Shop: ~10 features and 1118 values — loaded once.
-   * The cache is attached to the connector instance (reused across subsequent requests).
-   */
+  
+
   private async loadFeaturesIndex(): Promise<void> {
     if (this.featureDefsCache && this.featureValuesCache) return
 
@@ -289,10 +271,8 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  /**
-   * Resolves the ProductFeatureValue of a product from its association
-   * `product_features = [{id: id_feature, id_feature_value}, …]`.
-   */
+  
+
   private async resolveProductFeatures(assoc: any[]): Promise<ProductFeatureValue[]> {
     if (!assoc?.length) return []
     await this.loadFeaturesIndex()
@@ -309,7 +289,7 @@ export class PrestashopConnector implements BaseConnector {
     return out
   }
 
-  // ── Attachments (fiches techniques) ─────────────────────────────────────
+  
 
   private async resolveProductAttachments(assoc: any[]): Promise<ProductAttachment[]> {
     if (!assoc?.length) return []
@@ -333,16 +313,16 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Accès générique à une ressource PS API ─────────────────────────────
+  
 
   async fetchResource(resource: string, query: Record<string, string> = {}): Promise<any> {
     return psFetch<any>(this.creds, resource, query)
   }
 
-  /** Download attachment binary via PS webservice */
+  
   async downloadAttachment(attachmentId: number): Promise<{ buffer: Buffer; mime: string; fileName: string } | null> {
     try {
-      // Get metadata first
+      
       const meta = await psFetch<{ product_attachments?: any[] }>(this.creds, 'product_attachments', {
         'filter[id]': `[${attachmentId}]`,
         display: 'full',
@@ -375,7 +355,7 @@ export class PrestashopConnector implements BaseConnector {
     } catch { return null }
   }
 
-  // ── Products by category ──────────────────────────────────────────────────
+  
 
   async getProducts(categoryId: number, limit = 50): Promise<CatalogProduct[]> {
     try {
@@ -412,17 +392,17 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Nouveaux produits ──────────────────────────────────────────────────
+  
 
   async getNewProducts(limit: number = 8): Promise<CatalogProduct[]> {
     try {
-      // PrestaShop may reject combined sort+filter — we fetch more and sort server-side
+      
       const data = await psFetch<{ products?: any[] }>(this.creds, 'products', {
         display: 'full',
         limit: limit * 3,
         sort: '[date_add_DESC]',
       }).catch(() =>
-        // Fallback if sort is not supported: fetch without sort
+        
         psFetch<{ products?: any[] }>(this.creds, 'products', { display: 'full', limit: limit * 3 })
       )
 
@@ -450,11 +430,11 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Recherche produits ─────────────────────────────────────────────────
-  // Uses the native PrestaShop `search` webservice (leverages ps_search_index +
-  // ps_search_word : tokenisation, accents, stemming, features, description)
-  // rather than a simple LIKE on name. Fallback to LIKE name if the engine
-  // native fails (e.g., empty index on a store).
+  
+  
+  
+  
+  
 
   async searchProducts(query: string, limit: number = 50, idLang: number = 1): Promise<CatalogProduct[]> {
     const q = query.trim()
@@ -523,7 +503,7 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Detailed product ───────────────────────────────────────────────────
+  
 
   async getProduct(id: number, idLang: number = 1): Promise<ProductDetail | null> {
     try {
@@ -540,7 +520,7 @@ export class PrestashopConnector implements BaseConnector {
         if (defImg > 0) images.push(buildImageUrl(base, defImg, 'large_default'))
       }
 
-      // Combinations
+      
       const combinations: ProductCombination[] = []
       const comboAssocs = p.associations?.combinations ?? []
       if (comboAssocs.length) {
@@ -564,13 +544,13 @@ export class PrestashopConnector implements BaseConnector {
               attributes: attrs,
             })
           }
-        } catch { /* silencieux */ }
+        } catch {  }
       }
 
-      // Feature resolution (size, origin, packaging…)
+      
       const features = await this.resolveProductFeatures(p.associations?.product_features ?? [])
 
-      // Fiches techniques (attachments)
+      
       const attachments = await this.resolveProductAttachments(p.associations?.product_attachments ?? [])
 
       const price = Number(p.price || 0)
@@ -588,7 +568,7 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Categories ─────────────────────────────────────────────────────────
+  
 
   async getCategories(limit = 50, idLang: number = 1): Promise<CatalogCategory[]> {
     try {
@@ -611,7 +591,7 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Employees ──────────────────────────────────────────────────────────
+  
 
   async createEmployee(data: EmployeeInput): Promise<EmployeeResult> {
     const profileId = getPsProfileId(data.role)
@@ -646,7 +626,7 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Contexte IA ────────────────────────────────────────────────────────
+  
 
   async getClientContext(): Promise<ClientContext> {
     const clientName = this.clientId
@@ -685,7 +665,7 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Advanced catalog ────────────────────────────────────────────────────
+  
 
   private mapProduct(p: any): CatalogProduct {
     const base = psBaseUrl(this.creds)
@@ -707,7 +687,7 @@ export class PrestashopConnector implements BaseConnector {
         display: 'full',
       }
 
-      // Sort
+      
       const sortMap: Record<string, string> = {
         name_asc: '[name_ASC]', name_desc: '[name_DESC]',
         price_asc: '[price_ASC]', price_desc: '[price_DESC]',
@@ -715,7 +695,7 @@ export class PrestashopConnector implements BaseConnector {
       }
       if (params.sort) query.sort = sortMap[params.sort] || '[name_ASC]'
 
-      // Category filter — get product IDs from category first
+      
       let scopedIds: number[] | null = null
       if (params.categoryId) {
         const catData = await psFetch<any>(this.creds, `categories/${params.categoryId}`)
@@ -728,13 +708,13 @@ export class PrestashopConnector implements BaseConnector {
         query.limit = 500
       }
 
-      // Search query
+      
       if (params.query) query['filter[name]'] = `%[${params.query}]%`
 
       const data = await psFetch<{ products?: any[] }>(this.creds, 'products', query)
       const rawProducts = data?.products ?? []
 
-      // Index features par produit (id_product → Set<id_feature_value>)
+      
       const productFeatureMap = new Map<number, Set<number>>()
       for (const p of rawProducts) {
         const pid = Number(p.id)
@@ -749,7 +729,7 @@ export class PrestashopConnector implements BaseConnector {
 
       let allProducts = rawProducts.map((p: any) => this.mapProduct(p))
 
-      // Price filter (client-side, PS webservice filter[price] est unreliable)
+      
       if (params.priceMin !== undefined && params.priceMin > 0) {
         allProducts = allProducts.filter(p => p.priceRaw >= params.priceMin!)
       }
@@ -757,7 +737,7 @@ export class PrestashopConnector implements BaseConnector {
         allProducts = allProducts.filter(p => p.priceRaw <= params.priceMax!)
       }
 
-      // Feature filter (AND intersection between features, OR between values of a feature)
+      
       const featureFilter = params.features || {}
       const activeFeatureIds = Object.keys(featureFilter).map(Number).filter(id => featureFilter[id]?.length)
       if (activeFeatureIds.length) {
@@ -773,20 +753,20 @@ export class PrestashopConnector implements BaseConnector {
 
       const total = allProducts.length
 
-      // Sort client-side fallback (PrestaShop sort is fragile with filter[id])
+      
       if (params.sort === 'name_asc') allProducts.sort((a, b) => a.name.localeCompare(b.name))
       else if (params.sort === 'name_desc') allProducts.sort((a, b) => b.name.localeCompare(a.name))
       else if (params.sort === 'price_asc') allProducts.sort((a, b) => a.priceRaw - b.priceRaw)
       else if (params.sort === 'price_desc') allProducts.sort((a, b) => b.priceRaw - a.priceRaw)
 
-      // Pagination client-side
+      
       const page = params.page || 1
       const limit = params.limit || 24
       const start = (page - 1) * limit
       const products = allProducts.slice(start, start + limit)
 
-      // Pre-scope for facets: IDs passing the PRICE filter (but NOT the features filter).
-      // We intentionally exclude the features filter so we can break it down by feature in buildScopedFilters.
+      
+      
       const priceFilteredIds: number[] = []
       for (const p of rawProducts) {
         const pid = Number(p.id)
@@ -796,8 +776,8 @@ export class PrestashopConnector implements BaseConnector {
         priceFilteredIds.push(pid)
       }
 
-      // Scoped filters + live counts (Algolia-style: for each feature F,
-      // we compute counts excluding filter F itself)
+      
+      
       const filters = await this.buildScopedFilters(priceFilteredIds, productFeatureMap, featureFilter)
 
       return { products, total, page, limit, filters }
@@ -807,13 +787,8 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  /**
-   * Computes "live" facets (Algolia-style):
-   * - Scope = products passing category + price filters (but not features)
-   * - For each feature F, the count of a value V is the number of products
-   * passing all feature filters EXCEPT F (to allow checking other values of F).
-   * - A value with count=0 is filtered to avoid cluttering the UI.
-   */
+  
+
   private async buildScopedFilters(
     scopedIds: number[],
     productFeatureMap: Map<number, Set<number>>,
@@ -822,7 +797,7 @@ export class PrestashopConnector implements BaseConnector {
     if (!scopedIds.length) return []
     try {
       await this.loadFeaturesIndex()
-      // Mapping global id_feature_value → id_feature
+      
       const valueToFeature = new Map<number, number>()
       const fpData = await psFetch<{ product_feature_values?: any[] }>(this.creds, 'product_feature_values', {
         display: '[id,id_feature]', limit: 2000,
@@ -833,7 +808,7 @@ export class PrestashopConnector implements BaseConnector {
 
       const scopedProductsRaw = scopedIds.filter(id => productFeatureMap.has(id))
 
-      // Construit l'ensemble des produits du scope passant tous les filtres features SAUF F.
+      
       const buildSetExcluding = (excludedFeatureId: number | null): Set<number> => {
         const out = new Set<number>()
         for (const pid of scopedProductsRaw) {
@@ -850,15 +825,15 @@ export class PrestashopConnector implements BaseConnector {
         return out
       }
 
-      // Récolte de toutes les feature_values présentes dans le scope brut
+      
       const valuesPresent = new Set<number>()
       for (const pid of scopedProductsRaw) {
         for (const v of productFeatureMap.get(pid) || []) valuesPresent.add(v)
       }
 
-      // Bucket par feature
-      const buckets = new Map<number, Map<number, number>>() // featureId → (valueId → count)
-      // Précalcule des sets "tous filtres sauf F"
+      
+      const buckets = new Map<number, Map<number, number>>() 
+      
       const setCache = new Map<number | null, Set<number>>()
       for (const vId of valuesPresent) {
         const fId = valueToFeature.get(vId)
@@ -878,7 +853,7 @@ export class PrestashopConnector implements BaseConnector {
         bucket.set(vId, count)
       }
 
-      // Sérialisation finale, triée par count desc
+      
       const filters: ProductFilter[] = []
       for (const [fId, bucket] of buckets) {
         const fName = this.featureDefsCache?.get(fId) || `Feature ${fId}`
@@ -891,7 +866,7 @@ export class PrestashopConnector implements BaseConnector {
           .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
         filters.push({ id: fId, name: fName, values })
       }
-      // Tri des features par nombre total de produits (les plus discriminantes en haut)
+      
       filters.sort((a, b) => {
         const sa = a.values.reduce((s, v) => s + v.count, 0)
         const sb = b.values.reduce((s, v) => s + v.count, 0)
@@ -922,11 +897,11 @@ export class PrestashopConnector implements BaseConnector {
   }
 
   async getBestSellers(limit = 10): Promise<CatalogProduct[]> {
-    // PS webservice doesn't have a "best sellers" sort — use products sorted by date as fallback
+    
     return this.getNewProducts(limit)
   }
 
-  // ── CRUD Produits (BO) ────────────────────────────────────────────────
+  
 
   async createProduct(data: any): Promise<{ id: number } | null> {
     try {
@@ -1003,7 +978,7 @@ export class PrestashopConnector implements BaseConnector {
 
   async updateStock(productId: number, quantity: number): Promise<boolean> {
     try {
-      // Fetch stock_available for this product
+      
       const data = await psFetch<{ stock_availables?: any[] }>(this.creds, 'stock_availables', {
         'filter[id_product]': `[${productId}]`,
         'filter[id_product_attribute]': '[0]',
@@ -1033,7 +1008,7 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Clients ────────────────────────────────────────────────────────────
+  
 
   private mapCustomer(c: any): CustomerData {
     return {
@@ -1064,7 +1039,7 @@ export class PrestashopConnector implements BaseConnector {
 
   async updateCustomer(customerId: number, data: Partial<CustomerData>): Promise<CustomerData | null> {
     try {
-      // Fetch current customer first
+      
       const current = await psFetch<any>(this.creds, `customers/${customerId}`, { display: 'full' })
       const c = psExtract(current, 'customer')
       if (!c) return null
@@ -1114,7 +1089,7 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Panier ─────────────────────────────────────────────────────────────
+  
 
   async createCart(customerId: number): Promise<CartData | null> {
     try {
@@ -1168,7 +1143,7 @@ export class PrestashopConnector implements BaseConnector {
           if (!p) continue
 
           const priceHT = Number(p.price || 0)
-          const taxRate = 0.20 // BACKLOG #142: fetch from tax rules
+          const taxRate = 0.20 
           const priceTTC = priceHT * (1 + taxRate)
           const imgId = extractImageId(p.id_default_image)
 
@@ -1182,13 +1157,13 @@ export class PrestashopConnector implements BaseConnector {
             priceTTC,
             image: imgId > 0 ? buildImageUrl(base, imgId) : undefined,
           })
-        } catch { /* skip broken product */ }
+        } catch {  }
       }
 
       const totalHT = items.reduce((sum, i) => sum + i.priceHT * i.quantity, 0)
       const totalTTC = items.reduce((sum, i) => sum + i.priceTTC * i.quantity, 0)
 
-      // Applied cart rules (ps_cart_cart_rule) — read from WS associations
+      
       let discountCode: string | undefined
       let discountHT = 0
       const appliedRules = cart.associations?.cart_rules ?? []
@@ -1204,10 +1179,10 @@ export class PrestashopConnector implements BaseConnector {
           const reductionAmount = Number(rule.reduction_amount ?? 0)
           if (reductionPercent > 0) discountHT += (totalHT * reductionPercent) / 100
           else if (reductionAmount > 0) discountHT += reductionAmount
-        } catch { /* skip */ }
+        } catch {  }
       }
       discountHT = Math.min(discountHT, totalHT)
-      const discountTTC = discountHT * 1.20 // BACKLOG: TVA réelle par ligne
+      const discountTTC = discountHT * 1.20 
 
       const finalTotalHT = totalHT - discountHT
       const finalTotalTTC = totalTTC - discountTTC
@@ -1235,7 +1210,7 @@ export class PrestashopConnector implements BaseConnector {
 
   async getLastCustomerCart(customerId: number): Promise<CartData | null> {
     try {
-      // Fetch carts for this customer, sorted by id desc (most recent first)
+      
       const data = await psFetch<{ carts?: any[] }>(this.creds, 'carts', {
         'filter[id_customer]': `[${customerId}]`,
         sort: '[id_DESC]',
@@ -1243,7 +1218,7 @@ export class PrestashopConnector implements BaseConnector {
         display: 'full',
       })
       const carts = data?.carts ?? []
-      // Find the most recent cart that has items
+      
       for (const c of carts) {
         const rows = c.associations?.cart_rows ?? []
         const hasItems = rows.some((r: any) => Number(r.quantity || 0) > 0)
@@ -1260,7 +1235,7 @@ export class PrestashopConnector implements BaseConnector {
 
   async addToCart(cartId: number, productId: number, quantity: number, combinationId = 0): Promise<CartData | null> {
     try {
-      // Fetch current cart to get existing rows
+      
       console.log(`[ps-connector] addToCart(cart=${cartId}, product=${productId}, qty=${quantity}, combo=${combinationId})`)
       const current = await psFetch<any>(this.creds, `carts/${cartId}`, { display: 'full' })
       const cart = psExtract(current, 'cart')
@@ -1358,7 +1333,7 @@ export class PrestashopConnector implements BaseConnector {
     return result !== null
   }
 
-  // ── Adresses ──────────────────────────────────────────────────────────
+  
 
   async getAddresses(customerId: number): Promise<AddressData[]> {
     try {
@@ -1378,7 +1353,7 @@ export class PrestashopConnector implements BaseConnector {
         address2: a.address2 || '',
         postcode: a.postcode || '',
         city: a.city,
-        countryId: Number(a.id_country || 8), // 8 = France
+        countryId: Number(a.id_country || 8), 
         phone: a.phone || a.phone_mobile || '',
         vatNumber: a.vat_number || '',
       }))
@@ -1420,7 +1395,7 @@ export class PrestashopConnector implements BaseConnector {
 
   async updateAddress(addressId: number, data: Partial<AddressData>): Promise<AddressData | null> {
     try {
-      // Fetch current address first
+      
       console.log(`[ps-connector] updateAddress(${addressId}) data:`, JSON.stringify(data)?.substring(0, 200))
       const current = await psFetch<any>(this.creds, `addresses/${addressId}`, { display: 'full' })
       const addr = psExtract(current, 'address')
@@ -1485,7 +1460,7 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Pays actifs ─────────────────────────────────────────────────────
+  
 
   async getCountries(): Promise<{ id: number; name: string }[]> {
     try {
@@ -1504,7 +1479,7 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Transporteurs ─────────────────────────────────────────────────────
+  
 
   async getCarriers(): Promise<CarrierData[]> {
     try {
@@ -1513,19 +1488,19 @@ export class PrestashopConnector implements BaseConnector {
         'filter[deleted]': '[0]',
         display: 'full',
       })
-      // Fetch delivery prices (real cost per carrier/zone)
+      
       let deliveryPrices: Record<number, number> = {}
       try {
         const delData = await psFetch<{ deliveries?: any[] }>(this.creds, 'deliveries', { display: 'full' })
         for (const d of delData?.deliveries ?? []) {
           const cid = Number(d.id_carrier)
           const price = Number(d.price || 0)
-          // Keep the highest price for each carrier (covers all zones)
+          
           if (!deliveryPrices[cid] || price > deliveryPrices[cid]) {
             deliveryPrices[cid] = price
           }
         }
-      } catch { /* delivery fetch failed, fallback to 0 */ }
+      } catch {  }
 
       return (data?.carriers ?? []).map((c: any) => {
         const id = Number(c.id)
@@ -1544,11 +1519,11 @@ export class PrestashopConnector implements BaseConnector {
     }
   }
 
-  // ── Commandes ─────────────────────────────────────────────────────────
+  
 
   async createOrder(data: OrderInput): Promise<OrderData | null> {
     try {
-      // 1. Update the cart with the address (PrestaShop requires id_address_delivery > 0 for validateOrder)
+      
       try {
         const cartData = await psFetch<any>(this.creds, `carts/${data.cartId}`, { display: 'full' })
         const rawCart = psExtract(cartData, 'cart')
@@ -1583,14 +1558,14 @@ export class PrestashopConnector implements BaseConnector {
         console.warn(`[ps-connector] createOrder: cart address update failed:`, err?.message)
       }
 
-      // 2. Fetch cart to compute totals
+      
       const cart = await this.getCart(data.cartId)
       if (!cart || !cart.items.length) {
         console.error('[ps-connector] createOrder: cart empty or not found')
         return null
       }
 
-      // Generate a unique reference + retrieve the customer's secure_key (via the cart)
+      
       const ref = Math.random().toString(36).substring(2, 11).toUpperCase()
       const cartRaw = await psFetch<any>(this.creds, `carts/${data.cartId}`, { display: 'full' })
       const cartObj = psExtract(cartRaw, 'cart')
@@ -1737,14 +1712,14 @@ export class PrestashopConnector implements BaseConnector {
         priceTTC: Number(row.unit_price_tax_incl || row.product_price || 0),
       }))
 
-      // Fetch addresses
+      
       let addressDelivery: AddressData | undefined
       let addressInvoice: AddressData | undefined
       try {
         const addrs = await this.getAddresses(Number(o.id_customer))
         addressDelivery = addrs.find(a => a.id === Number(o.id_address_delivery))
         addressInvoice = addrs.find(a => a.id === Number(o.id_address_invoice))
-      } catch { /* ignore */ }
+      } catch {  }
 
       return {
         id: Number(o.id),
@@ -1815,7 +1790,7 @@ export class PrestashopConnector implements BaseConnector {
 
   async getRevenueStats(): Promise<RevenueStats> {
     try {
-      // Fetch all orders (limited to recent 500)
+      
       const data = await psFetch<{ orders?: any[] }>(this.creds, 'orders', {
         display: '[id,total_paid_tax_incl,total_products,date_add,current_state]',
         limit: 500,
@@ -1856,7 +1831,7 @@ export class PrestashopConnector implements BaseConnector {
 
   async getTopProducts(limit = 10): Promise<TopProduct[]> {
     try {
-      // Fetch order details to aggregate
+      
       const data = await psFetch<{ orders?: any[] }>(this.creds, 'orders', {
         display: 'full',
         limit: 200,

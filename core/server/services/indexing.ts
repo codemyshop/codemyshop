@@ -1,15 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * Service Google Indexing API + IndexNow (Bing/Yandex/DuckDuckGo)
- *
- * Ping search engines immediately on each publication.
- * Use the same Service Account as GSC.
- *
- * Variables d'environnement :
- * GSC_SERVICE_ACCOUNT_PATH — path to the service-account.json file
- * INDEXNOW_API_KEY — IndexNow API key (optional, fallback: disabled)
- */
 
 import { resolve } from 'node:path'
 import { existsSync, readFileSync } from 'node:fs'
@@ -22,16 +11,13 @@ interface IndexingResult {
   indexnow: { success: boolean; error?: string }
 }
 
-/**
- * Notify Google and Bing/Yandex that a URL has been updated.
- */
 export async function notifyUrlUpdated(url: string): Promise<IndexingResult> {
   const result: IndexingResult = {
     google: { success: false },
     indexnow: { success: false },
   }
 
-  // ── Google Indexing API ──
+  
   try {
     const token = await getGoogleAccessToken()
     if (token) {
@@ -62,7 +48,7 @@ export async function notifyUrlUpdated(url: string): Promise<IndexingResult> {
     console.warn(`[indexing] Google exception: ${result.google.error}`)
   }
 
-  // ── IndexNow (Bing, Yandex, DuckDuckGo) ──
+  
   try {
     const apiKey = process.env.INDEXNOW_API_KEY
     if (apiKey) {
@@ -93,9 +79,6 @@ export async function notifyUrlUpdated(url: string): Promise<IndexingResult> {
   return result
 }
 
-/**
- * Notify in batch (post-deploy, sitemap regeneration).
- */
 export async function notifyUrlsBatch(urls: string[]): Promise<{ total: number; google: number; indexnow: number }> {
   let googleOk = 0
   let indexnowOk = 0
@@ -104,14 +87,12 @@ export async function notifyUrlsBatch(urls: string[]): Promise<{ total: number; 
     const r = await notifyUrlUpdated(url)
     if (r.google.success) googleOk++
     if (r.indexnow.success) indexnowOk++
-    // Rate limit : 200 req/min pour Google Indexing API
+    
     await new Promise(resolve => setTimeout(resolve, 300))
   }
 
   return { total: urls.length, google: googleOk, indexnow: indexnowOk }
 }
-
-// ── Google Auth (Service Account → JWT → Access Token) ──
 
 async function getGoogleAccessToken(): Promise<string | null> {
   const saPath = process.env.GSC_SERVICE_ACCOUNT_PATH || ''

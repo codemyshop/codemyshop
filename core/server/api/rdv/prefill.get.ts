@@ -1,20 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/rdv/prefill?id=<idQuoteRequest>&t=<hmac>
- *
- * Pre-fills /rdv from the quote confirmation email. Signed URL
- * (HMAC quote-rdv:<id>) to avoid exposing prospect contact details in
- * clear GET parameters — the old format `?prospectName=…&prospectEmail=…&…`
- * is fragile (email clients that truncate, `&` encoding misinterpreted by
- * some parsers, max URL length limits in webmail) and violates the principle
- * (zero user-visible content hardcoded in URL).
- *
- * The server reads cs_quote_request from the DB (source of truth) and returns the
- * payload needed for form pre-filling. If the HMAC is invalid or
- * the quote is not found, it falls back to 403 / 404 — the /rdv page ignores
- * it silently and offers an empty form.
- */
+
 import { eq } from 'drizzle-orm'
 import { usePocPg } from '~/server/db/drizzle-pg'
 import { quoteRequest } from '~/server/db/schema-pg/quote-request'

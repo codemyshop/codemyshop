@@ -14,7 +14,7 @@
       sizeClass,
     ]"
   >
-    <!-- Glow aura (visible uniquement en loading) -->
+    
     <Transition
       enter-active-class="transition-opacity duration-500"
       enter-from-class="opacity-0"
@@ -29,26 +29,26 @@
       />
     </Transition>
 
-    <!-- Shimmer sweep (loading) -->
+    
     <span
       v-if="isLoading"
       class="absolute inset-0 -z-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"
       aria-hidden="true"
     />
 
-    <!-- Contenu -->
+    
     <span class="relative z-10 flex items-center gap-2.5">
-      <!-- Spinner (loading) -->
+      
       <span v-if="isLoading" class="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin shrink-0" />
 
-      <!-- AI icon (idle) -->
+      
       <slot v-else name="icon">
         <svg class="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
         </svg>
       </slot>
 
-      <!-- Texte -->
+      
       <span class="truncate">
         {{ isLoading ? loadingLabel : label }}
       </span>
@@ -57,11 +57,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- *
- * AIActionButton — Premium button for AI actions.
- * Animated glow during loading, compliant with DESIGN.md.
- */
 
 interface Props {
   label?:        string

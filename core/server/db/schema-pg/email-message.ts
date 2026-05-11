@@ -1,18 +1,4 @@
-/**
- *
- * Drizzle PG schema — email client domain (persisted mailbox).
- *
- * Owns `cs_email_message` (rule 7 §DB-Only) — message storage
- * IMAP/SMTP of the hub's integrated email client (/hub/crm/email tab Mail).
- *
- * Multi-account : `account_user` discriminates mailboxes (mail@example-shop…,
- * contact@example.com, etc.) on a given Nuxt instance.
- *
- * folder='inbox' : message received via IMAP sync.
- * folder='sent'  : message sent via SMTP from the hub.
- *
- * Attachments in child table `cs_email_attachment` (BYTEA).
- */
+
 
 import {
   serial, integer, smallint, timestamp, varchar, text,
@@ -56,9 +42,9 @@ export const emailAttachment = vaisseauMereAcSchema.table(
     filename:          varchar('filename', { length: 500 }),
     mimeType:          varchar('mime_type', { length: 255 }),
     sizeBytes:         integer('size_bytes'),
-    // BYTEA → côté Drizzle on stocke en TEXT base64 pour transit, mais la
-    // colonne est bien BYTEA en DB. Voir endpoints download/sync pour
-    // l'encodage/décodage.
+    
+    
+    
     content:           text('content'),
     dateAdd:           timestamp('date_add', { mode: 'date', precision: 0 }).notNull().defaultNow(),
   },

@@ -1,35 +1,11 @@
-/**
- *
- * Content Intelligence — the decision-making brain of the Flywheel.
- *
- * This service CLOSES THE LOOP: it combines 3 data sources
- * to automatically decide what content the AI should produce.
- *
- * 1. GSC (Google Search Console) → SEO acquisition opportunities
- * 2. Matomo (behavior) → high-intent searches + pages to rewrite
- * 3. Fallback (backup topics) → if the APIs are down
- *
- * This is what transforms the sequential model into an exponential model:
- * the system learns from data to produce increasingly
- * targeted content with each Flywheel iteration.
- *
- * Exposed via:
- * GET /api/content-intelligence/next-topic → today's priority topic
- */
+
 
 import { getTopOpportunities, getDecliningPages } from './gsc'
 import { getInsights } from './analytics'
 import { getClientConfigJson } from '~/internal/clientconfig/server/utils/clientconfig'
 
-/**
- * GOLDEN RULE — DATA ISOLATION
- * Each call to getNextTopic() is scoped to a single clientId.
- * A tenant's GSC and Matomo data are NEVER mixed
- * with another tenant's. The GSC siteUrl is resolved from the
- * tenant configuration (DB), not from a global environment variable.
- */
 async function resolveClientGscSite(clientId: string): Promise<string> {
-  // 1. Lecture explicite cs_client_config.config_json.gscSiteUrl (DB-Only canonique)
+  
   try {
     const json = await getClientConfigJson(clientId, { global: true })
     if (json) {
@@ -38,7 +14,7 @@ async function resolveClientGscSite(clientId: string): Promise<string> {
     }
   } catch {}
 
-  // 2. Fallback heuristique : domaine du VPS tenant (façade ac_hub)
+  
   try {
     const { listActiveClientVps } = await import('~/internal/hub/server/utils/hub')
     const rows = await listActiveClientVps(clientId)
@@ -52,12 +28,11 @@ export interface ContentBrief {
   title: string
   slug: string
   source: 'gsc-conquest' | 'gsc-defend' | 'matomo-search' | 'matomo-bounce' | 'fallback'
-  priority: number       // 1 = max, 10 = min
-  context: string        // Prompt context pour l'IA
-  dataPoints: string[]   // Données justifiant ce choix
+  priority: number       
+  context: string        
+  dataPoints: string[]   
 }
 
-// ── Sujets de secours (si GSC + Matomo sont down) ────────────────────────
 const FALLBACK_TOPICS: ContentBrief[] = [
   {
     title: 'Migration Shopify vers PrestaShop Headless : guide complet 2026',
@@ -101,19 +76,13 @@ const FALLBACK_TOPICS: ContentBrief[] = [
   },
 ]
 
-/**
- * Retrieves today's priority topic by combining all sources.
- *
- * @param clientId - Identifiant du client (pour Matomo)
- * @returns Le brief de contenu le plus prioritaire
- */
 export async function getNextTopic(clientId = 'ac-hub'): Promise<ContentBrief> {
   const briefs: ContentBrief[] = []
 
-  // Résoudre le site GSC du client (étanchéité data — jamais de cross-tenant)
+  
   const clientGscSite = await resolveClientGscSite(clientId)
 
-  // ── Source 1 : GSC (opportunités de conquête, scopé au domaine du client) ──
+  
   try {
     const gscOpps = await getTopOpportunities(clientGscSite || undefined, 28, 10)
     for (const opp of gscOpps) {
@@ -140,7 +109,7 @@ export async function getNextTopic(clientId = 'ac-hub'): Promise<ContentBrief> {
         title: `[RÉÉCRITURE] ${page.page}`,
         slug: `rewrite-${slugify(page.page.split('/').pop() ?? 'page')}`,
         source: 'gsc-defend',
-        priority: 2,  // Haute priorité — on perd du trafic
+        priority: 2,  
         context: `Cette page a perdu plus de 30% de son trafic. Réécrire le contenu pour améliorer le CTR et regagner les positions. URL: ${page.page}`,
         dataPoints: [
           `Clics actuels: ${page.clicks} (en baisse)`,
@@ -152,11 +121,11 @@ export async function getNextTopic(clientId = 'ac-hub'): Promise<ContentBrief> {
     console.warn(`[content-intelligence] GSC indisponible:`, err?.message?.slice(0, 100))
   }
 
-  // ── Source 2 : Matomo (comportement utilisateur) ───────────────────
+  
   try {
     const insights = await getInsights(clientId)
     if (insights?.results) {
-      // Extraire les search queries internes (si configuré dans Matomo)
+      
       const searchEvents = insights.results
         ?.filter((r: any) => r.name === 'search')
         ?.slice(0, 5)
@@ -175,7 +144,7 @@ export async function getNextTopic(clientId = 'ac-hub'): Promise<ContentBrief> {
         }
       }
 
-      // Pages à fort taux de rebond
+      
       const bouncePages = insights.results
         ?.filter((r: any) => r.name === '$pageview' && (r.bounce_rate ?? 0) > 0.7)
         ?.slice(0, 3)
@@ -195,15 +164,15 @@ export async function getNextTopic(clientId = 'ac-hub'): Promise<ContentBrief> {
     console.warn(`[content-intelligence] Matomo indisponible:`, err?.message?.slice(0, 100))
   }
 
-  // ── Sélection du sujet prioritaire ──────────────────────────────────
+  
   if (briefs.length === 0) {
     console.log(`[content-intelligence] Aucune donnée disponible — fallback activé`)
-    // Choisir un fallback aléatoire non encore traité
+    
     const idx = Math.floor(Math.random() * FALLBACK_TOPICS.length)
     return FALLBACK_TOPICS[idx]
   }
 
-  // Trier par priorité (1 = max) puis par score implicite
+  
   briefs.sort((a, b) => a.priority - b.priority)
 
   const winner = briefs[0]
@@ -213,16 +182,13 @@ export async function getNextTopic(clientId = 'ac-hub'): Promise<ContentBrief> {
   return winner
 }
 
-/**
- * Retrieves the next N prioritized topics.
- */
 export async function getTopicQueue(clientId = 'ac-hub', limit = 5): Promise<ContentBrief[]> {
   const topic = await getNextTopic(clientId)
-  // Pour l'instant, retourne le top 1 + des fallbacks
-  // À terme, retourner les N meilleurs briefs de toutes les sources
+  
+  
   const queue = [topic]
 
-  // Compléter avec des fallbacks si pas assez de data
+  
   for (const fb of FALLBACK_TOPICS) {
     if (queue.length >= limit) break
     if (!queue.find(q => q.slug === fb.slug)) {
@@ -232,8 +198,6 @@ export async function getTopicQueue(clientId = 'ac-hub', limit = 5): Promise<Con
 
   return queue.slice(0, limit)
 }
-
-// ── Helpers ───────────────────────────────────────────────────────────────
 
 function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1)

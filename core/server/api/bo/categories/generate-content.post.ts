@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { resolveClientId } from '~/server/utils/db'
 import { requireRoleOrSaas } from '~/server/utils/session'
@@ -7,14 +7,6 @@ import {
   enqueueRedactionJob,
 } from '~/enterprise/ai/category-queue/server/utils/category-queue'
 
-/**
- * POST /api/bo/categories/generate-content
- *
- * Inserts a category AI writing request into cs_category_queue.
- * The cron ac_redaction_cron.py processes the queue via Claude CLI.
- *
- * Body : { id_category, name, slug, instructions? }
- */
 export default defineEventHandler(async (event) => {
   requireRoleOrSaas(event, ['root', 'founder', 'market'])
 

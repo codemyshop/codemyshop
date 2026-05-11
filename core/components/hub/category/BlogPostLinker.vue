@@ -187,7 +187,7 @@ function onClickOutside(e: MouseEvent) {
 
 onMounted(() => {
   if (typeof document !== 'undefined') document.addEventListener('click', onClickOutside)
-  // Pre-fetch the latest 20 articles to directly open the autocomplete
+  
   runSearch()
 })
 onUnmounted(() => {

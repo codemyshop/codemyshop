@@ -1,4 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { buildNuxtUrl, stripHtml } from '~/server/utils/ps'
 import {
@@ -6,18 +6,6 @@ import {
   listArticlesByAuthor,
 } from '~/internal/employeeextra/server/utils/employeeextra'
 
-/**
- * GET /api/public/author/:slug
- *
- * Public author page (E-E-A-T) — resolves slug → cs_employee_extra,
- * JOIN ps_employee for canonical names, and lists all articles
- * active whose author_employee_id points to this employee.
- *
- * 404 if:
- * - module ac_employeeextra not installed on the tenant (table missing)
- *   - slug inconnu
- *   - extras inactifs (active = 0)
- */
 export default defineEventHandler(async (event) => {
   const slug = String(getRouterParam(event, 'slug') || '').trim().toLowerCase()
   if (!slug) throw createError({ statusCode: 400, message: 'slug requis' })
@@ -31,8 +19,8 @@ export default defineEventHandler(async (event) => {
 
   if (!author) throw createError({ statusCode: 404, message: 'Auteur introuvable' })
 
-  // Articles : besoin de cs_cms_extra (author_employee_id). Si la
-  // table n'existe pas, on renvoie l'auteur sans articles.
+  
+  
   let articles: any[] = []
   try {
     const rows = await listArticlesByAuthor(author.id, { event })
@@ -64,7 +52,7 @@ export default defineEventHandler(async (event) => {
       }
     })
   } catch {
-    // cs_cms_extra absent — pas d'articles liables, on continue.
+    
   }
 
   return { author, articles, count: articles.length }

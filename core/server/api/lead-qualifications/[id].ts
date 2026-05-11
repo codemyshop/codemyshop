@@ -1,8 +1,4 @@
-/**
- *
- * GET /api/lead-qualifications/:id  → qualification for a lead
- * PUT /api/lead-qualifications/:id  → updates the qualification
- */
+
 
 import { getQualification, upsertQualification, type UpsertQualificationInput } from '~/server/utils/lead-qualifications'
 

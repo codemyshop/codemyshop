@@ -1,12 +1,4 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * useDictionaryLinks — Auto-link dictionary terms in .prose content
- *
- * Scans the rendered article HTML for dictionary terms and wraps the first
- * occurrence of each term with a link to /dictionnaire/{slug}.
- * Skips headings, links, code blocks, and already-linked terms.
- */
 
 interface DictionaryTerm {
   slug: string
@@ -25,9 +17,9 @@ export function useDictionaryLinks() {
       const entries = Array.isArray(data) ? data : (data?.entries ?? [])
       terms.value = entries
         .filter(t => t.word && t.slug)
-        .sort((a, b) => b.word.length - a.word.length) // longest first to avoid partial matches
+        .sort((a, b) => b.word.length - a.word.length) 
       loaded.value = true
-    } catch { /* silent — dictionary links are enhancement, not critical */ }
+    } catch {  }
   }
 
   function annotateProse(proseEl: Element) {
@@ -39,7 +31,7 @@ export function useDictionaryLinks() {
         const parent = node.parentElement
         if (!parent) return NodeFilter.FILTER_REJECT
         const tag = parent.tagName
-        // Skip headings, links, code, buttons, script, and already-annotated
+        
         if (['H1', 'H2', 'H3', 'H4', 'A', 'CODE', 'PRE', 'BUTTON', 'SCRIPT'].includes(tag))
           return NodeFilter.FILTER_REJECT
         if (parent.closest('a, code, pre, h1, h2, h3, h4, .dict-term'))
@@ -62,7 +54,7 @@ export function useDictionaryLinks() {
       for (const term of terms.value) {
         if (linked.has(term.slug)) continue
 
-        // Build regex: match whole word, case-insensitive
+        
         const escaped = term.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
         const regex = new RegExp(`\\b(${escaped})\\b`, 'i')
         const match = regex.exec(text)
@@ -89,7 +81,7 @@ export function useDictionaryLinks() {
           parent.removeChild(textNode)
 
           linked.add(term.slug)
-          break // move to next text node after splitting
+          break 
         }
       }
     }

@@ -1,11 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/moduleslist — PostgreSQL DB direct (cs_main.cs_moduleslist).
- * Public listing of proprietary PS modules (active=1, sorted by position ASC).
- *
- * Runtime 100% PG, MariaDB branch dropped.
- */
+
 import { listActiveModuleslistPg } from '~/server/utils/step7-readonly-pg'
 
 function parseJson<T>(raw: any, fb: T): T {

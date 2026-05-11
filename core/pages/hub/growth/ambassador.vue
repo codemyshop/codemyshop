@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto bg-gray-50 dark:bg-slate-950">
 
-    <!-- Header -->
+    
     <header class="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 px-6 py-4 sticky top-0 z-10">
       <div class="flex items-center justify-between">
         <div>
@@ -16,7 +16,7 @@
 
     <div class="p-6 max-w-5xl mx-auto space-y-6">
 
-      <!-- ── The Promise ──────────────────────────────────────────────── -->
+      
       <div class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-8 lg:p-10 text-white shadow-xl overflow-hidden">
         <div class="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
         <div class="relative">
@@ -35,22 +35,22 @@
         </div>
       </div>
 
-      <!-- ── Jauge Cost-to-Profit ─────────────────────────────────────── -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6">
         <h3 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-4">Jauge Cost-to-Profit</h3>
 
         <div class="grid grid-cols-3 gap-4 mb-6">
-          <!-- Forfait -->
+          
           <div class="text-center">
             <p class="text-2xl font-extrabold text-gray-900">{{ formatEur(monthlyFee) }}</p>
             <p class="text-xs text-gray-400 mt-0.5">Forfait / mois</p>
           </div>
-          <!-- Commissions -->
+          
           <div class="text-center">
             <p class="text-2xl font-extrabold" :class="totalCommission > 0 ? 'text-success-600' : 'text-gray-400'">{{ formatEur(totalCommission) }}</p>
             <p class="text-xs text-gray-400 mt-0.5">Commissions ce mois</p>
           </div>
-          <!-- Net -->
+          
           <div class="text-center">
             <p class="text-2xl font-extrabold" :class="netBalance >= 0 ? 'text-success-600' : 'text-danger-600'">
               {{ netBalance >= 0 ? '+' : '' }}{{ formatEur(netBalance) }}
@@ -61,7 +61,7 @@
           </div>
         </div>
 
-        <!-- Barre de progression -->
+        
         <div>
           <div class="flex items-center justify-between text-[10px] text-gray-400 mb-1.5">
             <span>0 &euro;</span>
@@ -78,7 +78,7 @@
                 : 'bg-gradient-to-r from-primary-400 to-primary-600'"
               :style="`width: ${Math.min(100, progressPercent)}%`"
             />
-            <!-- Seuil rentabilit&eacute; -->
+            
             <div class="absolute top-0 bottom-0 w-px bg-gray-400" :style="`left: 100%`" />
           </div>
           <p v-if="progressPercent >= 100" class="text-xs text-success-600 font-semibold mt-2 text-center">
@@ -87,10 +87,10 @@
         </div>
       </div>
 
-      <!-- ── Introduction VIP ─────────────────────────────────────────── -->
+      
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- Formulaire -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6">
           <h3 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-1">Introduction VIP</h3>
           <p class="text-xs text-gray-400 mb-5">Pr&eacute;sentez CodeMyShop &agrave; un confr&egrave;re dirigeant.</p>
@@ -125,7 +125,7 @@
           </Transition>
         </div>
 
-        <!-- Preview email -->
+        
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6">
           <h3 class="text-sm font-bold text-gray-800 dark:text-slate-100 mb-1">Aper&ccedil;u du mail</h3>
           <p class="text-xs text-gray-400 mb-4">Ce mail sera envoy&eacute; de votre part au prospect.</p>
@@ -155,7 +155,7 @@
         </div>
       </div>
 
-      <!-- ── Protege list ───────────────────────────────── -->
+      
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
           <div>
@@ -209,8 +209,7 @@
 </template>
 
 <script setup lang="ts">
-/**
- */
+
 import type { Referral } from '~/server/utils/referrals'
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
@@ -223,12 +222,8 @@ const hubTitle = computed(() =>
   header.value?.logo?.text ?? resolvedClientId.value
 )
 
-// ── Config financière ─────────────────────────────────────────────────────────
-
-const monthlyFee      = 800    // forfait Run mensuel
-const commissionRate  = 0.15   // 15% RevShare
-
-// ── Referrals ─────────────────────────────────────────────────────────────────
+const monthlyFee      = 800    
+const commissionRate  = 0.15   
 
 interface ReferralExt extends Referral { mrr?: number }
 
@@ -239,7 +234,7 @@ async function loadReferrals() {
     const data = await $fetch<Referral[]>('/api/growth/referrals', {
       query: { referrerId: resolvedClientId.value },
     })
-    // Enrichir avec un MRR simulé pour les clients déployés
+    
     referrals.value = data.map(r => ({
       ...r,
       mrr: r.status === 'deployed' ? 800 : 0,
@@ -258,8 +253,6 @@ const netBalance = computed(() => totalCommission.value - monthlyFee)
 const progressPercent = computed(() =>
   monthlyFee > 0 ? Math.round((totalCommission.value / monthlyFee) * 100) : 0
 )
-
-// ── Introduction VIP ──────────────────────────────────────────────────────────
 
 const introForm = reactive({ name: '', company: '', email: '' })
 const sending   = ref(false)
@@ -289,8 +282,6 @@ async function sendIntro() {
   finally { sending.value = false }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
 function formatEur(n: number) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
 }
@@ -306,8 +297,6 @@ function statusClass(s: string) {
 function statusDot(s: string) {
   return s === 'deployed' ? 'bg-success-400' : s === 'audit' ? 'bg-primary-400' : 'bg-gray-400'
 }
-
-// ── Init ──────────────────────────────────────────────────────────────────────
 
 onMounted(loadReferrals)
 </script>

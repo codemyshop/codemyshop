@@ -1,8 +1,7 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
+
 
 import { getPgClient } from '~/server/utils/db-pg-adapter'
 
-/** GET /api/bo/inbox/:id — Detail of an email with full body (notes). */
 const PG_SCHEMA = 'cs_main'
 
 export default defineEventHandler(async (event) => {

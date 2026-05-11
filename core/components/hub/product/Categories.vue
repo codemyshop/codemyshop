@@ -5,7 +5,7 @@
       <span class="text-[10px] uppercase tracking-wide text-gray-400">{{ categories.length }} sélectionnée(s)</span>
     </div>
 
-    <!-- Selected category badges -->
+    
     <div>
       <label class="block text-xs font-medium text-gray-500 mb-2">Catégories sélectionnées</label>
       <div v-if="categories.length" class="flex flex-wrap gap-2">
@@ -30,7 +30,7 @@
       <p v-else class="text-xs text-gray-400">Aucune catégorie.</p>
     </div>
 
-    <!-- Default category -->
+    
     <div>
       <label class="block text-xs font-medium text-gray-500 mb-1">Catégorie par défaut</label>
       <select
@@ -45,7 +45,7 @@
       </p>
     </div>
 
-    <!-- Bouton ajouter -->
+    
     <div>
       <button
         type="button"

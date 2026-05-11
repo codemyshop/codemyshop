@@ -1,9 +1,5 @@
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
-/**
- * GET /api/bo/smartproject/projects/:id/logs
- * Remplace ac_smartproject/ajaxgetprojectlogs (chantier #38 Phase B1.5).
- */
+
 import { listProjectLogs } from '~/enterprise/base/smartproject/server/utils/smartproject'
 
 export default defineEventHandler(async (event) => {

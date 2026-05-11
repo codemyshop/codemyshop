@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="px-5 py-4 flex items-start gap-4">
-      <!-- Checkbox done -->
+      
       <button @click="toggleDone"
         :class="['mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors flex-shrink-0',
           item.status === 'done'
@@ -29,7 +29,7 @@
         </p>
       </div>
 
-      <!-- Actions -->
+      
       <div class="flex items-center gap-1 flex-shrink-0">
         <button v-if="item.description" @click="expanded = !expanded" class="p-1 rounded hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-400">
           <svg class="w-4 h-4" :class="{ 'rotate-180': expanded }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

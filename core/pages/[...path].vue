@@ -1,11 +1,4 @@
-<!--
-  Page catégorie Example Shop — /catalogue/:slug
-  Sous-catégories visuelles + grille produits B2B + sidebar facettes (calibrage, origine…)
 
-  @author    CodeMyShop <noreply@codemyshop.com>
-  @copyright 2026 CodeMyShop
-  @license   AGPL-3.0-or-later
--->
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
@@ -17,18 +10,12 @@ const { t } = useHubT()
 const _cfg = useRuntimeConfig()
 const clientId = String((_cfg.public as any).clientId ?? '')
 
-// ── Pillar detection (tenant config) ───────────────────────────────────────
-// If the first path segment is a pillar declared in runtimeConfig.public.piliers
-// (e.g., ['wholesale', 'brand'] in the shop), we delegate to the component
-// <CategoryPage> (rich SEO render: hero + FAQ + articles + presentation + JSON-LD).
-// Otherwise, simple catalog logic with facets (root categories, catalog paths).
 const rawSegments = computed<string[]>(() => {
   const raw = route.params.path
   const arr = Array.isArray(raw) ? raw : (raw ? [raw] : [])
   return arr.filter(Boolean) as string[]
 })
-// Pillar format: 'wholesale' or 'wholesale:2' (truncate server-side).
-// On the front-end, we only need the slug; we parse out any possible ':N' suffix.
+
 const piliersList = ((_cfg.public as any).piliers ?? []) as string[]
 const piliersSlugs = piliersList.map((p) => (p.split(':', 1)[0] || p))
 const isPilierRoute = computed(() => {
@@ -38,15 +25,12 @@ const isPilierRoute = computed(() => {
 const activePilier = computed(() => (isPilierRoute.value ? rawSegments.value[0] : ''))
 const pilierSubSegments = computed(() => (isPilierRoute.value ? rawSegments.value.slice(1) : []))
 
-// Panier serveur (useServerCart) + drawer slide-in
 const { addToCart, totalItems } = useServerCart(clientId)
 const { open: openCartDrawer } = useCartDrawer()
 
-// B2B quote (unauthenticated visitor)
 const { addToQuote, totalItems: quoteTotalItems } = useQuoteCart()
 const { open: openQuoteDrawer } = useQuoteDrawer()
 
-// Product quantities in listings
 const quantities = ref<Record<number, number>>({})
 function getQty(id: number) { return quantities.value[id] ?? 1 }
 function setQty(id: number, v: number) { quantities.value = { ...quantities.value, [id]: Math.max(1, v) } }
@@ -60,11 +44,10 @@ function quickQuote(product: any) {
   openQuoteDrawer()
 }
 
-// Resolve the psId from the slug via the menu config
 const slug = computed(() => {
   const parts = route.params.path
   const arr = Array.isArray(parts) ? parts : (parts ? [parts] : [])
-  // Filter empty segments to handle the trailing slash (/diy/ → ['diy', ''])
+  
   return arr.filter(Boolean).join('/')
 })
 
@@ -83,25 +66,18 @@ function findPsId(menuList: any[], targetSlug: string): number | null {
   return null
 }
 
-// Categories for subcategories + breadcrumb — lang-aware
 const { activeLang } = useRouteLang()
 const { data: allCategories } = await useFetch('/api/catalogue/categories', {
   query: { clientId, limit: 200, lang: activeLang },
   watch: [activeLang],
 })
 
-// Direct slug lookup (last segment) — used to resolve psId at SSR
-// independently from the menu config (necessary for a store that doesn't map
-// psId in its items). Fetch DB directly server-side.
 const lastSeg = computed(() => (slug.value.split('/').pop() ?? '').toLowerCase())
 const { data: directCategory } = await useFetch('/api/catalogue/category-by-slug', {
   query: computed(() => ({ slug: lastSeg.value, clientId, lang: activeLang.value })),
   watch: [lastSeg, activeLang],
 })
 
-// psId resolution: priority to the menu config (storefront pattern bundled with
-// psId), fallback to DB lookup by link_rewrite (store — root URLs without
-// psId mapped).
 const psId = computed(() => {
   const items = menuItems.value
   const fromMenu = findPsId(items, slug.value) ?? findPsId(items, lastSeg.value)
@@ -109,11 +85,6 @@ const psId = computed(() => {
   return (directCategory.value as any)?.id ?? null
 })
 
-// ── Fallback CMS (ancien [cmsSlug].vue) ────────────────────────────────────
-// If the slug is not a category, attempt CMS page lookup (/shipping,
-// /terms, /about…). The API returns null if no match, without a 404.
-// CMS matching rule: slug = single-segment path (rejects multi-segment paths
-// like /cat/subcat to avoid unnecessary lookups).
 const isCmsCandidate = computed(() => {
   const segments = slug.value.split('/').filter(Boolean)
   return segments.length === 1 && /^[a-z0-9][a-z0-9-]*$/.test(segments[0])
@@ -134,7 +105,7 @@ const { data: footerData } = isCmsCandidate.value
   : { data: ref(null) }
 
 const cmsPage = computed<any>(() => {
-  // Display CMS only if: valid candidate AND no category AND CMS found
+  
   if (!isCmsCandidate.value) return null
   if (psId.value) return null
   const raw = cmsPageData.value as any
@@ -147,9 +118,8 @@ const cmsCanonicalUrl = computed(() => {
   return `${base}${route.path}`
 })
 
-// Fallback to 404 if no category and no CMS
 if (!psId.value && isCmsCandidate.value && cmsPageData.value !== null && !cmsPage.value) {
-  // CMS fetch OK but empty → 404
+  
   throw createError({ statusCode: 404, statusMessage: 'Page introuvable', fatal: true })
 }
 
@@ -166,16 +136,14 @@ const subcategories = computed(() => {
   return cats.filter((c: any) => c.id_parent === psId.value)
 })
 
-// Filter state (URL synced)
 const sortBy = ref<string>((route.query.sort as string) || 'name_asc')
 const priceMin = ref<number>(Number(route.query.priceMin) || 0)
 const priceMax = ref<number>(Number(route.query.priceMax) || 10000)
 const currentPage = ref<number>(Number(route.query.page) || 1)
 const showMobileFilters = ref(false)
 
-// Selected features: Map<featureId, Set<valueId>>
 const selectedFeatures = ref<Record<number, number[]>>({})
-// Restaurer depuis URL ?f=4:127,128|7:541
+
 function parseFParam(raw: string | undefined): Record<number, number[]> {
   if (!raw) return {}
   const out: Record<number, number[]> = {}
@@ -196,7 +164,6 @@ function serializeFParam(features: Record<number, number[]>): string {
 }
 selectedFeatures.value = parseFParam(route.query.f as string)
 
-// Sync URL ← state (debounced via watch)
 function syncUrl() {
   const q: Record<string, any> = { ...route.query }
   if (sortBy.value && sortBy.value !== 'name_asc') q.sort = sortBy.value
@@ -213,7 +180,6 @@ function syncUrl() {
   router.replace({ query: q })
 }
 
-// Endpoint riche /list (renvoie { products, total, page, limit, filters })
 const perPage = 24
 const listKey = computed(() => `${psId.value}-${sortBy.value}-${priceMin.value}-${priceMax.value}-${currentPage.value}-${serializeFParam(selectedFeatures.value)}`)
 
@@ -238,7 +204,6 @@ const filters = computed<Array<{ id: number; name: string; values: Array<{ id: n
 
 const totalPages = computed(() => Math.ceil(total.value / perPage) || 1)
 
-// Toggle valeur de feature
 function toggleFeatureValue(fId: number, vId: number) {
   const current = selectedFeatures.value[fId] || []
   if (current.includes(vId)) {
@@ -273,14 +238,11 @@ watch([sortBy, priceMin, priceMax, selectedFeatures, currentPage], () => {
   syncUrl()
 }, { deep: true })
 
-// Reset page if filters change
 watch([sortBy, priceMin, priceMax], () => { currentPage.value = 1 })
 
-// Collapsible sections (by default all open)
 const collapsed = ref<Record<number, boolean>>({})
 function toggleSection(fId: number) { collapsed.value = { ...collapsed.value, [fId]: !collapsed.value[fId] } }
 
-// Slug utility
 function findSlugForPsId(id: number): string {
   const items = menuItems.value
   for (const item of items) {
@@ -295,7 +257,6 @@ function findSlugForPsId(id: number): string {
   return `/catalogue/${id}`
 }
 
-// body#category-{id} + class (PS convention) to target from CSS/JS
 useCategoryBodyId(() => psId.value ?? null)
 
 const brandName = computed(() => (_cfg.public as any).brandName || 'Catalogue')
@@ -306,11 +267,11 @@ useHead({
   meta: [
     { name: 'description', content: computed(() => category.value?.meta_description || category.value?.description?.slice(0, 160) || '') },
   ],
-  // Pillar mode: <CategoryPage> manages its own JSON-LD (CollectionPage,
-  // BreadcrumbList, AggregateOffer, ItemList, FAQPage) with aggregate.total
-  // computed at SSR via /api/category. Don't duplicate here, or useLazyFetch
-  // server:false causes us to emit numberOfItems=0 in SSR (audit incidents
-  // /grossiste/epice 2026-04-25).
+  
+  
+  
+  
+  
   script: computed(() => {
     if (isPilierRoute.value || !category.value || total.value <= 0) return []
     return [{
@@ -331,7 +292,7 @@ useHead({
 </script>
 
 <template>
-  <!-- ═══ Mode PILIER (rendu SEO riche via <CategoryPage>) ═══ -->
+  
   <CategoryPage
     v-if="isPilierRoute"
     :pilier="activePilier"
@@ -339,7 +300,7 @@ useHead({
   />
 
   <NuxtLayout v-else name="white-label">
-    <!-- ═══ CMS mode (single-segment slug matching a CMS page) ═══ -->
+    
     <CmsPage
       v-if="cmsPage"
       :page="cmsPage"
@@ -348,10 +309,10 @@ useHead({
       :active-lang="activeLang"
     />
 
-    <!-- ═══ CATALOG mode (PS category, facets) ═══ -->
+    
     <div v-else class="min-h-screen bg-white">
 
-      <!-- Breadcrumb -->
+      
       <div class="bg-gray-50 border-b border-gray-100">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
           <nav class="flex items-center gap-2 text-xs text-gray-400">
@@ -364,10 +325,10 @@ useHead({
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
-        <!-- Category title -->
+        
         <h1 class="text-2xl font-bold text-gray-900 mb-6">{{ category?.name ?? 'Catalogue' }}</h1>
 
-        <!-- Visual subcategories -->
+        
         <div v-if="subcategories.length" class="mb-10">
           <div class="flex flex-wrap gap-3">
             <NuxtLink
@@ -381,20 +342,20 @@ useHead({
           </div>
         </div>
 
-        <!-- Layout : sidebar + grille -->
+        
         <div class="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
 
-          <!-- ────── SIDEBAR FACETTES (desktop sticky) ────── -->
+          
           <aside class="hidden lg:block">
             <div class="sticky top-24 space-y-6">
 
-              <!-- Reset global -->
+              
               <div v-if="hasActiveFilters" class="flex items-center justify-between">
                 <span class="text-xs text-gray-500">{{ t('catalogue.filters_active') }}</span>
                 <button class="text-xs font-medium text-primary-600 hover:underline" @click="resetFilters">{{ t('catalogue.filters_clear_all') }}</button>
               </div>
 
-              <!-- Sections facettes dynamiques -->
+              
               <section v-for="feat in filters" :key="feat.id" class="border-b border-gray-100 pb-5">
                 <button
                   class="flex items-center justify-between w-full mb-3 text-left"
@@ -424,9 +385,9 @@ useHead({
             </div>
           </aside>
 
-          <!-- ────── COLONNE PRODUITS ────── -->
+          
           <div>
-            <!-- Compteur + tri + bouton filtres mobile -->
+            
             <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
               <p class="text-sm text-gray-500">{{ total }} produit{{ total > 1 ? 's' : '' }}</p>
               <div class="flex items-center gap-3">
@@ -447,7 +408,7 @@ useHead({
               </div>
             </div>
 
-            <!-- Loading skeleton -->
+            
             <div v-if="loadingProducts" class="grid grid-cols-2 sm:grid-cols-3 gap-5">
               <div v-for="i in 6" :key="i" class="rounded-xl border border-gray-100 overflow-hidden animate-pulse">
                 <div class="aspect-square bg-gray-100" />
@@ -459,7 +420,7 @@ useHead({
               </div>
             </div>
 
-            <!-- Grille produits -->
+            
             <div v-else-if="products.length" class="grid grid-cols-2 sm:grid-cols-3 gap-5">
               <NuxtLink
                 v-for="product in products"
@@ -518,13 +479,13 @@ useHead({
               </NuxtLink>
             </div>
 
-            <!-- Empty state -->
+            
             <div v-else class="text-center py-20 border border-dashed border-gray-200 rounded-xl">
               <p class="text-gray-400 text-sm mb-4">{{ t('catalogue.catalogue_empty') }}</p>
               <button v-if="hasActiveFilters" class="text-xs font-medium text-primary-600 hover:underline" @click="resetFilters">{{ t('catalogue.reset_filters') }}</button>
             </div>
 
-            <!-- Pagination -->
+            
             <div v-if="totalPages > 1" class="flex items-center justify-center gap-2 mt-10">
               <button
                 :disabled="currentPage <= 1"
@@ -547,7 +508,7 @@ useHead({
           </div>
         </div>
 
-        <!-- ────── DRAWER FILTRES MOBILE ────── -->
+        
         <Teleport to="body">
           <Transition name="fade">
             <div v-if="showMobileFilters" class="fixed inset-0 z-50 lg:hidden">
@@ -589,10 +550,9 @@ useHead({
           </Transition>
         </Teleport>
 
-        <!-- FAB cart/devis : showPrices + compteurs cookie session →
-             ClientOnly pour ne JAMAIS apparaître dans le HTML SSR caché. -->
+        
         <ClientOnly>
-          <!-- Floating cart link (authenticated) -->
+          
           <div v-if="showPrices && totalItems > 0" class="fixed bottom-6 right-6 z-40">
             <NuxtLink
               to="/panier"
@@ -602,12 +562,8 @@ useHead({
               {{ totalItems }} {{ totalItems > 1 ? t('cart.articles') : t('cart.article') }}
             </NuxtLink>
           </div>
-          <!-- Lien devis flottant retiré 2026-05-08 (Alex feedback Example Shop
-               preprod) : redondant avec le quote drawer accessible depuis
-               le top header. Le `cart connected` flottant juste au-dessus
-               reste actif pour les tenants B2C où l'icône drawer ne suffit
-               pas seule. -->
-          <!-- DROPPED : <div v-if="!showPrices && quoteTotalItems > 0" …> -->
+          
+          
         </ClientOnly>
 
       </div>

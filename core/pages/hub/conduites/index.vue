@@ -1,8 +1,6 @@
 <script setup lang="ts">
-/** @author CodeMyShop <noreply@codemyshop.com> | @copyright 2026 CodeMyShop | @license   AGPL-3.0-or-later */
 
 definePageMeta({ layout: 'hub', middleware: 'crm-auth', ssr: false })
-
 
 interface Conduite {
   id: number
@@ -92,9 +90,9 @@ const startRepresentation = async () => {
     )
     if (data.success) {
       startMessage.value = `Représentation #${data.idRepresentation} créée. Lance le runner pour exécuter les cues.`
-      // Reload the detail to see the new representation
+      
       await openDetail(selectedConduite.value)
-      // Reload the list to update the counter
+      
       await loadConduites()
     } else {
       startMessage.value = `Erreur : ${data.error}`
@@ -144,7 +142,6 @@ const formatDuration = (ms: number | null) => {
   return `${Math.floor(ms / 60000)}m ${Math.floor((ms % 60000) / 1000)}s`
 }
 
-// Stats globales
 const stats = computed(() => {
   const total = conduites.value.length
   const totalRepresentations = conduites.value.reduce((s, c) => s + c.nbRepresentations, 0)
@@ -158,7 +155,7 @@ onMounted(loadConduites)
 <template>
   <div class="min-h-screen bg-slate-950 text-slate-100 px-6 py-10">
     <div class="max-w-7xl mx-auto">
-      <!-- Header -->
+      
       <div class="mb-10">
         <h1 class="text-3xl font-bold mb-2">La Conduite</h1>
         <p class="text-slate-400 italic">
@@ -166,7 +163,7 @@ onMounted(loadConduites)
         </p>
       </div>
 
-      <!-- Stats -->
+      
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
         <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-5">
           <div class="text-sm text-slate-400 uppercase tracking-wider">Conduites actives</div>
@@ -182,17 +179,17 @@ onMounted(loadConduites)
         </div>
       </div>
 
-      <!-- Loading -->
+      
       <div v-if="loading" class="text-center text-slate-500 py-20">
         Chargement des conduites…
       </div>
 
-      <!-- Empty -->
+      
       <div v-else-if="conduites.length === 0" class="text-center text-slate-500 py-20">
         Aucune conduite définie. Le seed du module est-il bien exécuté ?
       </div>
 
-      <!-- List -->
+      
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <button
           v-for="c in conduites"
@@ -224,7 +221,7 @@ onMounted(loadConduites)
         </button>
       </div>
 
-      <!-- Detail Modal -->
+      
       <Teleport to="body">
         <Transition name="fade">
           <div
@@ -233,7 +230,7 @@ onMounted(loadConduites)
             @click.self="closeDetail"
           >
             <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-4xl w-full my-10 p-8">
-              <!-- Header modal -->
+              
               <div class="flex items-start justify-between mb-6">
                 <div>
                   <span class="text-xs uppercase tracking-wider text-slate-500">
@@ -249,7 +246,7 @@ onMounted(loadConduites)
                 >×</button>
               </div>
 
-              <!-- Start action -->
+              
               <div class="mb-6 p-4 bg-slate-950/50 border border-slate-800 rounded-lg">
                 <div class="flex items-center justify-between gap-4">
                   <div class="text-sm text-slate-400">
@@ -271,13 +268,13 @@ onMounted(loadConduites)
                 </div>
               </div>
 
-              <!-- Loading detail -->
+              
               <div v-if="detailLoading" class="text-center text-slate-500 py-10">
                 Chargement…
               </div>
 
               <template v-else>
-                <!-- Cues -->
+                
                 <div class="mb-8">
                   <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-3">
                     Séquence de cues ({{ detailCues.length }})
@@ -308,7 +305,7 @@ onMounted(loadConduites)
                   </ol>
                 </div>
 
-                <!-- Representations -->
+                
                 <div>
                   <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-3">
                     Représentations récentes ({{ detailRepresentations.length }})

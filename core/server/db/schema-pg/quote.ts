@@ -1,11 +1,4 @@
-/**
- *
- * Drizzle PG schemas for quote — project #38 Phase 1 step 4.
- *
- * 2 tables (cs_main, AC-only) :
- * - cs_quote        : quote (number D-, status, amounts, accept_token)
- * - cs_quote_line   : quote lines
- */
+
 
 import {
   date,

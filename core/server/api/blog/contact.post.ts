@@ -1,10 +1,4 @@
-/**
- *
- * POST /api/blog/contact
- * Receives a message from the CTA form in blog articles.
- * → Create/upsert a lead + new project (direct Drizzle)
- * → Send a summary email via Resend
- */
+
 
 import { sendAdminContactFormEmail } from '~/server/utils/order-emails'
 import { crmCreateLeadProject } from '~/server/utils/crm-direct'
@@ -18,7 +12,7 @@ interface BlogContactBody {
 }
 
 export default defineEventHandler(async (event) => {
-  // Rate limit anti-spam form contact (5 / 10 min par IP).
+  
   const ip = getRequestIP(event, { xForwardedFor: true }) || 'unknown'
   if (!(await rateLimit(`blog-contact:${ip}`, 5, 600))) {
     throw createError({
@@ -30,7 +24,7 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody<BlogContactBody>(event)
 
-  // ── Validation ──────────────────────────────────────────────────────
+  
   const email = body.email?.trim()
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     throw createError({ statusCode: 400, statusMessage: 'Email invalide', data: { code: 'INVALID_EMAIL' } })
@@ -40,7 +34,7 @@ export default defineEventHandler(async (event) => {
   const articleTitle = body.articleTitle?.trim() || ''
   const articleUrl = body.articleUrl?.trim() || ''
 
-  // ── Créer le lead + projet via Drizzle direct ──────────────────────
+  
   let leadId: number | null = null
   let projectId: number | null = null
 
@@ -62,7 +56,7 @@ export default defineEventHandler(async (event) => {
     console.error('[blog/contact] CRM unexpected error:', err?.message || err)
   }
 
-  // ── Email récap admin (DB-first via cs_email_template.recipient_to) ─
+  
   await sendAdminContactFormEmail({
     email,
     message,
