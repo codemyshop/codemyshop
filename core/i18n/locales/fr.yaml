@@ -230,22 +230,22 @@ probleme:
 
 navpages:
   heading: Allez plus loin
-  lede: Quatre pages pour comprendre qui je suis et pourquoi c'est différent.
+  lede: Quelques sujets pour comprendre ce qui rend CodeMyShop différent.
   page1_title: Pourquoi la souveraineté numérique est une urgence
-  page1_desc: En 2026, dépendre d'une plateforme américaine pour votre e-commerce, c'est accepter de ne rien contrôler. J'ai écrit pourquoi — et ce que je fais pour changer ça.
+  page1_desc: En 2026, dépendre d'une plateforme américaine pour votre e-commerce, c'est accepter de ne rien contrôler. Découvrez pourquoi — et à quoi ressemble une alternative souveraine et ouverte.
   page1_cta: Lire le manifeste
-  page2_title: Du Macintosh de mon papa à CodeMyShop
-  page2_desc: Informatique à 5 ans, salons pirates d'AOL à 13, marque de skateboard à 24, expert PrestaShop à 35. L'histoire derrière 10 ans d'obsession e-commerce.
-  page2_cta: Découvrir mon parcours
-  page3_title: Distribuez notre infrastructure à votre réseau
-  page3_desc: "Devenez ambassadeur CodeMyShop. 20% de commission sur chaque deal, soit 3 000 € par client signé."
-  page3_cta: Devenir ambassadeur
-  page4_title: Du Hobbit à 12 ans au conseil de 20 agents IA
-  page4_desc: Figurines en plomb, philosophie au lycée, luxe à la française, trahison humaine — et la naissance du Synedre. La vraie histoire.
-  page4_cta: Lire l'histoire du Synedre
-  page5_title: Pourquoi ce système devient exponentiel à chaque tour
-  page5_desc: Data souveraine, architecture headless, IA qui apprend — les boucles de rétroaction cachées qui font que le tour 4 coûte moins cher que le tour 1.
-  page5_cta: Comprendre la théorie
+  page2_title: Une seule stack TypeScript, de bout en bout
+  page2_desc: Nuxt 4, Drizzle et PostgreSQL dans un seul process — vitrine, admin et API sans colle entre microservices. L'architecture derrière le projet.
+  page2_cta: À propos du projet
+  page3_title: Développez le réseau
+  page3_desc: Revendez ou recommandez CodeMyShop à votre réseau et partagez la valeur créée — un programme partenaire ouvert pour agences et intégrateurs.
+  page3_cta: Devenir partenaire
+  page4_title: Pourquoi le système se renforce avec le temps
+  page4_desc: Data souveraine, architecture headless et IA qui apprend — les boucles de rétroaction qui rendent chaque itération moins coûteuse que la précédente.
+  page4_cta: Comprendre le flywheel
+  page5_title: Open-core, AGPL-3.0, zéro commission
+  page5_desc: Auditable, forkable et auto-hébergeable, sans verrouillage propriétaire ni taxe sur les transactions.
+  page5_cta: Lire la logique de licence
 
 instagram:
   heading: Suivez-nous sur Instagram

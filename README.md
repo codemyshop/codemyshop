@@ -287,6 +287,8 @@ For security issues, please follow [SECURITY.md](SECURITY.md) — do **not** ope
 
 Built in France in 2026 with [Claude Code](https://claude.com/claude-code). Inspired by the open-source ethos of MongoDB, Plausible, n8n, and Supabase.
 
+> CodeMyShop is the commerce layer of a broader sovereignty vision. The manifesto and the *why* behind the project live at **[synedre.com](https://synedre.com)**.
+
 ---
 
 🇫🇷 *Lire ce README en français : [README.fr.md](README.fr.md)* (à venir)

@@ -219,22 +219,22 @@ probleme:
 
 navpages:
   heading: Go further
-  lede: Four pages to understand who I am and why this is different.
+  lede: A few topics to understand what makes CodeMyShop different.
   page1_title: Why digital sovereignty is urgent
-  page1_desc: In 2026, depending on a US platform for your e-commerce means accepting you control nothing. I wrote why — and what I'm doing to change it.
+  page1_desc: In 2026, depending on a US platform for your e-commerce means accepting you control nothing. Read why it matters — and what a sovereign, open alternative looks like.
   page1_cta: Read the manifesto
-  page2_title: From my dad's Macintosh to CodeMyShop
-  page2_desc: Computers at 5, AOL hacker rooms at 13, skateboard brand at 24, PrestaShop expert at 35. The story behind 10 years of e-commerce obsession.
-  page2_cta: Discover my journey
-  page3_title: Distribute our infrastructure to your network
-  page3_desc: "Become a CodeMyShop ambassador. 20% commission on every deal — €3,000 per signed client."
-  page3_cta: Become an ambassador
-  page4_title: From The Hobbit at 12 to a council of 20 AI agents
-  page4_desc: Lead figurines, high-school philosophy, French luxury, human betrayal — and the birth of the Synedre. The real story.
-  page4_cta: Read the Synedre story
-  page5_title: Why this system grows exponential each loop
-  page5_desc: Sovereign data, headless architecture, learning AI — the hidden feedback loops that make loop 4 cheaper than loop 1.
-  page5_cta: Understand the theory
+  page2_title: A single TypeScript stack, end to end
+  page2_desc: Nuxt 4, Drizzle and PostgreSQL in one process — storefront, admin and API with no microservice glue. The architecture behind the project.
+  page2_cta: About the project
+  page3_title: Grow the network
+  page3_desc: Resell or recommend CodeMyShop to your own network and share in the upside — an open partner program for agencies and integrators.
+  page3_cta: Become a partner
+  page4_title: Why the system compounds over time
+  page4_desc: Sovereign data, headless architecture and learning AI — the feedback loops that make each iteration cheaper than the last.
+  page4_cta: Understand the flywheel
+  page5_title: Open-core, AGPL-3.0, zero commission
+  page5_desc: Auditable, forkable and self-hostable, with no vendor lock-in and no transaction tax.
+  page5_cta: Read the license rationale
 
 instagram:
   heading: Follow us on Instagram

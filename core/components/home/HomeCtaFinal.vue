@@ -11,9 +11,9 @@
         {{ t('ctafinal.lede') }}
       </p>
       <a
-        :href="available ? 'https://calendly.com/contact-alexandrecarette/30min' : undefined"
-        :target="available ? '_blank' : undefined"
-        :rel="available ? 'noopener noreferrer' : undefined"
+        :href="available ? ctaHref : undefined"
+        :target="available && ctaIsExternal ? '_blank' : undefined"
+        :rel="available && ctaIsExternal ? 'noopener noreferrer' : undefined"
         :class="available
           ? 'inline-flex items-center gap-2 px-8 py-4 bg-white text-primary-700 font-bold rounded-xl text-sm hover:bg-gray-50 transition-colors shadow-lg shadow-primary-800/30 hover:-translate-y-0.5 hover:shadow-xl cursor-pointer'
           : 'inline-flex items-center gap-2 px-8 py-4 bg-white/20 text-white/50 font-bold rounded-xl text-sm cursor-not-allowed'"
@@ -29,4 +29,9 @@
 <script setup lang="ts">
 const { available, remaining, maxClients } = useAvailability()
 const { t } = useT()
+// Booking URL is tenant-configurable via `runtimeConfig.public.calendlyUrl`.
+// Falls back to the local `/contact` route present on every install.
+const calendlyUrl = (useRuntimeConfig().public as any).calendlyUrl as string | undefined
+const ctaHref = calendlyUrl || '/contact'
+const ctaIsExternal = Boolean(calendlyUrl)
 </script>
